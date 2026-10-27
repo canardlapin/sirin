@@ -102,6 +102,7 @@ lazy val examples = project
 // set explicitly. `-Dsirin.sanitize=thread` links the whole binary with
 // ThreadSanitizer, and `-Dsirin.mode=release-fast` selects an optimized build
 // (see docs/evidence/stage0/P0.6-P0.7-macos.md for both outcomes).
+// `-Dsirin.gc=commix|boehm|none` selects the collector for the P0.6 GC comparison.
 lazy val probeThreads = project
   .in(file("probes/threads"))
   .enablePlugins(ScalaNativePlugin)
@@ -117,7 +118,14 @@ lazy val probeThreads = project
         case Some("release-full") => scala.scalanative.build.Mode.releaseFull
         case _                    => c.mode
       }
+      val gc = sys.props.get("sirin.gc") match {
+        case Some("commix") => scala.scalanative.build.GC.commix
+        case Some("boehm")  => scala.scalanative.build.GC.boehm
+        case Some("none")   => scala.scalanative.build.GC.none
+        case _              => c.gc
+      }
       val base = c
+        .withGC(gc)
         .withMode(mode)
         .withMultithreading(true)
         .withCompileOptions(c.compileOptions ++ Seq(s"-F$sdl"))
