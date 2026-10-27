@@ -279,6 +279,39 @@ settled state, so no glitch is visible. Incremental height adjustment, in
 the style of Jane Street's Incremental, is a later optimization and must
 preserve the same observable semantics.
 
+The headless implementation uses a configurable pass budget and a stable explicit
+output `Equality[B]` for `flatMap`, just as `map` does. Selection callbacks run
+only when their input changes; returning a newly allocated description is valid.
+Speculative reads follow staged selections without changing committed edges.
+A rejected candidate retains the last committed graph as well as its values.
+Explicit runtime reads pin a graph root until runtime close; scoped reads and
+observations pin it only for that scope's lifetime. Merely traversing a selected
+branch does not pin it. Unreachable derivations are retired between passes.
+
+Scope creation, cell creation, observations and disposal join an active
+transaction; otherwise the headless host mounts them in a fresh transaction.
+A staged disposal blocks further operations on that scope in the transaction,
+but disconnects committed observers only on successful publication. Refusal
+restores the old lifetime. Parent disposal includes all descendants. Diagnostic
+`Scope.child(name)` names are not reconciliation keys; the headless host exposes
+an explicit static positional mount with an owner, position and definition token
+for exercising identity before component reconciliation exists. Mounting a new
+definition in an occupied static position disposes the prior scope and starts
+fresh state; duplicate placement of the same definition is rejected. A cell
+created in a provisional mount cannot supply a committed snapshot until that
+mount publishes. Its first published value is the final staged initialization
+and has revision zero; there is no prior committed value to advance from. This
+applies even when staged initialization is equal under the cell's custom equality.
+
+`onDispose` transfers an already-acquired external lease to the scope. A release
+registered in staging that rolls back is invoked as rollback compensation;
+existing leases are released only after committed disposal. Every release runs
+at most once, outside speculative evaluation and under a read-only phase guard;
+one throwing release cannot prevent the rest. Resource acquisition itself
+remains application I/O and must not be hidden in derivations. Deferred worker
+starts still require successful outer publication. No native/GPU retirement
+protocol is claimed by this headless lease mechanism.
+
 **The settle loop** runs inside phase 2 of the frame pipeline (§5.3),
 before structural updates. Each transaction stabilizes derivations/topology before publication. An effect
 that writes starts a distinct follow-on transaction.

@@ -17,7 +17,8 @@ class ReferenceAgreementSuite extends ScalaCheckSuite:
       3 -> leaf,
       2 -> (for a <- expression(depth - 1); b <- expression(depth - 1) yield Expr.Plus(a, b)),
       2 -> (for a <- expression(depth - 1); b <- expression(depth - 1) yield Expr.Times(a, b)),
-      1 -> expression(depth - 1).map(Expr.Mod(_, 3)))
+      1 -> expression(depth - 1).map(Expr.Mod(_, 3)),
+      3 -> (for c <- leaf; a <- expression(depth - 1); b <- expression(depth - 1) yield Expr.Choose(c, a, b)))
   private val write = for index <- Gen.choose(0, 2); v <- value yield (index, v)
   private val edit: Gen[Edit] = Gen.frequency(
     6 -> write.map((i, v) => Edit.Write(i, v)),
@@ -35,6 +36,10 @@ class ReferenceAgreementSuite extends ScalaCheckSuite:
     case Expr.Plus(a, b) => compile(a, cells).zip(compile(b, cells)).map(_ + _)
     case Expr.Times(a, b) => compile(a, cells).zip(compile(b, cells)).map(_ * _)
     case Expr.Mod(a, n) => compile(a, cells).map(_ % n)
+    case Expr.Choose(c, a, b) =>
+      val even = compile(a, cells)
+      val odd = compile(b, cells)
+      compile(c, cells).flatMap(v => if v % 2 == 0 then even else odd)
 
   property("randomized transactions match independent recomputation, ordered observations and effect counts") {
     Prop.forAll(program) { (initial, expressions, transactions) =>

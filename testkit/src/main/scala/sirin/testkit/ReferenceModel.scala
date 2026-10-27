@@ -2,7 +2,7 @@ package sirin.testkit
 
 /** Deliberately non-incremental oracle: immutable vectors, recursive tree
   * interpretation and complete recomputation. No engine/scheduling imports.
-  * Scope: static integer expressions and transactional writes/refusals/poison.
+  * Scope: static/dynamic integer expressions and transactional writes/refusals/poison.
   */
 object ReferenceModel:
   enum Expr:
@@ -11,6 +11,7 @@ object ReferenceModel:
     case Plus(left: Expr, right: Expr)
     case Times(left: Expr, right: Expr)
     case Mod(input: Expr, modulus: Int)
+    case Choose(condition: Expr, even: Expr, odd: Expr)
 
   enum Edit:
     case Write(index: Int, value: Int)
@@ -30,6 +31,7 @@ object ReferenceModel:
     case Expr.Plus(a, b) => evaluate(a, cells) + evaluate(b, cells)
     case Expr.Times(a, b) => evaluate(a, cells) * evaluate(b, cells)
     case Expr.Mod(a, modulus) => evaluate(a, cells) % modulus
+    case Expr.Choose(c, even, odd) => evaluate(if evaluate(c, cells) % 2 == 0 then even else odd, cells)
 
   def initial(values: Vector[Int], roots: Vector[Expr]): State =
     val initial = roots.zipWithIndex.map((root, i) => (i, evaluate(root, values)))

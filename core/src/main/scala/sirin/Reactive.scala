@@ -1,4 +1,4 @@
-// Reactive descriptions; evaluated by the headless engine. Dynamic topology is C1.2c.
+// Reactive descriptions; evaluated by the headless engine.
 package sirin
 
 import scala.util.NotGiven
@@ -94,7 +94,7 @@ trait Signal[+A]:
       (x, y) => valueEquality.same(x._1, y._1) && that.valueEquality.same(x._2, y._2))
 
   /** A topology edit: the inner signal is attached between passes. */
-  def flatMap[B](f: A => Signal[B]): Signal[B] = new Signal.Dynamic(this, f)
+  def flatMap[B](f: A => Signal[B])(using eq: Equality[B]): Signal[B] = new Signal.Dynamic(this, f, eq)
   def attempt: Signal[Value[A]] =
     new Signal.Derived(Vector(this), reader => Value.Ok(reader(this)), (x, y) => (x, y) match
       case (Value.Ok(a), Value.Ok(b)) => valueEquality.same(a, b)
@@ -108,7 +108,8 @@ object Signal:
   private[sirin] final class Constant[A](val value: A) extends Signal[A]
   private[sirin] final class Derived[A](val inputs: Vector[Signal[?]], val compute: Reader => Value[A], val equality: Equality[A]) extends Signal[A]:
     override private[sirin] def valueEquality: Equality[A] = equality
-  private[sirin] final class Dynamic[A, B](val input: Signal[A], val select: A => Signal[B]) extends Signal[B]
+  private[sirin] final class Dynamic[A, B](val input: Signal[A], val select: A => Signal[B], val equality: Equality[B]) extends Signal[B]:
+    override private[sirin] def valueEquality: Equality[B] = equality
 
   def const[A](value: A): Signal[A] = new Constant(value)
   def always: Signal[Boolean]       = const(true)

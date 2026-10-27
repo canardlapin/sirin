@@ -1,4 +1,5 @@
-// Provisional A-0 skeleton (VISION §4.1): public shape only, not implemented.
+// Public contracts. The headless host implements the cell/effect/lifetime subset;
+// node references, commands and other host services remain provisional.
 package sirin
 
 import scala.concurrent.duration.FiniteDuration
