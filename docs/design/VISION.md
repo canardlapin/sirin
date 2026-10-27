@@ -416,6 +416,21 @@ event watch for this path.
 - **`userdata` is a handle-table index with a generation**, never a pointer
   to a Scala object. C-held pointers are not GC roots. Inputs that C borrows
   across calls, such as ICU4X segmenter text, live in native memory.
+- **Findings from P0.6/P0.7 (macOS, Scala Native 0.5.12).** These are
+  appended facts; see `docs/evidence/stage0/P0.6-P0.7-macos.md`.
+  - *No Scala callbacks inside `@blocking` externs.* The `CFuncPtr` entry
+    does not switch the thread back to Managed, so the callback starts
+    running Scala while the GC treats the thread as stopped. After a
+    collection inside the callback, the thread stays Managed for the rest of
+    the native call, which silently drops the `@blocking` protection. Scala
+    callbacks are allowed only from plain externs, and those externs must
+    not block.
+  - *Generations must not wrap.* A 16-bit generation that wraps reissues a
+    stale handle (ABA). Exhausted slots are retired, or the handle is
+    widened.
+  - *SDL event watches run on the pushing thread,* including foreign
+    threads. A Scala event watch or filter therefore violates the rule
+    above. Wake calls (`SDL_PushEvent`) are made outside the mailbox lock.
 - **One Rust static library.** wgpu, AccessKit, and ICU4X each bundle Rust
   std. Once a second Rust dependency arrives, they are combined into a
   single `sirin-native` crate that produces one library. That keeps one
