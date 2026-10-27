@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-27",
+  "upstream_commit": "fa4a9e6ac9dab73ab4d476d6cc8c0cdc422c25f7",
+  "version": "0.5.13-20261026-fa4a9e6-SNAPSHOT",
+  "receipt_sha256": {
+    "artifact-manifest.json": "b8e918b67a780308fc37af97cc8762779ba7b3ca36966a86ba9ce765aca7ba50",
+    "binary-manifest.json": "9a7b993eed095e4bf6100c4ff6168f7c685a4bf511c3953e63d78c54f16ead34",
+    "build-repro.log": "e57f11e29670b1350a8108362faca728aa142e5bd8fdbd7915d3519b792d6580",
+    "build-sirin.log": "aa279797f20a84ee7a3750d992026c83d00a88782479c3ffae9b3076c72308bd",
+    "consumer-input-checks.json": "4644730d7355a301a60478cf020ea0d7c5af2f1e22262dac81b39e99d967f39f",
+    "publish-local.log": "509202b6d9381a963b5a4f90e7b891d0a18f45cfd423aed3d780b8e9644d52e5",
+    "repro-real-oom/result.json": "e2820f9329fdbeb561c69649effdcde6825811afa31e3a2905ce7fd5c9672a9a",
+    "repro-real-oom/stderr.log": "c6902fcf190981178cf6a74438cfc64269220a81e6b2a6a402bbd94f2930c302",
+    "repro-real-oom/stdout.log": "14b6e98be8c62eb11214f5b01f44c873e5ce4742cbc6de5e444fd50599d6929c",
+    "repro-trap-symbols.txt": "0b39f38a56fde99fd7ba3e8c93f29634179b2d9577303a0db23f87bbac8fe547",
+    "repro-w4-120/result.json": "070a3183532d8b3460f249e3ed4ef1e624714a51358f1e9e44347ba8546a2570",
+    "repro-w4-120/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "repro-w4-120/stdout.log": "08d2ab1cc463da7cccabffc061bb17e21e002e42705e55702c48c15b84e2d5e4",
+    "setup.json": "f43ba5fd18ae9626046a011deb6bcbc2bb5fead33dd6bb066c1e21f574864e96",
+    "sirin-w4-events-600/process-observations.jsonl": "fcfe86737630943d9b39505d259001b6462cd1b8c4df4de579974dbad724b80d",
+    "sirin-w4-events-600/result.json": "b1e58481f27361229bc9a901db0cd02456f1de58d012654d18979a54309cab73",
+    "sirin-w4-events-600/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sirin-w4-events-600/stdout.log": "489dc7a27929ddf00ef7374a9a11209a986ec6aed630f30f7cfe816e2a531cab",
+    "test-summary.json": "ccec130ab165545e4b931c94d0264977aef6398d56d67a28abae554bf9a84c0b",
+    "threads-trap-symbols.txt": "6f8c91d41fc1a39f31ceb65ecd671425625b6bde1b1182f923e86e94e4a1d39c"
+  },
+  "reproducer_source_sha256": {
+    "probes/gc-repro/src/main/scala/GcRepro.scala": "45433526a329be0ed229d6cd5932e4dd20c383ad1a70c7f205299ee90f4ae5cf",
+    "probes/gc-repro/run.py": "775854e7945ef5d5008cde08116df690a04c3f56a617474073f346ab47637e0f",
+    "probes/gc-repro/runtime/upstream-pin.json": "3d4c5b7fb4d8ad1476a3733599d248f309a3c8e46c72e595962d11f395c54eaf"
+  }
+}

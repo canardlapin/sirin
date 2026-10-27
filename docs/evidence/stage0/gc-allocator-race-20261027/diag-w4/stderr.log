@@ -1,0 +1,179 @@
+DIAG alloc-miss n=1 size=48 blocks=1024 free=0 own_recycled=49 cursor_bytes=16 overflow_bytes=6480
+DIAG alloc-miss n=2 size=48 blocks=1025 free=0 own_recycled=53 cursor_bytes=32 overflow_bytes=25984
+DIAG alloc-miss n=3 size=48 blocks=1026 free=0 own_recycled=53 cursor_bytes=0 overflow_bytes=12064
+DIAG alloc-miss n=4 size=48 blocks=1026 free=0 own_recycled=63 cursor_bytes=0 overflow_bytes=22224
+DIAG alloc-miss n=5 size=32 blocks=1028 free=0 own_recycled=49 cursor_bytes=0 overflow_bytes=624
+DIAG alloc-miss n=6 size=48 blocks=1029 free=0 own_recycled=38 cursor_bytes=16 overflow_bytes=19984
+DIAG alloc-miss n=7 size=144 blocks=1030 free=0 own_recycled=42 cursor_bytes=80 overflow_bytes=6832
+DIAG alloc-miss n=8 size=48 blocks=1031 free=0 own_recycled=70 cursor_bytes=16 overflow_bytes=12912
+DIAG sweep n=256 blocks=1107 free=783 recycled=310 unavailable=14
+DIAG mutator ptr=0x10ff04080 recycled=50
+DIAG mutator ptr=0x10fe04080 recycled=73
+DIAG mutator ptr=0x13ff048f0 recycled=46
+DIAG mutator ptr=0x13fe04290 recycled=66
+DIAG mutator ptr=0x12fe04080 recycled=39
+DIAG mutator ptr=0x13ff04730 recycled=36
+DIAG alloc-miss n=128 size=32 blocks=1151 free=0 own_recycled=51 cursor_bytes=16 overflow_bytes=10304
+DIAG sweep n=512 blocks=1187 free=907 recycled=275 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=50
+DIAG mutator ptr=0x10fe04080 recycled=47
+DIAG mutator ptr=0x13ff048f0 recycled=46
+DIAG mutator ptr=0x13fe04290 recycled=44
+DIAG mutator ptr=0x12fe04080 recycled=47
+DIAG mutator ptr=0x13ff04730 recycled=41
+DIAG sweep n=768 blocks=1248 free=967 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=45
+DIAG mutator ptr=0x10fe04080 recycled=49
+DIAG mutator ptr=0x13ff048f0 recycled=42
+DIAG mutator ptr=0x13fe04290 recycled=48
+DIAG mutator ptr=0x12fe04080 recycled=42
+DIAG mutator ptr=0x13ff04730 recycled=50
+DIAG alloc-miss n=256 size=48 blocks=1278 free=0 own_recycled=45 cursor_bytes=32 overflow_bytes=4864
+DIAG sweep n=1024 blocks=1339 free=1054 recycled=280 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=45
+DIAG mutator ptr=0x10fe04080 recycled=47
+DIAG mutator ptr=0x13ff048f0 recycled=47
+DIAG mutator ptr=0x13fe04290 recycled=47
+DIAG mutator ptr=0x12fe04080 recycled=46
+DIAG mutator ptr=0x13ff04730 recycled=48
+DIAG alloc-miss n=384 size=32 blocks=1407 free=0 own_recycled=46 cursor_bytes=16 overflow_bytes=10544
+DIAG sweep n=1280 blocks=1427 free=1147 recycled=275 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=45
+DIAG mutator ptr=0x10fe04080 recycled=44
+DIAG mutator ptr=0x13ff048f0 recycled=47
+DIAG mutator ptr=0x13fe04290 recycled=46
+DIAG mutator ptr=0x12fe04080 recycled=48
+DIAG mutator ptr=0x13ff04730 recycled=45
+DIAG alloc-miss n=512 size=48 blocks=1535 free=0 own_recycled=42 cursor_bytes=32 overflow_bytes=688
+DIAG alloc-miss n=640 size=48 blocks=1663 free=0 own_recycled=44 cursor_bytes=0 overflow_bytes=23536
+DIAG alloc-miss n=768 size=32 blocks=1791 free=0 own_recycled=44 cursor_bytes=0 overflow_bytes=1808
+DIAG alloc-miss n=896 size=48 blocks=1919 free=0 own_recycled=44 cursor_bytes=32 overflow_bytes=11136
+DIAG alloc-miss n=1024 size=32 blocks=2047 free=0 own_recycled=44 cursor_bytes=16 overflow_bytes=17920
+DIAG alloc-miss n=1152 size=48 blocks=2175 free=0 own_recycled=42 cursor_bytes=16 overflow_bytes=576
+DIAG alloc-miss n=1280 size=48 blocks=2303 free=0 own_recycled=41 cursor_bytes=32 overflow_bytes=4080
+DIAG sweep n=1536 blocks=2356 free=2074 recycled=277 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=50
+DIAG mutator ptr=0x10fe04080 recycled=46
+DIAG mutator ptr=0x13ff048f0 recycled=42
+DIAG mutator ptr=0x13fe04290 recycled=46
+DIAG mutator ptr=0x12fe04080 recycled=45
+DIAG mutator ptr=0x13ff04730 recycled=48
+DIAG alloc-miss n=1408 size=48 blocks=2431 free=0 own_recycled=55 cursor_bytes=32 overflow_bytes=17744
+DIAG sweep n=1792 blocks=2442 free=2162 recycled=275 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=48
+DIAG mutator ptr=0x10fe04080 recycled=47
+DIAG mutator ptr=0x13ff048f0 recycled=49
+DIAG mutator ptr=0x13fe04290 recycled=43
+DIAG mutator ptr=0x12fe04080 recycled=47
+DIAG mutator ptr=0x13ff04730 recycled=41
+DIAG sweep n=2048 blocks=2526 free=2245 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=44
+DIAG mutator ptr=0x10fe04080 recycled=47
+DIAG mutator ptr=0x13ff048f0 recycled=45
+DIAG mutator ptr=0x13fe04290 recycled=49
+DIAG mutator ptr=0x12fe04080 recycled=44
+DIAG mutator ptr=0x13ff04730 recycled=47
+DIAG alloc-miss n=1536 size=32 blocks=2559 free=0 own_recycled=36 cursor_bytes=0 overflow_bytes=21824
+DIAG sweep n=2304 blocks=2613 free=2332 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=42
+DIAG mutator ptr=0x10fe04080 recycled=43
+DIAG mutator ptr=0x13ff048f0 recycled=55
+DIAG mutator ptr=0x13fe04290 recycled=39
+DIAG mutator ptr=0x12fe04080 recycled=44
+DIAG mutator ptr=0x13ff04730 recycled=53
+DIAG alloc-miss n=1664 size=256 blocks=2687 free=0 own_recycled=47 cursor_bytes=224 overflow_bytes=19712
+DIAG sweep n=2560 blocks=2754 free=2471 recycled=277 unavailable=6
+DIAG mutator ptr=0x10ff04080 recycled=49
+DIAG mutator ptr=0x10fe04080 recycled=42
+DIAG mutator ptr=0x13ff048f0 recycled=48
+DIAG mutator ptr=0x13fe04290 recycled=47
+DIAG mutator ptr=0x12fe04080 recycled=47
+DIAG mutator ptr=0x13ff04730 recycled=44
+DIAG alloc-miss n=1792 size=32 blocks=2815 free=0 own_recycled=46 cursor_bytes=16 overflow_bytes=752
+DIAG sweep n=2816 blocks=2859 free=2578 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=48
+DIAG mutator ptr=0x10fe04080 recycled=46
+DIAG mutator ptr=0x13ff048f0 recycled=46
+DIAG mutator ptr=0x13fe04290 recycled=45
+DIAG mutator ptr=0x12fe04080 recycled=45
+DIAG mutator ptr=0x13ff04730 recycled=46
+DIAG alloc-miss n=1920 size=32 blocks=2943 free=0 own_recycled=47 cursor_bytes=16 overflow_bytes=1616
+DIAG sweep n=3072 blocks=2956 free=2674 recycled=277 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=52
+DIAG mutator ptr=0x10fe04080 recycled=45
+DIAG mutator ptr=0x13ff048f0 recycled=46
+DIAG mutator ptr=0x13fe04290 recycled=42
+DIAG mutator ptr=0x12fe04080 recycled=40
+DIAG mutator ptr=0x13ff04730 recycled=52
+DIAG sweep n=3328 blocks=3041 free=2759 recycled=277 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=45
+DIAG mutator ptr=0x10fe04080 recycled=45
+DIAG mutator ptr=0x13ff048f0 recycled=51
+DIAG mutator ptr=0x13fe04290 recycled=45
+DIAG mutator ptr=0x12fe04080 recycled=47
+DIAG mutator ptr=0x13ff04730 recycled=44
+DIAG alloc-miss n=2048 size=32 blocks=3071 free=0 own_recycled=37 cursor_bytes=0 overflow_bytes=13824
+DIAG sweep n=3584 blocks=3121 free=2840 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=59
+DIAG mutator ptr=0x10fe04080 recycled=35
+DIAG mutator ptr=0x13ff048f0 recycled=53
+DIAG mutator ptr=0x13fe04290 recycled=42
+DIAG mutator ptr=0x12fe04080 recycled=54
+DIAG mutator ptr=0x13ff04730 recycled=33
+DIAG alloc-miss n=2176 size=32 blocks=3199 free=0 own_recycled=44 cursor_bytes=0 overflow_bytes=21760
+DIAG sweep n=3840 blocks=3205 free=2926 recycled=274 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=46
+DIAG mutator ptr=0x10fe04080 recycled=47
+DIAG mutator ptr=0x13ff048f0 recycled=42
+DIAG mutator ptr=0x13fe04290 recycled=46
+DIAG mutator ptr=0x12fe04080 recycled=45
+DIAG mutator ptr=0x13ff04730 recycled=48
+DIAG sweep n=4096 blocks=3316 free=3033 recycled=278 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=49
+DIAG mutator ptr=0x10fe04080 recycled=40
+DIAG mutator ptr=0x13ff048f0 recycled=54
+DIAG mutator ptr=0x13fe04290 recycled=41
+DIAG mutator ptr=0x12fe04080 recycled=55
+DIAG mutator ptr=0x13ff04730 recycled=39
+DIAG alloc-miss n=2304 size=32 blocks=3327 free=0 own_recycled=50 cursor_bytes=0 overflow_bytes=20736
+DIAG sweep n=4352 blocks=3413 free=3132 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=43
+DIAG mutator ptr=0x10fe04080 recycled=49
+DIAG mutator ptr=0x13ff048f0 recycled=44
+DIAG mutator ptr=0x13fe04290 recycled=49
+DIAG mutator ptr=0x12fe04080 recycled=45
+DIAG mutator ptr=0x13ff04730 recycled=46
+DIAG alloc-miss n=2432 size=48 blocks=3455 free=0 own_recycled=49 cursor_bytes=16 overflow_bytes=4112
+DIAG sweep n=4608 blocks=3494 free=3212 recycled=277 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=50
+DIAG mutator ptr=0x10fe04080 recycled=44
+DIAG mutator ptr=0x13ff048f0 recycled=45
+DIAG mutator ptr=0x13fe04290 recycled=45
+DIAG mutator ptr=0x12fe04080 recycled=46
+DIAG mutator ptr=0x13ff04730 recycled=47
+DIAG sweep n=4864 blocks=3573 free=3292 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=49
+DIAG mutator ptr=0x10fe04080 recycled=41
+DIAG mutator ptr=0x13ff048f0 recycled=49
+DIAG mutator ptr=0x13fe04290 recycled=44
+DIAG mutator ptr=0x12fe04080 recycled=49
+DIAG mutator ptr=0x13ff04730 recycled=44
+DIAG alloc-miss n=2560 size=32 blocks=3583 free=0 own_recycled=45 cursor_bytes=0 overflow_bytes=16704
+DIAG sweep n=5120 blocks=3696 free=3415 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=47
+DIAG mutator ptr=0x10fe04080 recycled=43
+DIAG mutator ptr=0x13ff048f0 recycled=46
+DIAG mutator ptr=0x13fe04290 recycled=48
+DIAG mutator ptr=0x12fe04080 recycled=45
+DIAG mutator ptr=0x13ff04730 recycled=47
+DIAG alloc-miss n=2688 size=32 blocks=3711 free=0 own_recycled=46 cursor_bytes=16 overflow_bytes=17888
+DIAG sweep n=5376 blocks=3787 free=3506 recycled=276 unavailable=5
+DIAG mutator ptr=0x10ff04080 recycled=51
+DIAG mutator ptr=0x10fe04080 recycled=44
+DIAG mutator ptr=0x13ff048f0 recycled=47
+DIAG mutator ptr=0x13fe04290 recycled=43
+DIAG mutator ptr=0x12fe04080 recycled=48
+DIAG mutator ptr=0x13ff04730 recycled=43
+DIAG alloc-miss n=2816 size=32 blocks=3839 free=1 own_recycled=51 cursor_bytes=0 overflow_bytes=17968
+DIAG alloc-miss n=2817 size=32 blocks=3840 free=0 own_recycled=45 cursor_bytes=0 overflow_bytes=21392
+[14:08:03.221] [repro-immix-diag:68884] [ScalaNative GC|Error] Out of heap space cannot allocate more objects

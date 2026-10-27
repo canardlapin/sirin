@@ -1,0 +1,7 @@
+START elapsed_ms=0 workers=4 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5090 workers=4 slots=2048 ticker=true heap_bytes=50505640 collections=1305 iterations=41515776
+SAMPLE elapsed_ms=10067 workers=4 slots=2048 ticker=true heap_bytes=61445616 collections=2289 iterations=84333568
+SAMPLE elapsed_ms=15044 workers=4 slots=2048 ticker=true heap_bytes=70777800 collections=3108 iterations=127767552
+SAMPLE elapsed_ms=20017 workers=4 slots=2048 ticker=true heap_bytes=79061424 collections=3834 iterations=172254720
+DONE elapsed_ms=20017 workers=4 slots=2048 ticker=true heap_bytes=79061424 collections=3834 iterations=172255187
+RESULT live_payload_bytes=4309400 checksum=11127062243287256

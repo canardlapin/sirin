@@ -1,0 +1,7 @@
+{
+  "upstream_commit": "fa4a9e6ac9dab73ab4d476d6cc8c0cdc422c25f7",
+  "version": "0.5.13-20261026-fa4a9e6-SNAPSHOT",
+  "sirin_base": "1fc105eeefa14dfc77f651e1a605c7efbe025e34",
+  "sirin_archive_sha256": "5d6687944c86ce4cdcd2b3d2aaea72b80207c7e36542ffb0bdaddc91b3bdcb8b",
+  "isolation": "Only evaluation-copy plugins.sbt version changed; vendor reused by symlink; isolated sbt.ivy.home. No runtimeJar override."
+}

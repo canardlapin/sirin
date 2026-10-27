@@ -1,0 +1,29 @@
+{
+  "command": [
+    "probes/threads/target/scala-3.7.4/sirin-probe-threads",
+    "soak",
+    "60",
+    "4",
+    "0"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-27T17:24:39.650383+00:00",
+  "load_start": [
+    6.52783203125,
+    8.353515625,
+    6.59912109375
+  ],
+  "timeout_seconds": 75.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M"
+  },
+  "pid": 33144,
+  "timed_out": false,
+  "returncode": 1,
+  "elapsed_seconds": 54.225684333000004,
+  "load_end": [
+    7.23291015625,
+    8.25732421875,
+    6.671875
+  ]
+}

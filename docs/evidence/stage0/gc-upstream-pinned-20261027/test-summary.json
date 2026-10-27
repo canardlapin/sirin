@@ -1,0 +1,14 @@
+{
+  "command": "sbt -Dsbt.ivy.home=<evaluation>/ivy -Dsirin.mode=release-fast testJVM testNative examples/compile probeWindow/test probeThreads/test probeThreads/nativeLink",
+  "exit_code": 0,
+  "passed": 31,
+  "suite_counts": [
+    2,
+    2,
+    14,
+    13
+  ],
+  "authoring_sources_compiled": 7,
+  "native_version": "0.5.13-20261026-fa4a9e6-SNAPSHOT",
+  "old_version_in_classpath_log": false
+}

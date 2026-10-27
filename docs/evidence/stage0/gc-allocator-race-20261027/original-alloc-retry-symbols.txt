@@ -1,0 +1,2 @@
+000000010018d0b0 s _scalanative_GC_yieldpoint_trap
+000000010018d140 s _scalanative_GC_yieldpoint_trap$tlv$init

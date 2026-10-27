@@ -1,0 +1,30 @@
+soak t=60s received=155907 max=85.76ms gcs=12508 rss=72.3MB gc_heap=34.1MB
+soak t=120s received=289851 max=127.91ms gcs=22995 rss=72.3MB gc_heap=34.1MB
+soak t=180s received=426704 max=127.91ms gcs=33737 rss=66.4MB gc_heap=34.1MB
+soak t=240s received=623110 max=127.91ms gcs=49036 rss=66.4MB gc_heap=34.1MB
+soak t=300s received=792305 max=127.91ms gcs=62358 rss=66.4MB gc_heap=34.1MB
+soak t=360s received=937529 max=127.91ms gcs=73963 rss=66.4MB gc_heap=34.1MB
+soak t=420s received=1068090 max=127.91ms gcs=84423 rss=66.4MB gc_heap=34.1MB
+soak t=480s received=1208811 max=152.44ms gcs=95528 rss=66.5MB gc_heap=34.1MB
+soak t=540s received=1338531 max=166.98ms gcs=105898 rss=66.5MB gc_heap=34.1MB
+soak t=600s received=1499371 max=166.98ms gcs=118257 rss=66.5MB gc_heap=34.1MB
+RESULT mode=soak
+RESULT soak.seconds=600.0
+RESULT soak.workers=4 soak.push_every_us=1000
+RESULT soak.alloc_iterations=2859523605
+RESULT soak.alloc_gib=1788.30
+RESULT soak.gc_collections=118257
+RESULT soak.gc_mean_ms=0.743
+RESULT soak.gc_total_ms=87914.3
+RESULT soak.ticker_max_oversleep_ms=152.124
+RESULT soak.ticker_over_5ms=8356
+RESULT soak.ticker_over_20ms=809
+RESULT soak.ticker_over_50ms=96
+RESULT soak.events_pushed=1499373 soak.push_failures=0 soak.events_received=1499373
+RESULT soak.latency_p50_ms=0.18 soak.latency_p99_ms=3.98 soak.latency_p999_ms=23.59 soak.latency_max_ms=166.983
+RESULT soak.rss_start_mb=34.1 soak.rss_end_mb=67.1 soak.gc_heap_mb=34.1
+RESULT soak.no_deadlock=PASS (watchdog (10 s stall) never fired)
+RESULT soak.all_events_received=PASS (1499373 of 1499373)
+RESULT soak.latency_max_below_50ms=FAIL (166.983 ms)
+RESULT soak.ticker_max_below_50ms=FAIL (152.124 ms)
+RESULT failures=2

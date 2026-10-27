@@ -1,0 +1,10 @@
+	at Heap_exitWithOutOfMemory
+	at Allocator_allocSlow
+	at scalanative_GC_alloc_small
+	at _SM27scala.runtime.BoxesRunTime$D9boxToLongjL14java.lang.LongEO
+	at _SM29sirin.probe.threads.AllocatorD4bodyuEO
+	at _SM31sirin.probe.threads.ScalaThreadD3runuEO
+	at _SM39scala.scalanative.runtime.NativeThread$D16threadEntryPointL38scala.scalanative.runtime.NativeThreaduEPT39scala.scalanative.runtime.NativeThread$
+	at _SM49scala.scalanative.runtime.NativeThread$$$Lambda$1G17$extern$forwarder
+	at ProxyThreadStartRoutine
+	at _pthread_start

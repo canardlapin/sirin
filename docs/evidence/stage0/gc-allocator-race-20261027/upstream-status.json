@@ -1,0 +1,42 @@
+{
+  "checked_utc": "2026-10-27",
+  "latest_release": "v0.5.12",
+  "allocation_fix": {
+    "url": "https://github.com/scala-native/scala-native/pull/5128",
+    "title": "[GC:Immix] Avoid unnecessary Immix heap growth during concurrent allocation",
+    "merged_at": "2026-10-26T08:58:06Z",
+    "merge_commit_sha": "fa4a9e6ac9dab73ab4d476d6cc8c0cdc422c25f7"
+  },
+  "safepoint_issue": {
+    "url": "https://github.com/scala-native/scala-native/issues/5051",
+    "state": "open",
+    "title": "Multithreaded release build on macOS: mutator threads spin at trap-based yieldpoint and never reach safepoint under concurrent load (0.5.12, commix)"
+  },
+  "heap_history": [
+    {
+      "sha": "f0d4817e984c02db644e443f6a46b76a32594726",
+      "date": "2026-10-27T16:47:54Z",
+      "title": "[GC] Small fixes: the weak-reference callback, the MXBean totals, and Immix line usage logging (#5146)"
+    },
+    {
+      "sha": "67e0a53c3ae78e38dc3110086ccc53e88973969b",
+      "date": "2026-10-27T12:25:57Z",
+      "title": "[GC] Allocation sizes are size_t up to the large-object allocator (#5134)"
+    },
+    {
+      "sha": "fa4a9e6ac9dab73ab4d476d6cc8c0cdc422c25f7",
+      "date": "2026-10-26T08:58:05Z",
+      "title": "[GC:Immix] Avoid unnecessary Immix heap growth during concurrent allocation (#5128)"
+    },
+    {
+      "sha": "3a71ab41e53346b92b01c63e302048cbc5e364c8",
+      "date": "2026-10-04T11:50:05Z",
+      "title": "[GC:Immix,Commix] Defer heap growth when free blocks abundant (#5081)"
+    },
+    {
+      "sha": "7b8e8e96c93af2b08028e19b84f5ffc42e218760",
+      "date": "2026-09-08T08:53:14Z",
+      "title": "Improve musl / Alpine support (#4934)"
+    }
+  ]
+}

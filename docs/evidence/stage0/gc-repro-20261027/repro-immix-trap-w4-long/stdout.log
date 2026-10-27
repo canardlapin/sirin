@@ -1,0 +1,25 @@
+START elapsed_ms=0 workers=4 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5076 workers=4 slots=2048 ticker=true heap_bytes=49282320 collections=1705 iterations=53964288
+SAMPLE elapsed_ms=10036 workers=4 slots=2048 ticker=true heap_bytes=59103832 collections=2945 iterations=106019840
+SAMPLE elapsed_ms=15008 workers=4 slots=2048 ticker=true heap_bytes=67841832 collections=4007 iterations=159653376
+SAMPLE elapsed_ms=20079 workers=4 slots=2048 ticker=true heap_bytes=76474976 collections=4969 iterations=215912192
+SAMPLE elapsed_ms=25054 workers=4 slots=2048 ticker=true heap_bytes=83710040 collections=5705 iterations=264254976
+SAMPLE elapsed_ms=30033 workers=4 slots=2048 ticker=true heap_bytes=87834376 collections=6025 iterations=287166720
+SAMPLE elapsed_ms=35008 workers=4 slots=2048 ticker=true heap_bytes=93846120 collections=6598 iterations=330379264
+SAMPLE elapsed_ms=40088 workers=4 slots=2048 ticker=true heap_bytes=99158824 collections=7210 iterations=379734528
+SAMPLE elapsed_ms=45066 workers=4 slots=2048 ticker=true heap_bytes=105135616 collections=7795 iterations=429884928
+SAMPLE elapsed_ms=50043 workers=4 slots=2048 ticker=true heap_bytes=110553176 collections=8341 iterations=479668992
+SAMPLE elapsed_ms=55021 workers=4 slots=2048 ticker=true heap_bytes=115131888 collections=8846 iterations=528084480
+SAMPLE elapsed_ms=60093 workers=4 slots=2048 ticker=true heap_bytes=121213536 collections=9376 iterations=581449216
+SAMPLE elapsed_ms=65072 workers=4 slots=2048 ticker=true heap_bytes=126071864 collections=9830 iterations=629323776
+SAMPLE elapsed_ms=70047 workers=4 slots=2048 ticker=true heap_bytes=130825336 collections=10272 iterations=677976320
+	at _SM29scala.collection.LinearSeqOpsD8foldLeftL16java.lang.ObjectL15scala.Function2L16java.lang.ObjectEO
+at scalanative_GC_alloc_small
+	at scalanative_GC_alloc_small
+	at _SM14GcRepro$WorkerD3runuEO
+	at _SM27scala.runtime.BoxesRunTime$D9boxToLongjL14java.lang.LongEO
+	at _SM39scala.scalanative.runtime.NativeThread$D16threadEntryPointL38scala.scalanative.runtime.NativeThreaduEPT39scala.scalanative.runtime.NativeThread$
+	at _SM49scala.scalanative.runtime.NativeThread$$$Lambda$1G17$extern$forwarder
+	at ProxyThreadStartRoutine
+	at _SM42scala.collection.IterableOnceOps$$Lambda$6D5applyL16java.lang.ObjectL16java.lang.ObjectL16java.lang.ObjectEO
+	at _pthread_start

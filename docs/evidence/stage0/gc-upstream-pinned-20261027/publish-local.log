@@ -1,0 +1,602 @@
+[[0minfo[0m] entering thin client - BEEP WHIRR
+[[0minfo[0m] starting sbt server in the background
+[[0minfo[0m] use 'sbt shutdown' to shutdown the server
+[[0minfo[0m]  
+[0m[[0m[0minfo[0m] [0m[0mwelcome to sbt 2.0.9 (Eclipse Adoptium Java 21.0.12.1)[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mloading project definition from /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/project[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 174 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.8.4/scala-native-build/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0JNot found `ENABLE_EXPERIMENTAL_COMPILER` env var: sub-projects using Scala experimental version would not be available.[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mresolving key references (142465 settings) ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mDetected JDK version 21[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mset current project to scala-native (in build file:/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/)[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSetting Scala version to 2.12.21 on 38 projects.[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mExcluded 75 projects, run ++ 2.12.21 -v for more details.[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mReapplying settings...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mDetected JDK version 21[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mset current project to scala-native (in build file:/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/)[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/junit-plugin/junit-plugin_2.12.21-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/util/util_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/junit-plugin/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/nscplugin/nscplugin_2.12.21-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/nir/nir_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/tools/tools_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mNon-compiled module 'compiler-bridge_2.12' for Scala 2.12.21. Compiling...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/test-runner/test-runner_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/sbt-scala-native/sbt-scala-native-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/javalib-intf-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/nativelib/nativelib_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/clib/clib_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/auxlib/auxlib_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/windowslib/windowslib_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/posixlib/posixlib_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mUnpacking Scala library sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/scalalib/target/scalaSources/2.12.21...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/scalalib/scalalib_native0.5_2.12-2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/javalib/javalib_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/util/util_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/test-interface-sbt-defs/test-interface-sbt-defs_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/junit-runtime/junit-runtime_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/test-interface/test-interface_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/nir/nir_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/tools/tools_native0.5_2.12-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m  Compilation completed in 8.915s.[0m[0J
+[0Jmodel contains 8 documentable templates[0J
+[0Jmodel contains 22 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 12 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/util/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 66 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/nscplugin/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 2 Java sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#junit-plugin_2.12.21;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:49:51 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/junit-plugin/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 35 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/nir/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/junit-plugin_2.12.21.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/junit-plugin_2.12.21.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/junit-plugin_2.12.21-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/junit-plugin_2.12.21-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#util_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:49:51 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/util/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/util_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/util_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/util_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/util_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nscplugin_2.12.21;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:49:51 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/nscplugin/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nscplugin_2.12.21.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nscplugin_2.12.21.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nscplugin_2.12.21-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_2.12.21 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nscplugin_2.12.21-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_2.12.21/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mLoading source file String.java...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mLoading source file PointerBuffer.java...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mConstructing Javadoc information...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mCreating destination directory: "/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/"[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mBuilding index for all the packages and classes...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mStandard Doclet version 21.0.12.1+1-LTS[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mBuilding tree for all the packages and classes...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/scala/scalanative/javalibintf/PointerBuffer.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/scala/scalanative/javalibintf/String.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/scala/scalanative/javalibintf/package-summary.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/scala/scalanative/javalibintf/package-tree.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/overview-tree.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mBuilding index for all classes...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/allclasses-index.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/allpackages-index.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/index-all.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/search.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/index.html...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mGenerating /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/api/help-doc.html...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#javalib-intf;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:49:51 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/u/javalib-intf/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib-intf to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib-intf/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/javalib-intf.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib-intf to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib-intf/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/javalib-intf.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib-intf to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib-intf/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/javalib-intf-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib-intf to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib-intf/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/javalib-intf-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib-intf/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 101 Scala sources and 3 Java sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/nativelib/classes ...[0m[0J
+[0Jmodel contains 364 documentable templates[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/nativelib/src/main/scala/scala/scalanative/memory/PointerBuffer.scala:50:1: Could not find any member to link for "java.nio.Buffer".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/** Extensions to [[java.nio.Buffer Buffer]]s for interoperability with[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/nativelib/src/main/scala/scala/scalanative/memory/PointerBuffer.scala:25:1: Could not find any member to link for "java.nio.Buffer".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/** Additional operations on a [[java.nio.Buffer Buffer]] with interoperability[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/nativelib/src/main/scala/scala/scalanative/regex/Matcher.scala:208:3: Could not find any member to link for "java.lang.IllegalStateException".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Returns the named group of the most recent match, or {@code null} if the[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/nativelib/src/main/scala/scala/scalanative/regex/Matcher.scala:195:3: Could not find any member to link for "java.lang.IllegalStateException".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Returns the end of the named group of the most recent match, or -1 if the[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/nativelib/src/main/scala/scala/scalanative/regex/Matcher.scala:182:3: Could not find any member to link for "java.lang.IllegalStateException".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Returns the start of the named group of the most recent match, or -1 if[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/nativelib/src/main/scala/scala/scalanative/reflect/Reflect.scala:21:3: Could not find any member to link for "java.lang.InstantiationException".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Instantiates a new instance of this class using the zero-argument[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/nativelib/src/main/scala/scala/scalanative/memory/PointerBuffer.scala:17:3: Could not find any member to link for "java.nio.ByteBuffer".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Wraps a [[scala.scalanative.unsafe.Ptr]] pointing to memory of given size[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m7 warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nir_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:50:06 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/nir/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nir_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nir_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nir_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nir_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nativelib_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:50:06 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/nativelib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nativelib_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 21 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/clib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nativelib_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nativelib_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nativelib_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0Jmodel contains 70 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#clib_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:50:11 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/clib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 13 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/auxlib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/clib_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/clib_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/clib_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/clib_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 67 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/posixlib/classes ...[0m[0J
+[0Jmodel contains 75 documentable templates[0J
+[0Jmodel contains 160 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 34 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/windowslib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#auxlib_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:50:22 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/auxlib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/auxlib_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/auxlib_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/auxlib_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/auxlib_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#windowslib_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:50:23 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/windowslib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/windowslib_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/windowslib_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/windowslib_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/windowslib_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 588 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/scalalib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#posixlib_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:50:23 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/posixlib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/posixlib_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/posixlib_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/posixlib_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/posixlib_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0Jmodel contains 999 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 612 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/javalib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#javalib_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:51:26 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/javalib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#scalalib_native0.5_2.12;2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT :: 2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:51:26 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/scalalib/ivy-2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.12/2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/scalalib_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 12 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/util/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.12/2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scalalib_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.12/2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/scalalib_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.12/2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/scalalib_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.12/2.12.21+0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/javalib_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/javalib_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/javalib_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/javalib_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0Jmodel contains 22 documentable templates[0J
+[0Jmodel contains 22 documentable templates[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/test-interface-sbt-defs/src/main/scala/sbt/testing/OptionalThrowable.scala:27:3: Could not find any member to link for "java.lang.IllegalStateException".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Returns the <code>Throwable</code> contained in this[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/test-interface-sbt-defs/src/main/scala/sbt/testing/Runner.scala:17:3: Could not find any member to link for "java.lang.IllegalStateException".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Returns an array of tasks that when executed will run tests and suites[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/test-interface-sbt-defs/src/main/scala/sbt/testing/Framework.scala:18:3: Could not find any member to link for "java.lang.IllegalStateException".[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  /** Initiates a run.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0m  ^[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mthree warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 11 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/test-interface-sbt-defs/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 85 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/tools/classes ...[0m[0J
+[0Jmodel contains 77 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#test-interface-sbt-defs_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:51:54 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/test-interface-sbt-defs/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 51 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/junit-runtime/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/test-interface-sbt-defs_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/test-interface-sbt-defs_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/test-interface-sbt-defs_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/test-interface-sbt-defs_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#util_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:51:54 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/util/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/util_native0.5_2.12.pom[0m[0J
+[0Jmodel contains 83 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/util_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/util_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/util_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0Jmodel contains 5 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#tools_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:51:54 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/tools/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/tools_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/tools_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/tools_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/tools_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0Jmodel contains 9 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 21 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/test-interface/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 35 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/nir/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 21 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/test-runner/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#test-runner_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:52:01 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/test-runner/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/test-runner_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/test-runner_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/test-runner_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/test-runner_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#test-interface_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:52:01 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/test-interface/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/test-interface_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/test-interface_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/test-interface_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/test-interface_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#junit-runtime_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:52:01 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/junit-runtime/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/junit-runtime_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/junit-runtime_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/junit-runtime_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/junit-runtime_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 10 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/sbt-scala-native/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nir_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:52:01 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/nir/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nir_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nir_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nir_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nir_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 85 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/tools/classes ...[0m[0J
+[0Jmodel contains 77 documentable templates[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/sbt-scala-native/sbt-scala-native_2.12_1.0-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#sbt-scala-native;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:52:38 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.12.21/sbt-scala-native/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/sbt-scala-native-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/sbt-scala-native.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/sbt-scala-native.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_2.12_1.0 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/sbt-scala-native_2.12_1.0-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_2.12_1.0 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/sbt-scala-native_2.12_1.0.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/sbt-scala-native-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_2.12_1.0 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/sbt-scala-native_2.12_1.0.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_2.12_1.0 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/sbt-scala-native_2.12_1.0-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native/scala_2.12/sbt_1.0/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#tools_native0.5_2.12;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:52:38 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.12.21/tools/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/tools_native0.5_2.12.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/tools_native0.5_2.12.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/tools_native0.5_2.12-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_2.12 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/tools_native0.5_2.12-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_2.12/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSetting Scala version to 3.7.4 on 37 projects.[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mExcluded 76 projects, run ++ 3.7.4 -v for more details.[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mReapplying settings...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mDetected JDK version 21[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mset current project to scala-native (in build file:/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/)[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/util/util_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/nscplugin/nscplugin_3.7.4-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/junit-plugin/junit-plugin_3.7.4-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 12 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/util/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/nir/nir_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/nativelib/nativelib_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/tools/tools_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/clib/clib_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/posixlib/posixlib_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/test-runner/test-runner_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/auxlib/auxlib_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/windowslib/windowslib_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/javalib/javalib_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/scalalib/scalalib_native0.5_3-3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.8.4/sbt-scala-native/sbt-scala-native_sbt2_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 66 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/nscplugin/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/junit-plugin/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 66 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-2.13.18/nscplugin/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 35 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/nir/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Wconf[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Wconf[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.13.18/scalalib/scalalib_native0.5_2.13-2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mUnpacking Scala library sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/scalalib/target/scalaSources/2.13.18...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#junit-plugin_3.7.4;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:53:25 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/junit-plugin/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/junit-plugin_3.7.4.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/junit-plugin_3.7.4.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/junit-plugin_3.7.4-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-plugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/junit-plugin_3.7.4-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-plugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#util_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:53:26 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/util/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/util_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/util_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/util_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/util_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 104 Scala sources and 3 Java sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/nativelib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nscplugin_3.7.4;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:53:35 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/nscplugin/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nscplugin_3.7.4.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nscplugin_3.7.4.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nscplugin_3.7.4-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nscplugin_3.7.4 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nscplugin_3.7.4-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nscplugin_3.7.4/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 101 Scala sources and 3 Java sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.13.18/nativelib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Wconf[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 21 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.13.18/clib/classes ...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nir_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:54:07 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/nir/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nir_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nir_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nir_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nir_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 21 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/clib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nativelib_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:54:08 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/nativelib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nativelib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nativelib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nativelib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nativelib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nativelib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 13 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.13.18/auxlib/classes ...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/auxlib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#clib_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:54:15 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/clib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/clib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/clib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/clib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published clib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/clib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 34 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/windowslib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 67 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/posixlib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#auxlib_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:54:23 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/auxlib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/auxlib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/auxlib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/auxlib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published auxlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/auxlib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#scalalib_native0.5_3;3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT :: 3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:54:23 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/scalalib/ivy-3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/scalalib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scalalib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/scalalib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/scalalib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 541 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.13.18/scalalib/classes ...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#windowslib_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:54:24 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/windowslib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/windowslib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/windowslib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/windowslib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published windowslib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/windowslib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#posixlib_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:54:25 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/posixlib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/posixlib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/posixlib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/posixlib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published posixlib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/posixlib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 613 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/javalib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#scalalib_native0.5_2.13;2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT :: 2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:19 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-2.13.18/scalalib/ivy-2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.13 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/scalalib_native0.5_2.13.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.13 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scalalib_native0.5_2.13.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.13 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/scalalib_native0.5_2.13-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scalalib_native0.5_2.13 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/scalalib_native0.5_2.13-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#javalib_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:19 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/javalib/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/javalib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/javalib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/javalib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published javalib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/javalib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mUnpacking Scala library sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/scala3lib/target/scalaSources/3.7.4...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/scala3lib/scala3lib_native0.5_3-3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/test-interface-sbt-defs/test-interface-sbt-defs_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/util/util_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/Array.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/Enumeration.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/Predef.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/collection/immutable/LazyListBase.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/collection/immutable/LazyListIterableBase.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/concurrent/ExecutionContext.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/package.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/reflect/ClassTag.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mNot found matching source file /scala/runtime/ScalaRunTime.scala for patch in Scala 3.7.4 sources, skipped[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 108 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/scala3lib/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/junit-runtime/junit-runtime_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/test-interface/test-interface_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/nir/nir_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mWrote /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/tools/tools_native0.5_3-0.5.13-20261026-fa4a9e6-SNAPSHOT.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#scala3lib_native0.5_3;3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT :: 3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:28 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/scala3lib/ivy-3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scala3lib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/scala3lib_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scala3lib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scala3lib_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 11 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/test-interface-sbt-defs/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scala3lib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/scala3lib_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published scala3lib_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/scala3lib_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 12 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/util/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 85 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/tools/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Wconf[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 21 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/test-interface/classes ...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 51 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/junit-runtime/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#tools_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:36 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/tools/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/tools_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/tools_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/tools_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/tools_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 35 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/nir/classes ...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#util_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:38 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/util/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/util_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/util_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/util_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published util_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/util_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/util_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#test-interface-sbt-defs_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:38 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/test-interface-sbt-defs/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/test-interface-sbt-defs_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/test-interface-sbt-defs_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/test-interface-sbt-defs_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface-sbt-defs_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/test-interface-sbt-defs_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface-sbt-defs_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 21 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/test-runner/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 11 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.8.4/sbt-scala-native/classes ...[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#test-runner_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:42 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.7.4/test-runner/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/test-runner_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/test-runner_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/test-runner_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-runner_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/test-runner_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-runner_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#test-interface_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:43 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/test-interface/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/test-interface_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/test-interface_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/test-interface_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published test-interface_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/test-interface_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/test-interface_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#junit-runtime_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:45 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/junit-runtime/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/junit-runtime_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/junit-runtime_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/junit-runtime_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published junit-runtime_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/junit-runtime_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/junit-runtime_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mcompiling 85 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/tools/classes ...[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#nir_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:55:54 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/nir/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/nir_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nir_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/nir_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published nir_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/nir_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nir_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0mSkipping unused scalacOptions: -Xplugin, -Wconf[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mSetting -Xplugin is currently not supported.[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mFlag -classpath set repeatedly[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#sbt-scala-native_sbt2_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:56:02 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/jvm/scala-3.8.4/sbt-scala-native/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_sbt2_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native_sbt2_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/sbt-scala-native_sbt2_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_sbt2_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native_sbt2_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/sbt-scala-native_sbt2_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_sbt2_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native_sbt2_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/sbt-scala-native_sbt2_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published sbt-scala-native_sbt2_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native_sbt2_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/sbt-scala-native_sbt2_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/sbt-scala-native_sbt2_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[0m[[0m[33mwarn[0m] [0m[0mtwo warnings found[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m:: delivering :: org.scala-native#tools_native0.5_3;0.5.13-20261026-fa4a9e6-SNAPSHOT :: 0.5.13-20261026-fa4a9e6-SNAPSHOT :: integration :: Tue Oct 27 14:56:06 EDT 2026[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	delivering ivy file to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/scala-native/target/out/native0.5/scala-3.7.4/tools/ivy-0.5.13-20261026-fa4a9e6-SNAPSHOT.xml[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/poms/tools_native0.5_3.pom[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/tools_native0.5_3.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/srcs/tools_native0.5_3-sources.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published tools_native0.5_3 to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/docs/tools_native0.5_3-javadoc.jar[0m[0J
+[0J[0m[[0m[0minfo[0m] [0m[0m	published ivy to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/tools_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/ivys/ivy.xml[0m[0J
+[0J[[32msuccess[0m] elapsed time: 403 s (0:06:43.0)
+[0J

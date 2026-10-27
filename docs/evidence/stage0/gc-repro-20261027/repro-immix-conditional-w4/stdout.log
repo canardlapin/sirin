@@ -1,0 +1,22 @@
+START elapsed_ms=0 workers=4 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5087 workers=4 slots=2048 ticker=true heap_bytes=51694008 collections=1431 iterations=46122752
+SAMPLE elapsed_ms=10007 workers=4 slots=2048 ticker=true heap_bytes=61445616 collections=2207 iterations=80303616
+SAMPLE elapsed_ms=15090 workers=4 slots=2048 ticker=true heap_bytes=73084632 collections=3111 iterations=128672256
+SAMPLE elapsed_ms=20054 workers=4 slots=2048 ticker=true heap_bytes=82871192 collections=3841 iterations=175180032
+SAMPLE elapsed_ms=25030 workers=4 slots=2048 ticker=true heap_bytes=91364528 collections=4524 iterations=224207360
+SAMPLE elapsed_ms=30005 workers=4 slots=2048 ticker=true heap_bytes=98879208 collections=5144 iterations=273274112
+SAMPLE elapsed_ms=35032 workers=4 slots=2048 ticker=true heap_bytes=102584120 collections=5449 iterations=299027456
+SAMPLE elapsed_ms=40021 workers=4 slots=2048 ticker=true heap_bytes=108351200 collections=5935 iterations=342093056
+SAMPLE elapsed_ms=45092 workers=4 slots=2048 ticker=true heap_bytes=115656168 collections=6481 iterations=394000128
+SAMPLE elapsed_ms=50080 workers=4 slots=2048 ticker=true heap_bytes=122436856 collections=6978 iterations=444160768
+SAMPLE elapsed_ms=55063 workers=4 slots=2048 ticker=true heap_bytes=128483552 collections=7446 iterations=494291712
+	at Heap_exitWithOutOfMemory
+	at Allocator_allocSlow
+	at scalanative_GC_alloc_small
+	at _SM27scala.runtime.BoxesRunTime$D9boxToLongjL14java.lang.LongEO
+	at _SM14GcRepro$WorkerD3runuEO
+	at _SM39scala.scalanative.runtime.NativeThread$D16threadEntryPointL38scala.scalanative.runtime.NativeThreaduEPT39scala.scalanative.runtime.NativeThread$
+	at _SM39scala.scalanative.runtime.NativeThread$D24threadRoutine$$anonfun$1L28scala.scalanative.unsafe.PtrL28scala.scalanative.unsafe.PtrEPT39scala.scalanative.runtime.NativeThread$
+	at _SM49scala.scalanative.runtime.NativeThread$$$Lambda$1G17$extern$forwarder
+	at ProxyThreadStartRoutine
+	at _pthread_start

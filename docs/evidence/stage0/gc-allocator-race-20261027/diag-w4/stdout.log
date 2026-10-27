@@ -1,0 +1,25 @@
+START elapsed_ms=0 workers=4 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5031 workers=4 slots=2048 ticker=true heap_bytes=45507504 collections=949 iterations=27825664
+SAMPLE elapsed_ms=10008 workers=4 slots=2048 ticker=true heap_bytes=83814896 collections=1668 iterations=64239104
+SAMPLE elapsed_ms=15001 workers=4 slots=2048 ticker=true heap_bytes=89407216 collections=2150 iterations=98702848
+SAMPLE elapsed_ms=20087 workers=4 slots=2048 ticker=true heap_bytes=97551032 collections=2652 iterations=137556736
+SAMPLE elapsed_ms=25095 workers=4 slots=2048 ticker=true heap_bytes=103422968 collections=3082 iterations=173832448
+SAMPLE elapsed_ms=30082 workers=4 slots=2048 ticker=true heap_bytes=108106536 collections=3504 iterations=211507456
+SAMPLE elapsed_ms=35091 workers=4 slots=2048 ticker=true heap_bytes=112720200 collections=3898 iterations=248296192
+SAMPLE elapsed_ms=40075 workers=4 slots=2048 ticker=true heap_bytes=118662040 collections=4301 iterations=287965184
+SAMPLE elapsed_ms=45075 workers=4 slots=2048 ticker=true heap_bytes=122681520 collections=4644 iterations=323120640
+SAMPLE elapsed_ms=50087 workers=4 slots=2048 ticker=true heap_bytes=126910712 collections=4981 iterations=358995456
+SAMPLE elapsed_ms=55023 workers=4 slots=2048 ticker=true heap_bytes=131104952 collections=5273 iterations=391206144
+	at Heap_exitWithOutOfMemory
+	at Allocator_allocSlow
+	at scalanative_GC_alloc_small
+	at _SM27scala.runtime.BoxesRunTime$D9boxToLongjL14java.lang.LongEO
+	at _SM42scala.collection.IterableOnceOps$$Lambda$6D5applyL16java.lang.ObjectL16java.lang.ObjectL16java.lang.ObjectEO
+	at _SM29scala.collection.LinearSeqOpsD8foldLeftL16java.lang.ObjectL15scala.Function2L16java.lang.ObjectEO
+	at _SM32scala.collection.IterableOnceOpsD3sumL18scala.math.NumericL16java.lang.ObjectEO
+	at _SM14GcRepro$WorkerD3runuEO
+	at _SM39scala.scalanative.runtime.NativeThread$D16threadEntryPointL38scala.scalanative.runtime.NativeThreaduEPT39scala.scalanative.runtime.NativeThread$
+	at _SM39scala.scalanative.runtime.NativeThread$D24threadRoutine$$anonfun$1L28scala.scalanative.unsafe.PtrL28scala.scalanative.unsafe.PtrEPT39scala.scalanative.runtime.NativeThread$
+	at _SM49scala.scalanative.runtime.NativeThread$$$Lambda$1G17$extern$forwarder
+	at ProxyThreadStartRoutine
+	at _pthread_start

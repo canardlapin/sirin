@@ -1,0 +1,8 @@
+{
+  "collector": "immix",
+  "retry_collection": true,
+  "diagnostics": false,
+  "source": "/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-native/nativelib_native0.5_3/0.5.12/nativelib_native0.5_3-0.5.12.jar",
+  "source_sha256": "b05fe9855ca50ac60854de6700f518e031df76c85021727505dab660d8757886",
+  "output_sha256": "488fd269aa79280bed8a5e36262ed360793de34ca8e870ff9a96386f26e60a78"
+}

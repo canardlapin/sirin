@@ -1,0 +1,49 @@
+--- a/scala-native/gc/immix/Heap.c
++++ b/scala-native/gc/immix/Heap.c
+@@ -160,11 +160,11 @@
+     mutex_init(&heap->lock);
+ }
+ 
+-void Heap_Collect(Heap *heap, Stack *stack) {
++bool Heap_Collect(Heap *heap, Stack *stack) {
+     MutatorThread *mutatorThread = currentMutatorThread;
+ #ifdef SCALANATIVE_MULTITHREADING_ENABLED
+     if (!Synchronizer_acquire())
+-        return;
++        return false;
+ #else
+     MutatorThread_switchState(currentMutatorThread,
+                               GC_MutatorThreadState_Unmanaged);
+@@ -197,6 +197,7 @@
+     WeakReferences_InvokeGCFinishedCallback();
+     GC_LOG_INFO("GC collection finished in %" PRIu64 "ms",
+                 (end_ns - start_ns) / 1000000);
++    return true;
+ }
+ 
+ bool Heap_shouldGrow(Heap *heap) {
+--- a/scala-native/gc/immix/Heap.h
++++ b/scala-native/gc/immix/Heap.h
+@@ -43,7 +43,7 @@
+ void Heap_Init(Heap *heap, size_t minHeapSize, size_t maxHeapSize);
+ 
+ bool Heap_isGrowingPossible(Heap *heap, uint32_t incrementInBlocks);
+-void Heap_Collect(Heap *heap, Stack *stack);
++bool Heap_Collect(Heap *heap, Stack *stack);
+ void Heap_Recycle(Heap *heap);
+ void Heap_Grow(Heap *heap, uint32_t increment);
+ void Heap_exitWithOutOfMemory(const char *details);
+--- a/scala-native/gc/immix/Allocator.c
++++ b/scala-native/gc/immix/Allocator.c
+@@ -222,7 +222,10 @@
+             ObjectMeta_SetAllocated(objectMeta);
+             return object;
+         }
+-        Heap_Collect(heap, &stack);
++        // A lost GC race may return before another collection starts.
++        // Retry allocation/collection instead of growing or reporting OOM.
++        if (!Heap_Collect(heap, &stack))
++            continue;
+         object = Allocator_tryAlloc(allocator, size);
+ 
+         if (object != NULL)

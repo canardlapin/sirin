@@ -1,0 +1,21 @@
+soak t=60s received=0 max=0.00ms gcs=7213 rss=66.8MB gc_heap=34.1MB
+RESULT mode=soak
+RESULT soak.seconds=90.1
+RESULT soak.workers=4 soak.push_every_us=0
+RESULT soak.alloc_iterations=260719830
+RESULT soak.alloc_gib=163.05
+RESULT soak.gc_collections=10597
+RESULT soak.gc_mean_ms=1.394
+RESULT soak.gc_total_ms=14770.3
+RESULT soak.ticker_max_oversleep_ms=159.429
+RESULT soak.ticker_over_5ms=2060
+RESULT soak.ticker_over_20ms=382
+RESULT soak.ticker_over_50ms=89
+RESULT soak.events_pushed=0 soak.push_failures=0 soak.events_received=0
+RESULT soak.latency_p50_ms=0.00 soak.latency_p99_ms=0.00 soak.latency_p999_ms=0.00 soak.latency_max_ms=0.000
+RESULT soak.rss_start_mb=33.8 soak.rss_end_mb=67.1 soak.gc_heap_mb=34.1
+RESULT soak.no_deadlock=PASS (watchdog (10 s stall) never fired)
+RESULT soak.all_events_received=PASS (0 of 0)
+RESULT soak.latency_max_below_50ms=PASS (0.000 ms)
+RESULT soak.ticker_max_below_50ms=FAIL (159.429 ms)
+RESULT failures=1

@@ -1,0 +1,14 @@
+--- a/scala-native/gc/immix/Heap.c
++++ b/scala-native/gc/immix/Heap.c
+@@ -163,8 +163,9 @@
+ void Heap_Collect(Heap *heap, Stack *stack) {
+     MutatorThread *mutatorThread = currentMutatorThread;
+ #ifdef SCALANATIVE_MULTITHREADING_ENABLED
+-    if (!Synchronizer_acquire())
+-        return;
++    while (!Synchronizer_acquire()) {
++        // Diagnostic candidate: guarantee a collection before reporting exhaustion.
++    }
+ #else
+     MutatorThread_switchState(currentMutatorThread,
+                               GC_MutatorThreadState_Unmanaged);

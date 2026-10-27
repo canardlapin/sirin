@@ -1,0 +1,26 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.063s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.068s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 1 s, completed Oct 27, 2026, 2:19:51 p.m.
+[success] Total time: 0 s, completed Oct 27, 2026, 2:19:52 p.m.
+[success] Total time: 0 s, completed Oct 27, 2026, 2:19:52 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '65042'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '65045'.
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.028s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.028s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 1 s, completed Oct 27, 2026, 2:19:53 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '65054'.
+[success] Total time: 0 s, completed Oct 27, 2026, 2:19:53 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '65058'.
+[success] Total time: 0 s, completed Oct 27, 2026, 2:19:53 p.m.

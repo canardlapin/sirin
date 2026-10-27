@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/scala-native/scala-native.git",
+  "commit": "fa4a9e6ac9dab73ab4d476d6cc8c0cdc422c25f7",
+  "artifact_version": "0.5.13-20261026-fa4a9e6-SNAPSHOT",
+  "scala_version": "3.7.4",
+  "upstream_sbt": "2.0.9",
+  "consumer_sbt": "1.12.14",
+  "upstream_fix": "https://github.com/scala-native/scala-native/pull/5128",
+  "status": "experimental evaluation; not Sirin default"
+}

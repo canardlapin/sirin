@@ -1,0 +1,89 @@
+--- a/scala-native/gc/immix/Heap.c
++++ b/scala-native/gc/immix/Heap.c
+@@ -160,7 +160,12 @@
+     mutex_init(&heap->lock);
+ }
+ 
++
++atomic_ulong sirin_diag_epoch = 0;
++SN_ThreadLocal bool sirin_diag_collected = false;
++
+ void Heap_Collect(Heap *heap, Stack *stack) {
++    sirin_diag_collected = false;
+     MutatorThread *mutatorThread = currentMutatorThread;
+ #ifdef SCALANATIVE_MULTITHREADING_ENABLED
+     if (!Synchronizer_acquire())
+@@ -182,6 +187,7 @@
+         sweep_start_ns = Time_current_nanos();
+     }
+     Heap_Recycle(heap);
++    atomic_fetch_add(&sirin_diag_epoch, 1);
+     end_ns = Time_current_nanos();
+     jmx_stats_record_collection(start_ns, end_ns);
+     if (stats != NULL) {
+@@ -195,6 +201,7 @@
+                               GC_MutatorThreadState_Managed);
+ #endif
+     WeakReferences_InvokeGCFinishedCallback();
++    sirin_diag_collected = true;
+     GC_LOG_INFO("GC collection finished in %" PRIu64 "ms",
+                 (end_ns - start_ns) / 1000000);
+ }
+@@ -213,6 +220,15 @@
+                  blockCount, unavailableBlockCount, freeBlockCount,
+                  recycledBlockCount);
+ 
++    static unsigned long diag_collections = 0;
++    if ((++diag_collections % 256) == 0) {
++        fprintf(stderr, "DIAG sweep n=%lu blocks=%u free=%u recycled=%u unavailable=%u\n",
++                diag_collections, blockCount, freeBlockCount, recycledBlockCount, unavailableBlockCount);
++        MutatorThreads_foreach(mutatorThreads, node) {
++            fprintf(stderr, "DIAG mutator ptr=%p recycled=%lu\n", (void *)node->value,
++                    (unsigned long)node->value->allocator.recycledBlockCount);
++        }
++    }
+     return freeBlockCount * 2 < blockCount ||
+            4 * unavailableBlockCount > blockCount;
+ }
+--- a/scala-native/gc/immix/Allocator.c
++++ b/scala-native/gc/immix/Allocator.c
+@@ -6,6 +6,9 @@
+ #include <stdio.h>
+ #include <memory.h>
+ #include <assert.h>
++
++extern atomic_ulong sirin_diag_epoch;
++extern SN_ThreadLocal bool sirin_diag_collected;
+ 
+ bool Allocator_getNextLine(Allocator *allocator);
+ bool Allocator_newBlock(Allocator *allocator);
+@@ -222,12 +225,29 @@
+             ObjectMeta_SetAllocated(objectMeta);
+             return object;
+         }
++        unsigned long diag_before = atomic_load(&sirin_diag_epoch);
+         Heap_Collect(heap, &stack);
++        unsigned long diag_after = atomic_load(&sirin_diag_epoch);
++        bool diag_collected = sirin_diag_collected;
+         object = Allocator_tryAlloc(allocator, size);
+ 
+         if (object != NULL)
+             goto done;
+ 
++        static atomic_ulong diag_misses = 0;
++        static atomic_ulong diag_without_collection = 0;
++        if (diag_before == diag_after) atomic_fetch_add(&diag_without_collection, 1);
++        unsigned long miss = atomic_fetch_add(&diag_misses, 1) + 1;
++        if (miss <= 8 || miss % 128 == 0 || !Heap_isGrowingPossible(heap, 1)) {
++            fprintf(stderr, "DIAG alloc-miss n=%lu size=%u blocks=%u free=%lu own_recycled=%lu cursor_bytes=%td overflow_bytes=%td collected=%d epoch_delta=%lu without_collection=%lu list_empty=%d\n",
++                    miss, size, heap->blockCount,
++                    (unsigned long)allocator->blockAllocator->freeBlockCount,
++                    (unsigned long)allocator->recycledBlockCount,
++                    (char *)allocator->limit - (char *)allocator->cursor,
++                    (char *)allocator->largeLimit - (char *)allocator->largeCursor,
++                    diag_collected, diag_after - diag_before,
++                    atomic_load(&diag_without_collection), allocator->recycledBlocks.first == NULL);
++        }
+         // A small object can always fit in a single free block
+         // because it is no larger than 8K while the block is 32K.
+         if (Heap_isGrowingPossible(heap, 1))

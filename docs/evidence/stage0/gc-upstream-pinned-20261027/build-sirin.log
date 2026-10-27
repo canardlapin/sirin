@@ -1,0 +1,185 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/)
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/core/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.087s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.099s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 11 s, completed Oct 27, 2026, 2:57:31 p.m.
+[success] Total time: 1 s, completed Oct 27, 2026, 2:57:31 p.m.
+[success] Total time: 0 s, completed Oct 27, 2026, 2:57:31 p.m.
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/core/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/core/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2034 ms)
+[info] Discovered 2340 classes and 16602 methods after classloading
+[info] Checking intermediate code (quick) (121 ms)
+[info] Discovered 2314 classes and 12842 methods after optimization
+[info] Optimizing (debug mode) (3750 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (11452 ms)
+[info] Compiling to native code (8521 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (330 ms)
+[info] Postprocessing (0 ms)
+[info] Total (18550 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '51253'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '51255'.
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.003s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 24 s, completed Oct 27, 2026, 2:57:55 p.m.
+[info] Linking (multithreadingEnabled=detect) (1118 ms)
+[info] Discovered 2082 classes and 14728 methods after classloading
+[info] Checking intermediate code (quick) (90 ms)
+[info] Discovered 2020 classes and 11159 methods after optimization
+[info] Optimizing (debug mode) (1640 ms)
+[info] Produced 89 LLVM IR files
+[info] Generating intermediate code (9099 ms)
+[info] Compiling to native code (8210 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (201 ms)
+[info] Postprocessing (0 ms)
+[info] Total (12633 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '51274'.
+[success] Total time: 14 s, completed Oct 27, 2026, 2:58:09 p.m.
+[info] Linking (multithreadingEnabled=detect) (918 ms)
+[info] Discovered 2082 classes and 14728 methods after classloading
+[info] Checking intermediate code (quick) (29 ms)
+[info] Discovered 2020 classes and 11159 methods after optimization
+[info] Optimizing (debug mode) (981 ms)
+[info] Produced 89 LLVM IR files
+[info] Generating intermediate code (8820 ms)
+[info] Compiling to native code (8216 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (182 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11416 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '51283'.
+[success] Total time: 13 s, completed Oct 27, 2026, 2:58:22 p.m.
+[info] compiling 7 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/examples/target/scala-3.7.4/classes ...
+[info] done compiling
+[success] Total time: 4 s, completed Oct 27, 2026, 2:58:26 p.m.
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/probes/window/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/probes/window/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1615 ms)
+[info] Discovered 2293 classes and 16241 methods after classloading
+[info] Checking intermediate code (quick) (65 ms)
+[info] Discovered 2261 classes and 12388 methods after optimization
+[info] Optimizing (debug mode) (3007 ms)
+[info] Produced 93 LLVM IR files
+[info] Generating intermediate code (10850 ms)
+[info] Compiling to native code (9133 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (213 ms)
+[info] Postprocessing (0 ms)
+[info] Total (16433 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/probes/window/target/scala-3.7.4/sirin-probe-window-test' on port '51302'.
+Test run sirin.probe.AbiSuite started
+sirin.probe.AbiSuite: finished 0.020s
+Test run sirin.probe.AbiSuite finished: 0 failed, 0 ignored, 14 total 0.020s
+[info] Passed: Total 14, Failed 0, Errors 0, Passed 14
+[success] Total time: 22 s, completed Oct 27, 2026, 2:58:48 p.m.
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/probes/threads/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/probes/threads/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (1812 ms)
+[info] Discovered 2386 classes and 16433 methods after classloading
+[info] Checking intermediate code (quick) (41 ms)
+[info] Discovered 2036 classes and 7687 methods after optimization
+[info] Optimizing (release-fast mode) (3459 ms)
+[info] Produced 91 LLVM IR files
+[info] Generating intermediate code (15058 ms)
+[info] Compiling to native code (16315 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (282 ms)
+[info] Postprocessing (0 ms)
+[info] Total (23260 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/probes/threads/target/scala-3.7.4/sirin-probe-threads-test' on port '51379'.
+Test run sirin.probe.threads.MailboxSuite started
+sirin.probe.threads.MailboxSuite: finished 0.102s
+Test run sirin.probe.threads.MailboxSuite finished: 0 failed, 0 ignored, 13 total 0.102s
+[info] Passed: Total 13, Failed 0, Errors 0, Passed 13
+[success] Total time: 28 s, completed Oct 27, 2026, 2:59:16 p.m.
+[info] Linking (multithreadingEnabled=true) (476 ms)
+[info] Discovered 1095 classes and 6697 methods after classloading
+[info] Checking intermediate code (quick) (14 ms)
+[info] Discovered 874 classes and 3031 methods after optimization
+[info] Optimizing (release-fast mode) (1405 ms)
+[info] Produced 49 LLVM IR files
+[info] Generating intermediate code (7801 ms)
+[info] Compiling to native code (8055 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (173 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10586 ms)
+[success] Total time: 11 s, completed Oct 27, 2026, 2:59:27 p.m.
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/probes/threads/target/scala-3.7.4/classes)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scala3lib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nativelib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/clib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/posixlib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/windowslib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/javalib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/auxlib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4-sources.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scalalib_native0.5_2.13.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18-sources.jar)
+[success] Total time: 0 s, completed Oct 27, 2026, 2:59:27 p.m.
+[info] NativeConfig(
+[info]  - baseName:                
+[info]  - clang:                   /usr/bin/clang
+[info]  - clangPP:                 /usr/bin/clang++
+[info]  - linkingOptions:          [-L/opt/homebrew/lib, -F/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/native/vendor/SDL3.xcframework/macos-arm64_x86_64, -framework, SDL3, -Wl,-rpath,/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/native/vendor/SDL3.xcframework/macos-arm64_x86_64]
+[info]  - compileOptions:          [-I/opt/homebrew/include, -Qunused-arguments, -F/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/sirin/native/vendor/SDL3.xcframework/macos-arm64_x86_64]
+[info]  - cOptions:                []
+[info]  - cppOptions:              []
+[info]  - targetTriple:            None
+[info]  - GC:                      immix
+[info]  - LTO:                     none
+[info]  - mode:                    release-fast
+[info]  - buildTarget              Application
+[info]  - check:                   false
+[info]  - checkFatalWarnings:      false
+[info]  - checkFeatures            true
+[info]  - dump:                    false
+[info]  - sanitizer:               none
+[info]  - linkStubs:               false
+[info]  - optimize                 true
+[info]  - incrementalCompilation:  true
+[info]  - multithreading           true
+[info]  - linktimeProperties:      []
+[info]  - embedResources:          false
+[info]  - resourceIncludePatterns: [**]
+[info]  - resourceExcludePatterns: []
+[info]  - serviceProviders:        []
+[info]  - optimizerConfig:         
+[info]     - maxInlineDepth:    32 functions
+[info]     - smallFunctionSize: 12 instructions
+[info]     - maxCallerSize:     2048 instructions
+[info]     - maxCalleeSize:     256 instructions
+[info] 
+[info]  - semanticsConfig:         SemanticsConfig(
+[info]     - finalFields: Relaxed
+[info]     - strictExternCallSemantics: false
+[info]     )
+[info]  - sourceLevelDebuggingConfig: SourceLevelDebuggingConfig[Disabled]
+[info]     - customSourceRoots:       []
+[info]     - generateFunctionSourcePositions: false
+[info]     - generateLocalVariables:  false
+[info]     )
+[info] )
+[success] Total time: 0 s, completed Oct 27, 2026, 2:59:27 p.m.

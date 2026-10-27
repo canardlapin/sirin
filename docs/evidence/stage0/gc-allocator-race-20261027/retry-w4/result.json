@@ -1,0 +1,31 @@
+{
+  "command": [
+    "target/gc-investigation/bin/repro-immix-retry",
+    "120",
+    "4",
+    "2048",
+    "true"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-27T18:11:22.777129+00:00",
+  "load_start": [
+    17.61279296875,
+    15.9111328125,
+    12.07275390625
+  ],
+  "timeout_seconds": 135.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "e901cadc618133d4cc56c3ffc91c876f256211372701ce972564d5a8bf33f245",
+  "pid": 82933,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 120.423659791,
+  "load_end": [
+    17.58740234375,
+    15.83349609375,
+    12.50927734375
+  ]
+}

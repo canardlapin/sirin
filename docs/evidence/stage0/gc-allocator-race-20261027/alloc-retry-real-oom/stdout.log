@@ -1,0 +1,12 @@
+START elapsed_ms=0 workers=4 slots=16384 ticker=true heap_bytes=4473856 collections=0 iterations=0
+	at Heap_Recycle
+	at Heap_Collect
+	at Allocator_allocSlow
+	at scalanative_GC_alloc_small
+	at _SM15java.lang.Long$D8toStringjiL16java.lang.StringEO
+	at _SM14GcRepro$WorkerD3runuEO
+	at _SM39scala.scalanative.runtime.NativeThread$D16threadEntryPointL38scala.scalanative.runtime.NativeThreaduEPT39scala.scalanative.runtime.NativeThread$
+	at _SM39scala.scalanative.runtime.NativeThread$D24threadRoutine$$anonfun$1L28scala.scalanative.unsafe.PtrL28scala.scalanative.unsafe.PtrEPT39scala.scalanative.runtime.NativeThread$
+	at _SM49scala.scalanative.runtime.NativeThread$$$Lambda$1G17$extern$forwarder
+	at ProxyThreadStartRoutine
+	at _pthread_start
