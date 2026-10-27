@@ -26,6 +26,9 @@ jobs:
       - name: Scala Native tests
         shell: bash
         run: sbt -batch testNative
+      - name: Authoring corpus type-checks (A-0)
+        shell: bash
+        run: sbt -batch examples/compile
 
   abi:
     name: native ABI probe (${{ matrix.os }})

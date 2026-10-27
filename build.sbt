@@ -87,6 +87,17 @@ def vendorFlags(v: File): (Seq[String], Seq[String]) = {
   }
 }
 
+// A-0 authoring corpus (VISION §4.1): six programs that only need to
+// type-check against the skeletal core API. JVM-only; not aggregated by root.
+lazy val examples = project
+  .in(file("examples"))
+  .dependsOn(core.jvm)
+  .settings(
+    name                  := "sirin-examples",
+    publish / skip        := true,
+    Compile / scalaSource := baseDirectory.value / "authoring"
+  )
+
 lazy val root = project
   .in(file("."))
   .aggregate(core.jvm, core.native, engine.jvm, engine.native, testkit.jvm, testkit.native)
