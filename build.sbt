@@ -87,7 +87,7 @@ def vendorFlags(v: File): (Seq[String], Seq[String]) = {
   }
 }
 
-// A-0 authoring corpus (VISION §4.1): six programs that only need to
+// A-0b authoring corpus (VISION §4.1): twelve programs that only need to
 // type-check against the skeletal core API. JVM-only; not aggregated by root.
 lazy val examples = project
   .in(file("examples"))

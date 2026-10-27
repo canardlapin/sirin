@@ -29,3 +29,20 @@ final case class Transition(duration: FiniteDuration, easing: Easing)
 object Transition:
   val standard: Transition = Transition(160.millis, Easing.Standard)
   val quick: Transition    = Transition(90.millis, Easing.Decelerate)
+
+/** Presentation is deliberately not a Signal: ticks create no graph writes. */
+trait Presentation[+A]
+object Presentation:
+  def const[A](value: A): Presentation[A] = ???
+  /** Projection stays in the presentation phase, never signal composition. */
+  extension [A](value: Presentation[A])
+    def map[B](f: A => B): Presentation[B] = ???
+
+/** Explicit layout animation channel; invalidation cost is charged to layout. */
+trait LayoutPresentation[+A]
+object LayoutPresentation:
+  def from[A](value: Presentation[A]): LayoutPresentation[A] = ???
+
+/** Declared global invalidation sources, recorded with phase-specific cause IDs. */
+enum PhaseDependency:
+  case ThemeColors, FontMetrics, DisplayScale

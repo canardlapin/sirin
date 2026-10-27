@@ -42,3 +42,12 @@ trait KeyedCell[K, A] extends CollectionSource[K, A]:
 
   /** Replaces the contents, reconciling by key into minimal deltas. */
   def setAll(values: Seq[A])(using UiTxn): Unit
+
+/** Synchronous fixed-height realization. Only viewport + overscan is mounted;
+  * range/delta processing must not take a full snapshot. Selection belongs
+  * to the caller, independently of row realization. Positive height required.
+  */
+object VirtualRows:
+  def apply[K, A](source: CollectionSource[K, A], rowHeight: Lp, overscan: Int)(
+      row: Inputs[A] => View
+  ): View = ???

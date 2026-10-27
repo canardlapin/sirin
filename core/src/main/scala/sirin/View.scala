@@ -5,29 +5,51 @@ package sirin
   * function returning a `View` needs no scope. Static children are
   * positional; changing structure is marked with `Switch` and `ForEach`.
   */
-trait View:
-  def padding(all: Lp): View
-  def padding(horizontal: Lp, vertical: Lp): View
-  def width(w: Lp): View
-  def height(h: Lp): View
+trait View
 
-  /** Takes the remaining main-axis space in a `Row` or `Column`. */
-  def grow: View
-  def ref(r: NodeRef): View
-  def semantics(s: Semantics): View
-  def semantics(s: Signal[Semantics]): View
+/** A real reconstruction capability, not a cast to an arbitrary custom subtype. */
+trait ViewRebuild[V <: View]:
+  def apply(view: V, decoration: Decoration): V
 
-  /** Handles a chord while focus is inside this subtree. */
-  def onKey(chord: Chord)(run: Action): View
+object ViewRebuild:
+  given ViewRebuild[View] = ???
+  given ViewRebuild[TextView] = ???
+  given ViewRebuild[TextFieldView] = ???
+  given ViewRebuild[ButtonView] = ???
+  given ViewRebuild[StackView] = ???
 
-  /** Dispatches `command` on a chord while focus is inside this subtree. */
-  def shortcut(chord: Chord, command: Command[Unit, ?]): View
+enum Decoration:
+  case Padding(horizontal: Lp, vertical: Lp)
+  case Width(value: Lp)
+  case Height(value: Lp)
+  case Grow
+  case Ref(value: NodeRef)
+  case Semantic(value: Signal[Semantics])
+  case KeyHandler(chord: Chord, run: UiTxn => Unit)
+  case Shortcut(chord: Chord, command: Command[Unit, ?])
+  case Keyed(key: Any)
+  case Visible(value: Signal[Boolean])
+  case Activate[A](command: Command[A, ?], arg: Signal[A], role: Role)
+  case Opacity(value: Presentation[Double])
+  case Offset(value: Presentation[Point])
 
-  /** Forces identity: a different key remounts this subtree. */
-  def keyed[K](key: K): View
-
-  /** Mounted but not visible: keeps state, schedules no animation frames. */
-  def visible(shown: Signal[Boolean]): View
+extension [V <: View](view: V)(using rebuild: ViewRebuild[V])
+  def padding(all: Lp): V = rebuild(view, Decoration.Padding(all, all))
+  def padding(horizontal: Lp, vertical: Lp): V = rebuild(view, Decoration.Padding(horizontal, vertical))
+  def width(w: Lp): V = rebuild(view, Decoration.Width(w))
+  def height(h: Lp): V = rebuild(view, Decoration.Height(h))
+  def grow: V = rebuild(view, Decoration.Grow)
+  def ref(r: NodeRef): V = rebuild(view, Decoration.Ref(r))
+  def semantics(s: Semantics): V = semantics(Signal.const(s))
+  def semantics(s: Signal[Semantics]): V = rebuild(view, Decoration.Semantic(s))
+  def onKey(chord: Chord)(run: Action): V = rebuild(view, Decoration.KeyHandler(chord, txn => run(using txn)))
+  def shortcut(chord: Chord, command: Command[Unit, ?]): V = rebuild(view, Decoration.Shortcut(chord, command))
+  def keyed[K](key: K): V = rebuild(view, Decoration.Keyed(key))
+  def visible(shown: Signal[Boolean]): V = rebuild(view, Decoration.Visible(shown))
+  def activate[A](command: Command[A, ?], arg: Signal[A], role: Role): V = rebuild(view, Decoration.Activate(command, arg, role))
+  def opacity(value: Presentation[Double]): V = rebuild(view, Decoration.Opacity(value))
+  /** Coherent drawing, hit-test and accessibility transform. */
+  def offset(value: Presentation[Point]): V = rebuild(view, Decoration.Offset(value))
 
 object View:
   def empty: View = ???
@@ -110,6 +132,12 @@ enum FocusRestore:
   case To(target: NodeRef)
   case Nowhere
 
+enum DismissReason:
+  case Escape, OutsidePress, WindowDeactivated
+
+enum DismissDecision:
+  case Allow, Veto
+
 final case class Dismissal(onEscape: Boolean = true, onOutsidePress: Boolean = true)
 
 /** A popup owned by its originator but placed in a window overlay layer
@@ -124,21 +152,22 @@ object Popup:
       initialFocus: Option[NodeRef] = None,
       restoreFocus: FocusRestore = FocusRestore.Previous,
       dismissal: Dismissal = Dismissal(),
-      modal: Boolean = false
+      modal: Boolean = false,
+      onDismiss: DismissReason => UiTxn ?=> DismissDecision = (_: DismissReason) => DismissDecision.Allow
   )(content: View): View = ???
 
-/** Keyed dynamic children. Identity is the key, never the index. The row
-  * function re-runs when the value under a key changes; components it
-  * places keep their state and receive the new value through `Inputs`.
-  */
+/** Row builder runs once per mounted key, receiving live Inputs. */
 object ForEach:
-  def apply[K, A](source: CollectionSource[K, A])(row: A => View): View      = ???
-  def apply[K, A](items: Signal[Seq[A]], key: A => K)(row: A => View): View = ???
+  def apply[K, A](source: CollectionSource[K, A])(row: Inputs[A] => View): View = ???
+  /** Explicit O(n) reconciliation for small sequences. */
+  def apply[K, A](items: Signal[Seq[A]], key: A => K)(row: Inputs[A] => View): View = ???
 
-/** A dynamic region. `branch` re-runs when `value` changes; the result is
-  * reconciled positionally against the previous one, so a component of the
-  * same type at the same position keeps its state. Use `keyed` to force a
-  * remount.
-  */
 object Switch:
+  /** Unequal values remount the branch. */
   def apply[A](value: Signal[A])(branch: A => View): View = ???
+  /** Same key preserves the branch and delivers live replacement Inputs. */
+  def keyed[K, A](value: Signal[A])(key: A => K)(branch: Inputs[A] => View): View = ???
+
+object Show:
+  /** Boolean keyed Switch sugar; no new lifetime model. */
+  def apply(when: Signal[Boolean])(content: => View): View = ???

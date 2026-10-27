@@ -1,5 +1,82 @@
 # A-0 authoring corpus: review
 
+## A-0b revision, 2026-10-27
+
+**Status:** owner accepted the amended R1–R16 package. VISION and the provisional
+interfaces have been revised; twelve positive programs plus `Neg.scala` compile.
+The current-session audit below was followed by an independent fresh-context
+review, eight fixes and bounded re-review. **A-0 provisional-authoring exit is
+met**; see `docs/design/decisions/2026-10-27-a0-independent-review.md`. Framework operations are still abstract or
+`???`; only pure value helpers and the pre-existing handle table are executable.
+
+New programs: `VirtualizedRows.scala`, `DockingWorkspace.scala`,
+`StreamingImport.scala`, `FailedBinding.scala`, `MultiWindowDocument.scala`,
+and `ReducedMotion.scala`. They specify later behavioral tests through source
+comments; compilation does not establish realization, lifetime, delivery,
+failure, save ordering, or motion laws.
+
+### Current checklist
+
+| Criterion | Current finding |
+|---|---|
+| Ownership | Models use workspace scopes; component dependencies are explicitly bound; windows have separate scopes; invocation observation requires a scope. Streaming endpoints and reparented panels retain explicit owners. |
+| Context | Stable dependencies no longer travel through Inputs or Switch factories. Unit components use `.view`. Handler reads use UiTxn; paint/layout use Committed and declared inputs. |
+| Cleanup | No manual subscription teardown in the corpus. Scope disposal owns tasks/channels/observations; physical retirement still needs engine tests. Explicit channel close/cancel are user actions. |
+| Remounting | Stable definition values, live keyed Inputs, and explicit dependency-change remounting replace factories. Docking contrasts explicit retained ownership with intentional ordinary remounting. Arbitrary callers can still recreate definitions; diagnostic is best effort. |
+| Public APIs | Every example imports public APIs only. Shared TextLayout/TextServices and focus parts exist as shapes. TextField-on-public-APIs, complete text/IME, hover/cursor and scroll integration remain Stage 2 obligations. |
+
+### Disposition of the original 24 awkwardnesses
+
+| # | Current disposition |
+|---|---|
+| 1 | Explicit status callback supplies running count and lastResult and lastRefusal. Form has no duplicate submitting cell; its validation action uses submit enablement. |
+| 2 | Stable `Component.withDeps` and `.bind`; dependency reference identity changes remount. Dynamic values use Inputs. |
+| 3 | Unit placement `.view`. |
+| 4 | Independent Concurrency/Acceptance, bounded save preset, dispatch-time snapshots and monotonic saved marker. QueueLatest deferred until needed. |
+| 5 | Separate layout/paint/hit/semantic inputs; diagram lift is Presentation and no longer enters its model Signal. |
+| 6 | Argument enablement is a declared Signal of a predicate; bindings and dispatch recheck it. Small todo example explicitly uses O(n) snapshots; virtualized example does not. |
+| 7 | Modifiers preserve a facade only with explicit ViewRebuild capability; a real immutable custom final-view test and an unsupported-subtype negative fixture cover the reconstruction boundary. |
+| 8 | Public `.activate` supplies keyboard/focus behavior with explicit ListItem role. |
+| 9 | Every explicit dispatch matches Started/Refused. Refused rename/add keeps the editor or draft intact and displays the reason. |
+| 10 | Small literal/signal overloads retained. Union Prop deferred to avoid ambiguous nested signals. |
+| 11 | Cell lenses deferred until projected equality/revision laws are specified. Split cells remain explicit. |
+| 12 | TaskState shown/pending/stale/error projections simplify search. Catalog is a stable dependency, query is input. |
+| 13 | Work's lexical NotGiven guard retained with ownership documentation; positive controls establish that negative fixtures resolve. Runtime thread ownership remains authoritative. |
+| 14 | Latest and command remain; synchronous action shares dispatch. Standalone launcher removed from provisional API because no corpus scenario requires it. |
+| 15 | Form marks fields touched outside dispatch's implicit attempt; popup also exercises explicit attempt and refusal handling. |
+| 16 | Reasoned dismissal can veto outside-click loss of a draft. Default still closes. |
+| 17 | NodeRef has a part-aware SemanticTarget; single attachment/settled focus rules are in VISION. |
+| 18 | Focused-part, active-descendant and focus-ring shape added; diagram uses part focus. Full control behavior remains Stage 2. |
+| 19 | Declared theme/font/display-scale phase dependencies with cause IDs. No dependency discovery through arbitrary reads. |
+| 20 | Shared TextLayout/TextServices shape added; shaping, offset-unit refinement and complete IME services still require Stage 2 design/implementation. |
+| 21 | Named layout slots added; diagram leaves its toolbar unplaced without an anchor. Indexed children remain for homogeneous layouts. |
+| 22 | Concrete mapN arities 2–4; form uses four. Generic tuple composition deferred until a larger arity is needed. |
+| 23 | Show is Boolean keyed-switch sugar, exercised in motion. |
+| 24 | Keyed Windows with independent scopes and explicit close action; two views share one workspace document/save. Static single-window convenience uses the same lifecycle. |
+
+### Validation and next review
+
+`testJVM testNative examples/clean examples/compile probeWindow/test
+probeThreads/test` passed: 6 JVM, 6 Native, 14 ABI and 13 mailbox tests.
+Final changed authoring sources and compiler positive controls also compile.
+Seven forbidden snippets fail with valid positive fixtures: missing transaction,
+worker transaction capture, array equality, Committed write, undeclared
+Committed read, unsupported latest policy, and Presentation-as-Signal.
+See `docs/evidence/a0b-20261027.md` for receipts and limits.
+
+The completed independent review challenged authorability and lifecycle details,
+especially transactional channel capacity reservations/terminal drain order,
+type-preserving modifier implementation for arbitrary custom View subtypes,
+reparent outlet removal, and the planned public text/IME contract. The eight findings were resolved and independently re-reviewed. Final review-fix
+checks pass: 7 JVM + 7 Native tests and 13 corpus sources, now including eight
+negative assertions. These remain provisional interfaces, not engine claims.
+
+## Historical first-draft review (retained verbatim below)
+
+The original review below describes the earlier skeleton and records the
+reasons for the revision. Its snippets and open questions are historical;
+the accepted package and current disposition table above control current work.
+
 **Status:** first draft, 2026-10-27. The corpus type-checks against a
 provisional skeleton of `sirin-core`. Nothing is implemented. Every
 signature is meant to be challenged.

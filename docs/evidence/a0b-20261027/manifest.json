@@ -1,0 +1,74 @@
+{
+  "recorded_utc": "2026-10-27T19:59:43.388695+00:00",
+  "base_commit": "1fc105eeefa14dfc77f651e1a605c7efbe025e34",
+  "branch": "investigate/gc-threading",
+  "working_tree_changes": "uncommitted; pre-existing runtime investigation preserved",
+  "scala": "3.7.4",
+  "scala_native": "0.5.12",
+  "sbt": "1.12.14",
+  "commands": [
+    {
+      "command": "sbt testJVM testNative 'examples/clean' 'examples/compile' probeWindow/test probeThreads/test",
+      "exit_code": 0,
+      "log": "accepted-package-verification.log"
+    },
+    {
+      "command": "sbt 'examples/clean' 'examples/compile'",
+      "exit_code": 0,
+      "log": "final-authoring-verification.log"
+    }
+  ],
+  "results": {
+    "jvm_tests": 6,
+    "native_tests": 6,
+    "abi_tests": 14,
+    "mailbox_tests": 13,
+    "positive_programs": 12,
+    "negative_assertions": 7,
+    "compiler_positive_controls": 6
+  },
+  "not_qualified": [
+    "independent fresh-context authoring review",
+    "Stage 1 kernel laws",
+    "Stage 2 public TextField implementation",
+    "idle-host pinned-upstream runtime soak"
+  ],
+  "source_sha256": {
+    "build.sbt": "74295e11bbddb5b6007265c10059de5dbca1c152fc069efe4f1ee8074cd2ece8",
+    "core/src/main/scala/sirin/App.scala": "8c41c90956194de97412031b5576539d661802919d95621c794fe2522c2b10ce",
+    "core/src/main/scala/sirin/Collection.scala": "a36b486812deb9a4f82b960cebd156e81eb8eff61bdde5f1bf8bd174ca5c48e9",
+    "core/src/main/scala/sirin/Command.scala": "52193620ef84a2a2d80d588356ab8ed3e2a4a358676f18640b3ffe92983d61cd",
+    "core/src/main/scala/sirin/Component.scala": "eab552779cff477de051170b9af0725b81d4a6f3c2eca394f436a743e3e4e274",
+    "core/src/main/scala/sirin/Element.scala": "2a1e0b28a2dcd741ce07fa1341676b39c0d929c3c9519586b38eabfc61390df0",
+    "core/src/main/scala/sirin/Geometry.scala": "5ebd5f42d20dd5c721e195edcdb8e2ebcf58c3140d9f8dd739cc6b3bb275d9da",
+    "core/src/main/scala/sirin/Handle.scala": "00f74ba7c2ce1b3e1fa899f88d9cb3aad88efe5da373fb4da98dffe20d12feea",
+    "core/src/main/scala/sirin/Input.scala": "63abc88564ac2b86fadb25c789dd96db28ac7801f403a52207605203d7bf2fca",
+    "core/src/main/scala/sirin/Reactive.scala": "bb657d3e40f38c3a390f3581df2e641368384c4388697f0ca72e2abc8342569f",
+    "core/src/main/scala/sirin/Scope.scala": "6b959735118a94086b12f4ec79b63cf3539e12d373ed690b659e5180603b5a5a",
+    "core/src/main/scala/sirin/Semantics.scala": "b660171f8730ca60a75497222f85a7731598703572c8ec83af7ec993e5b411ee",
+    "core/src/main/scala/sirin/Task.scala": "ea0ce532335377cded8cd701863a13bf590400dd6a824d2878c870f1e2c589d9",
+    "core/src/main/scala/sirin/Theme.scala": "1efe0be2216c2b2b46b5ce825e80c1bbeeacbf2944d992e34141377b179c235a",
+    "core/src/main/scala/sirin/View.scala": "727ea967c6ba72087f610d63731f92bdc744d24667d72148af77bd30a327c780",
+    "core/src/test/scala/sirin/AuthoringValuesSuite.scala": "759fb67c44a49e12ee553ea9aaa4313c667f388503f77564d03adc5833a64810",
+    "core/src/test/scala/sirin/HandleSuite.scala": "6d5f6eaa46aed89917bfadf1974ed8c04863ed8e3c5a46bda4a5af5789d6fb9c",
+    "docs/design/VISION.md": "3481ef8a6173da31281ade48e8f0bcc2a93a867056b2fcad7398227d28abb28d",
+    "docs/design/decisions/2026-10-27-a0-recommendations.md": "358e5994eb9f84a65f0f5e72dc518295b3595e09a096237f24937c2fd949065c",
+    "docs/design/decisions/2026-10-27-a0-rulings.md": "e5374bdbcef972fd7a43b2842f59b29abe75eefab21b53fcd3d0916adee5aec1",
+    "docs/plans/2026-10-27-a0b-implementation.md": "07178a71102298a4d2e4733ec9b9c827b94dd41558bff0ac7ad66db4fc8e8274",
+    "examples/REVIEW.md": "7bbe6e0cbbc265724a9c7419a5a717e1c8fe27e029effa9eb15cb8385dce501d",
+    "examples/authoring/sirin/examples/AsyncSearch.scala": "c5654edf361505df59a00d57e3678f54e1a67e2965d73ec785821284a919f8cd",
+    "examples/authoring/sirin/examples/DiagramCanvas.scala": "e6e6774a511865b5afa73ac64b0ac7b4f585fccc458e160522162b36d94aeafe",
+    "examples/authoring/sirin/examples/DockingWorkspace.scala": "3922da5fcc586ee66079bcd14521be1cf8a20a9e988ed88f2592906fc66dfde6",
+    "examples/authoring/sirin/examples/DocumentCommand.scala": "03f1ad79ca1347aca1eecc7799a460ebbd2e67259b13aa21879561de40dff69d",
+    "examples/authoring/sirin/examples/FailedBinding.scala": "9efa74038636804225f4cd885f20b90c124ed2cc9c4220e7e4963d8c486e87fe",
+    "examples/authoring/sirin/examples/KeyedList.scala": "7141340ce9af1558f2e1734652aee5355d865020ea6bb9ea977084c8c04062a9",
+    "examples/authoring/sirin/examples/MultiWindowDocument.scala": "6c0a770fbdd49d2287c4de53f16558748568b9de470838810afc9d00f0d0f7ca",
+    "examples/authoring/sirin/examples/Neg.scala": "bbc3eebe8a1b0dcb5b1e24739f024afd0f43c19da0f00ccd708bc7c2d06b5bf4",
+    "examples/authoring/sirin/examples/PopupFocus.scala": "dafe25d4a1cd815aeceeef125911ae02e3fb559b674f541ecddd987dbf0bc07c",
+    "examples/authoring/sirin/examples/ReducedMotion.scala": "cd699bcb40c8bd2d123741b13618cb600cb5849a23618b6da901985338128e9c",
+    "examples/authoring/sirin/examples/StreamingImport.scala": "74b16ecfde7f164ed2c0b93c956593bcefe4b3c749b52d79d1970176e0ed360e",
+    "examples/authoring/sirin/examples/ValidatedForm.scala": "a0593e9913b38c60bdf7ef9ed51f771baa7d9f6af2bf691aa5b9187362df89e0",
+    "examples/authoring/sirin/examples/VirtualizedRows.scala": "1b1e701c85ddcc74cebfa9d7aa86e0e56d268eb7ee82696d6e4d979fcb50b584",
+    "project/plugins.sbt": "53ad72bdd39ab0bbac1feb8965884a7f54084aaa5e866c5370c84716a305afe8"
+  }
+}

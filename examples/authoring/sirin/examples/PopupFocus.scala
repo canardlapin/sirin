@@ -2,7 +2,7 @@
 //
 // Exercises: a popup owned by its originator but placed in the overlay layer,
 // initial focus, focus restoration to whatever had focus when the popup
-// opened (the button when clicked, the notes field when opened by shortcut),
+// opened (the button when clicked, a focused node inside the header by shortcut),
 // dismissal through the shared machinery, and an effect that closes the
 // popup when the layer becomes locked underneath it.
 package sirin.examples.popup
@@ -11,12 +11,10 @@ import sirin.*
 
 final case class Layer(name: String, locked: Boolean)
 
-/** AWKWARD (REVIEW #3): a component with no props is a Component[Unit] and is
-  * placed as `layerHeader(layer)(())`.
-  */
-def layerHeader(layer: Cell[Layer]): Component[Unit] = Component("LayerHeader") { (scope, _) =>
+val LayerHeader = Component.withDeps[Cell[Layer], Unit]("LayerHeader") { (layer, scope, _) =>
   val open         = scope.cell(false)
   val draft        = scope.cell("")
+  val error        = scope.cell(Option.empty[String])
   val renameButton = scope.ref()
   val nameField    = scope.ref()
 
@@ -27,14 +25,18 @@ def layerHeader(layer: Cell[Layer]): Component[Unit] = Component("LayerHeader") 
     }
 
   val commit: Action =
-    val name = draft.get.trim
-    UiTxn.require(name.nonEmpty, "a layer needs a name")
-    layer.update(_.copy(name = name))
-    open.set(false) // closing restores focus (FocusRestore.Previous)
+    UiTxn.attempt {
+      val name = draft.get.trim
+      UiTxn.require(name.nonEmpty, "a layer needs a name")
+      UiTxn.require(!layer.get.locked, "layer is locked")
+      layer.update(_.copy(name = name))
+      open.set(false) // successful closing restores focus
+    } match
+      case Attempt.Accepted(_) => error.set(None)
+      case Attempt.Refused(reason) => error.set(Some(reason))
 
   // If a collaborator locks the layer while the popup is open, close it.
-  // OPEN QUESTION (REVIEW Q4): focus was to return to the rename button, which
-  // the lock has just disabled. Where does focus go?
+  // Disabled-but-focusable originators remain eligible, otherwise ancestor/default.
   scope.effect(layer.map(_.locked)) { locked =>
     if locked then open.set(false)
   }
@@ -48,10 +50,14 @@ def layerHeader(layer: Cell[Layer]): Component[Unit] = Component("LayerHeader") 
       anchor = renameButton,
       placement = Placement.Below,
       initialFocus = Some(nameField),
-      restoreFocus = FocusRestore.Previous
+      restoreFocus = FocusRestore.Previous,
+      onDismiss = reason =>
+        // Outside clicks cannot discard an edited draft; Escape is explicit cancellation.
+        if reason == DismissReason.OutsidePress && draft.get != layer.get.name then DismissDecision.Veto
+        else DismissDecision.Allow
     )(
       Column(
-        TextField.bind(draft).label("Layer name").onCommit(commit).ref(nameField),
+        TextField.bind(draft).label("Layer name").error(error).onCommit(commit).ref(nameField),
         Row(
           Spacer().grow,
           Button("Cancel").onPress(open.set(false)),
@@ -63,15 +69,15 @@ def layerHeader(layer: Cell[Layer]): Component[Unit] = Component("LayerHeader") 
     )
   ).spacing(Spacing.small)
     .align(Alignment.Center)
-    // Opened from anywhere inside the header, including the notes field below.
+    // Active inside the header; the sibling notes field is outside this shortcut scope.
     .shortcut(Chord(Key.Character('r'), Mods.Primary | Mods.Shift), beginRename)
 }
 
-def layerPanel(layer: Cell[Layer]): Component[Unit] = Component("LayerPanel") { (scope, _) =>
-  val header = layerHeader(layer)
+val LayerPanel = Component.withDeps[Cell[Layer], Unit]("LayerPanel") { (layer, scope, _) =>
+  val header = LayerHeader.bind(layer)
   val notes  = scope.cell("")
   Column(
-    header(()),
+    header.view,
     TextField.bind(notes).label("Notes").multiline
   ).spacing(Spacing.medium).padding(Spacing.large)
 }
@@ -79,5 +85,5 @@ def layerPanel(layer: Cell[Layer]): Component[Unit] = Component("LayerPanel") { 
 @main def popupFocus(): Unit =
   Application.run { app =>
     val layer = app.cell(Layer("Background", locked = false))
-    Seq(Window("Layers", MenuBar.empty)(layerPanel(layer)(())))
+    Windows.single("layers")(_ => Window("Layers", MenuBar.empty)(LayerPanel.bind(layer).view))
   }

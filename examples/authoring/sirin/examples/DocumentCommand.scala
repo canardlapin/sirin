@@ -17,8 +17,7 @@ trait DocumentStore:
 final class Document(scope: Scope, store: DocumentStore, initial: String):
   val text: Cell[String] = scope.cell(initial)
 
-  // OPEN QUESTION (REVIEW Q6): is the revision of a freshly created cell the
-  // same value that `Revision.initial` names?
+  // Fresh cells start at revision zero; equal writes do not advance it.
   private val savedRevision = scope.cell(Revision.initial)
   private val saveError     = scope.cell(Option.empty[String])
 
@@ -27,26 +26,21 @@ final class Document(scope: Scope, store: DocumentStore, initial: String):
 
   /** Save. The snapshot is the versioned text at dispatch; completion is
     * reconciled against that snapshot, never against the current revision.
-    *
-    * AWKWARD (REVIEW #4): SnapshotAssociated says how a result is accepted,
-    * not how invocations interleave. Two concurrent saves can finish out of
-    * order and leave revision 17's text on disk under an 18 marker; this
-    * needs Serial as well, which the single `freshness` parameter cannot say.
     */
   val save: Command[Unit, Unit] =
     scope.command[Unit, Versioned[String], Unit](
       id = "document.save",
       label = "Save",
-      freshness = Freshness.SnapshotAssociated,
-      enabled = dirty
+      policy = WorkPolicy.save(Capacity(16)),
+      enabled = _ => dirty
     ) { _ =>
-      val snapshot = text.versioned.get
+      val snapshot = text.snapshot
       saveError.set(None)
       Job(snapshot, store.write(snapshot.value))
-    } { (snapshot, outcome) =>
-      outcome match
+    } { (snapshot, result) =>
+      result.outcome match
         case Outcome.Succeeded(()) => savedRevision.update(_.max(snapshot.revision))
-        case Outcome.Failed(e)     => saveError.set(Some(s"Revision ${snapshot.revision.value} was not saved: ${e.getMessage}"))
+        case Outcome.Failed(_)     => saveError.set(Some(s"Revision ${snapshot.revision.value} was not saved. Retry save."))
         case Outcome.Cancelled     => ()
     }
 
@@ -57,12 +51,12 @@ final class Document(scope: Scope, store: DocumentStore, initial: String):
 
   val status: Signal[String] =
     (revision, savedRevision, save.running).mapN { (r, s, busy) =>
-      val saving = if busy then " — saving…" else ""
+      val saving = if busy > 0 then " — saving…" else ""
       if r.isAfter(s) then s"Revision ${r.value}, last saved ${s.value}$saving"
       else s"Saved at revision ${s.value}$saving"
     }
 
-  val error: Signal[Option[String]] = saveError
+  val error: Signal[Option[String]] = (saveError, save.lastRefusal).mapN((failure, refusal) => refusal.orElse(failure))
 
 /** The editor needs no local state, so it is a plain function. */
 def editor(doc: Document): View =
@@ -105,5 +99,5 @@ object SlowDisk extends DocumentStore:
     // cancel an in-flight save (VISION §5.4 ownership rule).
     val doc   = Document(app.child("document"), SlowDisk, "")
     val title = doc.dirty.map(d => if d then "Untitled — Edited" else "Untitled")
-    Seq(Window(title, menu(doc))(editor(doc)))
+    Windows.single("document")(_ => Window(title, menu(doc))(editor(doc)))
   }

@@ -115,14 +115,14 @@ regression test, then implementation.
 Illustrative only; this is not implemented code:
 
 ```scala
-def preferences(model: PreferencesModel): Component =
-  Component.scoped { scope =>
+val Preferences = Component.withDeps[PreferencesModel, Unit]("Preferences") {
+  (model, scope, _) =>
     val filter = scope.cell("")
     Column(
-      Text("Preferences").style(Typography.title),
+      Text("Preferences").style(TextStyle.Title),
       TextField.bind(filter).label("Find a setting"),
       // each row receives Inputs[Section]: same key keeps row state, new values still arrive
-      ForEach(model.sections.filtered(filter.signal), key = _.id)(SettingsSection(_)),
+      ForEach(model.sections.filterBy(filter)((query, section) => section.title.contains(query)))(SettingsSection(_)),
       Row(
         Button("Restore defaults").command(model.restoreDefaults),
         Spacer(),
@@ -159,7 +159,7 @@ Rules:
 
 ### 4.1 Authoring corpus: an executable API specification *(new)*
 
-Before the core API is frozen, `examples/authoring/` holds six programs that
+Before the core API is frozen, `examples/authoring/` holds twelve programs that
 compile against skeletal interfaces:
 
 1. a validated form,
@@ -168,7 +168,13 @@ compile against skeletal interfaces:
 3. an asynchronous search with stale-result handling,
 4. a popup with focus restoration,
 5. a document command shared by menu, shortcut, and button,
-6. a custom interactive surface, built only on public APIs.
+6. a custom interactive surface, built only on public APIs,
+7. fixed-height virtualized rows,
+8. explicit docking/reparenting,
+9. bounded streaming work,
+10. failed bindings and recovery,
+11. multiple windows over a workspace document,
+12. reduced-motion presentation.
 
 **Review checklist:**
 - ownership is clear,
@@ -179,8 +185,10 @@ compile against skeletal interfaces:
 
 The first corpus and its review are in `examples/` (`examples/REVIEW.md`).
 The kernel owner's rulings on the semantic questions it raised are in
-`docs/design/decisions/2026-10-27-a0-rulings.md`, pending acceptance. Those
-rulings supersede the sections they name.
+`docs/design/decisions/2026-10-27-a0-rulings.md`, accepted by the owner on
+2026-10-27 with the amendments in `2026-10-27-a0-recommendations.md`.
+The accepted contract is integrated below; signatures remain provisional
+until the revised corpus passes independent fresh-context review.
 
 Line count is not the measure. Explicit lifetime and update semantics count
 for more than brevity. **The core API is not approved because its laws
@@ -203,7 +211,9 @@ Each transaction passes through four phases:
    sees new sources with old derived values.
 4. **Notify, then run effects.** Bindings are notified and record their
    invalidation class: structure, measure, layout, paint, hit-test, or
-   semantics. Effects then run after publication, in registration order.
+   semantics. Effects are queued after this settled publication, in registration order.
+   Each effect executes in a distinct follow-on transaction. Notifications of
+   earlier successful commits are never retracted by a later effect failure.
 
 *(Revised after review rounds 2–3.)*
 
@@ -213,19 +223,53 @@ the transaction `{ x.set(2); y.get == 4; x.set(3); y.get == 6 }` holds.
 "At most once" refers to the committed propagation pass, not to speculative
 reads made inside a handler. This is a contract test in C1.2b.
 
-**Failure is data, and rejection is explicit.**
-- A derivation that throws produces a `Failed(error)` value inside the
-  candidate snapshot, which is still published atomically. This is a
-  deliberate API choice: a text field whose parse fails must still accept
-  keystrokes.
-- A transaction is *rejected* only by an explicit guard (`txn.require`) or by
-  an exception in handler code. Rejection discards every staged write.
-- An exception **poisons the whole transaction**, even if an outer handler
-  catches it. Nested transactions join the enclosing one, and v0 has no
-  savepoints.
-- Derivations are read-only; a write from inside a derivation is a runtime
-  error.
-- None of this rolls back external I/O.
+**Failure is data, and refusal is scoped.**
+- Domain validation is ordinary data (`Either`, for example). A derivation
+  defect produces `Failed(error)` in the atomically published candidate.
+  Unhandled failed bindings display a safe unavailable/error state and report
+  it. Development may show diagnostic detail; release hides exception internals.
+  Applications may explicitly choose a fallback or retained previous content
+  with a visible stale/error indication. There is no silent release-only
+  last-good substitution. Failed command enablement always disables and reports.
+- `txn.attempt` is the one scoped savepoint. `require`/`refuse` within it
+  returns `Refused(reason)` and discards all transaction-owned staging inside:
+  cell writes, graph edits, focus intents, and command starts. Caller writes
+  outside the attempt survive. Refusal outside an attempt rejects the transaction.
+- Command dispatch rechecks general and argument-specific enablement, then
+  runs `start` in an implicit attempt. A refused dispatch cannot erase the
+  caller's validation-error visibility changes.
+- A defect crossing a runtime-owned transaction, attempt, mutation callback or
+  failed-signal read boundary poisons the whole transaction before rethrowing;
+  catching it later cannot clear poison. A throw/catch entirely within application
+  code is unobservable and outside this guarantee. Ordinary nested
+  transactions join the enclosing transaction; only explicit refusal attempts
+  introduce savepoints. Derivations are read-only; writes are runtime errors.
+- Worker launches and irreversible I/O occur only after successful outer
+  publication. Speculative transactions cannot launch work; already-performed
+  external effects cannot be rolled back.
+
+**Revisions and effects.** Revisions are per cell, start at zero, and advance
+once per unequal committed value. Change-and-restore is no change. Revisions
+never wrap; exhaustion fails explicitly. Dirty-by-value remains application
+policy. Effects run once after initial settling, then once per committed
+unequal change, never on intermediate staged values. The callback receives the
+value from that commit; its reads see the current transaction when it executes.
+A controlled headless driver explicitly drains the effect queue.
+
+**Snapshot association.** `Cell.versioned` exposes the candidate revision during
+staged reads; intermediate candidate values can share that revision. Such a
+read is not a durable snapshot token. `Cell.snapshot` captures the committed
+value/revision and refuses if that cell has unequal staged writes. Save commands
+must use this snapshot boundary for revision-based reconciliation. This preserves
+dispatch-time capture without falsely associating intermediate text with the final
+commit. Editors normally commit their input event before a separate save event.
+An application needing speculative saves must use explicit value-based policy
+until a commit-resolved snapshot-token API is designed.
+
+**Immutable modifiers.** A modifier can retain a custom View subtype only with
+an explicit invariant `ViewRebuild[V]` capability that reconstructs it. Built-in
+facades provide capabilities. Unsupported final/singleton refinements do not
+magically acquire one; authors may widen to View or provide a lawful rebuild.
 
 **Topology changes take effect between passes.** Mount, dispose,
 `Switch`, and `flatMap` record their graph edits during a pass. The edits
@@ -236,17 +280,21 @@ the style of Jane Street's Incremental, is a later optimization and must
 preserve the same observable semantics.
 
 **The settle loop** runs inside phase 2 of the frame pipeline (§5.3),
-before structural updates. An effect that writes stages a follow-on pass.
+before structural updates. Each transaction stabilizes derivations/topology before publication. An effect
+that writes starts a distinct follow-on transaction.
 Each run ends in exactly one of three outcomes:
 
 | Outcome | Condition |
 |---|---|
 | `Settled` | No writes are staged and no topology edits are pending. |
-| `CycleDetected(trace)` | A repeated (node, value-revision) state was observed. This is proof of a cycle. |
+| `CycleDetected(trace)` | A dependency cycle or repeated complete deterministic working state (including pending work/topology) proves a cycle. |
 | `BudgetExceeded(trace)` | The pass budget ran out without a detected cycle. This is not proof of divergence; the budget is configurable. |
 
-Bindings and observers see only `Settled` states. On either failure outcome
-the last settled state stays committed and the diagnostic is surfaced.
+Bindings and observers see only individually `Settled` transactions. On either
+failure outcome the latest successfully settled commit stays committed; earlier
+notifications and effects cannot be rolled back. The frame driver may defer
+painting while a bounded sequence of transactions drains. Exceeding that drain
+budget reports BudgetExceeded, never an inferred cycle.
 
 **Equality** must be lawful. The defaults reject `Array`, and
 floating-point equality is defined by `equals`, which treats NaN as equal
@@ -264,7 +312,11 @@ randomized programs.
 ### 5.2 Identity and lifetimes
 
 - Identity is the triple (owner, stable key, component type). It is never
-  an allocation address.
+  an allocation address. Component type is a process-local logical definition
+  token. `Component.withDeps[D, P]` binds stable dependencies without changing
+  that token; a changed dependency identity under the same placement remounts.
+  Dynamic values belong in `Inputs`. Definition recreation diagnostics are
+  best effort, not an identity guarantee.
   - Keyed dynamic children (`ForEach`) never use their list index.
   - Static children are positional, and that is safe because static
     structure does not change.
@@ -284,6 +336,24 @@ randomized programs.
   and GPU resources are freed later, once outstanding work retires. Native
   cleanup never relies on finalizers, which Scala Native does not run.
 
+**Reconciliation.** ForEach runs its row builder once per key mount with live
+`Inputs[A]`. A keyed Switch preserves the branch while the key stays the same
+and delivers new Inputs; changed keys remount. An unkeyed unequal value remounts.
+`setAll` applies removals, target-order moves, insertions, then replacements of
+row Inputs, atomically to observers. Explicit reparenting owns the panel in a
+stable scope and moves its placement between named outlets; ordinary owner
+changes reset local state.
+
+**Commands.** Definition builders receive stable read-only `CommandStatus`
+(`running: Signal[Int]`, last result, last refusal). Results include invocation
+identity and a current/stale bit for Progressive acceptance. Every dispatch,
+including button/menu/shortcut dispatch, records a refusal in bounded shared
+status; the next accepted dispatch clears it. This is distinct from work failure. Terminal scheduling/cancellation/
+delivery resources retire after delivery; retained terminal values are ordinary
+data. Live observations have scope/dispose ownership. Commands retain bounded
+summary state, not unbounded invocation histories. Dropping handles and
+finalizers are never required cleanup events.
+
 ### 5.3 Frame pipeline
 
 The pipeline runs these phases in order:
@@ -300,6 +370,29 @@ Measurement and paint cannot write application state. Observations that
 depend on geometry produce deferred requests, which are handled on the next
 turn. Input routes against a complete interaction snapshot, and before
 activation the runtime re-checks that the target still exists and is enabled.
+Handlers read staged application state; their routed geometry is the complete
+committed interaction snapshot. Paint/layout use read-only `Committed`
+capabilities and declared phase inputs, with no arbitrary Signal reads.
+Theme and font epochs are declared global phase dependencies with cause IDs.
+An unplaced child stays mounted but is excluded from drawing, hit testing and
+accessibility. Measurement caches by constraints; intentional intrinsic
+multi-measurement is distinguished from accidental repeated cost.
+
+Focus requests are staged intents resolved after Settled. Rollback discards
+them; unattached targets are dropped with a development diagnostic. Popup
+restoration tries the eligible originator, nearest eligible ownership ancestor,
+then window default. Disabled-but-focusable nodes can qualify. A NodeRef has
+at most one attachment; duplicate attachment is diagnosed. Semantic targets
+may name a part of that node; focused parts and focus-ring state are public.
+Dismissal carries a reason and may be vetoed; the simple default closes.
+
+Key precedence is IME composition, focused editing/text keys, local shortcut
+bubbling, then window chords. Text controls consume only primary-modifier
+chords they declare. Each delivered input event gets one transaction after
+source-policy coalescing. Moves default to latest; complete-stream must never
+silently coalesce on overflow. Public text/IME/hover/cursor services remain
+Stage 2 requirements: TextField must use only public APIs.
+
 **Activity-driven scheduling.** If there are no invalidations, active
 animations, or pending deadlines (caret blink, scheduled transitions,
 application timers), Sirin parks the event loop and schedules no frame. It
@@ -344,32 +437,46 @@ event watch for this path.
   shimmed to record results only, and Stage 0 tests re-entry directly.
   Publication between threads uses explicit synchronization, because Scala
   Native's default final-field semantics are weaker than the JVM's.
-- **Task results answer four separate questions.** *(revised after review
-  round 3)*
+- **Work has independent lifetime, concurrency, acceptance, delivery, and
+  reconciliation contracts.** Lifetime checks always reject publication to a
+  disposed owner or stale generation.
 
-  | Question | Contract |
+  | Axis | Choices |
   |---|---|
-  | Does the operation still have a valid owner or handle? | **Lifetime validity.** Always enforced: a result for a disposed owner or a stale generation is never written to UI state. |
-  | Should a newer request supersede this one? | **Freshness policy**, chosen per operation. |
-  | How are its messages delivered? | **Delivery policy:** coalesce-latest (pointer, progress), ordered (text edits), or complete-stream (freehand paths), each with bounded queues. |
-  | What does completion mean for the current domain state? | **Application reconciliation**, an explicit completion handler. |
+  | Concurrency | Parallel, bounded Serial, RefuseWhileRunning, Supersede |
+  | Acceptance | LatestOnly, Progressive, EveryInvocation, SnapshotAssociated |
+  | Delivery | CoalesceLatest, Ordered, CompleteStream; finite capacity |
 
-  **Freshness policies:**
-  - *latest-only*, for previews and search. A result whose request
-    generation or input revision is out of date is dropped. A *progressive*
-    variant accepts it but marks it stale. Liveness law: once the inputs
-    stay unchanged for longer than the worker latency, a current result is
-    accepted.
-  - *every-invocation*, for independent downloads. No invocation supersedes
-    another.
-  - *serial*, where one invocation runs at a time and the rest queue.
-  - *snapshot-associated*. The result is tied to the input revision it was
-    computed from and is never discarded for being older. For example,
-    saving revision 17 while the user edits revision 18 updates the
-    saved-revision marker to 17 and does not mark 18 as saved.
+  Presets: preview = Supersede × LatestOnly; download = Parallel ×
+  EveryInvocation; save = Serial × SnapshotAssociated. Serial queues belong
+  to a command instance or explicitly shared application queue, never an
+  implicit global filesystem lock. Snapshots are captured at dispatch, before
+  queuing. Full queues refuse explicitly, never silently drop accepted saves.
+  Separate commands writing one resource require explicit application coordination.
 
-  Cancellation only saves work. These rules prevent stale UI writes without
-  erasing legitimate outcomes.
+  LatestOnly drops obsolete generations/revisions; Progressive may accept them
+  marked stale. Once input stays unchanged longer than worker latency, a current
+  result must be accepted. Input-driven latest allows only these two policies.
+  EveryInvocation preserves independent outcomes. SnapshotAssociated reconciles
+  the captured revision, never labels a newer edit saved; save markers advance
+  monotonically. Serial saves prevent an older write following a newer one.
+  Cancellation is cooperative and only saves work; generation/revision checks
+  establish acceptance. Cancellation cannot undo external effects.
+
+  Typed progress channels declare delivery and finite capacity. Latest may
+  replace pending items. Ordered/complete cannot silently discard. Worker
+  producers may wait cooperatively; cancellation/disposal wakes them. UI and
+  foreign producers never block the UI owner and report capacity failure.
+  Graceful producer close rejects new offers but drains accepted items while the
+  owner lives; its state becomes Drained. Delivery cancellation/disposal immediately
+  forbids further UI delivery, wakes producers and explicitly abandons queued items
+  (counted where still observable). UI capacity reservations linearize with worker
+  offers under the same queue order/lock, occupy capacity until commit/rollback,
+  and cannot publish before commit; rollback releases them. Staged close/cancel
+  takes effect only on commit. Channel state exposes Open/Closing/Drained/Cancelled
+  through a scope-owned signal. Detailed signatures remain provisional until
+  corpus and C1.6a pressure/cancellation tests. Completion reconciliation is
+  explicit application code, not an inferred framework write.
 - Ownership follows the application. Closing a panel cancels its preview tasks
   and subscriptions, but not a workspace-scoped job the panel was only
   observing.
@@ -570,13 +677,19 @@ Motion uses one deterministic animation clock, which testkit can control.
 - **Visibility.** Hidden or unrealized content does not animate and
   schedules no frames.
 - **Reduced motion.** Under the reduced-motion preference, transitions
-  become instant or cross-fades.
+  reach the final presentation target without application writes or an
+  unnecessary animation frame train.
 - **Hit testing.** Animated geometry is hit-tested at its presented
   position, so a control stays clickable where it appears.
 
-By default, motion animates presentation properties. Layout animation is
-allowed but explicit, and it is charged to layout. A few well-defined
-transitions, not an animation language.
+Animation ticks run outside transactions and the reactive graph.
+`scope.animate` returns `Presentation[A]`, never `Signal[A]`; it cannot feed
+signal derivations. Custom elements declare separate layout, paint, hit and
+semantic inputs plus presentation inputs. Paint-only lift/shadow changes do
+not invalidate model semantics. Presented transforms update draw, hit and
+accessible geometry coherently in the same frame. Layout presentation is an
+explicit separate channel charged to layout. A few well-defined transitions,
+not an animation language.
 
 **Admission rule.** A widget enters the standard library only when its
 behavior, accessibility, styling, and tests are good enough to serve as a

@@ -18,11 +18,13 @@ opaque type Revision = Long
 
 object Revision:
   val initial: Revision        = 0L
-  def apply(n: Long): Revision = n
+  def apply(n: Long): Revision =
+    require(n >= 0, "negative revision")
+    n
   given Ordering[Revision]     = Ordering.Long
   extension (r: Revision)
     def value: Long                   = r
-    def next: Revision                = r + 1
+    def next: Revision                = Math.addExact(r, 1L)
     def isAfter(o: Revision): Boolean = r > o
     def max(o: Revision): Revision    = math.max(r, o)
 
@@ -37,16 +39,31 @@ enum Value[+A]:
   * a transaction see staged writes, including speculative derived reads.
   */
 trait UiTxn:
-  /** Rejects the whole transaction: every staged write is discarded. */
+  /** Refuses the innermost attempt, or the whole transaction if none exists. */
   def require(condition: Boolean, reason: => String): Unit
 
-  /** `require(false, reason)` for expression positions. */
-  def reject(reason: String): Nothing
+  /** Rolls back all staging on refusal. Defects crossing this boundary poison
+    * the enclosing transaction even if subsequently caught by its caller.
+    */
+  def attempt[A](body: UiTxn ?=> A): Attempt[A]
+  def refuse(reason: String): Nothing
+  def reject(reason: String): Nothing = refuse(reason)
+
+enum Attempt[+A]:
+  case Accepted(value: A)
+  case Refused(reason: String)
+
+/** Read-only phase capability. Values arrive through declared phase inputs;
+  * this capability deliberately has no arbitrary Signal.get overload.
+  */
+trait Committed
 
 object UiTxn:
   def require(condition: Boolean, reason: => String)(using txn: UiTxn): Unit =
     txn.require(condition, reason)
-  def reject(reason: String)(using txn: UiTxn): Nothing = txn.reject(reason)
+  def reject(reason: String)(using txn: UiTxn): Nothing = txn.refuse(reason)
+  def refuse(reason: String)(using txn: UiTxn): Nothing = txn.refuse(reason)
+  def attempt[A](body: UiTxn ?=> A)(using txn: UiTxn): Attempt[A] = txn.attempt(body)
 
 /** A handler body: runs inside a transaction. */
 type Action = UiTxn ?=> Unit
@@ -78,6 +95,10 @@ object Signal:
     def mapN[D](f: (A, B, C) => D)(using Equality[D]): Signal[D] =
       triple._1.zip(triple._2).zip(triple._3).map { case ((a, b), c) => f(a, b, c) }
 
+  extension [A, B, C, D](quad: (Signal[A], Signal[B], Signal[C], Signal[D]))
+    def mapN[E](f: (A, B, C, D) => E)(using Equality[E]): Signal[E] =
+      quad._1.zip(quad._2).zip(quad._3.zip(quad._4)).map { case ((a, b), (c, d)) => f(a, b, c, d) }
+
   extension (s: Signal[Boolean])
     def unary_! : Signal[Boolean]               = s.map(b => !b)
     def &&(t: Signal[Boolean]): Signal[Boolean] = s.zip(t).map(_ && _)
@@ -87,8 +108,15 @@ trait Cell[A] extends Signal[A]:
   def set(value: A)(using UiTxn): Unit
   def update(f: A => A)(using UiTxn): Unit
 
-  /** The value together with the revision of the write that produced it. */
+  /** Staged reads use a candidate revision: intermediate values may share it.
+    * Use snapshot, not staged versioned.get, for durable revision association.
+    */
   def versioned: Signal[Versioned[A]]
+
+  /** Captures committed value/revision. Refuses if this cell has unequal
+    * staged writes, so an intermediate value cannot label a later commit.
+    */
+  def snapshot(using UiTxn): Versioned[A]
 
 /** An occurrence, not a persistent value. */
 trait Event[+A]:

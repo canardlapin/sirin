@@ -40,20 +40,17 @@ final class Field[A](scope: Scope, parse: String => Either[String, A]):
   def view(label: String): View =
     TextField.bind(text).label(label).error(shown).onBlur(touched.set(true))
 
-val SignUpForm: Component[AccountService] = Component("SignUpForm") { (scope, service) =>
+val SignUpForm = Component.withDeps[AccountService, Unit]("SignUpForm") { (service, scope, _) =>
   val name       = Field(scope, Rules.name)
   val email      = Field(scope, Rules.email)
   val age        = Field(scope, Rules.age)
   val newsletter = scope.cell(false)
 
   val account: Signal[Either[String, Account]] =
-    (name.parsed, email.parsed, age.parsed).mapN { (n, e, a) =>
-      for n <- n; e <- e; a <- a yield Account(n, e, a, newsletter = false)
-    }.zip(newsletter).map((acc, nl) => acc.map(_.copy(newsletter = nl)))
+    (name.parsed, email.parsed, age.parsed, newsletter).mapN { (n, e, a, nl) =>
+      for n <- n; e <- e; a <- a yield Account(n, e, a, newsletter = nl)
+    }
 
-  // AWKWARD (REVIEW #1): the command cannot see its own `running` signal while
-  // it is being constructed, so "disabled while submitting" needs a second cell.
-  val submitting  = scope.cell(false)
   val created     = scope.cell(Option.empty[AccountId])
   val submitError = scope.cell(Option.empty[String])
 
@@ -61,22 +58,30 @@ val SignUpForm: Component[AccountService] = Component("SignUpForm") { (scope, se
     scope.command[Unit, Account, AccountId](
       id = "signup.submit",
       label = "Create account",
-      freshness = Freshness.Serial,
-      enabled = account.map(_.isRight) && !submitting
+      policy = WorkPolicy(Concurrency.RefuseWhileRunning, Acceptance.EveryInvocation),
+      enabled = status => status.running.map(_ == 0)
     ) { _ =>
       // The dispatch boundary has already checked `enabled`; this guard
-      // documents the invariant and rejects the transaction if it is broken.
+      // refuses only this command attempt if validation fails.
       val acc = account.get.getOrElse(UiTxn.reject("submit with an invalid form"))
-      submitting.set(true)
       submitError.set(None)
-      Job(acc, service.get.create(acc))
-    } { (_, outcome) =>
-      submitting.set(false)
-      outcome match
+      Job(acc, service.create(acc))
+    } { (_, result) =>
+      result.outcome match
         case Outcome.Succeeded(id) => created.set(Some(id))
-        case Outcome.Failed(e)     => submitError.set(Some(s"Could not create the account: ${e.getMessage}"))
+        case Outcome.Failed(_)     => submitError.set(Some("Could not create the account. Please retry."))
         case Outcome.Cancelled     => ()
     }
+
+  val trySubmit = scope.action[Unit]("signup.validateSubmit", "Create account", enabled = submit.enabled) { _ =>
+    // These writes are outside dispatch's implicit attempt, so refusal keeps them.
+    name.touched.set(true)
+    email.touched.set(true)
+    age.touched.set(true)
+    submit.dispatch(()) match
+      case Dispatched.Started(_) => ()
+      case Dispatched.Refused(reason) => submitError.set(Some(reason))
+  }
 
   Column(
     Text("Create an account").style(TextStyle.Title),
@@ -93,11 +98,11 @@ val SignUpForm: Component[AccountService] = Component("SignUpForm") { (scope, se
       case Some(id) => Text(s"Account ${id.value} created.").semantics(Semantics(Role.Status, live = Live.Polite))
       case None     => View.empty
     },
-    Row(Spacer().grow, Button(submit).primary).spacing(Spacing.small)
+    Row(Spacer().grow, Button(trySubmit).primary).spacing(Spacing.small)
   ).spacing(Spacing.medium)
     .padding(Spacing.large)
     .semantics(Semantics(Role.Form, name = Some("Create an account")))
-    .shortcut(Chord(Key.Enter, Mods.Primary), submit)
+    .shortcut(Chord(Key.Enter, Mods.Primary), trySubmit)
 }
 
 object InMemoryAccounts extends AccountService:
@@ -108,5 +113,5 @@ object InMemoryAccounts extends AccountService:
 
 @main def validatedForm(): Unit =
   Application.run { _ =>
-    Seq(Window("Sign up", MenuBar.empty)(SignUpForm(InMemoryAccounts)))
+    Windows.single("signup")(_ => Window("Sign up", MenuBar.empty)(SignUpForm.bind(InMemoryAccounts).view))
   }

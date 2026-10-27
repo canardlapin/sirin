@@ -20,7 +20,17 @@ final case class MenuBar(menus: Menu*)
 object MenuBar:
   val empty: MenuBar = MenuBar()
 
-trait Window
+trait Window:
+  def onClose(run: Action): Window
+
+/** Window builders run once per key mount, with independent window scopes.
+  * Source removal disposes that window, not the application/document owner.
+  */
+trait Windows
+object Windows:
+  def apply[K, A](source: CollectionSource[K, A])(build: (Scope, Inputs[A]) => Window): Windows = ???
+  /** Static convenience still creates keyed window ownership, not a second lifecycle. */
+  def single(key: String)(build: Scope => Window): Windows = ???
 
 object Window:
   def apply(title: String, menu: MenuBar)(content: View): Window         = ???
@@ -30,4 +40,4 @@ object Application:
   /** Runs the event loop on the process main thread. `build` receives the
     * application scope, which outlives every window.
     */
-  def run(build: Scope => Seq[Window]): Unit = ???
+  def run(build: Scope => Windows): Unit = ???

@@ -12,6 +12,10 @@ trait NodeRef:
   def focus()(using UiTxn): Unit
   def hasFocus: Signal[Boolean]
   def containsFocus: Signal[Boolean]
+  def part(id: PartId): SemanticTarget
+  def focusedPart: Signal[Option[PartId]]
+  def focusPart(id: PartId)(using UiTxn): Unit
+  def focusRing: Signal[Boolean]
 
 /** Owns subscriptions, tasks, commands, animations, and resource leases.
   * Everything created through a scope is released when it is disposed;
@@ -23,27 +27,23 @@ trait Scope:
   def events[A]: EventSource[A]
   def ref(): NodeRef
 
-  /** Runs after each publication in which `signal` changed (VISION §5.1 phase 4). */
+  /** Runs once after initial settle, then once per unequal committed change. */
   def effect[A](signal: Signal[A])(run: A => Action): Unit
   def on[A](event: Event[A])(run: A => Action): Unit
 
   /** A deadline-driven signal: follows `signal` after `quiet` without change. */
   def debounce[A](signal: Signal[A], quiet: FiniteDuration): Signal[A]
 
-  /** Input-driven work under `LatestOnly` or `Progressive` freshness. The
-    * default reconciliation is to publish the accepted result as state.
-    */
-  def latest[I, O](input: Signal[I], freshness: Freshness = Freshness.LatestOnly)(
+  /** Superseding input work; obsolete publication is checked independently of cancellation. */
+  def latest[I, O](input: Signal[I], policy: LatestPolicy = LatestPolicy.LatestOnly)(
       work: I => Work[O]
   ): Signal[TaskState[I, O]]
 
-  /** Explicitly launched work under `EveryInvocation` or `Serial` freshness. */
-  def launcher[I, O](freshness: Freshness)(work: I => Work[O])(
-      complete: (I, Outcome[O]) => Action
-  ): TaskLauncher[I]
+  def progress[P](delivery: Delivery, capacity: Capacity)(receive: P => Action): ProgressChannel[P]
 
   /** A synchronous command. */
-  def action[A](id: String, label: String, enabled: Signal[Boolean] = Signal.always)(
+  def action[A](id: String, label: String, enabled: Signal[Boolean] = Signal.always,
+      enabledFor: Signal[A => Boolean] = Signal.const((_: A) => true))(
       run: A => Action
   ): Command[A, Unit]
 
@@ -53,14 +53,18 @@ trait Scope:
   def command[A, S, R](
       id: String,
       label: String,
-      freshness: Freshness,
-      enabled: Signal[Boolean] = Signal.always
-  )(start: A => UiTxn ?=> Job[S, R])(complete: (S, Outcome[R]) => Action): Command[A, R]
+      policy: WorkPolicy,
+      enabled: CommandStatus[R] => Signal[Boolean] = (_: CommandStatus[R]) => Signal.always,
+      enabledFor: Signal[A => Boolean] = Signal.const((_: A) => true)
+  )(start: A => UiTxn ?=> Job[S, R])(complete: (S, CommandResult[R]) => Action): Command[A, R]
 
   /** A presentation value that retargets from its current value and
     * velocity when `target` changes (VISION §8.2).
     */
-  def animate(target: Signal[Double], transition: Transition = Transition.standard): Signal[Double]
+  def animate(target: Signal[Double], transition: Transition = Transition.standard): Presentation[Double]
+
+  /** Retains panel ownership here while moving placement to a named outlet. */
+  def reparent(key: GlobalKey, content: View): Reparentable
 
   /** A nested scope, disposed with this one or earlier by `dispose`. */
   def child(name: String): Scope

@@ -30,7 +30,9 @@ final class TodoModel(scope: Scope):
   }
 
   val rename: Command[(TodoId, String), Unit] = scope.action("todo.rename", "Rename task") { (id, title) =>
-    todos.update(id)(_.copy(title = title))
+    UiTxn.require(title.trim.nonEmpty, "empty title")
+    UiTxn.require(todos.get(id).isDefined, "task removed")
+    todos.update(id)(_.copy(title = title.trim))
   }
 
   val toggle: Command[TodoId, Unit] = scope.action("todo.toggle", "Toggle done") { id =>
@@ -39,13 +41,21 @@ final class TodoModel(scope: Scope):
 
   val remove: Command[TodoId, Unit] = scope.action("todo.remove", "Delete task")(id => todos.remove(id))
 
-  // AWKWARD (REVIEW #6): enablement is one Signal[Boolean] per command, so
-  // "Move up" cannot be disabled for the first row only.
-  val moveUp: Command[TodoId, Unit] = scope.action("todo.moveUp", "Move up") { id =>
+  // Enablement is argument-sensitive and depends on explicit collection revisions.
+  private val canMoveUp: Signal[TodoId => Boolean] = todos.snapshot.map { rows =>
+    val first = rows.headOption.map(_.id)
+    val keys = rows.map(_.id).toSet
+    id => keys(id) && !first.contains(id)
+  }
+  private val canMoveDown: Signal[TodoId => Boolean] = todos.snapshot.map { rows =>
+    val last = rows.lastOption.map(_.id)
+    val keys = rows.map(_.id).toSet
+    id => keys(id) && !last.contains(id)
+  }
+  val moveUp: Command[TodoId, Unit] = scope.action("todo.moveUp", "Move up", enabledFor = canMoveUp) { id =>
     todos.indexOf(id).filter(_ > 0).foreach(i => todos.move(id, i - 1))
   }
-
-  val moveDown: Command[TodoId, Unit] = scope.action("todo.moveDown", "Move down") { id =>
+  val moveDown: Command[TodoId, Unit] = scope.action("todo.moveDown", "Move down", enabledFor = canMoveDown) { id =>
     todos.indexOf(id).filter(_ < todos.size - 1).foreach(i => todos.move(id, i + 1))
   }
 
@@ -56,13 +66,8 @@ final class TodoModel(scope: Scope):
     todos.setAll(todos.snapshot.get.reverse.map(t => t.copy(title = t.title.capitalize)))
   }
 
-/** The row component. AWKWARD (REVIEW #2): the model is a constructor
-  * argument rather than a prop, because the row needs it while building its
-  * view (outside any transaction). The factory must therefore be called once
-  * per list mount; calling it inside the ForEach row function would create a
-  * new component type per value change and remount every row.
-  */
-def todoRow(model: TodoModel): Component[Todo] = Component("TodoRow") { (scope, todo) =>
+/** Stable definition with static model dependency and live row Inputs. */
+val TodoRow = Component.withDeps[TodoModel, Todo]("TodoRow") { (model, scope, todo) =>
   val id = todo.map(_.id)
 
   // Local state, preserved across reorder and same-key replacement.
@@ -71,6 +76,7 @@ def todoRow(model: TodoModel): Component[Todo] = Component("TodoRow") { (scope, 
 
   /** The title the draft started from, to detect a concurrent replacement. */
   val base = scope.cell("")
+  val refusal = scope.cell(Option.empty[String])
 
   val changedUnderneath: Signal[Boolean] =
     (editing, base, todo).mapN((e, b, t) => e && b != t.title)
@@ -82,22 +88,24 @@ def todoRow(model: TodoModel): Component[Todo] = Component("TodoRow") { (scope, 
     draft.set(current)
     base.set(current)
     editing.set(true)
-    // OPEN QUESTION (REVIEW Q3): the field is attached by the Switch below in
-    // a later pass; is a focus request on a not-yet-attached ref honored?
+    // Resolved after Settled, once the editing branch attaches the field.
     field.focus()
 
   val commit: Action =
-    model.rename.dispatch((todo.get.id, draft.get.trim))
-    editing.set(false)
+    model.rename.dispatch((todo.get.id, draft.get.trim)) match
+      case Dispatched.Started(_) => editing.set(false)
+      case Dispatched.Refused(reason) => refusal.set(Some(reason))
 
   val cancel: Action = editing.set(false)
 
   Row(
-    Checkbox(todo.map(_.done), todo.map(_.title))(_ => model.toggle.dispatch(todo.get.id)),
+    Checkbox(todo.map(_.done), todo.map(_.title))(_ => model.toggle.dispatch(todo.get.id) match
+      case Dispatched.Started(_) => ()
+      case Dispatched.Refused(reason) => refusal.set(Some(reason))),
     Switch(editing) {
       case true =>
         Column(
-          TextField.bind(draft).label("Title").onCommit(commit).ref(field).onKey(Chord(Key.Escape))(cancel),
+          TextField.bind(draft).label("Title").ref(field).onCommit(commit).error(refusal).onKey(Chord(Key.Escape))(cancel),
           Switch(changedUnderneath) {
             case true  => Text("This task was changed elsewhere; saving keeps your text.").style(TextStyle.Caption)
             case false => View.empty
@@ -115,17 +123,19 @@ def todoRow(model: TodoModel): Component[Todo] = Component("TodoRow") { (scope, 
     .semantics(todo.map(t => Semantics(Role.ListItem, name = Some(t.title))))
 }
 
-def todoList(model: TodoModel): Component[Unit] = Component("TodoList") { (scope, _) =>
-  val row      = todoRow(model) // once per mount: stable component identity
+val TodoList = Component.withDeps[TodoModel, Unit]("TodoList") { (model, scope, _) =>
+  val row      = TodoRow.bind(model)
   val newTitle = scope.cell("")
+  val refusal = scope.cell(Option.empty[String])
 
   val addCurrent: Action =
-    model.add.dispatch(newTitle.get)
-    newTitle.set("")
+    model.add.dispatch(newTitle.get) match
+      case Dispatched.Started(_) => newTitle.set(""); refusal.set(None)
+      case Dispatched.Refused(reason) => refusal.set(Some(reason))
 
   Column(
     Row(
-      TextField.bind(newTitle).placeholder("New task").onCommit(addCurrent).grow,
+      TextField.bind(newTitle).placeholder("New task").error(refusal).onCommit(addCurrent).grow,
       Button("Add").onPress(addCurrent),
       Button(model.sync)
     ).spacing(Spacing.small),
@@ -137,5 +147,5 @@ def todoList(model: TodoModel): Component[Unit] = Component("TodoList") { (scope
 @main def keyedList(): Unit =
   Application.run { app =>
     val model = TodoModel(app.child("todos"))
-    Seq(Window("Tasks", MenuBar.empty)(todoList(model)(())))
+    Windows.single("tasks")(_ => Window("Tasks", MenuBar.empty)(TodoList.bind(model).view))
   }

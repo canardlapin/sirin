@@ -25,8 +25,9 @@ final case class Semantics(
     invalid: Boolean = false,
     busy: Boolean = false,
     live: Live = Live.Off,
-    labelledBy: Option[NodeRef] = None,
-    describedBy: Option[NodeRef] = None,
+    labelledBy: Option[SemanticTarget] = None,
+    describedBy: Option[SemanticTarget] = None,
+    activeDescendant: Option[SemanticTarget] = None,
     positionInSet: Option[(Int, Int)] = None
 )
 
@@ -44,3 +45,5 @@ final case class SemanticNode(
     bounds: Rect,
     actions: Set[SemanticAction]
 )
+
+final case class SemanticTarget(ref: NodeRef, part: Option[PartId] = None)

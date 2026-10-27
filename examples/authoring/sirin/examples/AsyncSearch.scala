@@ -20,32 +20,27 @@ trait Catalog:
 final case class ResultsView(books: Seq[Book], status: String, stale: Boolean)
 
 object ResultsView:
-  def of(state: TaskState[(String, Catalog), Seq[Book]]): ResultsView = state match
-    case TaskState.Idle =>
-      ResultsView(Nil, "", stale = false)
-    case TaskState.Pending((q, _), previous) =>
-      val kept = previous.collect { case Completed(_, Outcome.Succeeded(bs), _) => bs }.getOrElse(Nil)
-      ResultsView(kept, s"Searching for “$q”…", stale = kept.nonEmpty)
-    case TaskState.Done(Completed((q, _), Outcome.Succeeded(bs), current)) =>
-      // `current` is always true under LatestOnly; it can be false under Progressive.
-      val count = if bs.isEmpty then "No results" else s"${bs.size} results"
-      ResultsView(bs, s"$count for “$q”", stale = !current)
-    case TaskState.Done(Completed(_, Outcome.Failed(e), _)) =>
-      ResultsView(Nil, s"Search failed: ${e.getMessage}", stale = false)
-    case TaskState.Done(Completed(_, Outcome.Cancelled, _)) =>
-      ResultsView(Nil, "", stale = false)
+  def of(state: TaskState[String, Seq[Book]]): ResultsView =
+    val books = state.shown.getOrElse(Nil)
+    val status =
+      if state.error.isDefined then "Search failed. Try again."
+      else if state.pending then "Searching…"
+      else state match
+        case TaskState.Done(Completed(q, Outcome.Succeeded(_), _)) => s"${books.size} results for “$q”"
+        case _ => ""
+    ResultsView(books, status, state.stale)
 
-val SearchPanel: Component[Catalog] = Component("SearchPanel") { (scope, catalog) =>
+val SearchPanel = Component.withDeps[Catalog, Unit]("SearchPanel") { (catalog, scope, _) =>
   val query    = scope.cell("")
   val selected = scope.cell(Option.empty[String]) // by ISBN, so it survives new results
 
   // The deadline belongs to the scope: disposing the panel cancels it.
   val settled = scope.debounce(query.map(_.trim), 150.millis)
 
-  // The catalog is part of the input: a different catalog is a new request.
-  val results: Signal[TaskState[(String, Catalog), Seq[Book]]] =
-    scope.latest(settled.zip(catalog), Freshness.LatestOnly) { (q, c) =>
-      if q.isEmpty then Work(Seq.empty[Book]) else c.search(q)
+  // Catalog is a stable dependency; changing it remounts this panel.
+  val results: Signal[TaskState[String, Seq[Book]]] =
+    scope.latest(settled, LatestPolicy.LatestOnly) { q =>
+      if q.isEmpty then Work(Seq.empty[Book]) else catalog.search(q)
     }
 
   val view  = results.map(ResultsView.of)
@@ -55,12 +50,11 @@ val SearchPanel: Component[Catalog] = Component("SearchPanel") { (scope, catalog
     selected.set(Some(isbn))
   }
 
-  // AWKWARD (REVIEW #8): a plain View has no activation modifier, so a
-  // selectable row is a Button, and its list-item role has to be restated.
-  def bookRow(book: Book): View =
-    Button(s"${book.title} — ${book.author}")
-      .command(open, Signal.const(book.isbn))
-      .semantics(selected.map(s => Semantics(Role.ListItem, name = Some(book.title), selected = Some(s.contains(book.isbn)))))
+  def bookRow(book: Inputs[Book]): View =
+    Text(book.map(b => s"${b.title} — ${b.author}"))
+      .activate(open, book.map(_.isbn), Role.ListItem)
+      .semantics((book, selected).mapN((b, s) =>
+        Semantics(Role.ListItem, name = Some(b.title), selected = Some(s.contains(b.isbn)))))
 
   Column(
     TextField.bind(query).label("Search the catalog").placeholder("Title, author, or ISBN"),
@@ -86,4 +80,4 @@ final class SlowCatalog(books: Seq[Book]) extends Catalog:
 
 @main def asyncSearch(): Unit =
   val catalog = SlowCatalog(Seq(Book("9780262046305", "Elements of Causal Inference", "Peters et al.")))
-  Application.run(_ => Seq(Window("Catalog", MenuBar.empty)(SearchPanel(catalog))))
+  Application.run(_ => Windows.single("catalog")(_ => Window("Catalog", MenuBar.empty)(SearchPanel.bind(catalog).view)))
