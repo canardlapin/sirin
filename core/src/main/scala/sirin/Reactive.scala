@@ -1,7 +1,8 @@
-// Provisional A-0 skeleton (VISION §4.1): public shape only, not implemented.
+// Reactive descriptions; evaluated by the headless engine. Dynamic topology is C1.2c.
 package sirin
 
 import scala.util.NotGiven
+import scala.annotation.unchecked.uncheckedVariance
 
 /** A lawful equality used to stop propagation (VISION §5.1). The default
   * rejects arrays, whose `==` is reference identity.
@@ -10,8 +11,11 @@ trait Equality[A]:
   def same(x: A, y: A): Boolean
 
 object Equality:
-  given universal[A](using NotGiven[A <:< Array[?]]): Equality[A] = (x, y) => x == y
-  def by[A, K](key: A => K): Equality[A]                          = (x, y) => key(x) == key(y)
+  given universal[A](using NotGiven[A <:< Array[?]]): Equality[A] = (x, y) => (x, y) match
+    case (a: Double, b: Double) => java.lang.Double.doubleToLongBits(a) == java.lang.Double.doubleToLongBits(b)
+    case (a: Float, b: Float) => java.lang.Float.floatToIntBits(a) == java.lang.Float.floatToIntBits(b)
+    case _ => x == y
+  def by[A, K](key: A => K)(using eq: Equality[K]): Equality[A] = (x, y) => eq.same(key(x), key(y))
 
 /** A monotonically increasing value revision. */
 opaque type Revision = Long
@@ -39,6 +43,7 @@ enum Value[+A]:
   * a transaction see staged writes, including speculative derived reads.
   */
 trait UiTxn:
+  private[sirin] def read[A](signal: Signal[A]): A
   /** Refuses the innermost attempt, or the whole transaction if none exists. */
   def require(condition: Boolean, reason: => String): Unit
 
@@ -72,19 +77,40 @@ type Action = UiTxn ?=> Unit
   * composition; reads never register dependencies.
   */
 trait Signal[+A]:
+  private[sirin] def valueEquality: Equality[A @uncheckedVariance] = Equality.universal[A]
   /** Reads the staged value of this transaction. Reading a `Failed`
     * derivation throws, which poisons the transaction; use `attempt`.
     */
-  def get(using UiTxn): A
-  def map[B](f: A => B)(using Equality[B]): Signal[B]
-  def zip[B](that: Signal[B]): Signal[(A, B)]
+  def get(using txn: UiTxn): A = txn.read(this)
+  def map[B](f: A => B)(using eq: Equality[B]): Signal[B] =
+    new Signal.Derived(Vector(this), reader => reader(this) match
+      case Value.Ok(value) => Value.Ok(f(value))
+      case Value.Failed(error) => Value.Failed(error), eq)
+  def zip[B](that: Signal[B]): Signal[(A, B)] =
+    new Signal.Derived(Vector(this, that), reader => (reader(this), reader(that)) match
+      case (Value.Ok(a), Value.Ok(b)) => Value.Ok((a, b))
+      case (Value.Failed(error), _) => Value.Failed(error)
+      case (_, Value.Failed(error)) => Value.Failed(error),
+      (x, y) => valueEquality.same(x._1, y._1) && that.valueEquality.same(x._2, y._2))
 
   /** A topology edit: the inner signal is attached between passes. */
-  def flatMap[B](f: A => Signal[B]): Signal[B]
-  def attempt: Signal[Value[A]]
+  def flatMap[B](f: A => Signal[B]): Signal[B] = new Signal.Dynamic(this, f)
+  def attempt: Signal[Value[A]] =
+    new Signal.Derived(Vector(this), reader => Value.Ok(reader(this)), (x, y) => (x, y) match
+      case (Value.Ok(a), Value.Ok(b)) => valueEquality.same(a, b)
+      case (Value.Failed(a), Value.Failed(b)) => a eq b
+      case _ => false)
 
 object Signal:
-  def const[A](value: A): Signal[A] = ???
+  private[sirin] trait Reader:
+    def apply[A](signal: Signal[A]): Value[A]
+    def revision(cell: Cell[?]): Revision
+  private[sirin] final class Constant[A](val value: A) extends Signal[A]
+  private[sirin] final class Derived[A](val inputs: Vector[Signal[?]], val compute: Reader => Value[A], val equality: Equality[A]) extends Signal[A]:
+    override private[sirin] def valueEquality: Equality[A] = equality
+  private[sirin] final class Dynamic[A, B](val input: Signal[A], val select: A => Signal[B]) extends Signal[B]
+
+  def const[A](value: A): Signal[A] = new Constant(value)
   def always: Signal[Boolean]       = const(true)
 
   extension [A, B](pair: (Signal[A], Signal[B]))

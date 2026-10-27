@@ -6,8 +6,10 @@
 interfaces have been revised; twelve positive programs plus `Neg.scala` compile.
 The current-session audit below was followed by an independent fresh-context
 review, eight fixes and bounded re-review. **A-0 provisional-authoring exit is
-met**; see `docs/design/decisions/2026-10-27-a0-independent-review.md`. Framework operations are still abstract or
-`???`; only pure value helpers and the pre-existing handle table are executable.
+met**; see `docs/design/decisions/2026-10-27-a0-independent-review.md`. That
+API checkpoint is `ef3c4f8`. The subsequent static signal/transaction core is
+now executable; see `docs/evidence/c1-static-20261027.md`. Widget, command,
+channel and mounted-scope interfaces remain skeletal.
 
 New programs: `VirtualizedRows.scala`, `DockingWorkspace.scala`,
 `StreamingImport.scala`, `FailedBinding.scala`, `MultiWindowDocument.scala`,
