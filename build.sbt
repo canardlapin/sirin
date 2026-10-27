@@ -98,6 +98,40 @@ lazy val examples = project
     Compile / scalaSource := baseDirectory.value / "authoring"
   )
 
+// P0.6/P0.7: threads, GC, re-entry and foreign-thread entry. Multithreading is
+// set explicitly. `-Dsirin.sanitize=thread` links the whole binary with
+// ThreadSanitizer, and `-Dsirin.mode=release-fast` selects an optimized build
+// (see docs/evidence/stage0/P0.6-P0.7-macos.md for both outcomes).
+lazy val probeThreads = project
+  .in(file("probes/threads"))
+  .enablePlugins(ScalaNativePlugin)
+  .settings(
+    name := "sirin-probe-threads",
+    publish / skip := true,
+    testDeps,
+    nativeConfig := {
+      val c   = nativeConfig.value
+      val sdl = (ThisBuild / vendor).value / "SDL3.xcframework" / "macos-arm64_x86_64"
+      val mode = sys.props.get("sirin.mode") match {
+        case Some("release-fast") => scala.scalanative.build.Mode.releaseFast
+        case Some("release-full") => scala.scalanative.build.Mode.releaseFull
+        case _                    => c.mode
+      }
+      val base = c
+        .withMode(mode)
+        .withMultithreading(true)
+        .withCompileOptions(c.compileOptions ++ Seq(s"-F$sdl"))
+        .withLinkingOptions(
+          c.linkingOptions ++ Seq(s"-F$sdl", "-framework", "SDL3", s"-Wl,-rpath,$sdl")
+        )
+      sys.props.get("sirin.sanitize") match {
+        case Some("thread")  => base.withSanitizer(scala.scalanative.build.Sanitizer.ThreadSanitizer)
+        case Some("address") => base.withSanitizer(scala.scalanative.build.Sanitizer.AddressSanitizer)
+        case _               => base
+      }
+    }
+  )
+
 lazy val root = project
   .in(file("."))
   .aggregate(core.jvm, core.native, engine.jvm, engine.native, testkit.jvm, testkit.native)
