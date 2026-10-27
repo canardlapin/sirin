@@ -1,0 +1,1 @@
+{"actor":"claude","entity":"bd-01M5YYQPKFQHXAA5F481BHDWYD","kind":"create","op":"20261027T151251.311521Z-p82878-c0000-r25c3-h9ef413","set":{"priority":0,"status":"open","title":"P0.1 pointer-only wgpu shim + ABI sizeof/offsetof test"},"ts":"2026-10-27T15:12:51.311521Z","v":1}
