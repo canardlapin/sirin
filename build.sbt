@@ -46,19 +46,46 @@ lazy val probeWindow = project
     publish / skip := true,
     testDeps,
     nativeConfig := {
-      val c    = nativeConfig.value
-      val v    = (ThisBuild / vendor).value
-      val wgpu = v / "wgpu-macos-aarch64"
-      val sdl  = v / "SDL3.xcframework" / "macos-arm64_x86_64"
-      c.withCompileOptions(c.compileOptions ++ Seq(s"-I$wgpu/include", s"-F$sdl"))
-        .withLinkingOptions(
-          c.linkingOptions ++ Seq(
-            s"-L$wgpu/lib", "-lwgpu_native", s"-Wl,-rpath,$wgpu/lib",
-            s"-F$sdl", "-framework", "SDL3", s"-Wl,-rpath,$sdl"
-          )
-        )
+      val c                  = nativeConfig.value
+      val (compile, linking) = vendorFlags((ThisBuild / vendor).value)
+      c.withCompileOptions(c.compileOptions ++ compile)
+        .withLinkingOptions(c.linkingOptions ++ linking)
     }
   )
+
+/** Compile and link flags for wgpu-native and SDL3, per host platform (see native/fetch.sh). */
+def vendorFlags(v: File): (Seq[String], Seq[String]) = {
+  val os = sys.props("os.name").toLowerCase
+  if (os.contains("mac")) {
+    val wgpu = v / "wgpu-macos-aarch64"
+    val sdl  = v / "SDL3.xcframework" / "macos-arm64_x86_64"
+    (
+      Seq(s"-I$wgpu/include", s"-F$sdl"),
+      Seq(
+        s"-L$wgpu/lib", "-lwgpu_native", s"-Wl,-rpath,$wgpu/lib",
+        s"-F$sdl", "-framework", "SDL3", s"-Wl,-rpath,$sdl"
+      )
+    )
+  } else if (os.contains("windows")) {
+    val wgpu = v / "wgpu-windows-x86_64"
+    val sdl  = v / "SDL3-3.4.18"
+    // Import libraries only; the DLLs must be on PATH at run time.
+    (
+      Seq(s"-I$wgpu/include", s"-I$sdl/include"),
+      Seq(s"$wgpu/lib/wgpu_native.dll.lib", s"$sdl/lib/x64/SDL3.lib")
+    )
+  } else {
+    val wgpu = v / "wgpu-linux-x86_64"
+    val sdl  = v / "sdl3-linux"
+    (
+      Seq(s"-I$wgpu/include", s"-I$sdl/include"),
+      Seq(
+        s"-L$wgpu/lib", "-lwgpu_native", s"-Wl,-rpath,$wgpu/lib",
+        s"-L$sdl/lib", "-lSDL3", s"-Wl,-rpath,$sdl/lib"
+      )
+    )
+  }
+}
 
 lazy val root = project
   .in(file("."))
