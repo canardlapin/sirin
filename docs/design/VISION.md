@@ -177,6 +177,11 @@ compile against skeletal interfaces:
 - nothing remounts accidentally,
 - nothing uses privileged internals.
 
+The first corpus and its review are in `examples/` (`examples/REVIEW.md`).
+The kernel owner's rulings on the semantic questions it raised are in
+`docs/design/decisions/2026-10-27-a0-rulings.md`, pending acceptance. Those
+rulings supersede the sections they name.
+
 Line count is not the measure. Explicit lifetime and update semantics count
 for more than brevity. **The core API is not approved because its laws
 pass; it must also express these programs cleanly.**
