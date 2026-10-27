@@ -7,3 +7,4 @@ target/
 native/vendor/
 .mote/local/
 .mote/tmp/
+.mote/authority/

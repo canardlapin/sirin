@@ -407,6 +407,12 @@ event watch for this path.
   - The AccessKit activation handler on Unix must return a tree
     synchronously. It answers from a **native-side copy of the latest
     semantics snapshot** and never blocks on the UI thread.
+- **Native extension values.** wgpu-native returns enum values defined in
+  its `wgpu.h`, which lie outside the standard `webgpu.h` set. One example
+  is `SurfaceGetCurrentTextureStatus_Occluded` (0x30001), meaning the window
+  is not visible: skip the frame and wait for expose. Bindings cover both
+  headers, and unknown statuses are reported with their value, never
+  silently treated as errors (found in P0.1/P0.2).
 - **`userdata` is a handle-table index with a generation**, never a pointer
   to a Scala object. C-held pointers are not GC roots. Inputs that C borrows
   across calls, such as ICU4X segmenter text, live in native memory.

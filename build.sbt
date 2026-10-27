@@ -32,6 +32,34 @@ lazy val testkit = crossProject(JVMPlatform, NativePlatform)
   .dependsOn(engine)
   .settings(name := "sirin-testkit", testDeps)
 
+// Stage 0 probes link pinned prebuilt native artifacts from native/vendor/
+// (fetch with native/fetch-macos.sh). They are not aggregated by root.
+lazy val vendor = settingKey[File]("Pinned native artifact directory")
+ThisBuild / vendor := (ThisBuild / baseDirectory).value / "native" / "vendor"
+
+lazy val probeWindow = project
+  .in(file("probes/window"))
+  .enablePlugins(ScalaNativePlugin)
+  .dependsOn(core.native)
+  .settings(
+    name := "sirin-probe-window",
+    publish / skip := true,
+    testDeps,
+    nativeConfig := {
+      val c    = nativeConfig.value
+      val v    = (ThisBuild / vendor).value
+      val wgpu = v / "wgpu-macos-aarch64"
+      val sdl  = v / "SDL3.xcframework" / "macos-arm64_x86_64"
+      c.withCompileOptions(c.compileOptions ++ Seq(s"-I$wgpu/include", s"-F$sdl"))
+        .withLinkingOptions(
+          c.linkingOptions ++ Seq(
+            s"-L$wgpu/lib", "-lwgpu_native", s"-Wl,-rpath,$wgpu/lib",
+            s"-F$sdl", "-framework", "SDL3", s"-Wl,-rpath,$sdl"
+          )
+        )
+    }
+  )
+
 lazy val root = project
   .in(file("."))
   .aggregate(core.jvm, core.native, engine.jvm, engine.native, testkit.jvm, testkit.native)
