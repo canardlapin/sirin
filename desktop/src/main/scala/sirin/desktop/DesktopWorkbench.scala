@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import sirin.*
 import sirin.engine.*
 import sirin.host.*
+import scala.jdk.CollectionConverters.*
 
 /** Main-thread input/application owner and a separate bounded native render owner. */
 object DesktopWorkbench:
@@ -12,16 +13,22 @@ object DesktopWorkbench:
     case CommitResult.Committed(value) => value
     case other => throw new IllegalStateException(s"$other")
   def main(args: Array[String]): Unit =
+    val mainEnteredAt=System.nanoTime()
     val root=Path.of(System.getProperty("sirin.repo", ".")).toAbsolutePath.normalize()
+    val windowStarted=System.nanoTime()
     val window=new NativeWindow("Sirin Workbench",600,360)
-    try run(window,root,args)
+    val windowSetupNanos=System.nanoTime()-windowStarted
+    try run(window,root,args,mainEnteredAt,windowSetupNanos)
     finally window.close()
     require(NativeWindow.liveWindows()==0 && NativeWindow.liveRequests()==0,"native window/request leaked")
     require(sirin.render.OffscreenGpu.liveOwners==0,"render device leaked")
-  private def run(window: NativeWindow,root: Path,args: Array[String]): Unit =
+  private def run(window: NativeWindow,root: Path,args: Array[String],mainEnteredAt: Long,windowSetupNanos: Long): Unit =
     val interactive=args.contains("interactive")
     val scenario=args.contains("scenario")
     val benchmark=args.contains("benchmark")
+    val resizeControl=args.contains("benchmark-resize-control")
+    require(!resizeControl || benchmark,"resize refusal control requires benchmark")
+    val fixture=new BenchmarkFixture
     val runtime=new HeadlessRuntime(workCapacity=8)
     var pool=Option.empty[WorkerPool]
     var renderer=Option.empty[RenderService]
@@ -30,7 +37,12 @@ object DesktopWorkbench:
     val interaction=new Interaction
     val pendingWake=new AtomicBoolean(false)
     def wake(): Unit = if pendingWake.compareAndSet(false,true) then require(window.wake(),"native wake rejected")
-    var sample=Option.empty[(String,Long)]
+    final case class PendingInput(kind: String,at: Long,event: String,target: String,label: String,handleNanos: Long)
+    var sample=Option.empty[PendingInput]
+    val phaseRows=scala.collection.mutable.ArrayBuffer.empty[Vector[String]]
+    val gcBeans=java.lang.management.ManagementFactory.getGarbageCollectorMXBeans.asScala.toVector
+    var firstPresentationNanos=0L
+    var sessionSetupNanos=0L
     var benchmarkStep=0
     val traces=scala.collection.mutable.ArrayBuffer.empty[(String,Double)]
     val warmups=scala.collection.mutable.ArrayBuffer.empty[(String,Double)]
@@ -43,11 +55,16 @@ object DesktopWorkbench:
       Files.createDirectories(runDirectory)
       val csv="phase,kind,milliseconds\n"+
         (warmups.map((k,v) => s"warmup,$k,$v")++traces.map((k,v) => s"measured,$k,$v")).mkString("\n")
+      def field(s: String): String=
+        val quote=34.toChar.toString
+        if s.exists(c => c==',' || c==34.toChar || c=='\n' || c=='\r') then quote+s.replace(quote,quote+quote)+quote else s
+      val header=Vector("step","phase","kind","event","target","label","input_to_present_ms","input_handler_ms","last_render_queue_ms","last_worker_ms","present_call_ms","after_present_ms","gc_collections","gc_ms","worker_profile","logical_width","logical_height","pixel_width","pixel_height")
+      Files.writeString(runDirectory.resolve("phases.csv"),(header+:phaseRows.toVector).map(_.map(field).mkString(",")).mkString("\n")+"\n")
       Files.writeString(runDirectory.resolve("input-to-present.csv"),csv)
       Files.writeString(root.resolve("desktop/target/input-to-present.csv"),csv)
       val status=if benchmarkFailure.nonEmpty then "failed" else if samplesComplete then "complete" else "incomplete"
       val failure=benchmarkFailure.map(e => s"${e.getClass.getName}: ${Option(e.getMessage).getOrElse("").replace('\n',' ')}").getOrElse("")
-      Files.writeString(runDirectory.resolve("receipt.txt"),s"status=$status\nsamplesComplete=$samplesComplete\ntargetsMet=$targetsMet\nsteps=$benchmarkStep\nwarmups=${warmups.size}\nmeasured=${traces.size}\nfailure=$failure\n")
+      Files.writeString(runDirectory.resolve("receipt.txt"),s"status=$status\nsamplesComplete=$samplesComplete\ntargetsMet=$targetsMet\nexpectedGeometry=${fixture.expected}\nobservedGeometry=${fixture.observed.map(_.toString).getOrElse("unobserved")}\ngeometryStable=${fixture.stable}\ngeometryChecks=${fixture.checks}\nsteps=$benchmarkStep\nwarmups=${warmups.size}\nmeasured=${traces.size}\nmainToFirstPresentationNs=$firstPresentationNanos\nwindowSetupNs=$windowSetupNanos\nrenderSessionSetupNs=$sessionSetupNanos\nfailure=$failure\n")
       println(s"benchmarkReceipt=$runDirectory status=$status targetsMet=$targetsMet")
     try
       pool=Some(runtime.scheduler.startWorkers(2))
@@ -77,6 +94,7 @@ object DesktopWorkbench:
       var scenarioStage=0;var lastFrameAt=0L;var lastGeometryAt=0L
       val deadline=System.nanoTime()+(if benchmark then 120000000000L else 30000000000L)
       def nativeInput(input: HostInput,timestamp: Long): Unit =
+        val handlingStarted=System.nanoTime()
         if input==HostInput.KeyDown(Key.Escape,Mods.none,false) then running=false
         else
           val before=interaction.state
@@ -90,7 +108,18 @@ object DesktopWorkbench:
           result match
             case CommitResult.Committed(_) =>
               if decision.changed || action.nonEmpty then
-                sample=Some((if input.isInstanceOf[HostInput.Wheel] || input==HostInput.KeyDown(Key.PageDown,Mods.none,false) then "scroll" else "action",timestamp))
+                val target=input match
+                  case HostInput.Wheel(x,y,_) => interaction.presented.targets.reverseIterator.find(t => t.kind.isInstanceOf[TargetKind.Scroll] && t.hit(x,y)).map(_.id)
+                  case _ => decision.activate.flatMap(id => interaction.presented.targets.find(_.kind==TargetKind.Button(id)).map(_.id)).orElse(interaction.state.focused)
+                def label(p: Placed): Option[String] =
+                  val own=Option.when(target.contains(p.node.id))(p.node.content).flatMap {
+                    case Content.Button(_,text,_,_,_) => Some(text)
+                    case Content.Scroll(_,_) => Some("scroll")
+                    case _ => None
+                  }
+                  own.orElse(p.children.iterator.map(label).collectFirst {case Some(value) => value})
+                val kind=if input.isInstanceOf[HostInput.Wheel] || input==HostInput.KeyDown(Key.PageDown,Mods.none,false) then "scroll" else "action"
+                sample=Some(PendingInput(kind,timestamp,input.toString,target.map(_.path.mkString("/")).getOrElse(""),current.flatMap(f => label(f.layout.root)).getOrElse(""),System.nanoTime()-handlingStarted))
             case _ => interaction.rollbackPublication(before)
       def inject(kind: Int,key: Int=0,mods: Int=0,x: Double=0,y: Double=0,delta: Double=0): Unit = window.inject(kind,key,mods,x,y,delta)
       def nextBenchmark(): Unit =
@@ -107,6 +136,7 @@ object DesktopWorkbench:
           }
         benchmarkStep+=1
       while running do
+        if benchmark then fixture.observe(BenchmarkGeometry(facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height()))
         pendingWake.set(false)
         val turn=runtime.drive(16)
         require(turn.failures.isEmpty && runtime.wakeFailures==0,s"driver failure: ${turn.failures}")
@@ -146,7 +176,18 @@ object DesktopWorkbench:
           }
           current.filter(f => coordinator.accepts(f.request)).foreach { frame =>
             val settled=frame.layout.viewports.forall(v => viewports.get(v.instance).contains(v.viewport))
-            if !recapture && settled && repaint && window.present(frame.pixels.pixelsCopy,frame.pixels.width,frame.pixels.height) then
+            var presentCallNanos=0L;var presentReturnedAt=0L
+            def present(): Boolean =
+              if benchmark then fixture.observe(BenchmarkGeometry(frame.request.payload.logicalWidth.toInt,frame.request.payload.logicalHeight.toInt,frame.pixels.width,frame.pixels.height))
+              val began=System.nanoTime()
+              val accepted=window.present(frame.pixels.pixelsCopy,frame.pixels.width,frame.pixels.height)
+              presentReturnedAt=System.nanoTime();presentCallNanos=presentReturnedAt-began
+              accepted
+            if !recapture && settled && repaint && present() then
+              if firstPresentationNanos==0 then
+                firstPresentationNanos=presentReturnedAt-mainEnteredAt
+                sessionSetupNanos=frame.sessionSetupNanos
+                println(s"startup mainToFirstPresentMs=${firstPresentationNanos/1e6} windowSetupMs=${windowSetupNanos/1e6} renderSessionSetupMs=${sessionSetupNanos/1e6}")
               presentedPayload=Some(frame.request.payload)
               val previousTargets=interaction.presented.targets
               interaction.install(InteractionSnapshot(frame.request.generation,frame.layout),frame.layout.scrollOffsets)
@@ -155,10 +196,20 @@ object DesktopWorkbench:
               recapture=true // one bounded follow-up settles focus intents and reactive focus observers
               feedbackChain=0;repaint=false;presented+=1;lastFrameAt=System.nanoTime()
               val sampled=sample.nonEmpty
-              sample.foreach { (kind,at) =>
-                val elapsed=(NativeWindow.ticks()-at)/1000000.0
+              sample.foreach { input =>
+                val kind=input.kind
+                val elapsed=(NativeWindow.ticks()-input.at)/1000000.0
+                val endpointAt=System.nanoTime()
                 val warming=benchmark && benchmarkStep<=warmupSteps
                 if warming then warmups+=((kind,elapsed)) else traces+=((kind,elapsed))
+                if benchmark then
+                  val collections=gcBeans.map(_.getCollectionCount)
+                  val gcMillis=gcBeans.map(_.getCollectionTime)
+                  phaseRows+=Vector(benchmarkStep.toString,if warming then "warmup" else "measured",kind,input.event,input.target,input.label,elapsed.toString,
+                    (input.handleNanos/1e6).toString,(frame.queueNanos/1e6).toString,(frame.workerNanos/1e6).toString,(presentCallNanos/1e6).toString,
+                    ((endpointAt-presentReturnedAt)/1e6).toString,(if collections.exists(_<0) then -1L else collections.sum).toString,
+                    (if gcMillis.exists(_<0) then -1L else gcMillis.sum).toString,frame.profile,
+                    frame.request.payload.logicalWidth.toInt.toString,frame.request.payload.logicalHeight.toInt.toString,frame.pixels.width.toString,frame.pixels.height.toString)
                 println(s"inputToPresent phase=${if warming then "warmup" else "measured"} kind=$kind ms=$elapsed")
               };sample=None
               println(s"presented=$presented generation=${frame.request.generation} renderMs=${frame.workerNanos/1000000.0} uploadBytes=${frame.programBytes} readbackBytes=${frame.readbackBytes} pixels=${frame.pixels.width}x${frame.pixels.height} feedback=$feedbacks focus=${interaction.state.focused}")
@@ -189,7 +240,8 @@ object DesktopWorkbench:
                     scenarioStage=10;inject(8)
                   case _ => ()
               if args.contains("close") && presented==1 then inject(8)
-              if benchmark && benchmarkStep<warmupSteps+200 && (benchmarkStep==0 || sampled) then nextBenchmark()
+              if resizeControl && presented==1 then window.resize(640,400)
+              if benchmark && !resizeControl && benchmarkStep<warmupSteps+200 && (benchmarkStep==0 || sampled) then nextBenchmark()
           }
         if !running then ()
         else if !interactive && !benchmark && presented>0 && (!scenario || scenarioStage==10) && System.nanoTime()-lastFrameAt>2000000000L then running=false

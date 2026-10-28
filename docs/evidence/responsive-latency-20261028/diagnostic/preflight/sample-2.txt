@@ -1,0 +1,24 @@
+Processes: 755 total, 4 running, 751 sleeping, 6800 threads 
+2026/10/28 15:38:51
+Load Avg: 10.50, 18.52, 22.34 
+CPU usage: 47.2% user, 14.11% sys, 38.85% idle 
+SharedLibs: 512M resident, 86M data, 55M linkedit.
+MemRegions: 1059807 total, 12G resident, 293M private, 2753M shared.
+PhysMem: 31G used (3661M wired, 6425M compressor), 658M unused.
+VM: 390T vsize, 5430M framework vsize, 14704100(0) swapins, 17570898(0) swapouts.
+Networks: packets: 1136852733/1114G in, 529919976/595G out.
+Disks: 4348850929/92T read, 1980219385/17T written.
+
+
+Processes: 750 total, 5 running, 745 sleeping, 6742 threads 
+2026/10/28 15:38:52
+Load Avg: 10.50, 18.52, 22.34 
+CPU usage: 58.83% user, 12.70% sys, 28.45% idle 
+SharedLibs: 512M resident, 86M data, 55M linkedit.
+MemRegions: 0 total, 0B resident, 293M private, 2753M shared.
+PhysMem: 30G used (3661M wired, 6423M compressor), 1667M unused.
+VM: 388T vsize, 5430M framework vsize, 14704100(0) swapins, 17570898(0) swapouts.
+Networks: packets: 1136857857/1114G in, 529921106/595G out.
+Disks: 4348850950/92T read, 1980220039/17T written.
+
+

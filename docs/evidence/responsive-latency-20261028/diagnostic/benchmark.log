@@ -1,0 +1,495 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+startup mainToFirstPresentMs=2374.8795 windowSetupMs=529.083834 renderSessionSetupMs=206.766792
+presented=1 generation=2 renderMs=585.000208 uploadBytes=15659680 readbackBytes=7004160 pixels=1200x720 feedback=1 focus=None
+inputToPresent phase=warmup kind=action ms=145.496541
+presented=2 generation=4 renderMs=103.128958 uploadBytes=1689152 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=warmup kind=action ms=63.77375
+presented=3 generation=5 renderMs=42.87725 uploadBytes=1579648 readbackBytes=393216 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=100.789292
+presented=4 generation=6 renderMs=89.881709 uploadBytes=1318304 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=45.738875
+presented=5 generation=7 renderMs=30.221708 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=warmup kind=action ms=44.054084
+presented=6 generation=9 renderMs=33.445583 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=32.486167
+presented=7 generation=10 renderMs=19.678042 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=warmup kind=action ms=66.910791
+presented=8 generation=12 renderMs=54.311125 uploadBytes=1429776 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=warmup kind=action ms=39.764125
+presented=9 generation=13 renderMs=32.781625 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=46.653458
+presented=10 generation=14 renderMs=38.455541 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=40.015708
+presented=11 generation=15 renderMs=31.450709 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=warmup kind=action ms=46.256125
+presented=12 generation=17 renderMs=33.388667 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=71.123667
+presented=13 generation=18 renderMs=47.295958 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=warmup kind=action ms=124.330458
+presented=14 generation=20 renderMs=100.487458 uploadBytes=1693888 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=warmup kind=action ms=51.545167
+presented=15 generation=21 renderMs=41.06825 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=50.625291
+presented=16 generation=22 renderMs=33.503042 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=49.290125
+presented=17 generation=23 renderMs=31.040042 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=warmup kind=action ms=94.007208
+presented=18 generation=25 renderMs=65.7055 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=action ms=69.047667
+presented=19 generation=26 renderMs=24.755542 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=warmup kind=action ms=71.017625
+presented=20 generation=28 renderMs=57.875625 uploadBytes=1431120 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=warmup kind=action ms=39.795709
+presented=21 generation=29 renderMs=32.316458 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=134.268375
+presented=22 generation=31 renderMs=119.449333 uploadBytes=2440368 readbackBytes=950272 pixels=1200x720 feedback=2 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=31.743083
+presented=23 generation=33 renderMs=15.35425 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=3 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=34.756583
+presented=24 generation=35 renderMs=15.419125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=4 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=30.199334
+presented=25 generation=37 renderMs=7.924542 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=5 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=39.737084
+presented=26 generation=39 renderMs=21.053375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=6 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=30.403
+presented=27 generation=41 renderMs=18.681458 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=7 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=32.356958
+presented=28 generation=43 renderMs=14.18825 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=8 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=26.511542
+presented=29 generation=45 renderMs=14.2815 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=9 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=21.878709
+presented=30 generation=47 renderMs=11.521 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=10 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=22.053083
+presented=31 generation=49 renderMs=11.0165 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=11 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=33.928084
+presented=32 generation=51 renderMs=11.140125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=12 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=27.590458
+presented=33 generation=53 renderMs=10.003042 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=13 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=29.528541
+presented=34 generation=55 renderMs=12.372583 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=14 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=19.975583
+presented=35 generation=57 renderMs=10.971542 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=15 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=14.797042
+presented=36 generation=59 renderMs=7.726333 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=16 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=28.692458
+presented=37 generation=61 renderMs=10.246083 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=17 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=22.187917
+presented=38 generation=63 renderMs=12.017 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=18 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=16.666083
+presented=39 generation=65 renderMs=8.20375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=19 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=19.743625
+presented=40 generation=67 renderMs=11.545125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=20 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=warmup kind=scroll ms=17.50325
+presented=41 generation=69 renderMs=7.16025 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=62.86475
+presented=42 generation=70 renderMs=54.516 uploadBytes=1318304 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=27.487792
+presented=43 generation=71 renderMs=23.011875 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=28.6085
+presented=44 generation=73 renderMs=23.661583 uploadBytes=1576096 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=33.282625
+presented=45 generation=74 renderMs=28.434958 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=43.669041
+presented=46 generation=76 renderMs=34.813917 uploadBytes=1429776 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=29.615166
+presented=47 generation=77 renderMs=25.163125 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=25.367916
+presented=48 generation=78 renderMs=21.031125 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=18.347417
+presented=49 generation=79 renderMs=14.260625 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=33.840667
+presented=50 generation=81 renderMs=29.370792 uploadBytes=2102448 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=28.258458
+presented=51 generation=82 renderMs=23.995208 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=46.308792
+presented=52 generation=84 renderMs=41.647833 uploadBytes=1693888 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=27.618792
+presented=53 generation=85 renderMs=22.829625 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=32.286708
+presented=54 generation=86 renderMs=27.469042 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=20.246209
+presented=55 generation=87 renderMs=16.106041 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=27.7775
+presented=56 generation=89 renderMs=22.928 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=16.461583
+presented=57 generation=90 renderMs=11.714625 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=53.243083
+presented=58 generation=92 renderMs=48.663583 uploadBytes=1692992 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=31.037292
+presented=59 generation=93 renderMs=26.933583 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=23.323167
+presented=60 generation=94 renderMs=19.173833 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=25.161667
+presented=61 generation=95 renderMs=20.497333 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=24.194084
+presented=62 generation=97 renderMs=20.027875 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=13.922
+presented=63 generation=98 renderMs=9.59175 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=52.180291
+presented=64 generation=100 renderMs=47.504375 uploadBytes=1693888 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=34.355584
+presented=65 generation=101 renderMs=27.846458 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=32.146459
+presented=66 generation=102 renderMs=27.18725 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=21.063042
+presented=67 generation=103 renderMs=17.032458 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=28.375333
+presented=68 generation=105 renderMs=24.072 uploadBytes=1576096 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=35.293792
+presented=69 generation=106 renderMs=31.211458 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=68.965209
+presented=70 generation=108 renderMs=46.566667 uploadBytes=1693888 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=30.08325
+presented=71 generation=109 renderMs=25.522 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=31.877375
+presented=72 generation=110 renderMs=27.192125 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=21.355
+presented=73 generation=111 renderMs=17.388375 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=27.164542
+presented=74 generation=113 renderMs=22.624875 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=13.102875
+presented=75 generation=114 renderMs=9.543084 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=150.969625
+presented=76 generation=116 renderMs=146.969625 uploadBytes=3851568 readbackBytes=1441792 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=37.264334
+presented=77 generation=117 renderMs=33.03575 uploadBytes=2104224 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=68.029959
+presented=78 generation=118 renderMs=63.724083 uploadBytes=1318304 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=21.333167
+presented=79 generation=119 renderMs=17.070416 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=26.813417
+presented=80 generation=121 renderMs=22.7925 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=13.544292
+presented=81 generation=122 renderMs=9.879292 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=45.20425
+presented=82 generation=124 renderMs=40.027583 uploadBytes=1343120 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=37.056166
+presented=83 generation=125 renderMs=31.805958 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=36.435834
+presented=84 generation=126 renderMs=28.95375 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=29.37625
+presented=85 generation=127 renderMs=24.268 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=31.333875
+presented=86 generation=129 renderMs=26.712625 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=16.710916
+presented=87 generation=130 renderMs=10.694166 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=41.550708
+presented=88 generation=132 renderMs=35.235792 uploadBytes=1345264 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=33.147667
+presented=89 generation=133 renderMs=29.020209 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=28.0635
+presented=90 generation=134 renderMs=21.680958 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=30.627167
+presented=91 generation=135 renderMs=25.579416 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=26.877416
+presented=92 generation=137 renderMs=22.473666 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=18.756916
+presented=93 generation=138 renderMs=12.492958 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=37.683125
+presented=94 generation=140 renderMs=29.144167 uploadBytes=1081824 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=26.236541
+presented=95 generation=141 renderMs=21.477625 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=22.217959
+presented=96 generation=142 renderMs=17.647375 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=21.599791
+presented=97 generation=143 renderMs=17.58925 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=24.857625
+presented=98 generation=145 renderMs=21.128208 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=12.712667
+presented=99 generation=146 renderMs=7.630209 uploadBytes=787744 readbackBytes=196608 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=36.096625
+presented=100 generation=148 renderMs=32.056042 uploadBytes=1345936 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=25.215458
+presented=101 generation=149 renderMs=21.563917 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=21.846792
+presented=102 generation=150 renderMs=17.352083 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=18.27275
+presented=103 generation=151 renderMs=14.273958 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=23.455667
+presented=104 generation=153 renderMs=17.520084 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=27.323708
+presented=105 generation=154 renderMs=22.716333 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=35.402916
+presented=106 generation=156 renderMs=27.54275 uploadBytes=1081600 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=28.302375
+presented=107 generation=157 renderMs=24.215291 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=21.031875
+presented=108 generation=158 renderMs=17.2625 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=17.557917
+presented=109 generation=159 renderMs=14.068834 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=22.442458
+presented=110 generation=161 renderMs=19.030958 uploadBytes=1313808 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=23.591583
+presented=111 generation=162 renderMs=19.913958 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=33.990583
+presented=112 generation=164 renderMs=29.251334 uploadBytes=1345488 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=25.21825
+presented=113 generation=165 renderMs=21.086209 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=22.471333
+presented=114 generation=166 renderMs=18.454417 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=23.81325
+presented=115 generation=167 renderMs=19.41825 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=27.21
+presented=116 generation=169 renderMs=21.489709 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=34.015958
+presented=117 generation=170 renderMs=28.530708 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=41.00975
+presented=118 generation=172 renderMs=35.998042 uploadBytes=1345040 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=28.258542
+presented=119 generation=173 renderMs=23.854333 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=24.857167
+presented=120 generation=174 renderMs=20.988166 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=20.683292
+presented=121 generation=175 renderMs=16.944958 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=28.386833
+presented=122 generation=177 renderMs=23.798375 uploadBytes=1576096 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=32.682291
+presented=123 generation=178 renderMs=26.65375 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=32.977958
+presented=124 generation=180 renderMs=28.765667 uploadBytes=1345488 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=29.604625
+presented=125 generation=181 renderMs=25.021959 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=25.820542
+presented=126 generation=182 renderMs=21.684291 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=21.763917
+presented=127 generation=183 renderMs=15.956625 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=37.019833
+presented=128 generation=185 renderMs=29.928209 uploadBytes=1576096 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=31.294292
+presented=129 generation=186 renderMs=24.373459 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=39.617375
+presented=130 generation=188 renderMs=33.736042 uploadBytes=1345488 readbackBytes=393216 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=32.645916
+presented=131 generation=189 renderMs=26.654958 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=26.126583
+presented=132 generation=190 renderMs=21.309708 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=18.585958
+presented=133 generation=191 renderMs=13.781958 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=26.275541
+presented=134 generation=193 renderMs=21.917542 uploadBytes=1313808 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=27.413458
+presented=135 generation=194 renderMs=22.730542 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=52.427833
+presented=136 generation=196 renderMs=47.662917 uploadBytes=1698880 readbackBytes=524288 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=30.4825
+presented=137 generation=197 renderMs=24.678 uploadBytes=1841936 readbackBytes=458752 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=27.335459
+presented=138 generation=198 renderMs=22.376417 uploadBytes=1051520 readbackBytes=262144 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=26.483833
+presented=139 generation=199 renderMs=20.58075 uploadBytes=1314080 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=action ms=24.016833
+presented=140 generation=201 renderMs=19.644584 uploadBytes=1313808 readbackBytes=327680 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(control, 80)))
+inputToPresent phase=measured kind=action ms=33.732458
+presented=141 generation=202 renderMs=25.367542 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=115.302417
+presented=142 generation=204 renderMs=107.324666 uploadBytes=2441824 readbackBytes=950272 pixels=1200x720 feedback=22 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=21.069583
+presented=143 generation=206 renderMs=10.225542 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=23 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=21.923917
+presented=144 generation=208 renderMs=14.31475 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=24 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=22.929458
+presented=145 generation=210 renderMs=14.216375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=25 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=24.601708
+presented=146 generation=212 renderMs=13.082667 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=26 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.718542
+presented=147 generation=214 renderMs=7.25575 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=27 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=12.999708
+presented=148 generation=216 renderMs=6.725291 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=28 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.619542
+presented=149 generation=218 renderMs=7.024792 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=29 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=29.103333
+presented=150 generation=220 renderMs=14.114792 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=30 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=33.56675
+presented=151 generation=222 renderMs=13.604042 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=31 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=31.867042
+presented=152 generation=224 renderMs=13.716541 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=32 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=29.160458
+presented=153 generation=226 renderMs=13.853458 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=33 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=43.378125
+presented=154 generation=228 renderMs=14.140709 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=34 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=40.456292
+presented=155 generation=230 renderMs=19.623334 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=35 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=43.641709
+presented=156 generation=232 renderMs=30.225792 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=36 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=25.363
+presented=157 generation=234 renderMs=13.4865 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=37 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=25.490583
+presented=158 generation=236 renderMs=9.211708 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=38 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=26.7285
+presented=159 generation=238 renderMs=13.566292 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=39 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=30.342
+presented=160 generation=240 renderMs=16.705917 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=40 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=29.353791
+presented=161 generation=242 renderMs=16.751167 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=41 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=30.93825
+presented=162 generation=244 renderMs=16.963375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=42 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=25.229584
+presented=163 generation=246 renderMs=13.7025 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=43 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=27.772042
+presented=164 generation=248 renderMs=12.63025 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=44 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=24.622125
+presented=165 generation=250 renderMs=15.156166 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=45 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=26.945292
+presented=166 generation=252 renderMs=15.135667 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=46 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=25.695
+presented=167 generation=254 renderMs=13.264583 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=47 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=27.181292
+presented=168 generation=256 renderMs=16.978584 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=48 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=40.618709
+presented=169 generation=258 renderMs=22.770792 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=49 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=22.862334
+presented=170 generation=260 renderMs=12.193041 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=50 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.985375
+presented=171 generation=262 renderMs=7.244333 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=51 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.760292
+presented=172 generation=264 renderMs=6.890709 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=52 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=21.513875
+presented=173 generation=266 renderMs=7.396667 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=53 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.019083
+presented=174 generation=268 renderMs=8.326542 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=54 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=17.341709
+presented=175 generation=270 renderMs=10.702458 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=55 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=20.568041
+presented=176 generation=272 renderMs=13.581125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=56 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=21.41225
+presented=177 generation=274 renderMs=13.329917 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=57 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.446125
+presented=178 generation=276 renderMs=7.300958 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=58 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.336
+presented=179 generation=278 renderMs=8.384708 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=59 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=20.01025
+presented=180 generation=280 renderMs=9.660917 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=60 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=20.964292
+presented=181 generation=282 renderMs=12.75375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=61 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.653125
+presented=182 generation=284 renderMs=8.999333 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=62 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.882042
+presented=183 generation=286 renderMs=10.144708 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=63 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=17.766208
+presented=184 generation=288 renderMs=11.029083 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=64 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=22.737166
+presented=185 generation=290 renderMs=15.140375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=65 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.881459
+presented=186 generation=292 renderMs=10.685917 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=66 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=20.295
+presented=187 generation=294 renderMs=12.376625 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=67 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.629
+presented=188 generation=296 renderMs=8.720458 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=68 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.074084
+presented=189 generation=298 renderMs=11.209916 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=69 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.212458
+presented=190 generation=300 renderMs=8.821333 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=70 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.298959
+presented=191 generation=302 renderMs=7.290916 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=71 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.078667
+presented=192 generation=304 renderMs=9.082375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=72 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.17475
+presented=193 generation=306 renderMs=8.17725 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=73 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=13.178125
+presented=194 generation=308 renderMs=6.955417 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=74 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.442
+presented=195 generation=310 renderMs=10.314875 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=75 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.230208
+presented=196 generation=312 renderMs=11.72675 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=76 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.333291
+presented=197 generation=314 renderMs=10.542417 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=77 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=17.036458
+presented=198 generation=316 renderMs=8.881125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=78 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=13.818083
+presented=199 generation=318 renderMs=6.841458 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=79 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.10675
+presented=200 generation=320 renderMs=8.840625 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=80 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=13.914916
+presented=201 generation=322 renderMs=7.486583 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=81 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.291125
+presented=202 generation=324 renderMs=8.454417 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=82 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.369166
+presented=203 generation=326 renderMs=7.802708 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=83 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=17.041833
+presented=204 generation=328 renderMs=10.295125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=84 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.466292
+presented=205 generation=330 renderMs=11.419541 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=85 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=21.778167
+presented=206 generation=332 renderMs=12.198458 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=86 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=20.175041
+presented=207 generation=334 renderMs=12.516459 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=87 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.099875
+presented=208 generation=336 renderMs=7.486125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=88 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.541792
+presented=209 generation=338 renderMs=7.090959 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=89 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=13.762666
+presented=210 generation=340 renderMs=7.671375 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=90 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=18.3105
+presented=211 generation=342 renderMs=9.653417 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=91 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=22.610625
+presented=212 generation=344 renderMs=11.856958 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=92 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=23.120084
+presented=213 generation=346 renderMs=16.203167 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=93 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.68775
+presented=214 generation=348 renderMs=13.597583 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=94 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=18.70225
+presented=215 generation=350 renderMs=10.994459 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=95 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.284583
+presented=216 generation=352 renderMs=11.269125 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=96 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.638709
+presented=217 generation=354 renderMs=10.358167 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=97 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.558792
+presented=218 generation=356 renderMs=7.785708 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=98 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=18.765667
+presented=219 generation=358 renderMs=8.124 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=99 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.630875
+presented=220 generation=360 renderMs=7.328291 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=100 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=21.2475
+presented=221 generation=362 renderMs=12.047417 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=101 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=20.05375
+presented=222 generation=364 renderMs=9.792084 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=102 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=13.209333
+presented=223 generation=366 renderMs=7.133166 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=103 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=18.935542
+presented=224 generation=368 renderMs=11.802333 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=104 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=18.198209
+presented=225 generation=370 renderMs=9.937167 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=105 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.299125
+presented=226 generation=372 renderMs=9.220291 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=106 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.517708
+presented=227 generation=374 renderMs=9.226625 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=107 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=16.064291
+presented=228 generation=376 renderMs=8.510958 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=108 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.257666
+presented=229 generation=378 renderMs=7.745417 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=109 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.482917
+presented=230 generation=380 renderMs=7.785041 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=110 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.800667
+presented=231 generation=382 renderMs=13.381834 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=111 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=15.007084
+presented=232 generation=384 renderMs=9.113 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=112 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=14.652709
+presented=233 generation=386 renderMs=8.820917 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=113 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=12.879166
+presented=234 generation=388 renderMs=7.251542 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=114 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=17.77975
+presented=235 generation=390 renderMs=7.87175 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=115 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=18.070958
+presented=236 generation=392 renderMs=6.663833 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=116 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=22.205791
+presented=237 generation=394 renderMs=12.310584 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=117 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=24.512792
+presented=238 generation=396 renderMs=15.426292 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=118 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=21.907375
+presented=239 generation=398 renderMs=8.000667 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=119 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=19.610292
+presented=240 generation=400 renderMs=6.782667 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=120 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=43.540125
+presented=241 generation=402 renderMs=15.194791 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=121 focus=Some(NodeId(Vector(scroll, 88)))
+latency kind=scroll n=100 p50=19.284583 p95=40.456292 p99=43.641709 max=115.302417 overP95Budget=1 accepted=true
+latency kind=action n=100 p50=27.7775 p95=52.427833 p99=68.965209 max=150.969625 overP95Budget=7 accepted=false
+benchmarkReceipt=/private/tmp/sirin-responsive-20261028/desktop/target/benchmarks/run-1793216341809-4773536193195625 status=failed targetsMet=false
+renderSession shaped=41 tileHits=10752 tileMisses=127 baseCache=TileCacheStats(72,1048320,32,3105504) compositeCache=TileCacheStats(72,1048320,32,8726608) resources=GpuResourceStats(64,11832112,198815040)
+Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: frozen warmed latency targets missed; receipt retained
+	at scala.Predef$.require(Predef.scala:337)
+	at sirin.desktop.DesktopWorkbench$.run(DesktopWorkbench.scala:272)
+	at sirin.desktop.DesktopWorkbench$.main(DesktopWorkbench.scala:21)
+	at sirin.desktop.DesktopWorkbench.main(DesktopWorkbench.scala)

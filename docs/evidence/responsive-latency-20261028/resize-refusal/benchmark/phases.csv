@@ -1,0 +1,1 @@
+step,phase,kind,event,target,label,input_to_present_ms,input_handler_ms,last_render_queue_ms,last_worker_ms,present_call_ms,after_present_ms,gc_collections,gc_ms,worker_profile,logical_width,logical_height,pixel_width,pixel_height

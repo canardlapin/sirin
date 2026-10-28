@@ -1,0 +1,67 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-responsive-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-responsive-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-responsive-20261028/)
+[info] compiling 2 Scala sources to /private/tmp/sirin-responsive-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-responsive-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-responsive-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 2.249s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 8 total 2.269s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.827s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.827s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.043s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.043s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.02s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.02s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 0.013s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 4 total 0.013s
+[info] Passed: Total 16, Failed 0, Errors 0, Passed 16
+[success] Total time: 17 s, completed Oct 28, 2026, 3:26:08 p.m.
+[info] running (fork) sirin.desktop.DesktopWorkbench scenario
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/target/bg-jobs/sbt_ad40e358/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] startup mainToFirstPresentMs=2459.188541 windowSetupMs=738.754875 renderSessionSetupMs=111.620333
+[info] presented=1 generation=2 renderMs=681.479833 uploadBytes=15659680 readbackBytes=7004160 pixels=1200x720 feedback=1 focus=None
+[info] inputToPresent phase=measured kind=action ms=118.138083
+[info] presented=2 generation=4 renderMs=80.297667 uploadBytes=1054656 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+[info] inputToPresent phase=measured kind=action ms=67.915708
+[info] presented=3 generation=5 renderMs=46.128958 uploadBytes=634496 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+[info] presented=4 generation=6 renderMs=48.345667 uploadBytes=1585408 readbackBytes=393216 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 68)))
+[info] inputToPresent phase=measured kind=action ms=279.19825
+[info] presented=5 generation=7 renderMs=256.049125 uploadBytes=4883840 readbackBytes=2097152 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 68)))
+[info] presented=6 generation=8 renderMs=32.78975 uploadBytes=2363232 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+[info] inputToPresent phase=measured kind=scroll ms=203.751291
+[info] presented=7 generation=10 renderMs=173.37525 uploadBytes=3199584 readbackBytes=1212416 pixels=1200x720 feedback=2 focus=Some(NodeId(Vector(scroll, 88)))
+[info] presented=8 generation=12 renderMs=426.039542 uploadBytes=18441424 readbackBytes=8192000 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(scroll, 88)))
+[info] presented=9 generation=13 renderMs=180.567333 uploadBytes=4579488 readbackBytes=1835008 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(scroll, 88)))
+[info] presented=10 generation=14 renderMs=37.06225 uploadBytes=2629760 readbackBytes=655360 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(control, 143)))
+[info] inputToPresent phase=measured kind=action ms=59.727292
+[info] presented=11 generation=15 renderMs=45.695167 uploadBytes=300960 readbackBytes=131072 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(control, 143)))
+[info] hostPresentations=11 feedbackPasses=3 nativeWakeFailures=0 driver=DriverSnapshot(1,2,65,0,0,0,0,None,66)
+[info] renderSession shaped=48 tileHits=396 tileMisses=173 baseCache=TileCacheStats(71,1040384,32,2563888) compositeCache=TileCacheStats(71,1040384,32,8039648) resources=GpuResourceStats(64,10603536,55332528)
+[success] Total time: 6 s, completed Oct 28, 2026, 3:26:14 p.m.
+[warn] multiple main classes detected: run 'show discoveredMainClasses' to see the list
+[success] Total time: 12 s, completed Oct 28, 2026, 3:26:25 p.m.

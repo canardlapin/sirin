@@ -14,7 +14,7 @@ sealed trait FrameOutput:
   def layout: LayoutResult
 final case class LayoutFeedback(request: FrameRequest,layout: LayoutResult) extends FrameOutput
 final case class RenderedFrame(request: FrameRequest, layout: LayoutResult, pixels: ImageSnapshot,
-    programBytes: Long, readbackBytes: Long, maskBytes: Long, workerNanos: Long, worker: String, tiles: Int, capture: Path,profile: String="") extends FrameOutput
+    programBytes: Long, readbackBytes: Long, maskBytes: Long, workerNanos: Long, worker: String, tiles: Int, capture: Path,profile: String="",queueNanos: Long=0,sessionSetupNanos: Long=0) extends FrameOutput
 
 object DevelopmentTheme extends Theme:
   def reducedMotion: Boolean = true
@@ -41,7 +41,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128) ex
   private lazy val bytes=Vector("NotoSans-Regular.ttf","NotoSansHebrew-Regular.ttf","NotoNaskhArabic-Regular.ttf","NotoSansDevanagari-Regular.ttf")
     .map(name => FontData.copy(Files.readAllBytes(fontRoot.resolve(name))))
   private val gpu=try OffscreenGpu.open() catch case e: Throwable => {unicode.close();throw e}
-  private val tiles=new sirin.graphics.desktop.TileCache(gpu,raster,tileEdge,32,24L*1024*1024)
+  private val tiles=new sirin.graphics.desktop.TileCache(gpu,raster,tileEdge,32,24L*1024*1024,onImageEvicted=image => composite.invalidateSource(image))
   private val composite=new sirin.graphics.desktop.TileCache(gpu,raster,tileEdge,32,24L*1024*1024)
   private var previousBase=Option.empty[(FramePayload,LayoutResult,sirin.graphics.RenderTarget)]
   var shaped=0L
@@ -119,7 +119,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128) ex
     val capture=captureRoot.resolve(s"frame-${request.generation}.png")
     if java.lang.Boolean.getBoolean("sirin.capture") then FrameWorker.save(result.image,capture)
     RenderedFrame(request,layout,result.image,result.programBytes,result.readbackBytes,result.maskBytes,System.nanoTime()-began,Thread.currentThread().getName,result.tiles,capture,s"layoutMs=${layoutNanos/1e6} drawingMs=${drawingNanos/1e6} base[$baseProfile] overlay[${composite.lastProfile}]")
-  def stats: String = s"shaped=$shaped tileHits=${tiles.hits} tileMisses=${tiles.misses} resources=${gpu.resourceStats}"
+  def stats: String = s"shaped=$shaped tileHits=${tiles.hits} tileMisses=${tiles.misses} baseCache=${tiles.stats} compositeCache=${composite.stats} resources=${gpu.resourceStats}"
   def close(): Unit =
     try {tiles.close();composite.close()}
     finally
@@ -146,7 +146,7 @@ object FrameWorker:
   * This is a backend render service, not an application Work policy.
   */
 final class RenderService(fontRoot: Path,captureRoot: Path,wake: () => Unit,factory: Option[() => RenderBackend]=None) extends AutoCloseable:
-  private val queue=new java.util.concurrent.ArrayBlockingQueue[Option[FrameRequest]](1)
+  private val queue=new java.util.concurrent.ArrayBlockingQueue[Option[(FrameRequest,Long)]](1)
   private val result=new java.util.concurrent.atomic.AtomicReference[Option[(Long,Either[Throwable,FrameOutput])]](None)
   private val latest=new java.util.concurrent.atomic.AtomicLong(0)
   private val stopped=new java.util.concurrent.atomic.AtomicBoolean(false)
@@ -157,14 +157,21 @@ final class RenderService(fontRoot: Path,captureRoot: Path,wake: () => Unit,fact
   private def loop(): Unit =
     var session=Option.empty[RenderBackend]
     try
+      val setupStarted=System.nanoTime()
       session=Some(factory.fold[RenderBackend](new RenderSession(fontRoot,captureRoot))(_()))
+      val setupNanos=System.nanoTime()-setupStarted
       var running=true
       while running do
         queue.take() match
           case None => running=false
-          case Some(request) =>
-            val value=try Right(session.get.render(request,() => stopped.get() || latest.get()!=request.generation))
-              catch case e: Throwable => Left(e)
+          case Some((request,submittedAt)) =>
+            val startedAt=System.nanoTime()
+            val value=try
+              val rendered=session.get.render(request,() => stopped.get() || latest.get()!=request.generation)
+              Right(rendered match
+                case frame: RenderedFrame => frame.copy(queueNanos=startedAt-submittedAt,sessionSetupNanos=setupNanos)
+                case other => other)
+            catch case e: Throwable => Left(e)
             val notify=synchronized {
               if !stopped.get() && latest.get()==request.generation then {result.set(Some((request.generation,value)));true} else false
             }
@@ -183,7 +190,7 @@ final class RenderService(fontRoot: Path,captureRoot: Path,wake: () => Unit,fact
     require(!stopped.get(),"renderer retired")
     Option(fatal.get()).foreach(throw _)
     require(thread.isAlive,"render owner terminated")
-    latest.set(request.generation);queue.clear();result.set(None);require(queue.offer(Some(request)))
+    latest.set(request.generation);queue.clear();result.set(None);require(queue.offer(Some((request,System.nanoTime()))))
   }
   def poll(): Option[(Long,Either[Throwable,FrameOutput])] = result.getAndSet(None)
   private[desktop] def awaitStopped(millis: Long): Boolean = {thread.join(millis); !thread.isAlive}

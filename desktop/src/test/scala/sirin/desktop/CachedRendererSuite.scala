@@ -99,3 +99,73 @@ class CachedRendererSuite extends munit.FunSuite:
     finally session.close()
     assertEquals(OffscreenGpu.liveOwners,0)
   }
+  test("reverted variants reuse owned pixels even after their GPU programs evict") {
+    val gpu=OffscreenGpu.open()
+    val cache=new TileCache(gpu,(_,_,_,_) => fail("no glyphs"),32,maxPrograms=2)
+    def prepared(color: Color)=DrawingPreparation.prepare(Drawing.record(_.fill(Path.rectangle(Rect(0,0,80,64)),Paint.Solid(color))),gpu.target(80,64,1)).toOption.get
+    try
+      val red=prepared(Color(1,0,0));val blue=prepared(Color(0,0,1))
+      val first=cache.render(red,() => false)
+      cache.render(blue,() => false)
+      val before=gpu.resourceStats.uploadedBytes
+      val reverted=cache.render(red,() => false)
+      assertEquals(reverted.image.pixelsCopy.toVector,first.image.pixelsCopy.toVector)
+      assertEquals(reverted.programBytes,0L);assertEquals(reverted.readbackBytes,0L)
+      assertEquals(gpu.resourceStats.uploadedBytes,before)
+      assertEquals(cache.snapshots.size,6)
+      assert(cache.stats.reservedPixels<=1048576 && cache.stats.programs<=2)
+    finally {cache.close();gpu.close()}
+    assertEquals(OffscreenGpu.liveOwners,0)
+  }
+  test("pixel capacity evicts inactive variants and resize retires all old snapshots") {
+    val gpu=OffscreenGpu.open()
+    var retired=0
+    val cache=new TileCache(gpu,(_,_,_,_) => fail("no glyphs"),32,maxReadbackPixels=80*64,onImageEvicted=_ => retired+=1)
+    try
+      for index <- 0 until 12 do
+        val color=Color(index/12.0,0.2,0.3)
+        val drawing=Drawing.record(_.fill(Path.rectangle(Rect(0,0,80,64)),Paint.Solid(color)))
+        val prepared=DrawingPreparation.prepare(drawing,gpu.target(80,64,1)).toOption.get
+        val frame=cache.render(prepared,() => false)
+        assertEquals(frame.image.pixelsCopy.toVector,gpu.render(PixelProgram.compile(prepared)).pixelsCopy.toVector)
+        assertEquals(cache.stats.reservedPixels,5120L);assert(cache.stats.entries<=6)
+      assert(retired>=66)
+      val small=DrawingPreparation.prepare(Drawing.empty,gpu.target(32,32,1)).toOption.get
+      cache.render(small,() => false)
+      assertEquals(cache.stats.entries,1);assertEquals(cache.stats.reservedPixels,1024L)
+    finally {cache.close();gpu.close()}
+    assertEquals(OffscreenGpu.liveOwners,0)
+  }
+  test("entry cap evicts old tiny variants without retaining native inventory") {
+    val gpu=OffscreenGpu.open()
+    val cache=new TileCache(gpu,(_,_,_,_) => fail("no glyphs"),32,maxPrograms=2)
+    try
+      for index <- 0 until 260 do
+        val drawing=Drawing.record(_.fill(Path.rectangle(Rect(0,0,1,1)),Paint.Solid(Color(index/260.0,0.2,0.3))))
+        cache.render(DrawingPreparation.prepare(drawing,gpu.target(1,1,1)).toOption.get,() => false)
+        assert(cache.stats.entries<=256 && cache.stats.reservedPixels<=256 && cache.stats.programs<=2)
+      assertEquals(cache.stats.entries,256)
+    finally {cache.close();gpu.close()}
+    assertEquals(OffscreenGpu.liveOwners,0)
+  }
+  test("base snapshot eviction immediately invalidates composite sources and programs") {
+    val gpu=OffscreenGpu.open()
+    val composite=new TileCache(gpu,(_,_,_,_) => fail("no glyphs"),32)
+    val base=new TileCache(gpu,(_,_,_,_) => fail("no glyphs"),32,maxReadbackPixels=1024,onImageEvicted=composite.invalidateSource)
+    def solid(color: Color)=DrawingPreparation.prepare(Drawing.record(_.fill(Path.rectangle(Rect(0,0,32,32)),Paint.Solid(color))),gpu.target(32,32,1)).toOption.get
+    def compose(): TileReceipt =
+      val image=base.snapshots.head._2
+      val drawing=Drawing.record(_.image(image.full,Rect(0,0,32,32),Sampling.Nearest))
+      composite.render(DrawingPreparation.prepare(drawing,gpu.target(32,32,1)).toOption.get,() => false)
+    try
+      base.render(solid(Color(1,0,0)),() => false);compose()
+      assertEquals(composite.stats.entries,1)
+      base.render(solid(Color(0,0,1)),() => false)
+      assertEquals(composite.stats.entries,0);assertEquals(composite.stats.programs,0)
+      val blue=compose().image.pixelsCopy
+      assertEquals(blue(2)&255,255)
+      base.close()
+      assertEquals(composite.stats.entries,0);assertEquals(gpu.resourceStats.programs,0)
+    finally {base.close();composite.close();gpu.close()}
+    assertEquals(OffscreenGpu.liveOwners,0)
+  }

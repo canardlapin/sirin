@@ -1,0 +1,14 @@
+status=failed
+samplesComplete=false
+targetsMet=false
+expectedGeometry=600x360logical/1200x720physical
+observedGeometry=640x400logical/1280x800physical
+geometryStable=false
+geometryChecks=13
+steps=0
+warmups=0
+measured=0
+mainToFirstPresentationNs=1064087333
+windowSetupNs=164465791
+renderSessionSetupNs=36521750
+failure=java.lang.IllegalArgumentException: requirement failed: benchmark fixture changed: expected=600x360logical/1200x720physical observed=640x400logical/1280x800physical

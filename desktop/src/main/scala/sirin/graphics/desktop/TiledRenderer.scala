@@ -74,16 +74,28 @@ object TiledRenderer:
       programBytes+=program.uploadBytes;readback+=program.readbackBytes;mask+=program.maskBytes;count+=1
     TileReceipt(ImageSnapshot.copyRgba8(width,height,output),programBytes,readback,mask,count)
 
-/** Session-local LRU. Signatures include every pixel-affecting prepared value. */
-final class TileCache(gpu: OffscreenGpu,rasterize: (ResolvedFont,Int,Double,Int) => GlyphRaster,edge: Int=128,maxPrograms: Int=64,maxBytes: Long=48L*1024*1024) extends AutoCloseable:
-  private final case class Entry(signature: Vector[Any],var program: Option[sirin.render.RetainedProgram],var image: Option[ImageSnapshot],bytes: Long)
-  private val entries=scala.collection.mutable.LinkedHashMap.empty[(Int,Int),Entry]
+final case class TileCacheStats(entries: Int,reservedPixels: Long,programs: Int,programBytes: Long)
+
+/** Owner-confined bounded variants. Only the active position map composes a frame. */
+final class TileCache(gpu: OffscreenGpu,rasterize: (ResolvedFont,Int,Double,Int) => GlyphRaster,
+    edge: Int=128,maxPrograms: Int=64,maxBytes: Long=48L*1024*1024,
+    maxReadbackPixels: Int=1048576,onImageEvicted: ImageSnapshot => Unit = _ => ()) extends AutoCloseable:
+  private final class Entry(val position: (Int,Int),val signature: Vector[Any],val sources: Vector[ImageSnapshot],
+      val pixels: Int,val bytes: Long,var program: Option[sirin.render.RetainedProgram],var image: Option[ImageSnapshot])
+  private val owner=Thread.currentThread()
+  private val entries=scala.collection.mutable.LinkedHashSet.empty[Entry]
+  private val variants=scala.collection.mutable.Map.empty[(Int,Int),scala.collection.mutable.ArrayBuffer[Entry]]
+  private val active=scala.collection.mutable.LinkedHashMap.empty[(Int,Int),Entry]
   private var used=0L
+  private var reservedPixels=0L
   private var target=Option.empty[RenderTarget]
   require(maxPrograms>0 && maxPrograms<=64 && maxBytes>0 && maxBytes<=48L*1024*1024,"cache inventory budgets")
+  require(maxReadbackPixels>0 && maxReadbackPixels<=1048576,"cache readback pixel budget")
   require(edge>=32 && edge<=192,"tile edge budget")
   var lastProfile=""
   var hits=0L;var misses=0L
+  private def check(): Unit=require(Thread.currentThread() eq owner,"tile cache thread mismatch")
+  def stats: TileCacheStats={check();TileCacheStats(entries.size,reservedPixels,entries.count(_.program.nonEmpty),used)}
   private def stripEmptyMasks(d: PreparedDrawing): PreparedDrawing =
     val commands=d.commands.flatMap {
       case PreparedCommand.Glyphs(run,origin,color,matrix,clips) =>
@@ -99,28 +111,45 @@ final class TileCache(gpu: OffscreenGpu,rasterize: (ResolvedFont,Int,Double,Int)
     case PreparedCommand.Glyphs(run,origin,color,matrix,clips) => (run.font,run.glyphs,origin,color,matrix,clips)
     case other => other
   }
-  private def dropProgram(position: (Int,Int)): Unit = entries.get(position).foreach { e =>
+  private def dropProgram(e: Entry): Unit =
     e.program.foreach { p => used-=e.bytes;p.close() };e.program=None
-  }
-  private def remove(position: (Int,Int)): Unit = {dropProgram(position);entries.remove(position);()}
-  def close(): Unit = { entries.keys.toVector.foreach(remove);target=None }
-  def snapshots: Vector[(Rect,ImageSnapshot)] = entries.iterator.collect {
-    case ((x,y),e) if e.image.nonEmpty =>
+  private def remove(e: Entry): Unit =
+    dropProgram(e)
+    entries.remove(e);reservedPixels-=e.pixels
+    variants.get(e.position).foreach { list =>
+      list.filterInPlace(_ ne e)
+      if list.isEmpty then variants.remove(e.position)
+    }
+    active.get(e.position).filter(_ eq e).foreach(_ => active.remove(e.position))
+    e.image.foreach(onImageEvicted);e.image=None
+  /** Called by the base-image owner before an evicted source can escape its budget. */
+  def invalidateSource(source: ImageSnapshot): Unit =
+    check()
+    entries.iterator.filter(_.sources.exists(_ eq source)).toVector.foreach(remove)
+  def close(): Unit =
+    check();entries.toVector.foreach(remove);target=None;active.clear()
+  def snapshots: Vector[(Rect,ImageSnapshot)] =
+    check()
+    active.iterator.map { case ((x,y),e) =>
       val image=e.image.get;(Rect(x,y,image.width,image.height),image)
-  }.toVector
+    }.toVector
   def render(drawing: PreparedDrawing,cancelled: () => Boolean): TileReceipt =
+    check()
+    require(drawing.target.width.toLong*drawing.target.height<=maxReadbackPixels,"development framebuffer budget")
     if !target.contains(drawing.target) then {close();target=Some(drawing.target)}
+    active.clear()
+    // A cancelled request may have reserved/uploaded entries without producing pixels.
+    entries.iterator.filter(_.image.isEmpty).toVector.foreach(remove)
     val width=drawing.target.width;val height=drawing.target.height
-    require(width.toLong*height<=1048576,"development framebuffer budget")
     val chunk=if ((width+edge-1)/edge)*((height+edge-1)/edge)<=256 then edge else 128
     val output=new Array[Byte](width*height*4)
     var compiledNanos=0L;var gpuNanos=0L;var preparationNanos=0L;var copiedNanos=0L
     var uploaded=0L;var readback=0L;var mask=0L;var tiles=0
-    val pending=scala.collection.mutable.ArrayBuffer.empty[((Int,Int),sirin.render.RetainedProgram)]
+    val pending=scala.collection.mutable.ArrayBuffer.empty[(Entry,sirin.render.RetainedProgram)]
     def flush(): Unit = if pending.nonEmpty then
       val at=System.nanoTime()
       val images=gpu.replayBatch(pending.map(_._2).toVector)
-      pending.zip(images).foreach { (item,image) => entries(item._1).image=Some(image) }
+      pending.zip(images).foreach { (item,image) => item._1.image=Some(image) }
       pending.clear();gpuNanos+=System.nanoTime()-at
     for y <- 0 until height by chunk; x <- 0 until width by chunk do
       if cancelled() then throw new InterruptedException("obsolete tiled frame")
@@ -129,28 +158,38 @@ final class TileCache(gpu: OffscreenGpu,rasterize: (ResolvedFont,Int,Double,Int)
       val prepared=stripEmptyMasks(TiledRenderer.tile(drawing,Rect(x,y,math.min(chunk,width-x),math.min(chunk,height-y))))
       val signature=key(prepared)
       preparationNanos+=System.nanoTime()-preparedAt
-      entries.get(position).filter(e => e.signature==signature && e.image.nonEmpty) match
-        case Some(e) => hits+=1;entries.remove(position);entries(position)=e
+      variants.get(position).flatMap(_.find(e => e.signature==signature && e.image.nonEmpty)) match
+        case Some(e) =>
+          hits+=1;entries.remove(e);entries.add(e);active(position)=e
         case None =>
-          misses+=1;remove(position)
+          misses+=1
+          val pixels=prepared.target.width*prepared.target.height
+          if entries.size>=256 || reservedPixels+pixels>maxReadbackPixels then flush()
+          while entries.size>=256 || reservedPixels+pixels>maxReadbackPixels do
+            val evicted=entries.iterator.find(e => !active.get(e.position).contains(e)).getOrElse(
+              throw new IllegalStateException("active frame exceeds snapshot budget"))
+            remove(evicted)
           val compileAt=System.nanoTime()
           val program=PixelProgram.compile(prepared,rasterize=Some(rasterize))
           compiledNanos+=System.nanoTime()-compileAt
-          val bytes=program.uploadBytes+prepared.target.width.toLong*prepared.target.height*4
+          val bytes=program.uploadBytes+pixels.toLong*4
           require(bytes<=maxBytes,"tile inventory budget")
-          if entries.values.count(_.program.nonEmpty)>=maxPrograms || used+bytes>maxBytes then flush()
-          while entries.values.count(_.program.nonEmpty)>=maxPrograms || used+bytes>maxBytes do
-            dropProgram(entries.iterator.find(_._2.program.nonEmpty).get._1)
+          if entries.count(_.program.nonEmpty)>=maxPrograms || used+bytes>maxBytes then flush()
+          while entries.count(_.program.nonEmpty)>=maxPrograms || used+bytes>maxBytes do
+            dropProgram(entries.iterator.find(_.program.nonEmpty).get)
           val gpuAt=System.nanoTime()
           val retained=gpu.retain(program);gpuNanos+=System.nanoTime()-gpuAt
-          entries(position)=Entry(signature,Some(retained),None,bytes);used+=bytes
-          pending+=((position,retained))
+          val sources=prepared.commands.collect {case PreparedCommand.Image(source,_,_,_,_,_) => source.image}.distinct
+          val e=new Entry(position,signature,sources,pixels,bytes,Some(retained),None)
+          entries.add(e);variants.getOrElseUpdate(position,scala.collection.mutable.ArrayBuffer.empty)+=e
+          active(position)=e;reservedPixels+=pixels;used+=bytes
+          pending+=((e,retained))
           uploaded+=program.uploadBytes;readback+=program.readbackBytes;mask+=program.maskBytes
       tiles+=1
     flush()
     val copyAt=System.nanoTime()
     for y <- 0 until height by chunk; x <- 0 until width by chunk do
-      val image=entries((x,y)).image.get;val pixels=image.pixelsCopy
+      val image=active((x,y)).image.get;val pixels=image.pixelsCopy
       for row <- 0 until image.height do System.arraycopy(pixels,row*image.width*4,output,((y+row)*width+x)*4,image.width*4)
     copiedNanos+=System.nanoTime()-copyAt
     lastProfile=s"tilePrepareMs=${preparationNanos/1e6} compileMs=${compiledNanos/1e6} gpuMs=${gpuNanos/1e6} copyMs=${copiedNanos/1e6}"

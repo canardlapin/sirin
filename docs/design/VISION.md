@@ -1322,6 +1322,14 @@ the same shared Drawing/image/paint pipeline. Image commands are conservatively
 culled by transformed destination bounds. Two caches divide the existing native
 inventory (32 programs/24MiB each) rather than doubling it. Host tile readbacks
 may outlive evicted GPU programs, within the full-frame pixel/count budget.
+The JVM retained handle releases the managed compiled words and full drawing graph
+once native retention succeeds; replay needs only target metadata. Tile caches
+may reuse prior position/signature variants under the same256-entry and1,048,576
+reserved-output-pixel bounds per cache, counting inactive/incomplete entries.
+Active frame tiles are protected; inactive LRU variants retire first. Incomplete
+entries cannot satisfy reuse. Base snapshot retirement invalidates composite
+entries and native programs referencing that source, so old base images cannot
+escape the shared ownership bounds through composite cache keys.
 
 Buttons are immutable public descriptions with either a transaction action or
 an existing Command binding. Labels, enablement and running state are declared

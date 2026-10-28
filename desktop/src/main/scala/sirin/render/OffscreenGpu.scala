@@ -39,7 +39,7 @@ final class OffscreenGpu private(private var handle: Ptr[Byte],val generation: D
       if status!=0 then throw new IllegalStateException(s"retain status=$status: ${fromCString(GpuShim.sgpu_error(handle))}")
       val native= !out
       try
-        val resource=new RetainedProgram(this,native,program)
+        val resource=new RetainedProgram(this,native,t)
         retained+=resource
         resource
       catch
@@ -48,7 +48,7 @@ final class OffscreenGpu private(private var handle: Ptr[Byte],val generation: D
   def replayBatch(resources: Vector[RetainedProgram]): Vector[ImageSnapshot] =
     check();require(resources.nonEmpty && resources.size<=64,"GPU batch count")
     require(resources.forall(retained),"batch contains a closed or foreign program")
-    val sizes=resources.map(r => r.program.drawing.target.width*r.program.drawing.target.height*4)
+    val sizes=resources.map(r => r.target.width*r.target.height*4)
     val size=sizes.map(_.toLong).sum;require(size<=4194304,"GPU batch pixel budget")
     Zone.acquire { implicit zone =>
       val pointers=alloc[Ptr[Byte]](resources.size);resources.zipWithIndex.foreach((r,i) => pointers(i)=r.handle)
@@ -58,13 +58,13 @@ final class OffscreenGpu private(private var handle: Ptr[Byte],val generation: D
       val bytes=output.raw.toArray(java.lang.foreign.ValueLayout.JAVA_BYTE)
       var offset=0
       resources.zip(sizes).map { (resource,length) =>
-        val t=resource.program.drawing.target
+        val t=resource.target
         val image=ImageSnapshot.copyRgba8(t.width,t.height,java.util.Arrays.copyOfRange(bytes,offset,offset+length));offset+=length;image
       }
     }
   private[render] def replay(resource: RetainedProgram): ImageSnapshot =
     check();require(retained(resource),"retained program is closed or belongs to another owner")
-    val t=resource.program.drawing.target
+    val t=resource.target
     Zone.acquire { implicit zone =>
       val out=alloc[Byte](t.width*t.height*4)
       val status=GpuShim.sgpu_replay(resource.handle,out)
@@ -88,12 +88,11 @@ final class OffscreenGpu private(private var handle: Ptr[Byte],val generation: D
 final case class GpuResourceStats(programs: Int, retainedBytes: Long, uploadedBytes: Long)
 
 final class RetainedProgram private[render](private val owner: OffscreenGpu,
-    private[render] var handle: Ptr[Byte], private[render] var program: PixelProgram) extends AutoCloseable:
+    private[render] var handle: Ptr[Byte], private[render] val target: RenderTarget) extends AutoCloseable:
   def render(): ImageSnapshot = owner.replay(this)
   def close(): Unit = owner.retire(this)
   private[render] def clear(): Unit =
     handle=null
-    program=null
 
 object OffscreenGpu:
   def liveOwners: Int = GpuShim.sgpu_live()

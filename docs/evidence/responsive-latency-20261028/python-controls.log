@@ -1,0 +1,11 @@
+test_claimed_pass_cannot_hide_missed_p95 (test_latency_receipt.ReceiptTests) ... ok
+test_complete_fixed_fixture (test_latency_receipt.ReceiptTests) ... ok
+test_counts_cannot_hide_missing_samples (test_latency_receipt.ReceiptTests) ... ok
+test_nan_refuses (test_latency_receipt.ReceiptTests) ... ok
+test_one_wrong_dpi_sample_refuses (test_latency_receipt.ReceiptTests) ... ok
+test_resized_receipt_refuses (test_latency_receipt.ReceiptTests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.016s
+
+OK

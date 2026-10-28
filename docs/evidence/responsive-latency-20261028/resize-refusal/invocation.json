@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/private/tmp/sirin-responsive-20261028/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+    "-XstartOnFirstThread",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Dsirin.repo=/private/tmp/sirin-responsive-20261028",
+    "-Dsirin.desktop.library=/private/tmp/sirin-responsive-20261028/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+    "-cp",
+    "/private/tmp/sirin-responsive-20261028/desktop/target/package/Sirin.app/Contents/app/*",
+    "sirin.desktop.DesktopWorkbench",
+    "benchmark",
+    "benchmark-resize-control"
+  ],
+  "exit_code": 1,
+  "expected_refusal": true
+}

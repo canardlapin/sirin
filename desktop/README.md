@@ -33,11 +33,31 @@ renderer paints changed tiles in bounded native batches, reads back RGBA and
 uploads it for presentation. The window admits at most1280x800 physical pixels;
 this bridge makes no zero-copy or production performance claim.
 
-The benchmark uses100 records at1200x720 physical pixels. Fixed warm-up is20
+The benchmark refuses geometry outside600x360 logical /1200x720 physical
+pixels and uses100 records. Fixed warm-up is20
 action plus20 scroll turns, followed by100 measured samples/class. The CSV in
 `desktop/target/input-to-present.csv` retains both phases. Targets, prior failures,
 OS observations and source identity belong in the
 [responsive receipt](../docs/evidence/responsive-host-20261028/README.md).
+
+After packaging, measure without a concurrent sbt/compiler process:
+
+```sh
+python3 -B desktop/tools/run-latency.py
+python3 -B desktop/tools/run-latency.py --diagnostic
+```
+
+The default runner requires three quiet interval samples (each85% CPU idle and
+load1m at most half the logical CPU count) before launching. It preserves a fresh
+receipt under `desktop/target/latency-runs/` even when preflight refuses. Diagnostic
+runs are always unqualified. Both modes keep raw samples, per-input targets/labels,
+geometry, handler/queue/worker/present timings, cumulative GC counters, startup
+timing from main entry, and exact package hashes. Independent receipt validation
+checks counts, geometry and the unchanged targets. The
+[follow-up evidence](../docs/evidence/responsive-latency-20261028/README.md) retains
+the busy-host refusal and diagnostic miss. `benchmark benchmark-resize-control`
+as main arguments exercises resize refusal after the first presentation.
+
 Optional `-Dsirin.capture=true` writes renderer PNGs; these are separate from OS
 screenshots. The [plan](../docs/plans/2026-10-28-responsive-workbench.md) defines
 this slice; [the earlier receipt](../docs/evidence/jvm-host-20261028/README.md)

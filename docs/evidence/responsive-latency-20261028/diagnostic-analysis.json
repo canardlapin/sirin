@@ -1,0 +1,181 @@
+{
+  "phase_rows": 240,
+  "phase_columns": 19,
+  "geometry_consistent": true,
+  "nonnegative_phase_times": true,
+  "groups": [
+    {
+      "kind": "action",
+      "label": "Activate",
+      "event": "KeyDown(Enter,0,false)",
+      "n": 16,
+      "over50": 5,
+      "mean_ms": 50.70607275,
+      "mean_worker_ms": 44.099146,
+      "mean_present_ms": 1.622390875
+    },
+    {
+      "kind": "action",
+      "label": "Toggle activation",
+      "event": "KeyDown(Enter,0,false)",
+      "n": 34,
+      "over50": 2,
+      "mean_ms": 29.433926529411764,
+      "mean_worker_ms": 24.621314941176472,
+      "mean_present_ms": 1.5673811470588235
+    },
+    {
+      "kind": "action",
+      "label": "Toggle activation",
+      "event": "KeyDown(Tab,0,false)",
+      "n": 16,
+      "over50": 0,
+      "mean_ms": 30.383903625,
+      "mean_worker_ms": 25.6693125,
+      "mean_present_ms": 1.497099
+    },
+    {
+      "kind": "action",
+      "label": "scroll",
+      "event": "KeyDown(Tab,0,false)",
+      "n": 34,
+      "over50": 0,
+      "mean_ms": 23.407596794117648,
+      "mean_worker_ms": 18.626562411764706,
+      "mean_present_ms": 1.7451004705882354
+    },
+    {
+      "kind": "scroll",
+      "label": "scroll",
+      "event": "Wheel(25.0,180.4375,-1.0)",
+      "n": 50,
+      "over50": 1,
+      "mean_ms": 22.35176418,
+      "mean_worker_ms": 12.86515246,
+      "mean_present_ms": 2.22807828
+    },
+    {
+      "kind": "scroll",
+      "label": "scroll",
+      "event": "Wheel(25.0,180.4375,1.0)",
+      "n": 50,
+      "over50": 0,
+      "mean_ms": 21.0012292,
+      "mean_worker_ms": 11.19342922,
+      "mean_present_ms": 1.95024926
+    }
+  ],
+  "slow_actions": [
+    {
+      "step": "41",
+      "label": "Toggle activation",
+      "event": "KeyDown(Enter,0,false)",
+      "input_to_present_ms": "62.86475",
+      "input_handler_ms": "2.405333",
+      "last_render_queue_ms": "0.979792",
+      "last_worker_ms": "54.516",
+      "present_call_ms": "1.712084",
+      "after_present_ms": "0.860125",
+      "gc_collections": "6",
+      "gc_ms": "62",
+      "worker_profile": "layoutMs=0.188708 drawingMs=0.181458 base[tilePrepareMs=5.899247 compileMs=2.300541 gpuMs=28.570335 copyMs=0.931] overlay[tilePrepareMs=2.61425 compileMs=0.803166 gpuMs=9.135042 copyMs=0.601125]"
+    },
+    {
+      "step": "57",
+      "label": "Activate",
+      "event": "KeyDown(Enter,0,false)",
+      "input_to_present_ms": "53.243083",
+      "input_handler_ms": "0.69625",
+      "last_render_queue_ms": "0.110708",
+      "last_worker_ms": "48.663583",
+      "present_call_ms": "1.378709",
+      "after_present_ms": "0.98925",
+      "gc_collections": "8",
+      "gc_ms": "71",
+      "worker_profile": "layoutMs=1.768167 drawingMs=0.171625 base[tilePrepareMs=6.477541 compileMs=0.761375 gpuMs=14.981832 copyMs=0.627833] overlay[tilePrepareMs=1.255835 compileMs=1.193959 gpuMs=17.980334 copyMs=0.837917]"
+    },
+    {
+      "step": "63",
+      "label": "Activate",
+      "event": "KeyDown(Enter,0,false)",
+      "input_to_present_ms": "52.180291",
+      "input_handler_ms": "0.621125",
+      "last_render_queue_ms": "0.076958",
+      "last_worker_ms": "47.504375",
+      "present_call_ms": "1.275875",
+      "after_present_ms": "1.558125",
+      "gc_collections": "8",
+      "gc_ms": "71",
+      "worker_profile": "layoutMs=1.253583 drawingMs=0.1435 base[tilePrepareMs=4.994956 compileMs=0.592376 gpuMs=14.828832 copyMs=0.535708] overlay[tilePrepareMs=1.050748 compileMs=0.923418 gpuMs=19.709711 copyMs=0.551417]"
+    },
+    {
+      "step": "69",
+      "label": "Activate",
+      "event": "KeyDown(Enter,0,false)",
+      "input_to_present_ms": "68.965209",
+      "input_handler_ms": "1.12775",
+      "last_render_queue_ms": "3.9015",
+      "last_worker_ms": "46.566667",
+      "present_call_ms": "1.410417",
+      "after_present_ms": "6.989458",
+      "gc_collections": "13",
+      "gc_ms": "89",
+      "worker_profile": "layoutMs=2.861834 drawingMs=0.20375 base[tilePrepareMs=5.644627 compileMs=1.057917 gpuMs=14.975874 copyMs=0.659333] overlay[tilePrepareMs=0.960631 compileMs=0.634333 gpuMs=17.396417 copyMs=0.6335]"
+    },
+    {
+      "step": "75",
+      "label": "Activate",
+      "event": "KeyDown(Enter,0,false)",
+      "input_to_present_ms": "150.969625",
+      "input_handler_ms": "0.659333",
+      "last_render_queue_ms": "0.087042",
+      "last_worker_ms": "146.969625",
+      "present_call_ms": "1.326584",
+      "after_present_ms": "0.750041",
+      "gc_collections": "15",
+      "gc_ms": "97",
+      "worker_profile": "layoutMs=1.837125 drawingMs=0.152958 base[tilePrepareMs=6.786293 compileMs=7.280668 gpuMs=94.471622 copyMs=0.783792] overlay[tilePrepareMs=1.329581 compileMs=2.022709 gpuMs=28.26475 copyMs=0.798292]"
+    },
+    {
+      "step": "77",
+      "label": "Toggle activation",
+      "event": "KeyDown(Enter,0,false)",
+      "input_to_present_ms": "68.029959",
+      "input_handler_ms": "0.625083",
+      "last_render_queue_ms": "0.037417",
+      "last_worker_ms": "63.724083",
+      "present_call_ms": "1.55625",
+      "after_present_ms": "0.863083",
+      "gc_collections": "15",
+      "gc_ms": "97",
+      "worker_profile": "layoutMs=0.391958 drawingMs=0.172375 base[tilePrepareMs=6.003291 compileMs=1.104042 gpuMs=39.279334 copyMs=0.840167] overlay[tilePrepareMs=1.28096 compileMs=0.699583 gpuMs=10.762794 copyMs=0.870292]"
+    },
+    {
+      "step": "135",
+      "label": "Activate",
+      "event": "KeyDown(Enter,0,false)",
+      "input_to_present_ms": "52.427833",
+      "input_handler_ms": "0.568583",
+      "last_render_queue_ms": "0.063958",
+      "last_worker_ms": "47.662917",
+      "present_call_ms": "1.596542",
+      "after_present_ms": "0.949083",
+      "gc_collections": "24",
+      "gc_ms": "108",
+      "worker_profile": "layoutMs=1.218167 drawingMs=0.125167 base[tilePrepareMs=4.726582 compileMs=0.55725 gpuMs=15.254542 copyMs=0.962791] overlay[tilePrepareMs=1.596004 compileMs=1.151042 gpuMs=19.237417 copyMs=0.5945]"
+    }
+  ],
+  "startup": "startup mainToFirstPresentMs=2374.8795 windowSetupMs=529.083834 renderSessionSetupMs=206.766792",
+  "scroll_reuse": {
+    "measured": 100,
+    "zero_upload_readback": 99,
+    "changed_presentations": [
+      {
+        "input": "inputToPresent phase=measured kind=scroll ms=115.302417",
+        "presentation": "presented=142 generation=204 renderMs=107.324666 uploadBytes=2441824 readbackBytes=950272 pixels=1200x720 feedback=22 focus=Some(NodeId(Vector(scroll, 88)))",
+        "upload": 2441824,
+        "readback": 950272
+      }
+    ]
+  }
+}

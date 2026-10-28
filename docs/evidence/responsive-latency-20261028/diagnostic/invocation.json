@@ -1,0 +1,27 @@
+{
+  "kind": "diagnostic",
+  "package_sha256": {
+    "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+    "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "3b2b7d6ced0065a6c91c778feb3aa90dbeb95069566e4069e3196736cdc0f380",
+    "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+    "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639",
+    "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "fb8dc6afe763e7593d10388aac28761f71be98bc63cb7fcad2be7b8b50339526"
+  },
+  "quiet_preflight_passed": false,
+  "status": "failed",
+  "qualified": false,
+  "command": [
+    "/private/tmp/sirin-responsive-20261028/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+    "-XstartOnFirstThread",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Dsirin.repo=/private/tmp/sirin-responsive-20261028",
+    "-Dsirin.desktop.library=/private/tmp/sirin-responsive-20261028/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+    "-cp",
+    "/private/tmp/sirin-responsive-20261028/desktop/target/package/Sirin.app/Contents/app/*",
+    "sirin.desktop.DesktopWorkbench",
+    "benchmark"
+  ],
+  "exit_code": 1,
+  "receipt_validated": false,
+  "receipt_validation": "host receipt failed or fixture/counts differ"
+}

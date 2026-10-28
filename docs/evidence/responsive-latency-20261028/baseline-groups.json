@@ -1,0 +1,38 @@
+[
+  {
+    "focus": "Some(NodeId(Vector(control, 79)))",
+    "event": "Return",
+    "n": 16,
+    "over_50ms": 1,
+    "mean_ms": 37.185140625,
+    "mean_worker_ms": 30.542789125,
+    "mean_uploaded_bytes": 2124610
+  },
+  {
+    "focus": "Some(NodeId(Vector(control, 80)))",
+    "event": "Return",
+    "n": 34,
+    "over_50ms": 15,
+    "mean_ms": 50.79539097058824,
+    "mean_worker_ms": 44.02315073529412,
+    "mean_uploaded_bytes": 2060553.4117647058
+  },
+  {
+    "focus": "Some(NodeId(Vector(control, 80)))",
+    "event": "Tab",
+    "n": 16,
+    "over_50ms": 0,
+    "mean_ms": 19.082179625,
+    "mean_worker_ms": 12.59459375,
+    "mean_uploaded_bytes": 2104224
+  },
+  {
+    "focus": "Some(NodeId(Vector(scroll, 88)))",
+    "event": "Tab",
+    "n": 34,
+    "over_50ms": 0,
+    "mean_ms": 17.449572323529413,
+    "mean_worker_ms": 11.666376147058823,
+    "mean_uploaded_bytes": 2363232
+  }
+]
