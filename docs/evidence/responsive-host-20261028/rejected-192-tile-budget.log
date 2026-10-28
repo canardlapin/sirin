@@ -1,0 +1,97 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-responsive-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-responsive-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-responsive-20261028/)
+[info] compiling 4 Scala sources to /private/tmp/sirin-responsive-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-responsive-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 0.884s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 4 total 0.893s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.606s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.606s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.031s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.031s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.013s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.013s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 2.037s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 4 total 2.037s
+[info] Passed: Total 12, Failed 0, Errors 0, Passed 12
+[success] Total time: 9 s, completed Oct 28, 2026, 2:55:05 p.m.
+[info] running (fork) sirin.desktop.RenderProfile 
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/target/bg-jobs/sbt_7a6c981a/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] profile edge=128 phase=focus ms=14.708333 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=3.130836 compileMs=1.004001 gpuMs=7.354417 copyMs=1.027458]
+[info] profile edge=128 phase=focus ms=20.273291 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=2.62058 compileMs=1.551708 gpuMs=13.013583 copyMs=1.023]
+[info] profile edge=128 phase=focus ms=19.194917 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=2.625621 compileMs=1.433958 gpuMs=12.310834 copyMs=0.817333]
+[info] profile edge=128 phase=focus ms=17.157 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=0.920839 compileMs=1.010624 gpuMs=13.156626 copyMs=0.539125]
+[info] profile edge=128 phase=focus ms=9.519208 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=0.832213 compileMs=0.816872 gpuMs=5.792499 copyMs=0.559625]
+[info] profile edge=128 phase=focus ms=10.34825 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=1.073374 compileMs=1.286167 gpuMs=5.803624 copyMs=0.704417]
+[info] profile edge=128 phase=focus ms=8.834875 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=0.983457 compileMs=1.171791 gpuMs=4.306791 copyMs=0.802458]
+[info] profile edge=128 phase=focus ms=15.463958 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=1.070915 compileMs=1.273709 gpuMs=10.372584 copyMs=0.856959]
+[info] profile edge=128 phase=focus ms=11.41025 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=1.139708 compileMs=1.351793 gpuMs=6.104251 copyMs=0.827417]
+[info] profile edge=128 phase=focus ms=12.8735 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=1.186375 compileMs=1.469376 gpuMs=7.431709 copyMs=0.989792]
+[info] profile edge=128 phase=focus ms=10.139292 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=0.951918 compileMs=1.105498 gpuMs=5.784039 copyMs=0.800958]
+[info] profile edge=128 phase=focus ms=15.098916 layoutMs=0.0 drawingMs=0.0 base[reused=true] overlay[tilePrepareMs=1.060087 compileMs=1.375668 gpuMs=10.319706 copyMs=0.896417]
+[info] profile edge=128 phase=scroll ms=18.202542 layoutMs=0.908834 drawingMs=0.450666 base[tilePrepareMs=6.643914 compileMs=0.0 gpuMs=0.0 copyMs=0.846833] overlay[tilePrepareMs=0.976372 compileMs=0.692959 gpuMs=4.208168 copyMs=0.829292]
+[info] profile edge=128 phase=scroll ms=76.065709 layoutMs=2.249334 drawingMs=0.364791 base[tilePrepareMs=11.359371 compileMs=3.411251 gpuMs=49.312415 copyMs=1.069917] overlay[tilePrepareMs=0.681998 compileMs=0.489041 gpuMs=4.218918 copyMs=0.6785]
+[info] profile edge=128 phase=scroll ms=61.403833 layoutMs=1.265916 drawingMs=0.35875 base[tilePrepareMs=4.808956 compileMs=3.036707 gpuMs=43.041752 copyMs=0.573292] overlay[tilePrepareMs=0.711746 compileMs=0.60675 gpuMs=4.42946 copyMs=0.661417]
+[info] profile edge=128 phase=scroll ms=52.10325 layoutMs=2.011541 drawingMs=0.455834 base[tilePrepareMs=3.579832 compileMs=2.393502 gpuMs=35.000083 copyMs=0.549333] overlay[tilePrepareMs=0.664374 compileMs=0.567874 gpuMs=4.353376 copyMs=0.548625]
+[info] profile edge=128 phase=scroll ms=52.567542 layoutMs=1.8545 drawingMs=0.324875 base[tilePrepareMs=3.512381 compileMs=2.047752 gpuMs=35.713834 copyMs=0.602708] overlay[tilePrepareMs=0.662672 compileMs=0.568291 gpuMs=4.523877 copyMs=0.538375]
+[info] profile edge=128 phase=scroll ms=53.131125 layoutMs=1.344583 drawingMs=0.313042 base[tilePrepareMs=3.406003 compileMs=1.948586 gpuMs=36.980166 copyMs=0.604416] overlay[tilePrepareMs=0.786003 compileMs=0.664334 gpuMs=4.34554 copyMs=0.745708]
+[info] profile edge=128 phase=scroll ms=64.196541 layoutMs=1.949458 drawingMs=0.321417 base[tilePrepareMs=5.761496 compileMs=2.655999 gpuMs=38.943415 copyMs=0.809333] overlay[tilePrepareMs=1.036498 compileMs=4.827416 gpuMs=4.942457 copyMs=0.586333]
+[info] profile edge=128 phase=scroll ms=50.623458 layoutMs=1.129958 drawingMs=0.326708 base[tilePrepareMs=3.322543 compileMs=1.83475 gpuMs=35.506957 copyMs=0.70925] overlay[tilePrepareMs=0.650998 compileMs=0.534209 gpuMs=4.374416 copyMs=0.580125]
+[info] profile edge=128 phase=scroll ms=54.491042 layoutMs=1.519834 drawingMs=0.32925 base[tilePrepareMs=3.398916 compileMs=1.763208 gpuMs=38.844917 copyMs=0.663959] overlay[tilePrepareMs=0.642908 compileMs=0.547124 gpuMs=4.57271 copyMs=0.592708]
+[info] profile edge=128 phase=scroll ms=53.655708 layoutMs=0.973583 drawingMs=0.296 base[tilePrepareMs=3.456127 compileMs=2.024875 gpuMs=38.799251 copyMs=0.56325] overlay[tilePrepareMs=0.60454 compileMs=0.530127 gpuMs=4.29529 copyMs=0.522583]
+[info] profile edge=128 phase=scroll ms=51.810375 layoutMs=1.016 drawingMs=0.293333 base[tilePrepareMs=3.32525 compileMs=1.813211 gpuMs=36.714331 copyMs=0.60075] overlay[tilePrepareMs=0.648835 compileMs=0.562124 gpuMs=4.6135 copyMs=0.5495]
+[info] profile edge=128 phase=scroll ms=54.607833 layoutMs=1.534166 drawingMs=0.356584 base[tilePrepareMs=3.777917 compileMs=2.066211 gpuMs=38.661876 copyMs=0.530333] overlay[tilePrepareMs=0.698168 compileMs=0.580583 gpuMs=4.227999 copyMs=0.586875]
+[error] Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: per-sample work budget
+[error] 	at scala.Predef$.require(Predef.scala:337)
+[error] 	at sirin.render.PixelProgram$.append$1(PixelProgram.scala:76)
+[error] 	at sirin.render.PixelProgram$.compileUsing$$anonfun$2$$anonfun$1(PixelProgram.scala:98)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.render.PixelProgram$.compileUsing$$anonfun$2(PixelProgram.scala:89)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.render.PixelProgram$.compileUsing(PixelProgram.scala:79)
+[error] 	at sirin.render.PixelProgram$.compile(PixelProgram.scala:45)
+[error] 	at sirin.graphics.desktop.TileCache.render$$anonfun$6$$anonfun$1(TiledRenderer.scala:137)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Range.foreach(Range.scala:192)
+[error] 	at sirin.graphics.desktop.TileCache.render$$anonfun$6(TiledRenderer.scala:125)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Range.foreach(Range.scala:192)
+[error] 	at sirin.graphics.desktop.TileCache.render(TiledRenderer.scala:125)
+[error] 	at sirin.desktop.RenderSession.render(FrameWorker.scala:101)
+[error] 	at sirin.desktop.RenderProfile$.render$1(RenderProfile.scala:27)
+[error] 	at sirin.desktop.RenderProfile$.main$$anonfun$1(RenderProfile.scala:33)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.desktop.RenderProfile$.main(RenderProfile.scala:12)
+[error] 	at sirin.desktop.RenderProfile.main(RenderProfile.scala)
+[error] nonzero exit code returned from runner: 1
+[error] (desktopJVM / Compile / runMain) nonzero exit code returned from runner: 1
+[error] Total time: 3 s, completed Oct 28, 2026, 2:55:08 p.m.

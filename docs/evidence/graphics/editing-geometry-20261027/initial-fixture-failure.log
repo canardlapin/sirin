@@ -1,0 +1,35 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (15114 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2875 ms)
+[info] Discovered 3264 classes and 20536 methods after classloading
+[info] Checking intermediate code (quick) (197 ms)
+[info] Discovered 3224 classes and 15831 methods after optimization
+[info] Optimizing (debug mode) (3719 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (9868 ms)
+[info] Compiling to native code (6814 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (256 ms)
+[info] Postprocessing (0 ms)
+[info] Total (17913 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '54210'.
+Test run sirin.graphics.text.EditingGeometrySuite started
+==> X sirin.graphics.text.EditingGeometrySuite.feature-off glyphs have cluster-edge carets; interpolation is explicit for Arabic without GDEF 0.054s munit.FailException: probes/paragraph/src/test/scala/sirin/graphics/text/EditingGeometrySuite.scala:74 assertion failed
+73:      assert(arabic.isComplete)
+74:      assert(arabic.geometry.carets.exists(_.kind == CaretEdgeKind.Interpolated))
+75:      assert(arabic.geometry.graphemes.exists(cell => arabic.geometry.selection(cell.range).exists(_.interpolated)))
+sirin.graphics.text.EditingGeometrySuite: finished 0.493s
+Test run sirin.graphics.text.EditingGeometrySuite finished: 1 failed, 0 ignored, 9 total 0.493s
+[error] Failed: Total 9, Failed 1, Errors 0, Passed 8
+[error] Failed tests:
+[error] 	sirin.graphics.text.EditingGeometrySuite
+[error] (probeParagraph / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 31 s, completed Oct 27, 2026, 10:40:56 p.m.

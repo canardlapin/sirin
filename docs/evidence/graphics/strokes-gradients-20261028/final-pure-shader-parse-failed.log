@@ -1,0 +1,291 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.038s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.048s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.057s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.057s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.054s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.062s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.058s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.066s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.116s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.125s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.12s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.128s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.109s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.109s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.192s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.2s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.223s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.232s
+[info] Passed: Total 59, Failed 0, Errors 0, Passed 59
+[success] Total time: 3 s, completed Oct 28, 2026, 11:00:10 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1368 ms)
+[info] Discovered 3156 classes and 20329 methods after classloading
+[info] Checking intermediate code (quick) (95 ms)
+[info] Discovered 3129 classes and 15747 methods after optimization
+[info] Optimizing (debug mode) (2204 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (5854 ms)
+[info] Compiling to native code (4457 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (139 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10297 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55117'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55123'.
+Test run sirin.graphics.TextDataSuite started
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55124'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55125'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55126'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55127'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55128'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55129'.
+sirin.graphics.TextDataSuite: finished 0.051s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.051s
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '55130'.
+Test run sirin.graphics.RoundedRectangleSuite started
+Test run sirin.graphics.GeometrySuite started
+Test run sirin.graphics.ValuesSuite started
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.003s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.003s
+Test run sirin.graphics.PreparationSuite started
+Test run sirin.graphics.DrawingResourcesSuite started
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.ValuesSuite: finished 0.013s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.013s
+sirin.graphics.GeometrySuite: finished 0.014s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.014s
+sirin.graphics.DrawingSuite: finished 0.010s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.010s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.007s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.007s
+sirin.graphics.DrawingResourcesSuite: finished 0.038s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.038s
+sirin.graphics.StrokePreparationSuite: finished 0.097s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.097s
+sirin.graphics.PreparationSuite: finished 0.146s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.146s
+[info] Passed: Total 59, Failed 0, Errors 0, Passed 59
+[success] Total time: 18 s, completed Oct 28, 2026, 11:00:28 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1115 ms)
+[info] Discovered 2946 classes and 19458 methods after classloading
+[info] Checking intermediate code (quick) (88 ms)
+[info] Discovered 2912 classes and 15189 methods after optimization
+[info] Optimizing (debug mode) (1400 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6154 ms)
+[info] Compiling to native code (5387 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (153 ms)
+[info] Postprocessing (0 ms)
+[info] Total (9527 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '55164'.
+Test run sirin.render.StrokeGradientSuite started
+==> X sirin.render.StrokeGradientSuite.four-scale caps and dashes match independent analytic sample coverage without alpha overdraw 0.018s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.StrokeGradientSuite.four-scale transformed gradients interpolate linear premultiplied colors with hard stops and extensions 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.StrokeGradientSuite.gradient stroke, nested clipping, isolation and instance transforms share the same paint 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.StrokeGradientSuite.retained replay uploads once, reproduces pixels, bounds inventory and retires with its owner 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.StrokeGradientSuite.retained exact glyph masks and snapshot replacement remain immutable at all scales 0.024s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+sirin.render.StrokeGradientSuite: finished 0.050s
+Test run sirin.render.StrokeGradientSuite finished: 5 failed, 0 ignored, 5 total 0.050s
+Test run sirin.graphics.RebasedGradientSuite started
+==> X sirin.graphics.RebasedGradientSuite.four-scale translated prepared paths preserve clipped gradient pixels 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+sirin.graphics.RebasedGradientSuite: finished 0.003s
+Test run sirin.graphics.RebasedGradientSuite finished: 1 failed, 0 ignored, 1 total 0.003s
+Test run sirin.render.OffscreenSuite started
+==> X sirin.render.OffscreenSuite.actual Metal device and shared ThorVG texture draw an opaque rectangle 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.OffscreenSuite.four-scale pixels obey holes, nested clips, isolated linear opacity, sampling and coverage 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.OffscreenSuite.ThorVG shares clips and texture ownership; color differences remain recorded findings 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.OffscreenSuite.numeric and expanded-work admission refuses unsafe GPU programs before submission 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.OffscreenSuite.closed static faces supply exact positioned Latin and Arabic masks through both engines 0.030s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.OffscreenSuite.program budgets, device generations, thread ownership, resize and disposal are enforced 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+==> X sirin.render.OffscreenSuite.bounded timing reports preparation, uploads and synchronized readback separately 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: expected `)`, found "0.0"
+   ┌─ wgsl:12:34
+   │
+12 │       if (select(cross<0.0,cross>0.0,e.w>e.y)) {
+   │                                  ^^^ expected `)`
+
+
+
+sirin.render.OffscreenSuite: finished 0.045s
+Test run sirin.render.OffscreenSuite finished: 7 failed, 0 ignored, 8 total 0.045s
+[error] Failed: Total 14, Failed 13, Errors 0, Passed 1
+[error] Failed tests:
+[error] 	sirin.render.OffscreenSuite
+[error] 	sirin.graphics.RebasedGradientSuite
+[error] 	sirin.render.StrokeGradientSuite
+[error] (probeRender / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 12 s, completed Oct 28, 2026, 11:00:41 a.m.

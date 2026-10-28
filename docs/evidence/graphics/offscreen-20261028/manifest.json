@@ -1,0 +1,454 @@
+{
+  "captured_utc": "2026-10-28T14:21:40.728022+00:00",
+  "mote": "bd-01M61C1A9QVJ42G37Q2N2ZQP3B",
+  "scope": "bounded preparation and real Metal pixels / ThorVG seams, not production renderer adoption or G-2 exit",
+  "workspace_note": "concurrent changes active; captured sources are not a frozen whole-repository test candidate",
+  "validation": {
+    "pre_host_tests_passed": 619,
+    "ignored": 0,
+    "graphics_tests_each_platform": 52,
+    "real_gpu_test_cases": 8,
+    "native_property_retry": "unchanged suites serialized; first default run killed with runner timeout",
+    "latest_root_jvm": "seven original suites passed, newly added concurrent hostJVM compile failed non-local return under Werror",
+    "examples_compile": "passed at 10:16:40 EDT",
+    "thorvg_color_conformance": "failed linear-light oracle; known failure asserted",
+    "full_G1_G2_protocol": "not run"
+  },
+  "commands": [
+    {
+      "command": "sbt testJVM testNative textNative/test probeUnicode/test probeParagraph/test probeRender/test examples/compile",
+      "log": "jvm-and-default-native-failed.log",
+      "exit": 1
+    },
+    {
+      "command": "sbt 'project testkitNative' 'set Test / parallelExecution := false' 'project root' testNative textNative/test probeUnicode/test probeParagraph/test probeRender/test examples/compile",
+      "log": "native-serial-and-probes-success.log",
+      "exit": 0
+    },
+    {
+      "command": "sbt testJVM",
+      "log": "final-jvm-host-compile-failed.log",
+      "exit": 1
+    }
+  ],
+  "sources": {
+    "graphics/src/main/scala/sirin/graphics/Preparation.scala": {
+      "sha256": "ca846f7b4d9d19bf9375f2e5c66436b8445f5075d4a3b69c80ce8ef48e6c9004",
+      "bytes": 9636
+    },
+    "graphics/src/test/scala/sirin/graphics/PreparationSuite.scala": {
+      "sha256": "b26dc4a7fa400b14fbe3fd0b3b073911b7e9e4984f202ce066fd76e89b67111e",
+      "bytes": 6217
+    },
+    "probes/render/src/main/scala/sirin/render/PixelProgram.scala": {
+      "sha256": "25da52bb8a2be3e5695fe0059abb243ee3dcb7d14dad3132353b40c1af4c6331",
+      "bytes": 7641
+    },
+    "probes/render/src/main/scala/sirin/render/OffscreenGpu.scala": {
+      "sha256": "132116a2db6ae7cc86a92eeeadfa103ef983aa400fd44f6cb04a8dbfab998c8b",
+      "bytes": 2936
+    },
+    "probes/render/src/main/resources/raster.wgsl": {
+      "sha256": "0e33c831421e3707308441075f00b3e0d293e808d081cb3531c250eba7994b8c",
+      "bytes": 3222
+    },
+    "probes/render/src/main/resources/scala-native/sirin_gpu.c": {
+      "sha256": "c9584dc953526f2de931251894fc50c2927a4568d647677a73f1b38d16abcd87",
+      "bytes": 13441
+    },
+    "probes/render/src/test/scala/sirin/render/OffscreenSuite.scala": {
+      "sha256": "6ee663438c588cde12fca62eff08563c40dcc5e5c29eda8e9c5619eb2b5de4d4",
+      "bytes": 15192
+    },
+    "probes/render/src/test/resources/contract.json": {
+      "sha256": "078d1ab5f4f4d81f3bcc32eb171a09164c1fbe7a25bfc88c53e459c528d470cc",
+      "bytes": 1289
+    },
+    "probes/render/README.md": {
+      "sha256": "0c01059e78abb4085b5b5838759c6bbe13fc00ee1afbe5e0ee2ba2bb7a19a354",
+      "bytes": 7207
+    },
+    "probes/render/export-pixels.py": {
+      "sha256": "231ae73488d2c08235cda0ec1f8253a9a9ed1b5eda8344c7c4d74bc4b081ee35",
+      "bytes": 1003
+    },
+    "native/fetch-thorvg.sh": {
+      "sha256": "33ec6bc30a592f206007b51ba837a3cf7a054941272cb6f92b865bee14dda5ac",
+      "bytes": 1676
+    },
+    "native/fetch.sh": {
+      "sha256": "24bf2c7f283256a0503e0042ffcffb9d316e347263481280279f512951090445",
+      "bytes": 3329
+    },
+    "build.sbt": {
+      "sha256": "a1f0b3a3622a110f8a6df50f1d7fc3ab2ba14be2dcef404945bd95cd71bb56e4",
+      "bytes": 14937
+    },
+    "docs/design/VISION.md": {
+      "sha256": "f0bdfe9117ed6c794940eccc8a96ffdcee456f73c4ca94a6779381d691767ca9",
+      "bytes": 91190
+    },
+    "docs/plans/2026-10-27-graphics-api.md": {
+      "sha256": "75f7dd68cf4bea7733e798833da5cc25f0106920f129c0df2bbfb737458378bc",
+      "bytes": 27564
+    },
+    "docs/plans/2026-10-27-graphics-resources.md": {
+      "sha256": "e437a4dc08d518bd453a81a4fd54d1a3e40db2af34fbf8df917f8919d278f3d2",
+      "bytes": 18737
+    },
+    "docs/plans/2026-10-27-roadmap.md": {
+      "sha256": "b8ab16ca54b69231a3c46be0336df7948ded8a918008524efc8fb0cf05630edd",
+      "bytes": 26967
+    },
+    "docs/evidence/graphics/2026-10-28-offscreen.md": {
+      "sha256": "90c704fe8b8192a04070eef07ea211bb3b26eee5b1cc19ff3dcd5f87e9e8e7a6",
+      "bytes": 11746
+    },
+    "graphics/README.md": {
+      "sha256": "304f0768fecae7d75b64466a8e9c497cd58b5db2b5481ad8c9d3f60e17662f84",
+      "bytes": 11531
+    },
+    "README.md": {
+      "sha256": "8f5a93d57c124ced8047b190e6c5cff0ca8afba48a5d8c9bb72fe3856e66b03a",
+      "bytes": 2857
+    }
+  },
+  "native_artifacts": {
+    "native/vendor/wgpu-macos-aarch64-release.zip": {
+      "sha256": "a5797a37b1adf720bcd5dcffb291edbbd5b7b14be0a3874c28e6393a655a7a3e",
+      "bytes": 13733288
+    },
+    "native/vendor/wgpu-macos-aarch64/lib/libwgpu_native.dylib": {
+      "sha256": "e72e8f1777dd0315bfee91c6b7e7b105234d5c1cc1621db4cf92ffee2ac2ae32",
+      "bytes": 6933424
+    },
+    "native/vendor/wgpu-macos-aarch64/include/webgpu/webgpu.h": {
+      "sha256": "a483031c3fed05ea5dd1c74082a71676c46c5b2b820ccca10da515c033efc997",
+      "bytes": 259569
+    },
+    "native/vendor/thorvg/thorvg-1.1.3.tar.xz": {
+      "sha256": "ef97785ed6d0f25ab84d6b4a0eed4325c68c4d80b1c2a61ea0b4029192fea746",
+      "bytes": 2949064
+    },
+    "native/vendor/thorvg/install/lib/libthorvg-1.a": {
+      "sha256": "286beea96f3e5a72549005823d638fb08855e412aaa26592c5f708b953c8168a",
+      "bytes": 424488
+    },
+    "native/vendor/thorvg/install/include/thorvg-1/thorvg_capi.h": {
+      "sha256": "ab08d97880306222d388cc107d5172ba6a5927cede25baad2ceefbdc132c0084",
+      "bytes": 151171
+    },
+    "native/vendor/text/lib/libharfbuzz.a": {
+      "sha256": "7a21b090347472453cacdfde4b00ae235b97b306525ea203526bc463ed9b380e",
+      "bytes": 2116008
+    },
+    "native/vendor/text/lib/libfreetype.a": {
+      "sha256": "35bd8260dc52e27d3ebbfb0fc5d069436865d41386206944b2de53de92d1e40c",
+      "bytes": 931256
+    },
+    "probes/render/target/scala-3.7.4/sirin-probe-render-test": {
+      "sha256": "f27179960c037ca5053f59beb3dbba1039cc49e5f492df34d43c228aa6a71b90",
+      "bytes": 11679936
+    },
+    "graphics/src/test/resources/fonts/NotoSans-Regular.ttf": {
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "bytes": 569208
+    },
+    "graphics/src/test/resources/fonts/NotoNaskhArabic-Regular.ttf": {
+      "sha256": "2f4b88e6ee50fa82c617e2d1d4ba18281cb1c6cd71c3af3ec64970c23995db4b",
+      "bytes": 178388
+    }
+  },
+  "raw_image_digests": {
+    "direct-320x240.rgba": {
+      "width": 320,
+      "height": 240,
+      "raw_rgba8": {
+        "sha256": "284a86ce00729b0badf2d9d39d673d56d6dd770fee944c037d13655ee400a80b",
+        "bytes": 307200
+      },
+      "lossless_png": "pixels/direct-320x240.png"
+    },
+    "thorvg-text-160x120.rgba": {
+      "width": 160,
+      "height": 120,
+      "raw_rgba8": {
+        "sha256": "0b1d5baed18cc1dfdc5590e16636ee05d45a9ca28b5b951e5ad58a37d066293c",
+        "bytes": 76800
+      },
+      "lossless_png": "pixels/thorvg-text-160x120.png"
+    },
+    "thorvg-composition-240x180.rgba": {
+      "width": 240,
+      "height": 180,
+      "raw_rgba8": {
+        "sha256": "67c9aa80e892971a0293973dd1c9501d66de89362c8e7474129181a3905bf989",
+        "bytes": 172800
+      },
+      "lossless_png": "pixels/thorvg-composition-240x180.png"
+    },
+    "thorvg-composition-200x150.rgba": {
+      "width": 200,
+      "height": 150,
+      "raw_rgba8": {
+        "sha256": "30608afb3013b01b1421e86ad0fb80fda739ff7989c37ac1756cf047b74808e2",
+        "bytes": 120000
+      },
+      "lossless_png": "pixels/thorvg-composition-200x150.png"
+    },
+    "direct-text-240x180.rgba": {
+      "width": 240,
+      "height": 180,
+      "raw_rgba8": {
+        "sha256": "434a1fa42ec2641481fe98f7d83ad49f93b9f223b25aebdd1731ece49ed40e49",
+        "bytes": 172800
+      },
+      "lossless_png": "pixels/direct-text-240x180.png"
+    },
+    "direct-text-200x150.rgba": {
+      "width": 200,
+      "height": 150,
+      "raw_rgba8": {
+        "sha256": "4fd9c48cd2e61a9b64f9338819338743216bfb5597c133bafebbc925d70375a3",
+        "bytes": 120000
+      },
+      "lossless_png": "pixels/direct-text-200x150.png"
+    },
+    "direct-160x120.rgba": {
+      "width": 160,
+      "height": 120,
+      "raw_rgba8": {
+        "sha256": "cbde1857ef226fa7ddd848e36f20469c025f9a95b5a9c053e0c2c6fd06ac42fe",
+        "bytes": 76800
+      },
+      "lossless_png": "pixels/direct-160x120.png"
+    },
+    "thorvg-text-320x240.rgba": {
+      "width": 320,
+      "height": 240,
+      "raw_rgba8": {
+        "sha256": "a4dd4e30387d134144679a005e1b785b75302f55fc02a0a9747d0bfcfef19473",
+        "bytes": 307200
+      },
+      "lossless_png": "pixels/thorvg-text-320x240.png"
+    },
+    "direct-text-320x240.rgba": {
+      "width": 320,
+      "height": 240,
+      "raw_rgba8": {
+        "sha256": "9a61a85adddd8da2859edecf9c35a443920abf878d4a903a29fc88a7c05911af",
+        "bytes": 307200
+      },
+      "lossless_png": "pixels/direct-text-320x240.png"
+    },
+    "thorvg-composition-320x240.rgba": {
+      "width": 320,
+      "height": 240,
+      "raw_rgba8": {
+        "sha256": "03f55904274d379369f11e6d9b0a70dde32c650c24922d68692dbc51549f4ec5",
+        "bytes": 307200
+      },
+      "lossless_png": "pixels/thorvg-composition-320x240.png"
+    },
+    "thorvg-text-240x180.rgba": {
+      "width": 240,
+      "height": 180,
+      "raw_rgba8": {
+        "sha256": "244e5e0e1a5df9a31c4fdd53ed0aa99d3f39fd9971d548de4e2302ca0aac4ab6",
+        "bytes": 172800
+      },
+      "lossless_png": "pixels/thorvg-text-240x180.png"
+    },
+    "thorvg-text-200x150.rgba": {
+      "width": 200,
+      "height": 150,
+      "raw_rgba8": {
+        "sha256": "bf69f0b8e2ce704272ff615b78952849fa216095bf248ec792b560bf12567e90",
+        "bytes": 120000
+      },
+      "lossless_png": "pixels/thorvg-text-200x150.png"
+    },
+    "direct-240x180.rgba": {
+      "width": 240,
+      "height": 180,
+      "raw_rgba8": {
+        "sha256": "d4ff03d83ea5f45a56a1ec98898e6e3f5b7a9ca8771d7239d5ef3b01da6616b6",
+        "bytes": 172800
+      },
+      "lossless_png": "pixels/direct-240x180.png"
+    },
+    "direct-200x150.rgba": {
+      "width": 200,
+      "height": 150,
+      "raw_rgba8": {
+        "sha256": "ed993edd0fa830eb0385176219324db55d0d742c2f1ae7510f89e462f9bd8a06",
+        "bytes": 120000
+      },
+      "lossless_png": "pixels/direct-200x150.png"
+    },
+    "direct-text-160x120.rgba": {
+      "width": 160,
+      "height": 120,
+      "raw_rgba8": {
+        "sha256": "f595182519919ba380a9dd60ccb0b39cffc90a9bc1152372c9573a1bd701fa86",
+        "bytes": 76800
+      },
+      "lossless_png": "pixels/direct-text-160x120.png"
+    },
+    "thorvg-composition-160x120.rgba": {
+      "width": 160,
+      "height": 120,
+      "raw_rgba8": {
+        "sha256": "9dd57f1123f4bef9a427c66655dc4323514df4e38412e34e2552129a7d6429f5",
+        "bytes": 76800
+      },
+      "lossless_png": "pixels/thorvg-composition-160x120.png"
+    }
+  },
+  "receipt_files": {
+    "adapter-metadata-failed.log": {
+      "sha256": "7981220abe7e5d5be2dde15889ae7d0cc997773d191eb0c427bd50ed5bf63b46",
+      "bytes": 2007
+    },
+    "expanded-pixels-success.log": {
+      "sha256": "7540bab5894f36a6b457775fcdb0ef00af45e2e94b330c99e3ac8583d710e70f",
+      "bytes": 2558
+    },
+    "final-jvm-host-compile-failed.log": {
+      "sha256": "fe8593ce2800b843b3a3d6714406e62e9e0cae3c8043d09d079fb5bb9add45b4",
+      "bytes": 9199
+    },
+    "host.json": {
+      "sha256": "8a89e8bc6cec6d57f9239fdf9f1e95b02b4e3b105ad665cde6f98f81ec4756c7",
+      "bytes": 1100
+    },
+    "jvm-and-default-native-failed.log": {
+      "sha256": "2a3c6c5a906759a4ae3c57c3ed5ec92d90d89891b37592833fbb5c803a15e05d",
+      "bytes": 21157
+    },
+    "mask-oracle-success.log": {
+      "sha256": "08b6684b653c1bbaa5173fd38d5a7aeb888df54c7c8fef529fa1b98ce3dfc9aa",
+      "bytes": 2696
+    },
+    "native-serial-and-probes-success.log": {
+      "sha256": "cb83745a8d4697b6f25ee77ccb842925a112e824b616c51e1dbe63f4ef7813a0",
+      "bytes": 19903
+    },
+    "pixels/direct-160x120.png": {
+      "sha256": "ce57083944ed7c3ef81cf8b847b162c0be12cd3fd39566a718fcbddb8d6e0d61",
+      "bytes": 660
+    },
+    "pixels/direct-200x150.png": {
+      "sha256": "1963de59c919778a9b75e5118931af21c61ccc259a227fb154e7552eff7d4379",
+      "bytes": 1012
+    },
+    "pixels/direct-240x180.png": {
+      "sha256": "972d1b39578ee58a9475a66cc4752174d3a18a1037db7ff966730869c28d9836",
+      "bytes": 1087
+    },
+    "pixels/direct-320x240.png": {
+      "sha256": "3bd3ae452c4895bec7adea902fcdafec1f811d5f4118b0da82f19d4b5fb95649",
+      "bytes": 1645
+    },
+    "pixels/direct-text-160x120.png": {
+      "sha256": "95c57da1c867e795d22e4937df59fd6af94c6afb758133193642afbd3793e6d8",
+      "bytes": 2498
+    },
+    "pixels/direct-text-200x150.png": {
+      "sha256": "93ade38f615635d4f8ed04176f7c37ef02a9b1ffe838e73eeac89c82e16a3e66",
+      "bytes": 3401
+    },
+    "pixels/direct-text-240x180.png": {
+      "sha256": "2d1b0aecd6ec056df90eedc6f2814585e53a8fdd27d2428c6ccbdc41af702968",
+      "bytes": 4490
+    },
+    "pixels/direct-text-320x240.png": {
+      "sha256": "b72dbf0db577dae66ef18a88150463aed85ba880a2128a8e5c35ae96b10fd1f5",
+      "bytes": 6349
+    },
+    "pixels/seam-timings.txt": {
+      "sha256": "661f258a242ecb4cc636a3093027eba87cdd654c48a04f93b82071fd83642732",
+      "bytes": 327
+    },
+    "pixels/thorvg-color-1.0.txt": {
+      "sha256": "fe9d824e0e9b259cf88f26ebc3fbcbf31a0be9260185bc8eba16475f61668dfe",
+      "bytes": 127
+    },
+    "pixels/thorvg-color-1.25.txt": {
+      "sha256": "fe9d824e0e9b259cf88f26ebc3fbcbf31a0be9260185bc8eba16475f61668dfe",
+      "bytes": 127
+    },
+    "pixels/thorvg-color-1.5.txt": {
+      "sha256": "fe9d824e0e9b259cf88f26ebc3fbcbf31a0be9260185bc8eba16475f61668dfe",
+      "bytes": 127
+    },
+    "pixels/thorvg-color-2.0.txt": {
+      "sha256": "fe9d824e0e9b259cf88f26ebc3fbcbf31a0be9260185bc8eba16475f61668dfe",
+      "bytes": 127
+    },
+    "pixels/thorvg-composition-160x120.png": {
+      "sha256": "a6d0ebb3df7010bf005cea7719d93e719143bfd7892d1fa75b82029be9d56a8d",
+      "bytes": 223
+    },
+    "pixels/thorvg-composition-200x150.png": {
+      "sha256": "2cd95b875bbd97dab0026bd22ea975e218ac9dc43a519f7d456f5800f4c6e0f8",
+      "bytes": 298
+    },
+    "pixels/thorvg-composition-240x180.png": {
+      "sha256": "95145b6530c2e51416c1b8138c2121366e93fdd655c03f07afef83ea9f4a8151",
+      "bytes": 391
+    },
+    "pixels/thorvg-composition-320x240.png": {
+      "sha256": "23e046c97b84e083a33188bbd38a586449cd6aa7e850f79b68bc8affb507b2cb",
+      "bytes": 616
+    },
+    "pixels/thorvg-text-160x120.png": {
+      "sha256": "424e601b03a69414de729b72a82ab5216e753601840f4bfbee325b31e1146656",
+      "bytes": 2678
+    },
+    "pixels/thorvg-text-200x150.png": {
+      "sha256": "556cca46e54d8deb7985e7b2636471435edffcfa782358109315912f47684c2a",
+      "bytes": 3561
+    },
+    "pixels/thorvg-text-240x180.png": {
+      "sha256": "85f252479e14499cd82296beb8bd4c1de255c10ac6820c97b32c4937c83b4ce8",
+      "bytes": 4348
+    },
+    "pixels/thorvg-text-320x240.png": {
+      "sha256": "c20848a7071d86e2d3c13fe63d7a5427d236830f24e4736d47f059fad1235ecd",
+      "bytes": 5465
+    },
+    "pixels/timings.txt": {
+      "sha256": "05b5b57c47b7364acfa3c08a26d4f4a4730831a3bfcaf221db8a27f2d5681ced",
+      "bytes": 370
+    },
+    "serial-setting-failed.log": {
+      "sha256": "5863ec9f4a31fb99a2a4769b91aac39078cfb135159e7e84dc55fb633539b7ba",
+      "bytes": 545
+    },
+    "shader-reserved-name-failed.log": {
+      "sha256": "c1432ddefd121ce876d5c48cfcc073aa985b222ee9afaaa7da30a3b0bf22b0b6",
+      "bytes": 2222
+    },
+    "shared-device-smoke-success.log": {
+      "sha256": "c6959d7fb84c354a426b4c1119697edb6a22c994b6108284b085d81b78a92198",
+      "bytes": 1547
+    },
+    "strict-compile-failed.log": {
+      "sha256": "38e813afe3a8ec66d569ffeb6f7e31cfcd44faa07aad4fc0a8fbf480b6f67618",
+      "bytes": 2880
+    },
+    "thorvg-build-failed.log": {
+      "sha256": "81ed083506997a4bfdaacc8dcbfb3a472784ad5e2fe894aeb93ebb9098943075",
+      "bytes": 5598
+    },
+    "thorvg-build-success.log": {
+      "sha256": "4fc4ba565bd0aad3d4a0151eb74befadcb6ce0110d96307fca7bb4fa1e821958",
+      "bytes": 4401
+    },
+    "thorvg-format-abort.log": {
+      "sha256": "ed6ea8f09054ac000d992d85fdab9c998bc43bf418185f8657a2b5730c54f4fd",
+      "bytes": 2512
+    }
+  }
+}

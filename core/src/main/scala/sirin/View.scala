@@ -13,9 +13,9 @@ trait ViewRebuild[V <: View]:
 
 object ViewRebuild:
   given ViewRebuild[View] = (view, decoration) => View.Decorated(view, decoration)
-  given ViewRebuild[TextView] = ???
+  given ViewRebuild[TextView] = (view, decoration) => View.TextDecoration(view, decoration)
   given ViewRebuild[TextFieldView] = ???
-  given ViewRebuild[ButtonView] = ???
+  given ViewRebuild[ButtonView] = (view, decoration) => View.ButtonDecoration(view, decoration)
   given ViewRebuild[StackView] = (view, decoration) => View.StackDecoration(view, decoration)
 
 enum Decoration:
@@ -61,6 +61,16 @@ object View:
   private[sirin] final case class StackDecoration(view: StackView, decoration: Decoration) extends StackView:
     def spacing(value: Lp): StackView = copy(view = view.spacing(value))
     def align(value: Alignment): StackView = copy(view = view.align(value))
+  private[sirin] final case class TextDecoration(view: TextView, decoration: Decoration) extends TextView:
+    def style(value: TextStyle): TextView = copy(view = view.style(value))
+    def color(value: ColorRole): TextView = copy(view = view.color(value))
+  private[sirin] final case class ButtonDecoration(view: ButtonView, decoration: Decoration) extends ButtonView:
+    def primary: ButtonView = copy(view = view.primary)
+    def command(c: Command[Unit, ?]): ButtonView = copy(view = view.command(c))
+    def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(view = view.command(c,arg))
+    def onPress(run: Action): ButtonView = copy(view = view.onPress(run))
+  private[sirin] final case class Space(size: Option[Lp]) extends View
+  private[sirin] final case class ScrollContent(content: View) extends View
   def empty: View = Empty
 
 trait TextView extends View:
@@ -68,8 +78,12 @@ trait TextView extends View:
   def color(role: ColorRole): TextView
 
 object Text:
-  def apply(content: String): TextView         = ???
-  def apply(content: Signal[String]): TextView = ???
+  private[sirin] final case class Description(content: Signal[String], textStyle: TextStyle = TextStyle.Body,
+      colorRole: ColorRole = ColorRole.OnSurface) extends TextView:
+    def style(value: TextStyle): TextView = copy(textStyle = value)
+    def color(value: ColorRole): TextView = copy(colorRole = value)
+  def apply(content: String): TextView = Description(Signal.const(content))
+  def apply(content: Signal[String]): TextView = Description(content)
 
 trait TextFieldView extends View:
   def label(text: String): TextFieldView
@@ -96,11 +110,30 @@ trait ButtonView extends View:
   def onPress(run: Action): ButtonView
 
 object Button:
-  def apply(label: String): ButtonView         = ???
-  def apply(label: Signal[String]): ButtonView = ???
-
-  /** A button whose label also comes from the command. */
-  def apply(command: Command[Unit, ?]): ButtonView = ???
+  private[sirin] sealed trait Binding:
+    def enabled: Signal[Boolean]
+    def running: Signal[Int]
+    def invoke()(using UiTxn): Unit
+  private[sirin] case object Inert extends Binding:
+    val enabled=Signal.const(false)
+    val running=Signal.const(0)
+    def invoke()(using UiTxn): Unit = ()
+  private[sirin] final case class Plain(run: UiTxn => Unit) extends Binding:
+    val enabled=Signal.always
+    val running=Signal.const(0)
+    def invoke()(using txn: UiTxn): Unit = run(txn)
+  private[sirin] final case class Bound[A](command: Command[A,?], arg: Signal[A]) extends Binding:
+    val enabled=command.enabledFor(arg)
+    def running: Signal[Int] = command.running
+    def invoke()(using UiTxn): Unit = { command.dispatch(arg.get); () }
+  private[sirin] final case class Description(label: Signal[String],isPrimary: Boolean=false,binding: Binding=Inert) extends ButtonView:
+    def primary: ButtonView = copy(isPrimary=true)
+    def command(c: Command[Unit,?]): ButtonView = command(c,Signal.const(()))
+    def command[A](c: Command[A,?],arg: Signal[A]): ButtonView = copy(binding=Bound(c,arg))
+    def onPress(run: Action): ButtonView = copy(binding=Plain(txn => run(using txn)))
+  def apply(label: String): ButtonView = Description(Signal.const(label))
+  def apply(label: Signal[String]): ButtonView = Description(label)
+  def apply(command: Command[Unit,?]): ButtonView = apply(command.label).command(command)
 
 object Checkbox:
   def bind(value: Cell[Boolean], label: String): View = ???
@@ -122,11 +155,13 @@ object Row:
   def apply(children: View*): StackView = View.Stack(children.toVector, horizontal = true)
 
 object Spacer:
-  def apply(): View         = ???
-  def apply(size: Lp): View = ???
+  def apply(): View = View.Space(None)
+  def apply(size: Lp): View =
+    require(size.toDouble.isFinite && size.toDouble >= 0, "spacer size must be finite and nonnegative")
+    View.Space(Some(size))
 
 object Scroll:
-  def apply(content: View): View = ???
+  def apply(content: View): View = View.ScrollContent(content)
 
 /** Layers drawn over `base`, each sized to it. */
 object Overlay:

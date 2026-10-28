@@ -1,0 +1,60 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-responsive-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-responsive-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-responsive-20261028/)
+[info] running (fork) sirin.desktop.WindowSpike failures
+[info] partialInitStage=1 liveWindows=0 liveRequests=0
+[info] partialInitStage=2 liveWindows=0 liveRequests=0
+[info] partialInitStage=3 liveWindows=0 liveRequests=0
+[info] partialInitStage=4 liveWindows=0 liveRequests=0
+[info] partialInitStage=5 liveWindows=0 liveRequests=0
+[info] partialInitStage=6 liveWindows=0 liveRequests=0
+[info] partialInitStage=7 liveWindows=0 liveRequests=0
+[info] partialInitStage=8 liveWindows=0 liveRequests=0
+[info] timedOutRequest=9 lateCallback=true lateObjectReleased=true
+[info] partialInitStage=9 liveWindows=0 liveRequests=0
+[info] timedOutRequest=10 lateCallback=true lateObjectReleased=true
+[info] partialInitStage=10 liveWindows=0 liveRequests=0
+[success] Total time: 2 s, completed Oct 28, 2026, 1:14:16 p.m.
+[info] running (fork) sirin.desktop.DesktopWorkbench scenario
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/target/bg-jobs/sbt_68f5529/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] renderSession shaped=12 tileHits=0 tileMisses=1 resources=GpuResourceStats(0,0,0)
+[error] Exception in thread "main" java.lang.NullPointerException: Cannot invoke "sirin.desktop.ffm.Memory$Ptr.raw()" because "source" is null
+[error] 	at sirin.graphics.text.NativeFont.rasterize$$anonfun$6(NativeFont.scala:119)
+[error] 	at sirin.desktop.ffm.Memory$Zone$.acquire(Memory.scala:54)
+[error] 	at sirin.graphics.text.NativeFont.rasterize(NativeFont.scala:109)
+[error] 	at sirin.desktop.RenderSession.raster(FrameWorker.scala:56)
+[error] 	at sirin.desktop.RenderSession.$init$$$anonfun$1(FrameWorker.scala:35)
+[error] 	at sirin.desktop.RenderSession.$init$$$anonfun$adapted$1(FrameWorker.scala:35)
+[error] 	at sirin.render.PixelProgram$.$anonfun$5(PixelProgram.scala:72)
+[error] 	at scala.Option.fold(Option.scala:263)
+[error] 	at sirin.render.PixelProgram$.$anonfun$3(PixelProgram.scala:72)
+[error] 	at scala.collection.mutable.HashMap.getOrElseUpdate(HashMap.scala:469)
+[error] 	at sirin.render.PixelProgram$.compile$$anonfun$2$$anonfun$2(PixelProgram.scala:74)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.render.PixelProgram$.compile$$anonfun$2(PixelProgram.scala:68)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.render.PixelProgram$.compile(PixelProgram.scala:55)
+[error] 	at sirin.graphics.desktop.TileCache.render$$anonfun$6$$anonfun$1(TiledRenderer.scala:105)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Range.foreach(Range.scala:192)
+[error] 	at sirin.graphics.desktop.TileCache.render$$anonfun$6(TiledRenderer.scala:94)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Range.foreach(Range.scala:192)
+[error] 	at sirin.graphics.desktop.TileCache.render(TiledRenderer.scala:94)
+[error] 	at sirin.desktop.RenderSession.render(FrameWorker.scala:80)
+[error] 	at sirin.desktop.RenderService.loop(FrameWorker.scala:128)
+[error] 	at sirin.desktop.RenderService.$init$$$anonfun$2(FrameWorker.scala:117)
+[error] 	at java.base/java.lang.Thread.run(Thread.java:1474)
+[error] nonzero exit code returned from runner: 1
+[error] (desktopJVM / Compile / runMain) nonzero exit code returned from runner: 1
+[error] Total time: 1 s, completed Oct 28, 2026, 1:14:18 p.m.

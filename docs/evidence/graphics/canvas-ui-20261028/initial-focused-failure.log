@@ -1,0 +1,30 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (18370 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.028s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.036s
+[info] Passed: Total 3, Failed 0, Errors 0, Passed 3
+[success] Total time: 2 s, completed Oct 28, 2026, 8:49:08 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics-ui/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.023s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.025s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 1 s, completed Oct 28, 2026, 8:49:09 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/test-classes ...
+[warn] -- [E198] Unused Symbol Warning: /Users/bbuchsbaum/code/scala/sirin/probes/paragraph/src/test/scala/sirin/graphics/text/CanvasBridgeSuite.scala:6:18 
+[warn] 6 |import sirin.text.ResolvedTextLayout
+[warn]   |                  ^^^^^^^^^^^^^^^^^^
+[warn]   |                  unused import
+[error] No warnings can be incurred under -Werror (or -Xfatal-warnings)
+[warn] one warning found
+[error] one error found
+[error] (probeParagraph / Test / compileIncremental) Compilation failed
+[error] Total time: 2 s, completed Oct 28, 2026, 8:49:10 a.m.

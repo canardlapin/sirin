@@ -1,0 +1,22 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-responsive-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-responsive-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-responsive-20261028/)
+[info] running (fork) sirin.desktop.DesktopWorkbench benchmark close
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/target/bg-jobs/sbt_928900ed/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] presented=1 generation=2 renderMs=561.780125 uploadBytes=15659680 readbackBytes=7004160 pixels=1200x720 feedback=1 focus=None
+[info] benchmarkReceipt=/private/tmp/sirin-responsive-20261028/desktop/target/benchmarks/run-1793213986645-4771181041868416 status=failed targetsMet=false
+[info] renderSession shaped=19 tileHits=35 tileMisses=60 resources=GpuResourceStats(64,11121184,15659680)
+[error] Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: benchmark interrupted or sample counts incomplete
+[error] 	at scala.Predef$.require(Predef.scala:337)
+[error] 	at sirin.desktop.DesktopWorkbench$.run(DesktopWorkbench.scala:210)
+[error] 	at sirin.desktop.DesktopWorkbench$.main(DesktopWorkbench.scala:17)
+[error] 	at sirin.desktop.DesktopWorkbench.main(DesktopWorkbench.scala)
+[error] nonzero exit code returned from runner: 1
+[error] (desktopJVM / Compile / runMain) nonzero exit code returned from runner: 1
+[error] Total time: 4 s, completed Oct 28, 2026, 2:59:48 p.m.

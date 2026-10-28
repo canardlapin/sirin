@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "scope": "bounded seam and pixel slice, not G-1 or full G-2 qualification",
+  "logicalViewport": [160, 120],
+  "scales": [1, 1.25, 1.5, 2],
+  "format": "straight-alpha sRGB RGBA8 export; linear-premultiplied compositing",
+  "flattenToleranceDevicePixels": 0.125,
+  "coverage": "4x4 fixed-grid per-pixel samples, all operations composed per sample",
+  "interiorOracleToleranceByte": 1,
+  "analyticCoverageToleranceByte": 1,
+  "imageOracleToleranceByte": 1,
+  "fixtures": ["opaque rectangle", "even-odd hole", "nested fixed-space clips", "isolated overlapping children", "linear red over blue", "nearest crop", "linear transparent-edge image", "fractional and rotated Latin ligatures and Arabic positioned masks"],
+  "comparison": "identical prepared scene; opaque interiors strict; other differences recorded, never counted as conformant by changing tolerances",
+  "limits": {"pixels": 1048576, "operations": 1024, "vec4": 2097152, "layers": 8, "sampleWorkSafetyCeiling": 500000000},
+  "timing": {"coldPreparations": 10, "warmupFrames": 3, "measuredFrames": 10, "kind": "CPU wall-clock including synchronized submission and readback, not GPU timestamps or display latency"},
+  "performanceAcceptance": "none; tiny correctness probe has no production throughput claim"
+}

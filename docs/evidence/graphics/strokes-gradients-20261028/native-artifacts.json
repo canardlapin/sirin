@@ -1,0 +1,57 @@
+{
+  "native/vendor/wgpu-macos-aarch64-release.zip": {
+    "sha256": "a5797a37b1adf720bcd5dcffb291edbbd5b7b14be0a3874c28e6393a655a7a3e",
+    "bytes": 13733288,
+    "matches_previous_receipt": true
+  },
+  "native/vendor/wgpu-macos-aarch64/lib/libwgpu_native.dylib": {
+    "sha256": "e72e8f1777dd0315bfee91c6b7e7b105234d5c1cc1621db4cf92ffee2ac2ae32",
+    "bytes": 6933424,
+    "matches_previous_receipt": true
+  },
+  "native/vendor/wgpu-macos-aarch64/include/webgpu/webgpu.h": {
+    "sha256": "a483031c3fed05ea5dd1c74082a71676c46c5b2b820ccca10da515c033efc997",
+    "bytes": 259569,
+    "matches_previous_receipt": true
+  },
+  "native/vendor/thorvg/thorvg-1.1.3.tar.xz": {
+    "sha256": "ef97785ed6d0f25ab84d6b4a0eed4325c68c4d80b1c2a61ea0b4029192fea746",
+    "bytes": 2949064,
+    "matches_previous_receipt": true
+  },
+  "native/vendor/thorvg/install/lib/libthorvg-1.a": {
+    "sha256": "286beea96f3e5a72549005823d638fb08855e412aaa26592c5f708b953c8168a",
+    "bytes": 424488,
+    "matches_previous_receipt": true
+  },
+  "native/vendor/thorvg/install/include/thorvg-1/thorvg_capi.h": {
+    "sha256": "ab08d97880306222d388cc107d5172ba6a5927cede25baad2ceefbdc132c0084",
+    "bytes": 151171,
+    "matches_previous_receipt": true
+  },
+  "native/vendor/text/lib/libharfbuzz.a": {
+    "sha256": "7a21b090347472453cacdfde4b00ae235b97b306525ea203526bc463ed9b380e",
+    "bytes": 2116008,
+    "matches_previous_receipt": true
+  },
+  "native/vendor/text/lib/libfreetype.a": {
+    "sha256": "35bd8260dc52e27d3ebbfb0fc5d069436865d41386206944b2de53de92d1e40c",
+    "bytes": 931256,
+    "matches_previous_receipt": true
+  },
+  "probes/render/target/scala-3.7.4/sirin-probe-render-test": {
+    "sha256": "0a25c6868179d4d8d16f176bac0d1acdc117b4a88732bf07eb6925d6dbfc7138",
+    "bytes": 12149360,
+    "matches_previous_receipt": false
+  },
+  "graphics/src/test/resources/fonts/NotoSans-Regular.ttf": {
+    "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "bytes": 569208,
+    "matches_previous_receipt": true
+  },
+  "graphics/src/test/resources/fonts/NotoNaskhArabic-Regular.ttf": {
+    "sha256": "2f4b88e6ee50fa82c617e2d1d4ba18281cb1c6cd71c3af3ec64970c23995db4b",
+    "bytes": 178388,
+    "matches_previous_receipt": true
+  }
+}

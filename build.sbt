@@ -15,10 +15,29 @@ lazy val testDeps = Seq(
   )
 )
 
+// Standalone drawing values and recordings: no UI runtime or native library dependency.
+lazy val graphics = crossProject(JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("graphics"))
+  .settings(name := "sirin-graphics", testDeps)
+
 lazy val core = crossProject(JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
   .settings(name := "sirin-core", testDeps)
+
+// Pure text adapter; both foundational APIs retain their independent graphs.
+lazy val textUI = crossProject(JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("text-ui"))
+  .dependsOn(core, graphics)
+  .settings(name := "sirin-text-ui", testDeps)
+
+lazy val graphicsUI = crossProject(JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("graphics-ui"))
+  .dependsOn(core, graphics, textUI)
+  .settings(name := "sirin-graphics-ui", testDeps)
 
 lazy val engine = crossProject(JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
@@ -36,6 +55,104 @@ lazy val testkit = crossProject(JVMPlatform, NativePlatform)
 // (fetch with native/fetch-macos.sh). They are not aggregated by root.
 lazy val vendor = settingKey[File]("Pinned native artifact directory")
 ThisBuild / vendor := (ThisBuild / baseDirectory).value / "native" / "vendor"
+
+// Provisional real font service, explicitly tested after fetching --text.
+// Kept out of root aggregation, like the existing artifact-dependent probes.
+lazy val verifyFontFixtures = taskKey[Unit]("Verify pinned font fixture hashes")
+lazy val verifyUnicodeFixtures = taskKey[Unit]("Verify pinned Unicode conformance fixtures")
+lazy val probeUnicode = project
+  .in(file("probes/unicode"))
+  .enablePlugins(ScalaNativePlugin)
+  .dependsOn(graphics.native)
+  .settings(
+    name := "sirin-probe-unicode",
+    publish / skip := true,
+    testDeps,
+    verifyUnicodeFixtures := {
+      val dir = baseDirectory.value / "src" / "test" / "resources" / "unicode"
+      IO.readLines(dir / "SHA256SUMS").filter(_.nonEmpty).foreach { line =>
+        val parts = line.split("\\s+", 2)
+        val actual = java.security.MessageDigest.getInstance("SHA-256").digest(IO.readBytes(dir / parts(1)))
+          .map(b => f"${b & 0xff}%02x").mkString
+        require(actual == parts(0), s"Unicode fixture checksum mismatch: ${parts(1)}")
+      }
+    },
+    Test / test := ((Test / test) dependsOn verifyUnicodeFixtures).value,
+    nativeConfig := {
+      val c = nativeConfig.value
+      val unicode = (ThisBuild / vendor).value / "unicode"
+      val headers = unicode / "icu4x-031d9e89f6a3fd26a14491e090729d46094328fd" / "ffi" / "capi" / "bindings" / "c"
+      // ICU4X's Time.h must not shadow system <time.h> on macOS.
+      c.withCompileOptions(c.compileOptions ++ Seq("-iquote", headers.toString))
+        .withLinkingOptions(c.linkingOptions ++ Seq(s"$unicode/libicu4x_probe.a"))
+    }
+  )
+lazy val textNative = project
+  .in(file("text-native"))
+  .enablePlugins(ScalaNativePlugin)
+  .dependsOn(graphics.native)
+  .settings(
+    name := "sirin-text-native",
+    testDeps,
+    verifyFontFixtures := {
+      val dir = (ThisBuild / baseDirectory).value / "graphics" / "src" / "test" / "resources" / "fonts"
+      IO.readLines(dir / "SHA256SUMS").filter(_.nonEmpty).foreach { line =>
+        val parts = line.split("\\s+", 2)
+        val digest = java.security.MessageDigest.getInstance("SHA-256").digest(IO.readBytes(dir / parts(1)))
+        val actual = digest.map(b => f"${b & 0xff}%02x").mkString
+        require(actual == parts(0), s"font fixture checksum mismatch: ${parts(1)}")
+      }
+    },
+    Test / test := ((Test / test) dependsOn verifyFontFixtures).value,
+    nativeConfig := {
+      val c = nativeConfig.value
+      val text = (ThisBuild / vendor).value / "text"
+      val cpp = if (sys.props("os.name").toLowerCase.contains("mac")) "-lc++" else "-lstdc++"
+      c.withCompileOptions(c.compileOptions ++ Seq(s"-I$text/include/harfbuzz", s"-I$text/include/freetype2"))
+        .withLinkingOptions(c.linkingOptions ++ Seq(s"$text/lib/libharfbuzz.a", s"$text/lib/libfreetype.a", cpp))
+    }
+  )
+
+// Isolated integration of the Unicode and C/C++ font components. One Rust
+// static library only; never co-linked with the native UI host.
+lazy val probeParagraph = project
+  .in(file("probes/paragraph"))
+  .enablePlugins(ScalaNativePlugin)
+  .dependsOn(textNative, probeUnicode, textUI.native, graphicsUI.native)
+  .settings(
+    name := "sirin-probe-paragraph",
+    publish / skip := true,
+    testDeps,
+    Test / test := ((Test / test) dependsOn (textNative / verifyFontFixtures, probeUnicode / verifyUnicodeFixtures)).value,
+    nativeConfig := {
+      val c = nativeConfig.value
+      val artifacts = (ThisBuild / vendor).value
+      val text = artifacts / "text"
+      val unicode = artifacts / "unicode"
+      val headers = unicode / "icu4x-031d9e89f6a3fd26a14491e090729d46094328fd" / "ffi" / "capi" / "bindings" / "c"
+      c.withCompileOptions(c.compileOptions ++ Seq(s"-I$text/include/harfbuzz", s"-I$text/include/freetype2", "-iquote", headers.toString))
+        .withLinkingOptions(c.linkingOptions ++ Seq(s"$text/lib/libharfbuzz.a", s"$text/lib/libfreetype.a", "-lc++", s"$unicode/libicu4x_probe.a"))
+    }
+  )
+
+lazy val probeRender = project
+  .in(file("probes/render"))
+  .enablePlugins(ScalaNativePlugin)
+  .dependsOn(graphics.native, textNative)
+  .settings(
+    name := "sirin-probe-render", publish / skip := true, testDeps,
+    Test / parallelExecution := false,
+    Test / test := ((Test / test) dependsOn (textNative / verifyFontFixtures)).value,
+    nativeConfig := {
+      val c = nativeConfig.value
+      val v = (ThisBuild / vendor).value
+      val w = v / "wgpu-macos-aarch64"
+      val t = v / "text"
+      val thor = v / "thorvg" / "install"
+      c.withCompileOptions(c.compileOptions ++ Seq(s"-I$w/include", s"-I$thor/include/thorvg-1", s"-I$t/include/harfbuzz", s"-I$t/include/freetype2"))
+        .withLinkingOptions(c.linkingOptions ++ Seq(s"-L$w/lib", "-lwgpu_native", s"-Wl,-rpath,$w/lib", s"$thor/lib/libthorvg-1.a", s"$t/lib/libharfbuzz.a", s"$t/lib/libfreetype.a", "-lc++"))
+    }
+  )
 
 lazy val probeWindow = project
   .in(file("probes/window"))
@@ -142,12 +259,12 @@ lazy val probeThreads = project
 
 lazy val root = project
   .in(file("."))
-  .aggregate(core.jvm, core.native, engine.jvm, engine.native, testkit.jvm, testkit.native)
+  .aggregate(graphics.jvm, graphics.native, core.jvm, core.native, textUI.jvm, textUI.native, graphicsUI.jvm, graphicsUI.native, engine.jvm, engine.native, testkit.jvm, testkit.native)
   .settings(publish / skip := true)
 
 // Named per-platform test commands; CI calls these rather than relying on `+test`.
-addCommandAlias("testJVM", "; coreJVM/test; engineJVM/test; testkitJVM/test; workbenchJVM/test")
-addCommandAlias("testNative", "; coreNative/test; engineNative/test; testkitNative/test; workbenchNative/test")
+addCommandAlias("testJVM", "; graphicsJVM/test; coreJVM/test; textUIJVM/test; graphicsUIJVM/test; engineJVM/test; testkitJVM/test; workbenchJVM/test; hostJVM/test")
+addCommandAlias("testNative", "; graphicsNative/test; coreNative/test; textUINative/test; graphicsUINative/test; engineNative/test; testkitNative/test; workbenchNative/test; hostNative/test")
 addCommandAlias("testAll", "; testJVM; testNative")
 
 // Executable public-API behaviour specimen; no desktop renderer required.
@@ -165,3 +282,86 @@ lazy val scalafxWorkbench = project
     publish / skip := true,
     libraryDependencies += "org.scalafx" %% "scalafx" % "26.0.0-R38"
   )
+
+// Bounded JDK25 FFM development host. Deliberately not root-aggregated: invoke
+// with sbt --java-home <jdk25> desktopJVM/test or desktopJVM/run.
+lazy val desktopNativeLibrary = taskKey[File]("Build the pointer-only desktop transport")
+lazy val desktopJVM = project.in(file("desktop"))
+  .dependsOn(host.jvm, workbench.jvm)
+  .settings(
+    name := "sirin-desktop-development", publish / skip := true, testDeps,
+    Compile / unmanagedSources ++= {
+      val repo = (ThisBuild / baseDirectory).value
+      Seq(repo / "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala",
+        repo / "probes/paragraph/src/main/scala/sirin/graphics/text/NativeTextServices.scala",
+        repo / "probes/render/src/main/scala/sirin/render/PixelProgram.scala")
+    },
+    Compile / resourceGenerators += Def.task {
+      val output = (Compile / resourceManaged).value / "raster.wgsl"
+      IO.copyFile((ThisBuild / baseDirectory).value / "probes/render/src/main/resources/raster.wgsl", output)
+      Seq(output)
+    }.taskValue,
+    desktopNativeLibrary := {
+      import scala.sys.process._
+      val rootDir = (ThisBuild / baseDirectory).value
+      val output = target.value / "native" / "libsirin_desktop.dylib"
+      IO.createDirectory(output.getParentFile)
+      require(sys.props("os.name").toLowerCase.contains("mac"), "bounded desktop transport currently requires macOS")
+      val (compile, link) = vendorFlags((ThisBuild / vendor).value)
+      val v = (ThisBuild / vendor).value
+      val text = v / "text"
+      val unicode = v / "unicode"
+      val headers = unicode / "icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/ffi/capi/bindings/c"
+      val thor = v / "thorvg/install"
+      val command = Seq("clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-O2") ++ compile ++
+        Seq(s"-I$text/include/harfbuzz", s"-I$text/include/freetype2", "-iquote", headers.toString,
+          s"-I$thor/include/thorvg-1", (baseDirectory.value / "native" / "sirin_desktop.c").toString, "-o", output.toString) ++ link ++
+        Seq(s"$text/lib/libharfbuzz.a", s"$text/lib/libfreetype.a", s"$unicode/libicu4x_probe.a", s"$thor/lib/libthorvg-1.a", "-lc++")
+      require(Process(command, rootDir).! == 0, "desktop transport compilation failed")
+      output
+    },
+    Compile / compile := ((Compile / compile) dependsOn desktopNativeLibrary).value,
+    Compile / run / fork := true,
+    Compile / run / javaOptions ++= Seq("-XstartOnFirstThread", "--enable-native-access=ALL-UNNAMED",
+      "-Dsirin.repo=" + (ThisBuild / baseDirectory).value.getAbsolutePath,
+      "-Dsirin.desktop.library=" + (target.value / "native" / "libsirin_desktop.dylib").getAbsolutePath),
+    Test / fork := true,
+    Test / javaOptions ++= Seq("--enable-native-access=ALL-UNNAMED",
+      "-Dsirin.desktop.library=" + (target.value / "native" / "libsirin_desktop.dylib").getAbsolutePath)
+  )
+
+// Backend-independent committed tree capture and bounded layout/recording nucleus.
+lazy val host = crossProject(JVMPlatform, NativePlatform).crossType(CrossType.Pure)
+  .in(file("host")).dependsOn(engine, graphicsUI)
+  .settings(name := "sirin-host", testDeps)
+
+// Identifiable local macOS development app. Its native vendor paths are local;
+// this is an app-image acceptance target, not a redistributable installer.
+lazy val desktopPackage = taskKey[File]("Package the bounded JVM workbench app-image")
+desktopJVM / desktopPackage := {
+  import scala.sys.process._
+  val repo = (ThisBuild / baseDirectory).value
+  val output = (desktopJVM / target).value / "package"
+  val input = (desktopJVM / target).value / "package-input"
+  val classes = (desktopJVM / target).value / "package-classes"
+  val compiled = (desktopJVM / Compile / packageBin).value
+  val classpath = (desktopJVM / Runtime / fullClasspath).value.map(_.data)
+  IO.delete(input); IO.delete(classes); IO.delete(output)
+  IO.createDirectory(input); IO.createDirectory(classes)
+  classpath.foreach { file =>
+    if (file.isDirectory) IO.copyDirectory(file,classes)
+    else if (file.getName.endsWith(".jar")) IO.copyFile(file,input / file.getName)
+  }
+  val home = file(sys.props("java.home"))
+  require(Process(Seq((home / "bin/jar").toString,"--create","--file",(input / "sirin.jar").toString,"-C",classes.toString,"."),repo).! == 0)
+  IO.copyFile((desktopJVM / desktopNativeLibrary).value,input / "libsirin_desktop.dylib")
+  val command = Seq((home / "bin/jpackage").toString,"--type","app-image","--name","Sirin",
+    "--dest",output.toString,"--input",input.toString,"--main-jar","sirin.jar",
+    "--main-class","sirin.desktop.DesktopWorkbench","--runtime-image",home.toString,
+    "--mac-package-identifier","io.github.canardlapin.sirin.dev",
+    "--java-options","-XstartOnFirstThread","--java-options","--enable-native-access=ALL-UNNAMED",
+    "--java-options","-Dsirin.desktop.library=$APPDIR/libsirin_desktop.dylib",
+    "--java-options","-Dsirin.repo=" + repo.toString,"--arguments","interactive")
+  require(compiled.exists && Process(command,repo).! == 0,"desktop package failed")
+  output / "Sirin.app"
+}

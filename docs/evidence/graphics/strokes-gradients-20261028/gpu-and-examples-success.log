@@ -1,0 +1,47 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Linking (multithreadingEnabled=detect) (1335 ms)
+[info] Discovered 2946 classes and 19458 methods after classloading
+[info] Checking intermediate code (quick) (81 ms)
+[info] Discovered 2912 classes and 15189 methods after optimization
+[info] Optimizing (debug mode) (2103 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6359 ms)
+[info] Compiling to native code (4535 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (143 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10695 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '55222'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '55224'.
+Test run sirin.render.StrokeGradientSuite started
+sirin.render.StrokeGradientSuite: finished 1.885s
+Test run sirin.render.StrokeGradientSuite finished: 0 failed, 0 ignored, 5 total 1.885s
+Test run sirin.graphics.RebasedGradientSuite started
+sirin.graphics.RebasedGradientSuite: finished 0.201s
+Test run sirin.graphics.RebasedGradientSuite finished: 0 failed, 0 ignored, 1 total 0.201s
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=327709,301416,296791,295875,295250,296375,294292,294959,294959,295334
+synchronized-render-readback-ns=6873916,6935083,6971375,6973208,6991250,7006416,7009250,7015208,7021250,8235750
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 1.669s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 8 total 1.669s
+[info] Passed: Total 14, Failed 0, Errors 0, Passed 14
+[success] Total time: 16 s, completed Oct 28, 2026, 11:01:31 a.m.
+[info] compiling 13 Scala sources to /Users/bbuchsbaum/code/scala/sirin/examples/target/scala-3.7.4/classes ...
+[info] done compiling
+[success] Total time: 4 s, completed Oct 28, 2026, 11:01:35 a.m.

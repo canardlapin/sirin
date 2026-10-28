@@ -5,7 +5,7 @@ package sirin
 enum Key:
   case Character(c: Char)
   case Enter, Escape, Tab, Space, Backspace, Delete
-  case ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Home, End
+  case ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Home, End, PageUp, PageDown
 
 opaque type Mods = Int
 
@@ -16,6 +16,8 @@ object Mods:
   val Primary: Mods = 1
   val Shift: Mods   = 2
   val Alt: Mods     = 4
+  /** Physical Control; distinct from Command/Primary on macOS. */
+  val Control: Mods = 8
   extension (m: Mods)
     def |(o: Mods): Mods        = m | o
     def has(o: Mods): Boolean   = (m & o) == o

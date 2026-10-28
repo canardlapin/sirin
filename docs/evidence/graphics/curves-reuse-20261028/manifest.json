@@ -1,0 +1,612 @@
+{
+  "captured_utc": "2026-10-28T17:41:57.940637+00:00",
+  "head": "ae1817f1dc6fe54b4b69902c29395520a2f48cb0",
+  "mote": "bd-01M61QEVNY5DMJJ4XQQCGXX9AJ",
+  "scope": "bounded curved normal ribbons, paint-independent gradient glyphs and cross-drawing shared GPU asset arena",
+  "workspace_note": "active shared checkout; desktop/host reservations respected; wider matrix precedes last local miter/coordinate precision refinement; final affected graphics and GPU code reverified; not a frozen release candidate",
+  "validation": {
+    "distinct_cases": 673,
+    "root_each_platform": 297,
+    "graphics_each_platform": 63,
+    "gpu_cases": 20,
+    "failed": 0,
+    "ignored": 0,
+    "examples_compile": "passed",
+    "strict_C_syntax": "passed -std=c11 -Wall -Wextra -Werror",
+    "PNG_raw_verification": 12,
+    "exact_oracle_reproduction": "80 digit Double-input decimal and relative winding 1, old division 0",
+    "native_property_execution": "serialized without reducing property counts/assertions",
+    "native_curve_timeout": "same timeout/probes/assertions; per-edge allocations removed",
+    "native_dependencies": "same pinned binaries and headers",
+    "thorvg": "not adopted; prior color failure remains asserted; gradients reject status 14"
+  },
+  "limits": {
+    "gpu_arena_default_bytes": 4194304,
+    "gpu_entries_default": 128,
+    "cpu_decoded_default_bytes": 4194304,
+    "cpu_entries_default": 128,
+    "programs_max": 64,
+    "program_texture_plus_arena_payload_max": 67108864,
+    "notes": "excludes source snapshots/font bytes, ordinary objects, metadata, dummy binding, pipeline/driver overhead and per-call staging; arena stores vec4 pixels, not production R8 textures"
+  },
+  "commands": [
+    {
+      "command": "sbt 'project testkitNative' 'set Test / parallelExecution := false' 'project root' testJVM testNative textNative/test probeUnicode/test probeParagraph/test probeRender/test examples/compile",
+      "log": "full-native-oracle-timeout.log",
+      "exit": 1,
+      "note": "full JVM passed; Native new curve oracle timed out"
+    },
+    {
+      "command": "sbt 'graphicsNative/test' 'probeRender/test'",
+      "log": "native-allocation-fix-success.log",
+      "exit": 0
+    },
+    {
+      "command": "sbt 'project testkitNative' 'set Test / parallelExecution := false' 'project root' testJVM testNative textNative/test probeUnicode/test probeParagraph/test probeRender/test examples/compile",
+      "log": "full-matrix-success.log",
+      "exit": 0
+    },
+    {
+      "command": "sbt 'graphicsJVM/test' 'graphicsNative/test' probeRender/test",
+      "log": "final-admission-success.log",
+      "exit": 0,
+      "note": "final miter and path-space coordinate precision admission"
+    },
+    {
+      "command": "clang -std=c11 -Wall -Wextra -Werror -fsyntax-only -Inative/vendor/wgpu-macos-aarch64/include -Inative/vendor/thorvg/install/include/thorvg-1 probes/render/src/main/resources/scala-native/sirin_gpu.c",
+      "log": "c-syntax.log",
+      "exit": 0
+    },
+    {
+      "command": "python3 docs/evidence/graphics/curves-reuse-20261028/verify-oracle.py",
+      "exit": 0
+    }
+  ],
+  "remaining": [
+    "stationary cusp rendering and broader path corpus",
+    "radial/conic/pattern paints",
+    "production R8 texture atlases and subpixel/gamma policy",
+    "production geometry/GPU batching",
+    "mounted host resource cache and qualification",
+    "full G-1/G-2 reference/performance protocol and backend exit decision"
+  ],
+  "sources": {
+    "build.sbt": {
+      "sha256": "d3ab4da1701d8d2a4d24de8dca86cc6a9f25125dbf6553644ce59f5f1bd43b81",
+      "bytes": 15288
+    },
+    "docs/design/VISION.md": {
+      "sha256": "a93ae4a33606d7d04b7bf30bd4b8a016302fc4d9973e9180c5318f01311e7c8a",
+      "bytes": 93379
+    },
+    "docs/evidence/graphics/2026-10-28-curves-reuse.md": {
+      "sha256": "47872a4d744c3fe28b24020b63211a34ff6d3e92afd09d37530ceb4d78bba650",
+      "bytes": 12607
+    },
+    "docs/plans/2026-10-27-graphics-api.md": {
+      "sha256": "3b198d1169ad57a24f95908c1215eccf153e55ddffcb00838bf2b0d976180bf2",
+      "bytes": 28161
+    },
+    "docs/plans/2026-10-27-graphics-resources.md": {
+      "sha256": "728d6d0a7ad1e28f727762dc6d56d2032404e42fbb575a64e6a60194df8a9091",
+      "bytes": 19777
+    },
+    "graphics/README.md": {
+      "sha256": "bb62a2c639e58767a7fe00197e6327a6ee43e521ec047661ac5d0630aace4a44",
+      "bytes": 12082
+    },
+    "graphics/src/main/scala/sirin/graphics/BidiLine.scala": {
+      "sha256": "6cb08f8499199902a37c6a4e43ec27c42782d3a4f76a130ba9b50ffc0ee3d795",
+      "bytes": 2277
+    },
+    "graphics/src/main/scala/sirin/graphics/Drawing.scala": {
+      "sha256": "5ab0a2a2d0790e480529357adc34f2f7ef7a8e7809bb4652f44d9ee1e1e76223",
+      "bytes": 5228
+    },
+    "graphics/src/main/scala/sirin/graphics/DrawingResources.scala": {
+      "sha256": "6ce4226ea44bb4342e23faca6d5d29ee421a45e92d77168e56ac624d4c90598d",
+      "bytes": 3115
+    },
+    "graphics/src/main/scala/sirin/graphics/Geometry.scala": {
+      "sha256": "189e63358a8791fea2f434083a8922447d110da24e9fb74c440212097674d673",
+      "bytes": 2743
+    },
+    "graphics/src/main/scala/sirin/graphics/Image.scala": {
+      "sha256": "abd99ddc74a7d9e774b58307b65fe7526220b10f7af85ca1516fd3d72b1eeaad",
+      "bytes": 3229
+    },
+    "graphics/src/main/scala/sirin/graphics/Paint.scala": {
+      "sha256": "6bcff48144e228fc402c71ffaf1fe639878269900e20ef1bb76d6a0e3b77ab25",
+      "bytes": 2738
+    },
+    "graphics/src/main/scala/sirin/graphics/ParagraphLayout.scala": {
+      "sha256": "4410e8d76ff0c26562b3803441945d34ed2b4953d493d50a3e39029b14b30b3d",
+      "bytes": 5517
+    },
+    "graphics/src/main/scala/sirin/graphics/Path.scala": {
+      "sha256": "0687524074f640b544435085c9e210ae95455f0e8ecbde0c605c5b22a699a0b7",
+      "bytes": 3587
+    },
+    "graphics/src/main/scala/sirin/graphics/Preparation.scala": {
+      "sha256": "4a8729ef59f87a51dc771b53930b245dc67c43fa28245564a3dddb71a0f668ea",
+      "bytes": 11688
+    },
+    "graphics/src/main/scala/sirin/graphics/ScriptItemization.scala": {
+      "sha256": "250b1f82ccd39d95d0c9c8f26f8c3f267b6ba6de779a91bc35f005647a1d4010",
+      "bytes": 4518
+    },
+    "graphics/src/main/scala/sirin/graphics/StrokeCurves.scala": {
+      "sha256": "165c8c5fbb629f276a0b8f2160824fe106870b848428cf0a8949778b1ce05392",
+      "bytes": 6257
+    },
+    "graphics/src/main/scala/sirin/graphics/StrokePreparation.scala": {
+      "sha256": "ff78a5299bc98cd9fd8448f33b9a53422542ea45a3d4387b1cea6e03f55a012b",
+      "bytes": 7697
+    },
+    "graphics/src/main/scala/sirin/graphics/Text.scala": {
+      "sha256": "3f164e551e9367e7a4fc1292888cd71b764db99b2742c28966633490fff5774e",
+      "bytes": 6959
+    },
+    "graphics/src/main/scala/sirin/graphics/TextGeometry.scala": {
+      "sha256": "9f52d55c601a1b3a7f3d25a648201fb379e0f00d69cbb10696ad5426bfc2c63d",
+      "bytes": 10743
+    },
+    "graphics/src/main/scala/sirin/graphics/UnicodeAnalysis.scala": {
+      "sha256": "946bf01a7e8dcd60d700be21ffc9f459905d4c12a2e39246c979d485fe0a348f",
+      "bytes": 3545
+    },
+    "graphics/src/main/scala/sirin/graphics/WrappedParagraphLayout.scala": {
+      "sha256": "d4ee045e27688a9a1e323db5e8b920f9ba7a468bac5d03fe4c1a80d0b609fd5f",
+      "bytes": 2739
+    },
+    "graphics/src/test/resources/fonts/NotoNaskhArabic-Regular.ttf": {
+      "sha256": "2f4b88e6ee50fa82c617e2d1d4ba18281cb1c6cd71c3af3ec64970c23995db4b",
+      "bytes": 178388
+    },
+    "graphics/src/test/resources/fonts/NotoSans-Regular.ttf": {
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "bytes": 569208
+    },
+    "graphics/src/test/resources/fonts/NotoSansDevanagari-Regular.ttf": {
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "bytes": 219212
+    },
+    "graphics/src/test/resources/fonts/NotoSansHebrew-Regular.ttf": {
+      "sha256": "a7fa16fffb27bedb060a0866267c29e9859aeb9c21cc33f5b3aaf6eb062eca85",
+      "bytes": 26900
+    },
+    "graphics/src/test/resources/fonts/OFL.txt": {
+      "sha256": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+      "bytes": 4377
+    },
+    "graphics/src/test/resources/fonts/SHA256SUMS": {
+      "sha256": "e2e5bb4dcd3c23f87470523c36ed3507b98832ef0ce8fe1ff01cb9c2222bf146",
+      "bytes": 445
+    },
+    "graphics/src/test/resources/fonts/SOURCES.md": {
+      "sha256": "1633ceeac93ca0ce827ff267daa4b7cd8ada04f28b3aee759c5e9b0fec8e6775",
+      "bytes": 757
+    },
+    "graphics/src/test/scala/sirin/graphics/CurvedStrokeSuite.scala": {
+      "sha256": "ce3205dd0639901b6bf2b6f8724c0bffdaf134e65d811f43787d71b293f21c52",
+      "bytes": 5375
+    },
+    "graphics/src/test/scala/sirin/graphics/DrawingResourcesSuite.scala": {
+      "sha256": "efe9e429e808187b8794fb3c92fc92863ca47b7cb1685d94ec7fc6ff8ddba28a",
+      "bytes": 3572
+    },
+    "graphics/src/test/scala/sirin/graphics/DrawingSuite.scala": {
+      "sha256": "caf97dc028c4d9e97c0389f3bb94983bd890acd24baa7599218ea7b82a258951",
+      "bytes": 6907
+    },
+    "graphics/src/test/scala/sirin/graphics/GeometrySuite.scala": {
+      "sha256": "0e5105eb1ebc58a0b6952889054407bd7e7b4057e8c6f037f31887ea6f92f27a",
+      "bytes": 3074
+    },
+    "graphics/src/test/scala/sirin/graphics/ImageSuite.scala": {
+      "sha256": "3b35e9aa6230400d520683479813b7a9cbbabf5d383f1cb5de062e1fc8d5f12b",
+      "bytes": 5313
+    },
+    "graphics/src/test/scala/sirin/graphics/PreparationSuite.scala": {
+      "sha256": "aca515a3d341383df708243934f25a1142cf32f38b7dfe06c97511f5ed00eaab",
+      "bytes": 6354
+    },
+    "graphics/src/test/scala/sirin/graphics/RoundedRectangleSuite.scala": {
+      "sha256": "e1c37b27f4f8672dab7d51b82d9ddc99da3703771f8c195723dd2083851ab471",
+      "bytes": 1817
+    },
+    "graphics/src/test/scala/sirin/graphics/StrokePreparationSuite.scala": {
+      "sha256": "7b1b0ea2bb30b4a9b5406b072a340fb1a5cbd0727f898c9364814ad2fdd48bb0",
+      "bytes": 7013
+    },
+    "graphics/src/test/scala/sirin/graphics/TextDataSuite.scala": {
+      "sha256": "2d72783a1629f72699869ba32284358892b826892b0f44e7eeff838811477d0a",
+      "bytes": 2561
+    },
+    "graphics/src/test/scala/sirin/graphics/ValuesSuite.scala": {
+      "sha256": "99e19d64c725dbb54758549821c95e7e758aa5ec0e5d0f4874641d9a09910296",
+      "bytes": 4144
+    },
+    "graphics/src/test/scala/sirin/graphics/examples/ImageSpecimen.scala": {
+      "sha256": "0c4240f2fa0cc68a82ac6b7c883e96e8faeaf23ad88896cd9a75eb25334f916a",
+      "bytes": 763
+    },
+    "graphics/src/test/scala/sirin/graphics/examples/VectorSpecimen.scala": {
+      "sha256": "7b00b3ffd7e379aef3079e683c34f4a24b46ceed2a5d7397040c544d0ceddfd8",
+      "bytes": 1415
+    },
+    "probes/render/README.md": {
+      "sha256": "71bbe797875a0517522aed5b14bcfa91bfd95b12018c2fa12cadfdaf30eef3e8",
+      "bytes": 10747
+    },
+    "probes/render/src/main/resources/raster.wgsl": {
+      "sha256": "986d3f3276785ff98057aa8a22e8b0c1b7fbf845f4812ae575de0ceed58184df",
+      "bytes": 4571
+    },
+    "probes/render/src/main/resources/scala-native/sirin_gpu.c": {
+      "sha256": "70049063a404b0d3d3093046a20508d83267201f42f9214dfb0903262ee73543",
+      "bytes": 21965
+    },
+    "probes/render/src/main/scala/sirin/render/OffscreenGpu.scala": {
+      "sha256": "9590ddaf42527482443c69586a77c8740b376074aafba16a87329f09ce2cda6b",
+      "bytes": 9223
+    },
+    "probes/render/src/main/scala/sirin/render/PixelProgram.scala": {
+      "sha256": "c6374ab932a7528d0615fcc4e23b9b3e423d770e7051edd1c6f866e4e2d09c9e",
+      "bytes": 13809
+    },
+    "probes/render/src/test/resources/contract.json": {
+      "sha256": "078d1ab5f4f4d81f3bcc32eb171a09164c1fbe7a25bfc88c53e459c528d470cc",
+      "bytes": 1289
+    },
+    "probes/render/src/test/scala/sirin/render/CurvesReuseSuite.scala": {
+      "sha256": "76b71909c8f4a0e3202ee584376f7ffa74e37e0349a95bafc68c1c07b1cbd1ed",
+      "bytes": 13534
+    },
+    "probes/render/src/test/scala/sirin/render/OffscreenSuite.scala": {
+      "sha256": "9fdb97e3a2ac6acde69fe8d8dce94f086612643944fa8f5c0c8201454d3b13a9",
+      "bytes": 15643
+    },
+    "probes/render/src/test/scala/sirin/render/RebasedGradientSuite.scala": {
+      "sha256": "e825765deeb8364f7c4c0e2fb1e6f87335b359f2ce35d7b5e2a82e7df6f29952",
+      "bytes": 2136
+    },
+    "probes/render/src/test/scala/sirin/render/StrokeGradientSuite.scala": {
+      "sha256": "7bb6d6c4157935d9adb3a03d736bcbf082382ef847f85ab36fdf9917203aafd7",
+      "bytes": 11450
+    }
+  },
+  "native_artifacts": {
+    "native/vendor/wgpu-macos-aarch64-release.zip": {
+      "sha256": "a5797a37b1adf720bcd5dcffb291edbbd5b7b14be0a3874c28e6393a655a7a3e",
+      "bytes": 13733288,
+      "matches_previous_receipt": true
+    },
+    "native/vendor/wgpu-macos-aarch64/lib/libwgpu_native.dylib": {
+      "sha256": "e72e8f1777dd0315bfee91c6b7e7b105234d5c1cc1621db4cf92ffee2ac2ae32",
+      "bytes": 6933424,
+      "matches_previous_receipt": true
+    },
+    "native/vendor/wgpu-macos-aarch64/include/webgpu/webgpu.h": {
+      "sha256": "a483031c3fed05ea5dd1c74082a71676c46c5b2b820ccca10da515c033efc997",
+      "bytes": 259569,
+      "matches_previous_receipt": true
+    },
+    "native/vendor/thorvg/thorvg-1.1.3.tar.xz": {
+      "sha256": "ef97785ed6d0f25ab84d6b4a0eed4325c68c4d80b1c2a61ea0b4029192fea746",
+      "bytes": 2949064,
+      "matches_previous_receipt": true
+    },
+    "native/vendor/thorvg/install/lib/libthorvg-1.a": {
+      "sha256": "286beea96f3e5a72549005823d638fb08855e412aaa26592c5f708b953c8168a",
+      "bytes": 424488,
+      "matches_previous_receipt": true
+    },
+    "native/vendor/thorvg/install/include/thorvg-1/thorvg_capi.h": {
+      "sha256": "ab08d97880306222d388cc107d5172ba6a5927cede25baad2ceefbdc132c0084",
+      "bytes": 151171,
+      "matches_previous_receipt": true
+    },
+    "native/vendor/text/lib/libharfbuzz.a": {
+      "sha256": "7a21b090347472453cacdfde4b00ae235b97b306525ea203526bc463ed9b380e",
+      "bytes": 2116008,
+      "matches_previous_receipt": true
+    },
+    "native/vendor/text/lib/libfreetype.a": {
+      "sha256": "35bd8260dc52e27d3ebbfb0fc5d069436865d41386206944b2de53de92d1e40c",
+      "bytes": 931256,
+      "matches_previous_receipt": true
+    },
+    "probes/render/target/scala-3.7.4/sirin-probe-render-test": {
+      "sha256": "c74d4fbac5bf48d857322f4b29ece3cb97f662eda7645c2789f408834c7e0357",
+      "bytes": 12547040,
+      "matches_previous_receipt": false
+    },
+    "graphics/src/test/resources/fonts/NotoSans-Regular.ttf": {
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "bytes": 569208,
+      "matches_previous_receipt": true
+    },
+    "graphics/src/test/resources/fonts/NotoNaskhArabic-Regular.ttf": {
+      "sha256": "2f4b88e6ee50fa82c617e2d1d4ba18281cb1c6cd71c3af3ec64970c23995db4b",
+      "bytes": 178388,
+      "matches_previous_receipt": true
+    }
+  },
+  "raw_image_digests": {
+    "curve-32x32.png": {
+      "width": 32,
+      "height": 32,
+      "raw_rgba8": {
+        "sha256": "a3397535824da57623675cf5fa209633ac6cc4940c3552848c834d6c21ef956a",
+        "bytes": 4096
+      },
+      "lossless_png": {
+        "sha256": "68a152e64cd5816dda1397312586016c7760c88fbb8d966c63c04a85d17a3ff8",
+        "bytes": 277
+      }
+    },
+    "curve-40x40.png": {
+      "width": 40,
+      "height": 40,
+      "raw_rgba8": {
+        "sha256": "02b386871e044a74df536649d53c4458def25edbbcef9a45fc751708ad0c423e",
+        "bytes": 6400
+      },
+      "lossless_png": {
+        "sha256": "51b06b70f507e2bea37a39d632c634cd463079c242a691f300e75f56be26d59b",
+        "bytes": 343
+      }
+    },
+    "curve-48x48.png": {
+      "width": 48,
+      "height": 48,
+      "raw_rgba8": {
+        "sha256": "cf5fbe2ff2addeb0ba1390017916d7762d12f9a220a0b9d346b9edae468938ba",
+        "bytes": 9216
+      },
+      "lossless_png": {
+        "sha256": "7a7f872779033ae9d8e55fd33ff3a48ec4706d395e7457e1eadcc174fcef3ac2",
+        "bytes": 398
+      }
+    },
+    "curve-64x64.png": {
+      "width": 64,
+      "height": 64,
+      "raw_rgba8": {
+        "sha256": "7430cac53506e1ece7d2e490b64802e2c27db06c05284088374efde4e3ca553f",
+        "bytes": 16384
+      },
+      "lossless_png": {
+        "sha256": "ec659fcbecd50072829a3727d8171d81e811a01ec46eafade023cf52732fb9dc",
+        "bytes": 517
+      }
+    },
+    "gradient-text-160x120.png": {
+      "width": 160,
+      "height": 120,
+      "raw_rgba8": {
+        "sha256": "58ad2a55454f34d6e732d42f2d777b54e4406bea494a373281f3547aea63e163",
+        "bytes": 76800
+      },
+      "lossless_png": {
+        "sha256": "fa39aa78178d60819d82e45b83d0b989b3978f79437bc737c0d3c70102e90326",
+        "bytes": 2192
+      }
+    },
+    "gradient-text-200x150.png": {
+      "width": 200,
+      "height": 150,
+      "raw_rgba8": {
+        "sha256": "8ca123edb9215004592272126e97e9dfc5e83584ee516e3538be0eb963b78a5e",
+        "bytes": 120000
+      },
+      "lossless_png": {
+        "sha256": "51617be315e0a45c613a07aa8e1606277ee0e7887de7765d2302bfb4b35b6b77",
+        "bytes": 2902
+      }
+    },
+    "gradient-text-240x180.png": {
+      "width": 240,
+      "height": 180,
+      "raw_rgba8": {
+        "sha256": "d559fb2c808d20879b15743afda959cb593f312e4a626dab37d23acd79fcb808",
+        "bytes": 172800
+      },
+      "lossless_png": {
+        "sha256": "2695043c7b9feac4d069660df769ba684c0fca6cca58769bf21f1e07d3058dc5",
+        "bytes": 3828
+      }
+    },
+    "gradient-text-320x240.png": {
+      "width": 320,
+      "height": 240,
+      "raw_rgba8": {
+        "sha256": "a98f7be00a44be6ec2cba0e9bcae454bf536bf9047ddd6e594bab7a6051cff62",
+        "bytes": 307200
+      },
+      "lossless_png": {
+        "sha256": "20604deb81adaa0ac822b4efc77e6de262da25aa02914689fbf52f593371aa69",
+        "bytes": 5372
+      }
+    },
+    "shared-text-160x120.png": {
+      "width": 160,
+      "height": 120,
+      "raw_rgba8": {
+        "sha256": "ac8b128738ea7a19d153e706d050e4481ebe7d3f009dd7bbcc3d53c66b03dde4",
+        "bytes": 76800
+      },
+      "lossless_png": {
+        "sha256": "229c3aae95e7da4eb53e7a75eebcf6c964809de6c67882ab3586ac38aa41f23d",
+        "bytes": 2382
+      }
+    },
+    "shared-text-200x150.png": {
+      "width": 200,
+      "height": 150,
+      "raw_rgba8": {
+        "sha256": "cbee9de740ff7b5a84de29fd4fb633d2ebeb854a58e316f94bd5bac01ee93211",
+        "bytes": 120000
+      },
+      "lossless_png": {
+        "sha256": "df8d71495656207feb8f8966958817c3205680ed218e39df4fa5baa9fcc9c552",
+        "bytes": 3223
+      }
+    },
+    "shared-text-240x180.png": {
+      "width": 240,
+      "height": 180,
+      "raw_rgba8": {
+        "sha256": "c32b776291d0f1162fa4aca7e83ba3714e092d08cee052d23136b9f8d4f7d4cc",
+        "bytes": 172800
+      },
+      "lossless_png": {
+        "sha256": "b8f80664cf2cc46b729802531e4debafeb25235fcb94b97caabb06c745f2d6e4",
+        "bytes": 4192
+      }
+    },
+    "shared-text-320x240.png": {
+      "width": 320,
+      "height": 240,
+      "raw_rgba8": {
+        "sha256": "5ddc19a8c98cf0dcac7f8e5332fce93a8990b9efeb4b7873f51a3ba0a2433fac",
+        "bytes": 307200
+      },
+      "lossless_png": {
+        "sha256": "a33c4d00f8c400e82e67fa76c5e0c08a60687e058b3609fc6e524cfab0560ba8",
+        "bytes": 6024
+      }
+    }
+  },
+  "receipt_files": {
+    "c-syntax.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "contract.json": {
+      "sha256": "9d7c4ce83bf605ad6f8ad3776a914c8724e02111cc2e7710a4123a94d060562a",
+      "bytes": 1302
+    },
+    "environment.txt": {
+      "sha256": "67bb1cdbc75a2d5235aa0301ed3052481d078cdd1a9664a97a73b354cb35ea66",
+      "bytes": 229
+    },
+    "final-admission-success.log": {
+      "sha256": "0205cd8f274e40145cfc083d6f0122025ce480a956d312a4ba86ee638203a1d2",
+      "bytes": 9349
+    },
+    "final-miter-scoped-success.log": {
+      "sha256": "15492dc392e064b46b1fcde6689e31b201b577ffc0da4d4822f0e1a48cbdfa3a",
+      "bytes": 9577
+    },
+    "full-matrix-success.log": {
+      "sha256": "922e8c559a23376cb13146c45f2085db19b777afad9743acd9cd4b7b0ac83860",
+      "bytes": 30575
+    },
+    "full-native-oracle-timeout.log": {
+      "sha256": "e9ffa627bb8d8f00a49eff744baba4dd7d8d91639a74a801bdace9aea69e08c6",
+      "bytes": 12694
+    },
+    "initial-qualified-success.log": {
+      "sha256": "ec0e300e37ae61e80a02c34d84c45983362f05e432e72d19bf8d7058ecb4458e",
+      "bytes": 5643
+    },
+    "initial-wide-diagnostic-failed.log": {
+      "sha256": "5febd61e238915132a551dc1d74e05323797b5107e1a965be6dd304f9cdb704f",
+      "bytes": 5275
+    },
+    "native-allocation-fix-success.log": {
+      "sha256": "6d2df462a2ae6689608cab36a41d07a12470121dc76ff1e5f153ebe67679a15f",
+      "bytes": 7123
+    },
+    "native-artifacts.json": {
+      "sha256": "90eb15477cbfb2f6450c10c69c9e237f6d8030784c44d2d9bd3431c303edd5c1",
+      "bytes": 2239
+    },
+    "oracle-capture-failed.log": {
+      "sha256": "e1982d0f35f8128117fe7e8473dad895f62b0ac2a67641458b631bc0dd99da12",
+      "bytes": 5283
+    },
+    "oracle-diagnostic.json": {
+      "sha256": "1033c01fb1942f08cfe6ffc995919463e53a8046b7e1c1076846baf3f44deacb",
+      "bytes": 391
+    },
+    "pixels/curve-32x32.png": {
+      "sha256": "68a152e64cd5816dda1397312586016c7760c88fbb8d966c63c04a85d17a3ff8",
+      "bytes": 277
+    },
+    "pixels/curve-40x40.png": {
+      "sha256": "51b06b70f507e2bea37a39d632c634cd463079c242a691f300e75f56be26d59b",
+      "bytes": 343
+    },
+    "pixels/curve-48x48.png": {
+      "sha256": "7a7f872779033ae9d8e55fd33ff3a48ec4706d395e7457e1eadcc174fcef3ac2",
+      "bytes": 398
+    },
+    "pixels/curve-64x64.png": {
+      "sha256": "ec659fcbecd50072829a3727d8171d81e811a01ec46eafade023cf52732fb9dc",
+      "bytes": 517
+    },
+    "pixels/gradient-text-160x120.png": {
+      "sha256": "fa39aa78178d60819d82e45b83d0b989b3978f79437bc737c0d3c70102e90326",
+      "bytes": 2192
+    },
+    "pixels/gradient-text-200x150.png": {
+      "sha256": "51617be315e0a45c613a07aa8e1606277ee0e7887de7765d2302bfb4b35b6b77",
+      "bytes": 2902
+    },
+    "pixels/gradient-text-240x180.png": {
+      "sha256": "2695043c7b9feac4d069660df769ba684c0fca6cca58769bf21f1e07d3058dc5",
+      "bytes": 3828
+    },
+    "pixels/gradient-text-320x240.png": {
+      "sha256": "20604deb81adaa0ac822b4efc77e6de262da25aa02914689fbf52f593371aa69",
+      "bytes": 5372
+    },
+    "pixels/shared-text-160x120.png": {
+      "sha256": "229c3aae95e7da4eb53e7a75eebcf6c964809de6c67882ab3586ac38aa41f23d",
+      "bytes": 2382
+    },
+    "pixels/shared-text-200x150.png": {
+      "sha256": "df8d71495656207feb8f8966958817c3205680ed218e39df4fa5baa9fcc9c552",
+      "bytes": 3223
+    },
+    "pixels/shared-text-240x180.png": {
+      "sha256": "b8f80664cf2cc46b729802531e4debafeb25235fcb94b97caabb06c745f2d6e4",
+      "bytes": 4192
+    },
+    "pixels/shared-text-320x240.png": {
+      "sha256": "a33c4d00f8c400e82e67fa76c5e0c08a60687e058b3609fc6e524cfab0560ba8",
+      "bytes": 6024
+    },
+    "reuse.txt": {
+      "sha256": "81775dd23c7bba3c8b3041c0011ac14138b4f69e38851b0ff0b17ba4f899e6e7",
+      "bytes": 462
+    },
+    "shader-reserved-name-failed.log": {
+      "sha256": "d7c379e246f664ff864e5c5d41b40ffe8cdb08b34357fb7a78682eb536ff26b4",
+      "bytes": 10319
+    },
+    "stable-tangents-reference-failed.log": {
+      "sha256": "48f564c0941ab498f9f66ec63d1065fff756297c8af94dba21e0f9b0e3619c87",
+      "bytes": 6928
+    },
+    "tuple-compile-failed.log": {
+      "sha256": "33101bca50b28b7e6659f075b3d26dbbd25ad4ddbbd0b20d72adb734f7bee847",
+      "bytes": 3812
+    },
+    "verify-oracle.py": {
+      "sha256": "ee8eca0b7c6e29cb8f56278a1c86e6929afee90939394275d29a41b85076e3ed",
+      "bytes": 1419
+    },
+    "wide-curve-oracle-geometry.txt.gz": {
+      "sha256": "dbfcf3751b78de942e548c9d73997aaa72f4dc7a9b2ad4ba724353b20b93fe1b",
+      "bytes": 427788
+    },
+    "wide-curve-reference-failed.log": {
+      "sha256": "0cb1194be62b1e58fe8311f9f9de00b421880359683ed180ea06be1dcdb335f5",
+      "bytes": 4320
+    }
+  }
+}

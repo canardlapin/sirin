@@ -1,0 +1,237 @@
+package sirin.desktop
+
+import java.nio.file.{Files,Path}
+import java.util.concurrent.atomic.AtomicBoolean
+import sirin.*
+import sirin.engine.*
+import sirin.host.*
+
+/** Main-thread input/application owner and a separate bounded native render owner. */
+object DesktopWorkbench:
+  private def ok[A](result: CommitResult[A]): A = result match
+    case CommitResult.Committed(value) => value
+    case other => throw new IllegalStateException(s"$other")
+  def main(args: Array[String]): Unit =
+    val root=Path.of(System.getProperty("sirin.repo", ".")).toAbsolutePath.normalize()
+    val window=new NativeWindow("Sirin Workbench",600,360)
+    try run(window,root,args)
+    finally window.close()
+    require(NativeWindow.liveWindows()==0 && NativeWindow.liveRequests()==0,"native window/request leaked")
+    require(sirin.render.OffscreenGpu.liveOwners==0,"render device leaked")
+  private def run(window: NativeWindow,root: Path,args: Array[String]): Unit =
+    val interactive=args.contains("interactive")
+    val scenario=args.contains("scenario")
+    val benchmark=args.contains("benchmark")
+    val runtime=new HeadlessRuntime(workCapacity=8)
+    var pool=Option.empty[WorkerPool]
+    var renderer=Option.empty[RenderService]
+    var subscription=Option.empty[Subscription]
+    val coordinator=new FrameCoordinator
+    val interaction=new Interaction
+    val pendingWake=new AtomicBoolean(false)
+    def wake(): Unit = if pendingWake.compareAndSet(false,true) then require(window.wake(),"native wake rejected")
+    var sample=Option.empty[(String,Long)]
+    var benchmarkStep=0
+    val traces=scala.collection.mutable.ArrayBuffer.empty[(String,Double)]
+    val warmups=scala.collection.mutable.ArrayBuffer.empty[(String,Double)]
+    val warmupSteps=40 // fixed 20 action + 20 scroll turns before the measured 100/class
+    var samplesComplete=false
+    var targetsMet=false
+    var benchmarkFailure=Option.empty[Throwable]
+    val runDirectory=root.resolve("desktop/target/benchmarks").resolve(s"run-${System.currentTimeMillis()}-${System.nanoTime()}")
+    def writeBenchmarkReceipt(): Unit = if benchmark then
+      Files.createDirectories(runDirectory)
+      val csv="phase,kind,milliseconds\n"+
+        (warmups.map((k,v) => s"warmup,$k,$v")++traces.map((k,v) => s"measured,$k,$v")).mkString("\n")
+      Files.writeString(runDirectory.resolve("input-to-present.csv"),csv)
+      Files.writeString(root.resolve("desktop/target/input-to-present.csv"),csv)
+      val status=if benchmarkFailure.nonEmpty then "failed" else if samplesComplete then "complete" else "incomplete"
+      val failure=benchmarkFailure.map(e => s"${e.getClass.getName}: ${Option(e.getMessage).getOrElse("").replace('\n',' ')}").getOrElse("")
+      Files.writeString(runDirectory.resolve("receipt.txt"),s"status=$status\nsamplesComplete=$samplesComplete\ntargetsMet=$targetsMet\nsteps=$benchmarkStep\nwarmups=${warmups.size}\nmeasured=${traces.size}\nfailure=$failure\n")
+      println(s"benchmarkReceipt=$runDirectory status=$status targetsMet=$targetsMet")
+    try
+      pool=Some(runtime.scheduler.startWorkers(2))
+      subscription=Some(runtime.onActivity(() => wake()))
+      renderer=Some(new RenderService(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/frames"),() => wake()))
+      val scope=runtime.scope("workbench")
+      val app=new VisibleWorkbench(scope)
+      ok(runtime.transact {
+        app.model.document.set("A retained document draft")
+        app.model.rows.setAll(if args.contains("empty") then Vector.empty else (1 to 100).map(id => sirin.specimen.Record(id,s"Record $id")))
+      })
+      val mounted=runtime.mount(scope,app.view)
+      runtime.observe(mounted.snapshot)(_ => ())
+      def capture(): CapturedTree = runtime.withCommitted { reader => reader(mounted.snapshot) match
+        case Value.Ok(snapshot) => CommittedTree.captureWithBindings(snapshot,reader)
+        case Value.Failed(error) => throw error
+      }
+      def publishFocus()(using UiTxn): Unit =
+        val (direct,ancestors,keyboard)=interaction.focusReferences
+        runtime.publishFocus(direct,ancestors,keyboard)
+      val viewports=scala.collection.mutable.Map.empty[Long,RowViewport]
+      var bindings=capture()
+      var facts=window.waitEvent(0)
+      var current=Option.empty[RenderedFrame]
+      var presentedPayload=Option.empty[FramePayload]
+      var repaint=true;var running=true;var presented=0;var feedbacks=0;var feedbackChain=0
+      var scenarioStage=0;var lastFrameAt=0L;var lastGeometryAt=0L
+      val deadline=System.nanoTime()+(if benchmark then 120000000000L else 30000000000L)
+      def nativeInput(input: HostInput,timestamp: Long): Unit =
+        if input==HostInput.KeyDown(Key.Escape,Mods.none,false) then running=false
+        else
+          val before=interaction.state
+          val decision=interaction.handle(input)
+          bindings=capture()
+          val action=decision.activate.flatMap(bindings.bindings.get).filter(_.enabled)
+          val result=runtime.transact {
+            publishFocus()
+            action.foreach(_.run(summon[UiTxn]))
+          }
+          result match
+            case CommitResult.Committed(_) =>
+              if decision.changed || action.nonEmpty then
+                sample=Some((if input.isInstanceOf[HostInput.Wheel] || input==HostInput.KeyDown(Key.PageDown,Mods.none,false) then "scroll" else "action",timestamp))
+            case _ => interaction.rollbackPublication(before)
+      def inject(kind: Int,key: Int=0,mods: Int=0,x: Double=0,y: Double=0,delta: Double=0): Unit = window.inject(kind,key,mods,x,y,delta)
+      def nextBenchmark(): Unit =
+        // Sequential actual SDL facts; one sample awaits its matching presentation.
+        val step=if benchmarkStep<warmupSteps then benchmarkStep%20 else benchmarkStep-warmupSteps
+        if benchmarkStep<20 || (benchmarkStep>=warmupSteps && step<100) then
+          val key=if step%2==0 then 2 else 1
+          if key==2 && !interaction.focused.exists(_.kind.isInstanceOf[TargetKind.Button]) then
+            interaction.presented.targets.find(t => t.kind.isInstanceOf[TargetKind.Button] && t.enabled).foreach(t => interaction.state=interaction.state.copy(focused=Some(t.id),keyboard=true))
+          inject(1,key)
+        else if benchmarkStep<warmupSteps+200 then
+          interaction.presented.targets.find(_.kind.isInstanceOf[TargetKind.Scroll]).foreach { t =>
+            inject(6,x=t.clip.x+5,y=t.clip.y+5,delta=if benchmarkStep%2==0 then -1 else 1)
+          }
+        benchmarkStep+=1
+      while running do
+        pendingWake.set(false)
+        val turn=runtime.drive(16)
+        require(turn.failures.isEmpty && runtime.wakeFailures==0,s"driver failure: ${turn.failures}")
+        if facts.quit() then running=false
+        NativeInput.decode(facts).filter(_ => running).foreach { input =>
+          val positional=facts.kind()==3 || facts.kind()==4 || facts.kind()==6
+          if !positional || facts.timestamp()>=lastGeometryAt then nativeInput(input,facts.timestamp())
+        }
+        bindings=capture()
+        if presentedPayload.exists(p => p.tree==bindings.tree && p.logicalWidth==facts.logicalWidth() && p.logicalHeight==facts.logicalHeight()) then
+          runtime.takeFocusRequests().foreach { ref =>
+            if interaction.focusRef(ref) then ok(runtime.transact {publishFocus()})
+            else println(s"focusIntentDropped reference=$ref reason=not-focusable-in-presented-tree")
+          }
+        var recapture=false
+        if running && facts.width()>0 && facts.height()>0 && facts.logicalWidth()>0 && facts.logicalHeight()>0 then
+          val payload=FramePayload(bindings.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),interaction.state.scrolls,
+            interaction.state.focused,interaction.state.keyboard,interaction.state.pressed.map(_.target),viewports.toMap)
+          coordinator.request(payload).foreach(renderer.get.submit)
+          renderer.get.poll().foreach {
+            case (generation,Left(error)) if coordinator.acceptsGeneration(generation) => throw error
+            case (_,Right(frame)) if coordinator.accepts(frame.request) =>
+              val active=frame.layout.viewports.map(_.instance).toSet
+              viewports.filterInPlace((instance,_) => active(instance))
+              val changed=frame.layout.viewports.filter(v => !viewports.get(v.instance).contains(v.viewport))
+              if changed.nonEmpty then
+                ok(runtime.transact {changed.foreach(v => mounted.setViewport(v.instance,v.viewport))})
+                changed.foreach(v => viewports(v.instance)=v.viewport)
+                feedbacks+=1;feedbackChain+=1;require(feedbackChain<20,"viewport feedback failed to settle")
+                recapture=true
+                // Empty feedback can leave the request unchanged; retain this result for presentation.
+                current=None
+              else frame match
+                case rendered: RenderedFrame => current=Some(rendered);repaint=true
+                case _: LayoutFeedback => throw new IllegalStateException("settled feedback omitted pixels")
+            case _ => ()
+          }
+          current.filter(f => coordinator.accepts(f.request)).foreach { frame =>
+            val settled=frame.layout.viewports.forall(v => viewports.get(v.instance).contains(v.viewport))
+            if !recapture && settled && repaint && window.present(frame.pixels.pixelsCopy,frame.pixels.width,frame.pixels.height) then
+              presentedPayload=Some(frame.request.payload)
+              val previousTargets=interaction.presented.targets
+              interaction.install(InteractionSnapshot(frame.request.generation,frame.layout),frame.layout.scrollOffsets)
+              if interaction.presented.targets!=previousTargets then lastGeometryAt=NativeWindow.ticks()
+              ok(runtime.transact {publishFocus()})
+              recapture=true // one bounded follow-up settles focus intents and reactive focus observers
+              feedbackChain=0;repaint=false;presented+=1;lastFrameAt=System.nanoTime()
+              val sampled=sample.nonEmpty
+              sample.foreach { (kind,at) =>
+                val elapsed=(NativeWindow.ticks()-at)/1000000.0
+                val warming=benchmark && benchmarkStep<=warmupSteps
+                if warming then warmups+=((kind,elapsed)) else traces+=((kind,elapsed))
+                println(s"inputToPresent phase=${if warming then "warmup" else "measured"} kind=$kind ms=$elapsed")
+              };sample=None
+              println(s"presented=$presented generation=${frame.request.generation} renderMs=${frame.workerNanos/1000000.0} uploadBytes=${frame.programBytes} readbackBytes=${frame.readbackBytes} pixels=${frame.pixels.width}x${frame.pixels.height} feedback=$feedbacks focus=${interaction.state.focused}")
+              if scenario then
+                scenarioStage match
+                  case 0 => inject(1,1);scenarioStage=1
+                  case 1 => inject(1,2);scenarioStage=2
+                  case 2 =>
+                    require(ok(runtime.transact {app.count.get})==1,"Enter did not activate")
+                    ok(runtime.transact {app.moveRef.focus()});scenarioStage=3;recapture=true
+                  case 3 => inject(1,2);scenarioStage=4
+                  case 4 =>
+                    require(ok(runtime.transact {app.right.get}),"retained move did not activate")
+                    require(ok(runtime.transact {app.moveRef.hasFocus.get}),"retained focus lost")
+                    ok(runtime.transact {app.listRef.focus()});scenarioStage=5;recapture=true
+                  case 5 => inject(1,8);scenarioStage=6
+                  case 6 =>
+                    require(frame.layout.viewports.exists(_.viewport.offset.toDouble>0),"PageDown did not scroll")
+                    window.resize(800,600);scenarioStage=7
+                  case 7 =>
+                    require(frame.pixels.width<=1280 && frame.pixels.height<=800,"resize budget failed")
+                    ok(runtime.transact {app.extra.set(true);app.extraRef.focus()})
+                    scenarioStage=8;recapture=true
+                  case 8 =>
+                    if ok(runtime.transact {app.extraRef.hasFocus.get}) then {scenarioStage=9;inject(1,2)}
+                  case 9 =>
+                    require(ok(runtime.transact {app.count.get})==2,"newly mounted control lost activation/focus")
+                    scenarioStage=10;inject(8)
+                  case _ => ()
+              if args.contains("close") && presented==1 then inject(8)
+              if benchmark && benchmarkStep<warmupSteps+200 && (benchmarkStep==0 || sampled) then nextBenchmark()
+          }
+        if !running then ()
+        else if !interactive && !benchmark && presented>0 && (!scenario || scenarioStage==10) && System.nanoTime()-lastFrameAt>2000000000L then running=false
+        else if benchmark && traces.size>=200 then running=false
+        else if !interactive && System.nanoTime()>deadline then throw new IllegalStateException(s"host deadline exceeded stage=$scenarioStage benchmark=$benchmarkStep")
+        else if recapture || turn.budgetExceeded then facts=window.waitEvent(0)
+        else
+          val runtimeWait=runtime.activityWaitMillis
+          val smokeWait=if interactive then -1 else
+            val end=if presented>0 && !benchmark && (!scenario || scenarioStage==10) then math.min(deadline,lastFrameAt+2000000000L) else deadline
+            math.max(0L,(end-System.nanoTime()+999999)/1000000).min(Int.MaxValue).toInt
+          val timeout=if runtimeWait<0 then smokeWait else if smokeWait<0 then runtimeWait else math.min(runtimeWait,smokeWait)
+          facts=window.waitEvent(timeout);repaint = repaint || facts.redraw()
+      require(!scenario || scenarioStage==10,"interaction scenario incomplete")
+      if benchmark then
+        require(benchmarkStep==warmupSteps+200 &&
+          warmups.groupMapReduce(_._1)(_ => 1)(_+_)==Map("action"->20,"scroll"->20) &&
+          traces.groupMapReduce(_._1)(_ => 1)(_+_)==Map("action"->100,"scroll"->100),"benchmark interrupted or sample counts incomplete")
+        samplesComplete=true
+        targetsMet=traces.groupBy(_._1).toVector.map { (kind,values) =>
+          val sorted=values.map(_._2).sorted
+          def percentile(p: Double)=sorted(math.min(sorted.size-1,math.ceil(sorted.size*p).toInt-1))
+          val (p95Limit,p99Limit)=if kind=="action" then (50.0,100.0) else (100.0,200.0)
+          val passed=percentile(0.95)<=p95Limit && percentile(0.99)<=p99Limit
+          println(s"latency kind=$kind n=${sorted.size} p50=${percentile(0.5)} p95=${percentile(0.95)} p99=${percentile(0.99)} max=${sorted.last} overP95Budget=${sorted.count(_>p95Limit)} accepted=$passed")
+          passed
+        }.forall(identity)
+        require(targetsMet,"frozen warmed latency targets missed; receipt retained")
+      println(s"hostPresentations=$presented feedbackPasses=$feedbacks nativeWakeFailures=${runtime.wakeFailures} driver=${runtime.driverSnapshot}")
+    catch case error: Throwable =>
+      benchmarkFailure=Some(error)
+      throw error
+    finally
+      try writeBenchmarkReceipt()
+      catch case error: Throwable =>
+        benchmarkFailure match
+          case Some(original) => original.addSuppressed(error)
+          case None => throw error
+      finally
+        coordinator.retire()
+        subscription.foreach(_.cancel())
+        try renderer.foreach(_.close())
+        finally
+          try runtime.close()
+          finally pool.foreach(workers => require(workers.awaitStopped(10000),"application workers did not retire"))

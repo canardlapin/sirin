@@ -16,13 +16,15 @@ class RetainedVirtualSuite extends munit.FunSuite:
     case Value.Ok(value) => value
     case Value.Failed(error) => throw error
   private def visit(value: MountedSnapshot): Vector[MountedSnapshot] = value +: (value match
-    case MountedSnapshot.Group(children) => children.flatMap(visit)
+    case MountedSnapshot.Referenced(_,child) => visit(child)
+    case MountedSnapshot.Styled(child,_) => visit(child)
+    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(visit)
     case MountedSnapshot.Component(_, _, child) => visit(child)
     case MountedSnapshot.Rows(rows) => rows.flatMap((_, child) => visit(child))
     case MountedSnapshot.Branch(_, _, child) => visit(child)
     case MountedSnapshot.Outlet(_, child) => visit(child)
     case MountedSnapshot.Reparented(_, _, child) => visit(child)
-    case MountedSnapshot.VirtualRows(_, _, _, _, _, _, child) => visit(child)
+    case MountedSnapshot.VirtualRows(_, _, _, _, _, _, _, child) => visit(child)
     case _ => Vector.empty)
   private def panels(r: HeadlessRuntime, m: MountedView): Vector[Long] = visit(read(r, m.snapshot)).collect {
     case MountedSnapshot.Reparented(_, instance, _) => instance
@@ -310,7 +312,7 @@ class RetainedVirtualSuite extends munit.FunSuite:
       val row = Component[Int]("row")((_, _) => View.empty)
       def view(s: CollectionSource[Int, Int]): View = VirtualRows(s, Lp(10), 0)(in => row(in))
       val m = r.mount(owner, Column(view(source), view(source)))
-      val ids = visit(read(r, m.snapshot)).collect { case MountedSnapshot.VirtualRows(id, _, _, _, _, _, _) => id }
+      val ids = visit(read(r, m.snapshot)).collect { case MountedSnapshot.VirtualRows(id, _, _, _, _, _, _, _) => id }
       ok(r.transact { m.setViewport(ids(0), RowViewport(Lp(10), Lp(20))); m.setViewport(ids(1), RowViewport(Lp(50), Lp(10))) })
       assertEquals(components(r, m).map(_._1), Vector(1, 2, 5))
       val before = components(r, m).toMap

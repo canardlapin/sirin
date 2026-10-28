@@ -1,0 +1,15 @@
+{
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t15.1.1\nBuildVersion:\t\t24B91",
+  "arch": "arm64",
+  "clang": "Apple clang version 16.0.0 (clang-1600.0.26.4)\nTarget: arm64-apple-darwin24.1.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "meson": "1.7.0",
+  "ninja": "1.12.1",
+  "head_at_capture": "ae1817f1dc6fe54b4b69902c29395520a2f48cb0",
+  "start_head": "541a6976cf009508ff0b1e468d837cce05444560",
+  "adapter": "Apple M2 Pro",
+  "java": "openjdk 21.0.12.1 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-21.0.12.1+1 (build 21.0.12.1+1-LTS, mixed mode, sharing)",
+  "sbt": "1.12.14",
+  "scala": "3.7.4",
+  "scala_native": "0.5.12",
+  "native_dynamic_libraries": "probes/render/target/scala-3.7.4/sirin-probe-render-test:\n\t@rpath/libwgpu_native.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1800.101.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)"
+}

@@ -1,0 +1,193 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] set current project to sirin-testkit (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Defining Test / parallelExecution
+[info] The new value will be used by Test / test / testExecution, Test / testOnly / testExecution, Test / testQuick / testExecution
+[info] Reapplying settings...
+[info] set current project to sirin-testkit (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.049s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.05s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.061s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.063s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.074s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.075s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.075s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.074s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.11s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.118s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.164s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.172s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.13s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.13s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.232s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.24s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.246s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.254s
+Test run sirin.graphics.CurvedStrokeSuite started
+sirin.graphics.CurvedStrokeSuite: finished 2.593s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 2.601s
+[info] Passed: Total 63, Failed 0, Errors 0, Passed 63
+[success] Total time: 3 s, completed Oct 28, 2026, 1:21:59 p.m.
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.014s
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.015s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.017s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.016s
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.02s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.021s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.032s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.032s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 0 s, completed Oct 28, 2026, 1:21:59 p.m.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.008s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.009s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 0 s, completed Oct 28, 2026, 1:21:59 p.m.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.021s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.022s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 28, 2026, 1:22:00 p.m.
+Test run sirin.engine.HostBoundarySuite started
+sirin.engine.HostBoundarySuite: finished 0.098s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.103s
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.133s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.135s
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.204s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.208s
+Test run sirin.engine.WorkCommandSuite started
+sirin.engine.WorkCommandSuite: finished 0.267s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.269s
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TopologyLifetimeSuite: finished 0.277s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.279s
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.ReconciliationSuite: finished 0.32s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.323s
+Test run sirin.engine.EventDeadlineSuite started
+sirin.engine.EventDeadlineSuite: finished 0.371s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.374s
+Test run sirin.engine.RetainedVirtualSuite started
+sirin.engine.RetainedVirtualSuite: finished 0.377s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.38s
+[info] Passed: Total 174, Failed 0, Errors 0, Passed 174
+[success] Total time: 1 s, completed Oct 28, 2026, 1:22:00 p.m.
+Test run sirin.testkit.LatestAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 1.711s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 1.714s
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.EventDeadlineAgreementSuite: finished 2.321s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.324s
+Test run sirin.testkit.ReferenceAgreementSuite started
+sirin.testkit.ReferenceAgreementSuite: finished 2.358s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.361s
+Test run sirin.testkit.WorkAgreementSuite started
+sirin.testkit.WorkAgreementSuite: finished 2.957s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 2.96s
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 3.57s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 3.573s
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+sirin.testkit.VirtualCollectionAgreementSuite: finished 3.918s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 3.921s
+Test run sirin.testkit.ProgressAgreementSuite started
+sirin.testkit.ProgressAgreementSuite: finished 4.617s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 4.621s
+Test run sirin.testkit.LifetimeAgreementSuite started
+sirin.testkit.LifetimeAgreementSuite: finished 4.795s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 4.798s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 5 s, completed Oct 28, 2026, 1:22:05 p.m.
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.068s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.069s
+Test run sirin.specimen.WorkbenchSuite started
+sirin.specimen.WorkbenchSuite: finished 0.232s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.233s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 0 s, completed Oct 28, 2026, 1:22:06 p.m.
+Test run sirin.host.HostSuite started
+sirin.host.HostSuite: finished 0.085s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.086s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 28, 2026, 1:22:06 p.m.
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1430 ms)
+[info] Discovered 3228 classes and 20579 methods after classloading
+[info] Checking intermediate code (quick) (156 ms)
+[info] Discovered 3201 classes and 15917 methods after optimization
+[info] Optimizing (debug mode) (2377 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6242 ms)
+[info] Compiling to native code (4738 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (134 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11128 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50480'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50484'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50486'.
+Test run sirin.graphics.TextDataSuite started
+Test run sirin.graphics.CurvedStrokeSuite started
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50487'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50488'.
+Test run sirin.graphics.PreparationSuite started
+Test run sirin.graphics.DrawingResourcesSuite started
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50491'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50493'.
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.012s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.012s
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50495'.
+sirin.graphics.DrawingResourcesSuite: finished 0.031s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.031s
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50497'.
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.006s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.006s
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50499'.
+Test run sirin.graphics.StrokePreparationSuite started
+Test run sirin.graphics.DrawingSuite started
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.DrawingSuite: finished 0.012s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.012s
+sirin.graphics.TextDataSuite: finished 0.091s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.091s
+sirin.graphics.RoundedRectangleSuite: finished 0.009s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.009s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.007s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.007s
+sirin.graphics.PreparationSuite: finished 0.166s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.166s
+sirin.graphics.StrokePreparationSuite: finished 0.117s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.117s
+==> X sirin.graphics.CurvedStrokeSuite.quadratic normal ribbons preserve narrow/wide boundaries at four scales under shear and reflection 38.232s java.util.concurrent.TimeoutException: test timed out after 30 seconds
+sirin.graphics.CurvedStrokeSuite: finished 38.325s
+Test run sirin.graphics.CurvedStrokeSuite finished: 1 failed, 0 ignored, 4 total 38.325s
+[error] Failed: Total 63, Failed 1, Errors 0, Passed 62
+[error] Failed tests:
+[error] 	sirin.graphics.CurvedStrokeSuite
+[error] (graphicsNative / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 53 s, completed Oct 28, 2026, 1:22:59 p.m.

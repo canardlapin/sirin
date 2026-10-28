@@ -1,0 +1,42 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (19991 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1425 ms)
+[info] Discovered 2516 classes and 17177 methods after classloading
+[info] Checking intermediate code (quick) (82 ms)
+[info] Discovered 2437 classes and 13121 methods after optimization
+[info] Optimizing (debug mode) (2312 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6622 ms)
+[info] Compiling to native code (5196 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (147 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11345 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50941'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50945'.
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+
+thread '<unnamed>' (258790417) panicked at src/lib.rs:605:5:
+Error in wgpuQueueSubmit: Validation Error
+
+Caused by:
+  In a set_pipeline command
+    Render pipeline targets are incompatible with render pass
+      Incompatible color attachments at indices [0]: the RenderPass uses textures with formats [Some(Rgba8Unorm)] but the RenderPipeline with 'The render pipeline blit' label uses attachments with formats [Some(Bgra8Unorm)]
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+fatal runtime error: failed to initiate panic, error 5, aborting
+[warn] Force close java.lang.RuntimeException: Process /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test finished with non-zero value 134 (0x86)
+[error] Test runner interrupted by fatal signal 6
+[error] Error: Total 1, Failed 0, Errors 1, Passed 0
+[error] Error during tests:
+[error] 	sirin.render.OffscreenSuite
+[error] (probeRender / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 16 s, completed Oct 28, 2026, 10:04:02 a.m.

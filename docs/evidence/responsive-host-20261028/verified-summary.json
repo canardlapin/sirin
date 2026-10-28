@@ -1,0 +1,27 @@
+{
+  "platform_cases": 693,
+  "desktop_cases": 12,
+  "source_files": 247,
+  "sample_counts": {
+    "warmup/action": 20,
+    "warmup/scroll": 20,
+    "measured/action": 100,
+    "measured/scroll": 100
+  },
+  "latency_ms": {
+    "action": {
+      "p50": 25.216166,
+      "p95": 63.744625,
+      "p99": 69.110125,
+      "max": 97.649792
+    },
+    "scroll": {
+      "p50": 52.37025,
+      "p95": 63.6295,
+      "p99": 74.797708,
+      "max": 88.567
+    }
+  },
+  "latency_acceptance": "failed_action_p95",
+  "interrupted_run": "failed_with_fresh_partial_receipt"
+}

@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-28",
+  "recorded_utc": "2026-10-28T12:57:30.401606+00:00",
+  "start_head": "541a697",
+  "final_head": "541a6976cf009508ff0b1e468d837cce05444560",
+  "mote_child": "bd-01M618J33K0HCM3B3GHXNS42CN",
+  "command": "sbt testJVM testNative textNative/test probeUnicode/test probeParagraph/test examples/compile",
+  "exit_code": 0,
+  "tests_passed": 541,
+  "ignored": 0,
+  "project_totals": [
+    44,
+    9,
+    2,
+    6,
+    145,
+    29,
+    6,
+    44,
+    9,
+    2,
+    6,
+    145,
+    29,
+    6,
+    7,
+    12,
+    40
+  ],
+  "focused": {
+    "native_command": "sbt 'probeParagraph/testOnly *CanvasBridgeSuite'",
+    "exit_code": 0,
+    "passed": 5
+  },
+  "negative_evidence": {
+    "log": "initial-focused-failure.log",
+    "exit_code": 1,
+    "reason": "Unused test import under -Werror; removed without changing compiler/test requirements."
+  },
+  "sha256": {
+    "build.sbt": "1f7df2a4af0dd651eb1cac080f649b33c6a88dcff022581a40658bdb49effa58",
+    ".github/workflows/ci.yml": "a8d5bf2c5b25a2a9a51d2f13c9d6eb1cf3a928130b1c774c7d7edee538ee88bc",
+    "core/src/main/scala/sirin/Element.scala": "20fc61e47ff939a72b9beb9f13b9196b6c09ed4d73226607ac7c4dd395a2c4d7",
+    "graphics/src/main/scala/sirin/graphics/Path.scala": "0687524074f640b544435085c9e210ae95455f0e8ecbde0c605c5b22a699a0b7",
+    "graphics/src/main/scala/sirin/graphics/Drawing.scala": "5ab0a2a2d0790e480529357adc34f2f7ef7a8e7809bb4652f44d9ee1e1e76223",
+    "graphics/src/test/scala/sirin/graphics/RoundedRectangleSuite.scala": "e1c37b27f4f8672dab7d51b82d9ddc99da3703771f8c195723dd2083851ab471",
+    "graphics-ui/src/main/scala/sirin/drawing/PreparedText.scala": "a73f61a7f1d8eed4a3d04dd0fe1966bdb02c902183f9417d6042ff498f2f86ce",
+    "graphics-ui/src/main/scala/sirin/drawing/RecordingCanvas.scala": "0f538af7f80292c0245a6692f075215da0752f6804d4a08885f7293555780e02",
+    "graphics-ui/src/test/scala/sirin/drawing/RecordingCanvasSuite.scala": "fa6a7e54f48d26ae906ae5e4ad18a3a681e3bb9aa21a9d86b56207f6eeb8cd3a",
+    "text-ui/src/main/scala/sirin/text/LayoutUnits.scala": "af86780531bbb012b7b6d1c108abc5c07ce549c721a018d33949fbd0d12a2788",
+    "text-ui/src/main/scala/sirin/text/ResolvedTextLayout.scala": "6cb893c2bc3875c2117410f79c413a6dd07cca1b8bccf6c7c1f57a5d7542b8c9",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/CanvasBridgeSuite.scala": "9530777130afbf4b4474dafdf87b3b604e2f06c9f76b1539a907092048beb3da",
+    "probes/paragraph/src/main/scala/sirin/graphics/text/NativeTextServices.scala": "ef65f73cfbf5b9f62ceb84822290050c17dea5d89fbb3ae30f34393ad44eaadf",
+    "graphics/src/test/resources/fonts/SHA256SUMS": "e2e5bb4dcd3c23f87470523c36ed3507b98832ef0ce8fe1ff01cb9c2222bf146",
+    "probes/unicode/src/test/resources/unicode/SHA256SUMS": "48c23cdf1d6054f0d2030a8309a5d64122cf45a9dfc0dfb096f792638fd3c995",
+    "README.md": "8daa175f6e0391ae5ad4db9ca9030013e5cdecb7594403dd1bd83afcd3e82d30",
+    "graphics-ui/README.md": "7190877471fc31678a14c4839f21e19f5329f0d09d0fc3c55ee9d3501b336231",
+    "graphics/README.md": "b8ac200974d34634cab30d13252d6a093230c6bfcf6c8e1490e32f846d1b2b77",
+    "text-ui/README.md": "2616166fb260c5af338b190151113e8575b368810bb0ea63cb161d24e594602f",
+    "docs/design/VISION.md": "8ff45c136dfaa1dd0c5ebf3a6234c0eb44e6beaf860e808692018a5f4eb34c38",
+    "docs/plans/2026-10-27-roadmap.md": "6ab95ddd9966e2f83366aca12948967bcacdf2e653190b8cc8a24f2a024493b1",
+    "docs/plans/2026-10-27-graphics-api.md": "80d7442dd3861b6de7de49f8b69319a36fbc2afb791a5d7167b3f570a01a5124",
+    "docs/plans/2026-10-27-graphics-resources.md": "630b739a40b524b21d883dbf8af42efb7cc70287c6c2e8fc1cf3ab89a3e57433",
+    "docs/evidence/graphics/2026-10-28-canvas-ui.md": "a5b2d7a2ba28064ae5a0025b6e6ca21acebdf15172a6a285a2d6a380e7e6b222"
+  },
+  "receipt_sha256": {
+    "initial-focused-failure.log": "1e307b5637b2167586aab0a27408002030f7f4a9bb16db0dd03e2d55cb70ae36",
+    "native-focused.log": "08b255c89f9d32601750cc590caf87262188293a3633eee2b34869e72202ab11",
+    "initial-compile.log": "d7a3b3b4563b914bdacfc77066569885e9ea20b134d8df844f64a40bc470c733",
+    "dynamic-libraries.txt": "052a6ee4ead3db366236a95442ef2e2fce9737d30821e026a44f51358c047264",
+    "verification.log": "dc072233120e6d3375b93833e3087be19dec5414b86d036b5d7b2c06679c2f94"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-27",
+  "start_head": "a821946",
+  "final_head": "606f45dc541b498689a903e37e2fd353bd162f9a",
+  "command": "sbt testJVM testNative textNative/test probeUnicode/test probeParagraph/test",
+  "exit_code": 0,
+  "sha256": {
+    "graphics/src/main/scala/sirin/graphics/Text.scala": "ae9c0a724af3e4eeb5a9fb60f3e95afdbe6c62aca68a60aee491319142116ed0",
+    "graphics/src/main/scala/sirin/graphics/ParagraphLayout.scala": "03ab1b8f77e8a92d155f361c079db979ea2b0e23b8498c9a9d5474b4f0c8075b",
+    "graphics/src/main/scala/sirin/graphics/WrappedParagraphLayout.scala": "6228237c1b1952ef129ce80c2600da8f2dfde091ac11f50bcf598766eed492d4",
+    "text-native/src/main/scala/sirin/graphics/text/NativeFont.scala": "002942c5f9e11b1924f0451efe1cbdfaa5c9ff61a9ae316748028258af6df711",
+    "text-native/src/main/resources/scala-native/sirin_text.c": "70bdc7c71b1d58ec98fab8cdb059d40cb00c043aaa4d6be6e73a8e9d05a4d9d3",
+    "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala": "20f5046b40e22b10b486f8ed4cd335373b6117e8d9e0deb06db7c9ff40ec5a83",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/WrappingSuite.scala": "0d677dba263a82aff73231d5b04320387162dad865c3270ea6e390a4568c0063",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/ParagraphSuite.scala": "b08c0fa8fa390b1252bb6194935bd4a787df48b225cabef3cb88c41b6b8b95cd",
+    "graphics/src/test/resources/fonts/SHA256SUMS": "e2e5bb4dcd3c23f87470523c36ed3507b98832ef0ce8fe1ff01cb9c2222bf146",
+    "build.sbt": "61b5d57cf65cbb71fab13055d90bb98308b452fef23f7e4370e17b5b5e42d291"
+  }
+}

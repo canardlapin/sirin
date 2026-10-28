@@ -1,0 +1,4 @@
+initial=GpuResourceStats(0,0,1376)
+after-upload=GpuResourceStats(1,78176,2752)
+20 replays: storage upload unchanged; byte-for-byte pixels equal
+resize/reprepare cycles=20; count budget=64 enforced

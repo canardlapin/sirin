@@ -1,0 +1,458 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-responsive-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-responsive-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-responsive-20261028/)
+[info] compiling 2 Scala sources to /private/tmp/sirin-responsive-20261028/host/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.host.InteractionSuite started
+sirin.host.InteractionSuite: finished 0.117s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 7 total 0.126s
+Test run sirin.host.HostSuite started
+sirin.host.HostSuite: finished 0.125s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.134s
+[info] Passed: Total 13, Failed 0, Errors 0, Passed 13
+[success] Total time: 4 s, completed Oct 28, 2026, 1:21:20 p.m.
+[info] compiling 9 Scala sources to /private/tmp/sirin-responsive-20261028/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.FocusSuite started
+sirin.engine.FocusSuite: finished 0.066s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.068s
+[info] Passed: Total 1, Failed 0, Errors 0, Passed 1
+[success] Total time: 4 s, completed Oct 28, 2026, 1:21:23 p.m.
+[info] compiling 2 Scala sources to /private/tmp/sirin-responsive-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] running (fork) sirin.desktop.DesktopWorkbench scenario
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/target/bg-jobs/sbt_1b1943ac/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] presented=1 generation=2 renderMs=459.243208 uploadBytes=1827040 readbackBytes=3502080 pixels=1200x720 feedback=1 focus=None
+[info] inputToPresent kind=action ms=64.754375
+[info] presented=2 generation=4 renderMs=53.70475 uploadBytes=269536 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=35.736833
+[info] presented=3 generation=5 renderMs=28.580417 uploadBytes=109920 readbackBytes=131072 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] presented=4 generation=6 renderMs=157.041375 uploadBytes=794256 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 62)))
+[info] inputToPresent kind=action ms=415.792458
+[info] presented=5 generation=7 renderMs=404.593209 uploadBytes=1829312 readbackBytes=3502080 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 62)))
+[info] presented=6 generation=8 renderMs=166.033041 uploadBytes=728080 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1105.536208
+[info] presented=7 generation=10 renderMs=568.18975 uploadBytes=1978048 readbackBytes=3502080 pixels=1200x720 feedback=2 focus=Some(NodeId(Vector(scroll, 78)))
+[info] presented=8 generation=12 renderMs=617.142667 uploadBytes=2047344 readbackBytes=4096000 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(scroll, 78)))
+[info] hostPresentations=8 feedbackPasses=3 nativeWakeFailures=0 driver=DriverSnapshot(1,2,54,0,0,0,0,None,55)
+[info] renderSession shaped=43 tileHits=225 tileMisses=465 resources=GpuResourceStats(64,5681952,14936832)
+[success] Total time: 8 s, completed Oct 28, 2026, 1:21:31 p.m.
+[info] running (fork) sirin.desktop.DesktopWorkbench benchmark
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/target/bg-jobs/sbt_1b1943ac/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] presented=1 generation=2 renderMs=471.37025 uploadBytes=1827040 readbackBytes=3502080 pixels=1200x720 feedback=1 focus=None
+[info] inputToPresent kind=action ms=84.599541
+[info] presented=2 generation=4 renderMs=64.979958 uploadBytes=309424 readbackBytes=327680 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=119.045416
+[info] presented=3 generation=5 renderMs=110.8695 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=65.246917
+[info] presented=4 generation=6 renderMs=58.774125 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=133.251625
+[info] presented=5 generation=7 renderMs=127.114333 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=118.785208
+[info] presented=6 generation=9 renderMs=103.869583 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=113.248792
+[info] presented=7 generation=10 renderMs=108.234208 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=117.152375
+[info] presented=8 generation=12 renderMs=111.800375 uploadBytes=523776 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=115.623125
+[info] presented=9 generation=13 renderMs=110.689 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=45.284417
+[info] presented=10 generation=14 renderMs=40.503875 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=105.685208
+[info] presented=11 generation=15 renderMs=100.269625 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=164.139333
+[info] presented=12 generation=17 renderMs=157.515583 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=103.696
+[info] presented=13 generation=18 renderMs=94.920334 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=115.338583
+[info] presented=14 generation=20 renderMs=105.410209 uploadBytes=524224 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=142.995
+[info] presented=15 generation=21 renderMs=133.506583 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=63.807708
+[info] presented=16 generation=22 renderMs=59.295584 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=148.852959
+[info] presented=17 generation=23 renderMs=141.568042 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=113.635
+[info] presented=18 generation=25 renderMs=105.731708 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=138.359709
+[info] presented=19 generation=26 renderMs=132.196833 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=88.188291
+[info] presented=20 generation=28 renderMs=82.823166 uploadBytes=525120 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=89.209709
+[info] presented=21 generation=29 renderMs=84.478292 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=51.208625
+[info] presented=22 generation=30 renderMs=46.597917 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=156.01225
+[info] presented=23 generation=31 renderMs=146.722292 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=149.763083
+[info] presented=24 generation=33 renderMs=136.961667 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=156.155166
+[info] presented=25 generation=34 renderMs=145.392375 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=82.189291
+[info] presented=26 generation=36 renderMs=77.671208 uploadBytes=523776 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=104.292292
+[info] presented=27 generation=37 renderMs=97.238583 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=57.89
+[info] presented=28 generation=38 renderMs=53.293709 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=147.770208
+[info] presented=29 generation=39 renderMs=141.434292 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=102.94275
+[info] presented=30 generation=41 renderMs=98.717084 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=98.801708
+[info] presented=31 generation=42 renderMs=94.866 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=107.267083
+[info] presented=32 generation=44 renderMs=103.133208 uploadBytes=524224 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=75.1335
+[info] presented=33 generation=45 renderMs=71.114084 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=40.334292
+[info] presented=34 generation=46 renderMs=36.53075 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=102.859708
+[info] presented=35 generation=47 renderMs=99.017167 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=144.619541
+[info] presented=36 generation=49 renderMs=140.551792 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=120.128541
+[info] presented=37 generation=50 renderMs=116.162667 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=83.366458
+[info] presented=38 generation=52 renderMs=79.344125 uploadBytes=523328 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=102.105042
+[info] presented=39 generation=53 renderMs=97.740333 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=55.95375
+[info] presented=40 generation=54 renderMs=52.094958 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=152.08275
+[info] presented=41 generation=55 renderMs=145.074166 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=108.124791
+[info] presented=42 generation=57 renderMs=95.069833 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=103.54625
+[info] presented=43 generation=58 renderMs=99.496875 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=109.875792
+[info] presented=44 generation=60 renderMs=105.862292 uploadBytes=524224 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=74.57025
+[info] presented=45 generation=61 renderMs=71.002708 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=40.872875
+[info] presented=46 generation=62 renderMs=37.468125 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=106.623041
+[info] presented=47 generation=63 renderMs=101.281625 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=192.791042
+[info] presented=48 generation=65 renderMs=184.001375 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=99.332083
+[info] presented=49 generation=66 renderMs=94.810041 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=99.350292
+[info] presented=50 generation=68 renderMs=93.687333 uploadBytes=524224 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=118.66375
+[info] presented=51 generation=69 renderMs=115.050083 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=40.618458
+[info] presented=52 generation=70 renderMs=37.126 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=91.716125
+[info] presented=53 generation=71 renderMs=88.020958 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=119.624833
+[info] presented=54 generation=73 renderMs=115.865 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=124.717916
+[info] presented=55 generation=74 renderMs=121.129833 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=539.99625
+[info] presented=56 generation=76 renderMs=527.20175 uploadBytes=1830496 readbackBytes=3502080 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=153.37325
+[info] presented=57 generation=77 renderMs=140.954584 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=44.991084
+[info] presented=58 generation=78 renderMs=40.094792 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=122.146125
+[info] presented=59 generation=79 renderMs=118.01475 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=163.042958
+[info] presented=60 generation=81 renderMs=159.092792 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=90.851083
+[info] presented=61 generation=82 renderMs=87.304416 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=82.000417
+[info] presented=62 generation=84 renderMs=78.074791 uploadBytes=435744 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=127.557917
+[info] presented=63 generation=85 renderMs=123.723584 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=65.900542
+[info] presented=64 generation=86 renderMs=62.3895 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=156.525333
+[info] presented=65 generation=87 renderMs=151.545125 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=132.98075
+[info] presented=66 generation=89 renderMs=123.588875 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=157.554875
+[info] presented=67 generation=90 renderMs=149.083958 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=81.875958
+[info] presented=68 generation=92 renderMs=77.936708 uploadBytes=437888 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=111.036708
+[info] presented=69 generation=93 renderMs=104.644583 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=75.812708
+[info] presented=70 generation=94 renderMs=69.898583 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=127.841417
+[info] presented=71 generation=95 renderMs=123.854958 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=126.246583
+[info] presented=72 generation=97 renderMs=121.92675 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=155.969583
+[info] presented=73 generation=98 renderMs=149.026458 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=79.0535
+[info] presented=74 generation=100 renderMs=73.644667 uploadBytes=438112 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=85.737917
+[info] presented=75 generation=101 renderMs=81.956958 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=61.393334
+[info] presented=76 generation=102 renderMs=56.76175 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=173.579708
+[info] presented=77 generation=103 renderMs=164.293292 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=136.933208
+[info] presented=78 generation=105 renderMs=127.623459 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=122.817
+[info] presented=79 generation=106 renderMs=117.076666 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=85.961708
+[info] presented=80 generation=108 renderMs=79.127292 uploadBytes=438560 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=99.589792
+[info] presented=81 generation=109 renderMs=93.134916 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=64.872125
+[info] presented=82 generation=110 renderMs=61.246 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=144.369709
+[info] presented=83 generation=111 renderMs=138.303583 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=177.320959
+[info] presented=84 generation=113 renderMs=169.908 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=128.105708
+[info] presented=85 generation=114 renderMs=120.103583 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=115.471083
+[info] presented=86 generation=116 renderMs=109.517209 uploadBytes=437888 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=74.499917
+[info] presented=87 generation=117 renderMs=70.864667 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=42.538208
+[info] presented=88 generation=118 renderMs=39.123334 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=135.750208
+[info] presented=89 generation=119 renderMs=128.439334 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=148.723917
+[info] presented=90 generation=121 renderMs=140.207542 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=135.668708
+[info] presented=91 generation=122 renderMs=129.193625 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=86.415666
+[info] presented=92 generation=124 renderMs=78.990334 uploadBytes=438112 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=106.633209
+[info] presented=93 generation=125 renderMs=101.481375 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=59.299542
+[info] presented=94 generation=126 renderMs=55.706333 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=167.519958
+[info] presented=95 generation=127 renderMs=159.859208 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=126.446917
+[info] presented=96 generation=129 renderMs=118.9035 uploadBytes=726832 readbackBytes=655360 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=138.428833
+[info] presented=97 generation=130 renderMs=130.841 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=action ms=69.412958
+[info] presented=98 generation=132 renderMs=65.701083 uploadBytes=437664 readbackBytes=458752 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 73)))
+[info] inputToPresent kind=action ms=103.032334
+[info] presented=99 generation=133 renderMs=98.423042 uploadBytes=586800 readbackBytes=524288 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=61.032833
+[info] presented=100 generation=134 renderMs=57.588417 uploadBytes=267968 readbackBytes=262144 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 74)))
+[info] inputToPresent kind=action ms=169.896708
+[info] presented=101 generation=135 renderMs=164.177875 uploadBytes=656576 readbackBytes=589824 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1047.792333
+[info] presented=102 generation=137 renderMs=522.208375 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=2 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=997.9035
+[info] presented=103 generation=139 renderMs=485.9795 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=3 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1129.158166
+[info] presented=104 generation=141 renderMs=563.665333 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=4 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1121.35375
+[info] presented=105 generation=143 renderMs=503.100459 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=5 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1198.278083
+[info] presented=106 generation=145 renderMs=584.143417 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=6 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=987.788958
+[info] presented=107 generation=147 renderMs=482.083042 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=7 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=935.173458
+[info] presented=108 generation=149 renderMs=480.218959 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=8 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=982.136625
+[info] presented=109 generation=151 renderMs=521.828917 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=9 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1197.874875
+[info] presented=110 generation=153 renderMs=544.389916 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=10 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=956.63225
+[info] presented=111 generation=155 renderMs=470.228 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=11 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=955.694917
+[info] presented=112 generation=157 renderMs=454.051625 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=12 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=994.308416
+[info] presented=113 generation=159 renderMs=434.17625 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=13 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=887.825708
+[info] presented=114 generation=161 renderMs=422.892541 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=14 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=842.345792
+[info] presented=115 generation=163 renderMs=434.17775 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=15 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=962.533166
+[info] presented=116 generation=165 renderMs=496.855375 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=16 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1162.088333
+[info] presented=117 generation=167 renderMs=586.633833 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=17 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1296.362791
+[info] presented=118 generation=169 renderMs=697.759959 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=18 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1202.383375
+[info] presented=119 generation=171 renderMs=559.811583 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=19 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1004.405583
+[info] presented=120 generation=173 renderMs=462.228917 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=20 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=869.189333
+[info] presented=121 generation=175 renderMs=427.566375 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=21 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=922.539833
+[info] presented=122 generation=177 renderMs=437.1045 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=22 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=982.27
+[info] presented=123 generation=179 renderMs=516.569458 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=23 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=946.776667
+[info] presented=124 generation=181 renderMs=457.689208 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=24 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=960.850209
+[info] presented=125 generation=183 renderMs=476.265208 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=25 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1064.801791
+[info] presented=126 generation=185 renderMs=562.813291 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=26 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1060.782917
+[info] presented=127 generation=187 renderMs=516.709042 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=27 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=926.483583
+[info] presented=128 generation=189 renderMs=466.715625 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=28 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1186.713916
+[info] presented=129 generation=191 renderMs=504.6015 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=29 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1289.969959
+[info] presented=130 generation=193 renderMs=659.679958 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=30 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1280.91375
+[info] presented=131 generation=195 renderMs=673.3515 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=31 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1064.890084
+[info] presented=132 generation=197 renderMs=483.201125 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=32 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1005.420958
+[info] presented=133 generation=199 renderMs=525.277875 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=33 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=991.873125
+[info] presented=134 generation=201 renderMs=474.161708 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=34 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=980.221458
+[info] presented=135 generation=203 renderMs=467.885875 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=35 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=909.792916
+[info] presented=136 generation=205 renderMs=447.784666 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=36 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=833.58025
+[info] presented=137 generation=207 renderMs=398.55425 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=37 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=833.958833
+[info] presented=138 generation=209 renderMs=428.263833 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=38 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=831.025041
+[info] presented=139 generation=211 renderMs=417.232166 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=39 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=833.966583
+[info] presented=140 generation=213 renderMs=419.825583 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=40 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=818.628083
+[info] presented=141 generation=215 renderMs=415.499167 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=41 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=841.173042
+[info] presented=142 generation=217 renderMs=406.818334 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=42 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=840.424
+[info] presented=143 generation=219 renderMs=423.988875 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=43 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=826.058417
+[info] presented=144 generation=221 renderMs=416.723458 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=44 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=843.151875
+[info] presented=145 generation=223 renderMs=416.821708 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=45 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=814.723834
+[info] presented=146 generation=225 renderMs=397.137 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=46 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=831.499167
+[info] presented=147 generation=227 renderMs=413.967209 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=47 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=785.981334
+[info] presented=148 generation=229 renderMs=390.494416 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=48 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=826.189708
+[info] presented=149 generation=231 renderMs=409.480208 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=49 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=822.908042
+[info] presented=150 generation=233 renderMs=403.461542 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=50 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=810.043916
+[info] presented=151 generation=235 renderMs=407.94375 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=51 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=808.246917
+[info] presented=152 generation=237 renderMs=404.233375 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=52 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=829.832667
+[info] presented=153 generation=239 renderMs=425.088334 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=53 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=847.069834
+[info] presented=154 generation=241 renderMs=411.803166 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=54 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=838.168458
+[info] presented=155 generation=243 renderMs=420.306917 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=55 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=817.754875
+[info] presented=156 generation=245 renderMs=404.644125 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=56 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=820.742875
+[info] presented=157 generation=247 renderMs=402.912834 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=57 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=876.833625
+[info] presented=158 generation=249 renderMs=431.245959 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=58 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=833.036625
+[info] presented=159 generation=251 renderMs=419.664334 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=59 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=813.333833
+[info] presented=160 generation=253 renderMs=403.428083 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=60 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=838.112209
+[info] presented=161 generation=255 renderMs=414.321541 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=61 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=807.181584
+[info] presented=162 generation=257 renderMs=407.240542 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=62 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=839.654917
+[info] presented=163 generation=259 renderMs=418.405709 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=63 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=807.085042
+[info] presented=164 generation=261 renderMs=389.379584 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=64 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=856.679708
+[info] presented=165 generation=263 renderMs=423.404417 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=65 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=802.622875
+[info] presented=166 generation=265 renderMs=381.865208 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=66 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=814.037417
+[info] presented=167 generation=267 renderMs=410.277375 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=67 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=819.480458
+[info] presented=168 generation=269 renderMs=405.934292 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=68 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=837.254542
+[info] presented=169 generation=271 renderMs=417.1265 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=69 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=828.493458
+[info] presented=170 generation=273 renderMs=395.665959 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=70 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=815.194375
+[info] presented=171 generation=275 renderMs=380.727958 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=71 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=825.341584
+[info] presented=172 generation=277 renderMs=421.878584 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=72 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=896.642334
+[info] presented=173 generation=279 renderMs=461.55175 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=73 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=826.466209
+[info] presented=174 generation=281 renderMs=411.423292 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=74 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=821.439375
+[info] presented=175 generation=283 renderMs=415.717334 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=75 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=828.923541
+[info] presented=176 generation=285 renderMs=414.354416 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=76 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=789.175916
+[info] presented=177 generation=287 renderMs=405.998375 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=77 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=840.46375
+[info] presented=178 generation=289 renderMs=417.062084 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=78 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=839.498667
+[info] presented=179 generation=291 renderMs=412.889166 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=79 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=814.385875
+[info] presented=180 generation=293 renderMs=402.444208 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=80 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=825.750666
+[info] presented=181 generation=295 renderMs=386.780709 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=81 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=838.046375
+[info] presented=182 generation=297 renderMs=416.888916 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=82 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=989.099875
+[info] presented=183 generation=299 renderMs=570.155417 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=83 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1205.857375
+[info] presented=184 generation=301 renderMs=603.166125 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=84 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1126.201916
+[info] presented=185 generation=303 renderMs=583.196917 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=85 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1124.046167
+[info] presented=186 generation=305 renderMs=538.61375 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=86 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1083.739125
+[info] presented=187 generation=307 renderMs=596.979625 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=87 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1229.798375
+[info] presented=188 generation=309 renderMs=617.104375 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=88 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1168.814458
+[info] presented=189 generation=311 renderMs=574.469833 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=89 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1193.905334
+[info] presented=190 generation=313 renderMs=602.282208 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=90 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1179.907041
+[info] presented=191 generation=315 renderMs=576.24325 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=91 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1141.934167
+[info] presented=192 generation=317 renderMs=578.214792 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=92 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1190.400875
+[info] presented=193 generation=319 renderMs=569.726125 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=93 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1119.942125
+[info] presented=194 generation=321 renderMs=544.63575 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=94 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1110.266625
+[info] presented=195 generation=323 renderMs=537.297959 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=95 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1210.085125
+[info] presented=196 generation=325 renderMs=607.368 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=96 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1101.830417
+[info] presented=197 generation=327 renderMs=538.198708 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=97 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1228.72725
+[info] presented=198 generation=329 renderMs=614.839209 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=98 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1203.865834
+[info] presented=199 generation=331 renderMs=585.360625 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=99 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1153.834958
+[info] presented=200 generation=333 renderMs=595.755625 uploadBytes=1889136 readbackBytes=3502080 pixels=1200x720 feedback=100 focus=Some(NodeId(Vector(scroll, 78)))
+[info] inputToPresent kind=scroll ms=1207.038
+[info] presented=201 generation=335 renderMs=608.203208 uploadBytes=1829936 readbackBytes=3502080 pixels=1200x720 feedback=101 focus=Some(NodeId(Vector(scroll, 78)))
+[info] latency kind=scroll n=100 p50=909.792916 p95=1210.085125 p99=1289.969959 max=1296.362791
+[info] latency kind=action n=100 p50=108.124791 p95=167.519958 p99=192.791042 max=539.99625
+[info] hostPresentations=201 feedbackPasses=101 nativeWakeFailures=0 driver=DriverSnapshot(1,2,534,0,0,0,0,None,256)
+[info] renderSession shaped=38 tileHits=5311 tileMisses=12962 resources=GpuResourceStats(60,5285936,430606304)
+[success] Total time: 110 s (0:01:50.0), completed Oct 28, 2026, 1:23:21 p.m.
+[warn] multiple main classes detected: run 'show discoveredMainClasses' to see the list
+[success] Total time: 6 s, completed Oct 28, 2026, 1:23:27 p.m.

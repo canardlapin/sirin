@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-27",
+  "recorded_utc": "2026-10-28T02:48:35.009977+00:00",
+  "start_head": "606f45d",
+  "final_head": "606f45dc541b498689a903e37e2fd353bd162f9a",
+  "mote_child": "bd-01M605RV15P0N1983VRK81K06T",
+  "verification": [
+    {
+      "command": "sbt testJVM testNative textNative/test probeUnicode/test probeParagraph/test",
+      "exit_code": 0,
+      "tests_passed": 454,
+      "ignored": 0,
+      "log": "verification.log",
+      "note": "Before final interpolation test assertions; production code unchanged afterward."
+    },
+    {
+      "command": "sbt 'probeParagraph/testOnly *EditingGeometrySuite'",
+      "exit_code": 0,
+      "tests_passed": 10,
+      "ignored": 0,
+      "log": "final-geometry.log",
+      "note": "Final test source including independent interpolation-advance assertions."
+    }
+  ],
+  "negative_evidence": {
+    "log": "initial-fixture-failure.log",
+    "exit_code": 1,
+    "note": "Arabic sample had no merged multi-grapheme cluster. Actual joiner ligature retained the interpolation requirement."
+  },
+  "sha256": {
+    "graphics/src/main/scala/sirin/graphics/TextGeometry.scala": "9f52d55c601a1b3a7f3d25a648201fb379e0f00d69cbb10696ad5426bfc2c63d",
+    "graphics/src/main/scala/sirin/graphics/Text.scala": "3f164e551e9367e7a4fc1292888cd71b764db99b2742c28966633490fff5774e",
+    "graphics/src/main/scala/sirin/graphics/ParagraphLayout.scala": "4410e8d76ff0c26562b3803441945d34ed2b4953d493d50a3e39029b14b30b3d",
+    "graphics/src/main/scala/sirin/graphics/WrappedParagraphLayout.scala": "d4ee045e27688a9a1e323db5e8b920f9ba7a468bac5d03fe4c1a80d0b609fd5f",
+    "graphics/src/test/scala/sirin/graphics/TextDataSuite.scala": "2d72783a1629f72699869ba32284358892b826892b0f44e7eeff838811477d0a",
+    "text-native/src/main/scala/sirin/graphics/text/NativeFont.scala": "21af981917eb783163fad4651140c5b8e281f36495ad6b6eb034fe7c283a17fa",
+    "text-native/src/main/resources/scala-native/sirin_text.c": "ed3dc44cf5c00c246dbcb451c8e40fb7107f15acf50a6db9572592da8147ebf0",
+    "text-native/src/test/scala/sirin/graphics/text/NativeFontSuite.scala": "dc2f1532ca9c1360933eee4fec6ed2fdc00fa9dcc025651aab53de78b1a585d8",
+    "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala": "20f5046b40e22b10b486f8ed4cd335373b6117e8d9e0deb06db7c9ff40ec5a83",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/EditingGeometrySuite.scala": "0fff68ca3646eff1a9c252df4a9456bc22d7c2a0aae3b28011dd352690fb1995",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/ParagraphSuite.scala": "b08c0fa8fa390b1252bb6194935bd4a787df48b225cabef3cb88c41b6b8b95cd",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/WrappingSuite.scala": "0d677dba263a82aff73231d5b04320387162dad865c3270ea6e390a4568c0063",
+    "graphics/src/test/resources/fonts/SHA256SUMS": "e2e5bb4dcd3c23f87470523c36ed3507b98832ef0ce8fe1ff01cb9c2222bf146",
+    "probes/unicode/src/test/resources/unicode/SHA256SUMS": "48c23cdf1d6054f0d2030a8309a5d64122cf45a9dfc0dfb096f792638fd3c995",
+    "build.sbt": "61b5d57cf65cbb71fab13055d90bb98308b452fef23f7e4370e17b5b5e42d291",
+    "docs/design/VISION.md": "c0a6fa19ed53005836fbf6e2941e17d70e3cc48ddf77e38fd313863388939ccb",
+    "docs/plans/2026-10-27-roadmap.md": "9d42aa4595f36ddcf2bb2d2e6d430abb3fbbd69d6dc3c918d27fec403fd77f52",
+    "docs/plans/2026-10-27-graphics-api.md": "5fdfcf5939564486a574fd2dc8710ad4410cf74ff7353fc10217fb235291e103",
+    "docs/plans/2026-10-27-graphics-resources.md": "d0df988c99fedc28d09ac235aaae7cee3d4041c3fe097afa8338ebfc91e9fc76",
+    "README.md": "37fce6406ef7af0969b9595d955c088d87d395e9ac0b0b02618e8dbbdc595cb2",
+    "graphics/README.md": "b2e7bc42619da200361cd188ec4448cb10638210060eed53ae567f94a3895536",
+    "text-native/README.md": "7128f93f51f6038d60612caefc747d721b9c783e583437aae75f59697d69d03c",
+    "probes/paragraph/README.md": "c3760c064946fbfc59cd9244948f48564509f3355e12f27e6f2a5633e014c37e",
+    "docs/evidence/graphics/2026-10-27-editing-geometry.md": "79a896c2e882c819aaf7831a79bc3297cfc3e7e797d02e3ec62210904ec36bb2"
+  },
+  "receipt_sha256": {
+    "initial-fixture-failure.log": "9ae4f55a03406491b01f2848deb19538f7a98ac83bc5153ff02a61eb2c149467",
+    "final-geometry.log": "214016df40e4982e77f774caee70b9cc81abf8ef3712203709e28eb088380bc7",
+    "dynamic-libraries.txt": "052a6ee4ead3db366236a95442ef2e2fce9737d30821e026a44f51358c047264",
+    "verification.log": "0f484f707f220fabf07ff46e89ace078ac1c5d1de47f9999d8b86034d7c443f4"
+  }
+}

@@ -1,0 +1,51 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 15 Scala sources to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.028s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.033s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.049s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.049s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.047s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.055s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.048s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.057s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.084s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.092s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.102s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.11s
+Test run sirin.graphics.StrokePreparationSuite started
+==> X sirin.graphics.StrokePreparationSuite.stroke caps have analytic extents and round arcs obey device error after shear 0.052s java.lang.IndexOutOfBoundsException: 1 is out of bounds (min 0, max 0)
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.graphics.StrokePreparationSuite.$init$$$anonfun$1$$anonfun$1$$anonfun$1$$anonfun$9(StrokePreparationSuite.scala:41)
+    at scala.collection.immutable.Range.foreach(Range.scala:192)
+    at sirin.graphics.StrokePreparationSuite.$init$$$anonfun$1$$anonfun$1$$anonfun$1(StrokePreparationSuite.scala:39)
+    at scala.collection.ArrayOps$.foreach$extension(ArrayOps.scala:1324)
+    at sirin.graphics.StrokePreparationSuite.$init$$$anonfun$1$$anonfun$1(StrokePreparationSuite.scala:24)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.graphics.StrokePreparationSuite.$init$$$anonfun$1(StrokePreparationSuite.scala:24)
+sirin.graphics.StrokePreparationSuite: finished 0.109s
+Test run sirin.graphics.StrokePreparationSuite finished: 1 failed, 0 ignored, 7 total 0.117s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.069s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.069s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.155s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.163s
+[error] Failed: Total 59, Failed 1, Errors 0, Passed 58
+[error] Failed tests:
+[error] 	sirin.graphics.StrokePreparationSuite
+[error] (graphicsJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 6 s, completed Oct 28, 2026, 10:50:21 a.m.

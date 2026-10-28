@@ -8,6 +8,16 @@
 #
 # Every download is checked against a pinned SHA-256.
 set -euo pipefail
+if [ "${1:-}" = "--text" ]; then
+  exec "$(dirname "$0")/fetch-text.sh"
+fi
+if [ "${1:-}" = "--unicode" ]; then
+  exec "$(dirname "$0")/fetch-unicode.sh"
+fi
+if [ "${1:-}" = "--thorvg" ]; then
+  exec bash "$(dirname "$0")/fetch-thorvg.sh"
+fi
+if [ "$#" -ne 0 ]; then echo "usage: $0 [--text|--unicode|--thorvg]" >&2; exit 1; fi
 cd "$(dirname "$0")"
 mkdir -p vendor && cd vendor
 

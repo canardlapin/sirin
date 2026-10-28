@@ -1,0 +1,7 @@
+Compared after frozen validation, 2026-10-28.
+graphics/src/main/scala/sirin/graphics/StrokePreparation.scala
+graphics/src/test/scala/sirin/graphics/StrokePreparationSuite.scala
+probes/render/src/main/resources/raster.wgsl
+probes/render/src/main/resources/scala-native/sirin_gpu.c
+probes/render/src/main/scala/sirin/render/PixelProgram.scala
+probes/render/src/test/scala/sirin/render/StrokeGradientSuite.scala

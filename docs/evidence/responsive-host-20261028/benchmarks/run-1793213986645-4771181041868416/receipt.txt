@@ -1,0 +1,7 @@
+status=failed
+samplesComplete=false
+targetsMet=false
+steps=1
+warmups=0
+measured=0
+failure=java.lang.IllegalArgumentException: requirement failed: benchmark interrupted or sample counts incomplete

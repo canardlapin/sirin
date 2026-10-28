@@ -1,0 +1,133 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-responsive-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-responsive-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-responsive-20261028/)
+[info] compiling 2 Scala sources to /private/tmp/sirin-responsive-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 0.05s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 2 total 0.061s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 4 s, completed Oct 28, 2026, 1:48:06 p.m.
+[info] running (fork) sirin.desktop.RenderProfile 
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-responsive-20261028/target/bg-jobs/sbt_ef5e217/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] profile edge=64 phase=focus ms=58.640084 layoutMs=0.614625 drawingMs=0.595584 base[tilePrepareMs=18.553836 compileMs=0.0 gpuMs=0.0 copyMs=0.904208] overlay[tilePrepareMs=16.465328 compileMs=0.55275 gpuMs=13.958998 copyMs=1.028416]
+[info] profile edge=64 phase=focus ms=63.136209 layoutMs=0.559875 drawingMs=0.596667 base[tilePrepareMs=20.540457 compileMs=0.0 gpuMs=0.0 copyMs=0.745917] overlay[tilePrepareMs=11.894826 compileMs=0.675503 gpuMs=24.043956 copyMs=0.6395]
+[info] profile edge=64 phase=focus ms=46.105417 layoutMs=0.535167 drawingMs=0.662583 base[tilePrepareMs=14.497797 compileMs=0.0 gpuMs=0.0 copyMs=0.648583] overlay[tilePrepareMs=13.138166 compileMs=0.532668 gpuMs=12.854793 copyMs=0.643416]
+[info] profile edge=64 phase=focus ms=59.109166 layoutMs=0.433708 drawingMs=0.44 base[tilePrepareMs=19.694213 compileMs=0.0 gpuMs=0.0 copyMs=0.687] overlay[tilePrepareMs=12.062548 compileMs=0.63354 gpuMs=22.193248 copyMs=0.620375]
+[info] profile edge=64 phase=focus ms=38.558917 layoutMs=0.53375 drawingMs=0.433875 base[tilePrepareMs=13.528671 compileMs=0.0 gpuMs=0.0 copyMs=0.64525] overlay[tilePrepareMs=12.09816 compileMs=0.542667 gpuMs=7.931712 copyMs=0.549375]
+[info] profile edge=64 phase=focus ms=38.293042 layoutMs=0.42 drawingMs=0.502667 base[tilePrepareMs=16.043539 compileMs=0.0 gpuMs=0.0 copyMs=0.616] overlay[tilePrepareMs=11.507584 compileMs=0.533628 gpuMs=5.899621 copyMs=0.535166]
+[info] profile edge=64 phase=focus ms=35.508833 layoutMs=0.393542 drawingMs=0.296166 base[tilePrepareMs=13.327878 compileMs=0.0 gpuMs=0.0 copyMs=0.670458] overlay[tilePrepareMs=11.810211 compileMs=0.398707 gpuMs=5.918083 copyMs=0.532]
+[info] profile edge=64 phase=focus ms=42.125542 layoutMs=0.38475 drawingMs=0.317125 base[tilePrepareMs=15.580788 compileMs=0.0 gpuMs=0.0 copyMs=0.725417] overlay[tilePrepareMs=11.830046 compileMs=0.550585 gpuMs=10.257127 copyMs=0.535709]
+[info] profile edge=64 phase=focus ms=42.196292 layoutMs=0.395209 drawingMs=0.343875 base[tilePrepareMs=13.181208 compileMs=0.0 gpuMs=0.0 copyMs=0.608208] overlay[tilePrepareMs=14.824868 compileMs=0.549876 gpuMs=9.335834 copyMs=0.760958]
+[info] profile edge=64 phase=focus ms=46.900667 layoutMs=0.372792 drawingMs=0.343458 base[tilePrepareMs=20.258209 compileMs=0.0 gpuMs=0.0 copyMs=0.916709] overlay[tilePrepareMs=12.719532 compileMs=0.480291 gpuMs=9.075249 copyMs=0.602459]
+[info] profile edge=64 phase=focus ms=35.065459 layoutMs=0.370667 drawingMs=0.273458 base[tilePrepareMs=12.982838 compileMs=0.0 gpuMs=0.0 copyMs=0.608333] overlay[tilePrepareMs=11.801301 compileMs=0.402001 gpuMs=5.709376 copyMs=0.608292]
+[info] profile edge=64 phase=focus ms=42.543792 layoutMs=0.388417 drawingMs=0.254125 base[tilePrepareMs=17.387914 compileMs=0.0 gpuMs=0.0 copyMs=0.633375] overlay[tilePrepareMs=13.147008 compileMs=0.595166 gpuMs=7.422331 copyMs=0.50025]
+[info] profile edge=64 phase=scroll ms=30.712916 layoutMs=0.389041 drawingMs=0.407584 base[tilePrepareMs=13.113545 compileMs=0.0 gpuMs=0.0 copyMs=0.584291] overlay[tilePrepareMs=11.332409 compileMs=0.215666 gpuMs=2.485623 copyMs=0.486625]
+[info] profile edge=64 phase=scroll ms=146.94475 layoutMs=1.875208 drawingMs=0.319584 base[tilePrepareMs=14.925665 compileMs=5.688749 gpuMs=70.285831 copyMs=0.558958] overlay[tilePrepareMs=14.389717 compileMs=0.517294 gpuMs=34.309247 copyMs=0.536667]
+[info] profile edge=64 phase=scroll ms=156.169125 layoutMs=1.109875 drawingMs=0.274125 base[tilePrepareMs=14.533047 compileMs=7.349333 gpuMs=100.76629 copyMs=0.56775] overlay[tilePrepareMs=11.65538 compileMs=0.496125 gpuMs=14.955165 copyMs=0.494709]
+[info] profile edge=64 phase=scroll ms=82.092084 layoutMs=1.022 drawingMs=0.238875 base[tilePrepareMs=13.989205 compileMs=6.148082 gpuMs=36.214497 copyMs=0.569791] overlay[tilePrepareMs=14.462705 compileMs=0.504585 gpuMs=4.992876 copyMs=0.5175]
+[info] profile edge=64 phase=scroll ms=69.848666 layoutMs=1.829458 drawingMs=0.246 base[tilePrepareMs=14.55641 compileMs=6.612788 gpuMs=24.924291 copyMs=0.579333] overlay[tilePrepareMs=11.506823 compileMs=0.483498 gpuMs=5.177789 copyMs=0.49725]
+[info] profile edge=64 phase=scroll ms=70.740375 layoutMs=1.341 drawingMs=0.265667 base[tilePrepareMs=14.072292 compileMs=6.565585 gpuMs=24.25329 copyMs=0.525959] overlay[tilePrepareMs=13.880919 compileMs=0.492247 gpuMs=5.432704 copyMs=0.505083]
+[info] profile edge=64 phase=scroll ms=71.179 layoutMs=2.115625 drawingMs=0.257625 base[tilePrepareMs=14.447419 compileMs=6.551002 gpuMs=26.241668 copyMs=0.552291] overlay[tilePrepareMs=11.579697 compileMs=0.467371 gpuMs=5.010252 copyMs=0.481333]
+[info] profile edge=64 phase=scroll ms=77.72025 layoutMs=1.014833 drawingMs=0.228542 base[tilePrepareMs=14.123217 compileMs=6.652915 gpuMs=24.512294 copyMs=1.176083] overlay[tilePrepareMs=19.013791 compileMs=0.518501 gpuMs=5.678373 copyMs=0.741292]
+[info] profile edge=64 phase=scroll ms=81.922292 layoutMs=1.434042 drawingMs=0.260541 base[tilePrepareMs=23.293874 compileMs=7.13079 gpuMs=27.458831 copyMs=0.733708] overlay[tilePrepareMs=12.486749 compileMs=0.465624 gpuMs=5.035875 copyMs=0.468667]
+[info] profile edge=64 phase=scroll ms=69.360209 layoutMs=1.053625 drawingMs=0.238959 base[tilePrepareMs=14.51987 compileMs=6.905585 gpuMs=25.206542 copyMs=0.551667] overlay[tilePrepareMs=11.520666 compileMs=0.478667 gpuMs=5.036167 copyMs=0.471292]
+[info] profile edge=64 phase=scroll ms=72.709125 layoutMs=0.8265 drawingMs=0.225666 base[tilePrepareMs=17.424584 compileMs=6.520874 gpuMs=24.348955 copyMs=0.639084] overlay[tilePrepareMs=13.107542 compileMs=0.542332 gpuMs=5.13129 copyMs=0.509417]
+[info] profile edge=64 phase=scroll ms=71.54825 layoutMs=1.300042 drawingMs=0.297292 base[tilePrepareMs=15.399702 compileMs=6.863752 gpuMs=26.230877 copyMs=0.541417] overlay[tilePrepareMs=11.499416 compileMs=0.471462 gpuMs=5.15488 copyMs=0.450542]
+[info] profile edge=80 phase=focus ms=33.038334 layoutMs=0.97625 drawingMs=0.957917 base[tilePrepareMs=10.627953 compileMs=0.0 gpuMs=0.0 copyMs=0.950416] overlay[tilePrepareMs=4.338881 compileMs=0.367833 gpuMs=12.44375 copyMs=0.503042]
+[info] profile edge=80 phase=focus ms=38.3625 layoutMs=0.183 drawingMs=0.17925 base[tilePrepareMs=8.514297 compileMs=0.0 gpuMs=0.0 copyMs=0.558208] overlay[tilePrepareMs=4.309956 compileMs=0.541461 gpuMs=22.124294 copyMs=0.532792]
+[info] profile edge=80 phase=focus ms=26.462583 layoutMs=0.19025 drawingMs=0.173166 base[tilePrepareMs=7.756707 compileMs=0.0 gpuMs=0.0 copyMs=0.552083] overlay[tilePrepareMs=4.334498 compileMs=0.413249 gpuMs=10.654291 copyMs=0.475333]
+[info] profile edge=80 phase=focus ms=32.7845 layoutMs=0.202167 drawingMs=0.176708 base[tilePrepareMs=7.894089 compileMs=0.0 gpuMs=0.0 copyMs=0.40375] overlay[tilePrepareMs=4.292995 compileMs=0.373416 gpuMs=16.416417 copyMs=0.549917]
+[info] profile edge=80 phase=focus ms=26.321416 layoutMs=0.25825 drawingMs=0.287125 base[tilePrepareMs=10.210752 compileMs=0.0 gpuMs=0.0 copyMs=0.498459] overlay[tilePrepareMs=4.220915 compileMs=0.368209 gpuMs=7.271916 copyMs=0.371166]
+[info] profile edge=80 phase=focus ms=28.467958 layoutMs=0.155083 drawingMs=0.198958 base[tilePrepareMs=10.17375 compileMs=0.0 gpuMs=0.0 copyMs=0.489417] overlay[tilePrepareMs=4.237871 compileMs=0.550043 gpuMs=10.410334 copyMs=0.500958]
+[info] profile edge=80 phase=focus ms=20.828917 layoutMs=0.173917 drawingMs=0.194417 base[tilePrepareMs=7.784219 compileMs=0.0 gpuMs=0.0 copyMs=0.5485] overlay[tilePrepareMs=4.195667 compileMs=0.432833 gpuMs=5.637832 copyMs=0.48]
+[info] profile edge=80 phase=focus ms=19.550375 layoutMs=0.149792 drawingMs=0.16675 base[tilePrepareMs=7.60521 compileMs=0.0 gpuMs=0.0 copyMs=0.562667] overlay[tilePrepareMs=4.233625 compileMs=0.334876 gpuMs=4.939332 copyMs=0.484208]
+[info] profile edge=80 phase=focus ms=18.279542 layoutMs=0.137792 drawingMs=0.13925 base[tilePrepareMs=7.502339 compileMs=0.0 gpuMs=0.0 copyMs=0.544542] overlay[tilePrepareMs=4.143914 compileMs=0.362082 gpuMs=3.782708 copyMs=0.505083]
+[info] profile edge=80 phase=focus ms=22.351041 layoutMs=0.149666 drawingMs=0.144084 base[tilePrepareMs=7.687544 compileMs=0.0 gpuMs=0.0 copyMs=0.539042] overlay[tilePrepareMs=5.164001 compileMs=0.524543 gpuMs=6.090709 copyMs=0.493167]
+[info] profile edge=80 phase=focus ms=23.018958 layoutMs=0.185167 drawingMs=0.174458 base[tilePrepareMs=10.650334 compileMs=0.0 gpuMs=0.0 copyMs=0.560709] overlay[tilePrepareMs=4.247417 compileMs=0.465046 gpuMs=4.64654 copyMs=0.485667]
+[info] profile edge=80 phase=focus ms=20.651958 layoutMs=0.185958 drawingMs=0.164667 base[tilePrepareMs=7.621619 compileMs=0.0 gpuMs=0.0 copyMs=0.588125] overlay[tilePrepareMs=4.30187 compileMs=0.379459 gpuMs=5.392333 copyMs=0.490834]
+[info] profile edge=80 phase=scroll ms=16.161292 layoutMs=0.162917 drawingMs=0.145916 base[tilePrepareMs=7.565333 compileMs=0.0 gpuMs=0.0 copyMs=0.562833] overlay[tilePrepareMs=4.060908 compileMs=0.12075 gpuMs=2.103793 copyMs=0.487417]
+[info] profile edge=80 phase=scroll ms=67.676542 layoutMs=1.271292 drawingMs=0.149542 base[tilePrepareMs=8.246302 compileMs=4.382209 gpuMs=30.793082 copyMs=0.540458] overlay[tilePrepareMs=4.102371 compileMs=0.32146 gpuMs=15.544794 copyMs=0.50275]
+[info] profile edge=80 phase=scroll ms=68.932584 layoutMs=0.778209 drawingMs=0.168041 base[tilePrepareMs=8.527085 compileMs=5.903624 gpuMs=39.860247 copyMs=0.558833] overlay[tilePrepareMs=4.142868 compileMs=0.361127 gpuMs=6.014209 copyMs=0.5]
+[info] profile edge=80 phase=scroll ms=76.353 layoutMs=0.704958 drawingMs=0.164875 base[tilePrepareMs=12.315501 compileMs=6.538167 gpuMs=34.743627 copyMs=0.796625] overlay[tilePrepareMs=5.878632 compileMs=0.907875 gpuMs=11.09654 copyMs=0.768916]
+[info] profile edge=80 phase=scroll ms=80.634833 layoutMs=1.106 drawingMs=0.184292 base[tilePrepareMs=13.908335 compileMs=6.959958 gpuMs=42.592583 copyMs=0.715917] overlay[tilePrepareMs=5.534364 compileMs=0.791082 gpuMs=6.086 copyMs=0.511792]
+[info] profile edge=80 phase=scroll ms=93.011458 layoutMs=0.752791 drawingMs=0.161084 base[tilePrepareMs=8.399536 compileMs=6.346458 gpuMs=50.769328 copyMs=0.552833] overlay[tilePrepareMs=4.239167 compileMs=0.458458 gpuMs=18.507624 copyMs=0.49325]
+[info] profile edge=80 phase=scroll ms=120.201709 layoutMs=1.071709 drawingMs=0.171166 base[tilePrepareMs=8.740963 compileMs=6.655543 gpuMs=71.471419 copyMs=0.552875] overlay[tilePrepareMs=4.164249 compileMs=0.486582 gpuMs=24.008125 copyMs=0.532709]
+[info] profile edge=80 phase=scroll ms=94.35625 layoutMs=0.731 drawingMs=0.178083 base[tilePrepareMs=8.512746 compileMs=6.973666 gpuMs=64.994208 copyMs=0.561917] overlay[tilePrepareMs=4.176369 compileMs=0.481042 gpuMs=4.531125 copyMs=0.515666]
+[info] profile edge=80 phase=scroll ms=101.541958 layoutMs=1.04625 drawingMs=0.155708 base[tilePrepareMs=10.449128 compileMs=7.427624 gpuMs=67.171047 copyMs=0.585666] overlay[tilePrepareMs=4.544004 compileMs=0.639125 gpuMs=6.56308 copyMs=0.5605]
+[info] profile edge=80 phase=scroll ms=85.415541 layoutMs=0.754166 drawingMs=0.180709 base[tilePrepareMs=10.105249 compileMs=7.477792 gpuMs=53.181918 copyMs=0.658] overlay[tilePrepareMs=4.559919 compileMs=0.554456 gpuMs=4.845168 copyMs=0.596625]
+[info] profile edge=80 phase=scroll ms=72.529791 layoutMs=0.7535 drawingMs=0.186291 base[tilePrepareMs=9.295166 compileMs=7.247543 gpuMs=42.23908 copyMs=0.570708] overlay[tilePrepareMs=4.181792 compileMs=0.535916 gpuMs=4.462208 copyMs=0.519833]
+[info] profile edge=80 phase=scroll ms=67.800125 layoutMs=1.456542 drawingMs=0.172416 base[tilePrepareMs=8.825121 compileMs=7.034209 gpuMs=36.645205 copyMs=0.568416] overlay[tilePrepareMs=4.457079 compileMs=0.491455 gpuMs=4.929122 copyMs=0.526875]
+[info] profile edge=128 phase=focus ms=15.195417 layoutMs=0.272667 drawingMs=0.154292 base[tilePrepareMs=3.683123 compileMs=0.0 gpuMs=0.0 copyMs=0.482542] overlay[tilePrepareMs=0.902165 compileMs=0.302042 gpuMs=7.275791 copyMs=0.368708]
+[info] profile edge=128 phase=focus ms=20.914292 layoutMs=0.20275 drawingMs=0.164375 base[tilePrepareMs=5.120998 compileMs=0.0 gpuMs=0.0 copyMs=0.500083] overlay[tilePrepareMs=0.922755 compileMs=0.522502 gpuMs=11.912709 copyMs=0.483542]
+[info] profile edge=128 phase=focus ms=13.026666 layoutMs=0.159333 drawingMs=0.177 base[tilePrepareMs=3.657124 compileMs=0.0 gpuMs=0.0 copyMs=0.471417] overlay[tilePrepareMs=0.875377 compileMs=0.534083 gpuMs=5.723915 copyMs=0.466584]
+[info] profile edge=128 phase=focus ms=19.203291 layoutMs=0.156416 drawingMs=0.149167 base[tilePrepareMs=3.788586 compileMs=0.0 gpuMs=0.0 copyMs=0.614167] overlay[tilePrepareMs=1.11949 compileMs=1.099914 gpuMs=10.738457 copyMs=0.630625]
+[info] profile edge=128 phase=focus ms=14.142833 layoutMs=0.15675 drawingMs=0.129458 base[tilePrepareMs=4.494756 compileMs=0.0 gpuMs=0.0 copyMs=0.500333] overlay[tilePrepareMs=0.957168 compileMs=0.58671 gpuMs=5.849791 copyMs=0.466042]
+[info] profile edge=128 phase=focus ms=12.436959 layoutMs=0.194292 drawingMs=0.137583 base[tilePrepareMs=3.433455 compileMs=0.0 gpuMs=0.0 copyMs=0.460458] overlay[tilePrepareMs=0.938456 compileMs=0.516126 gpuMs=5.38621 copyMs=0.463584]
+[info] profile edge=128 phase=focus ms=10.954542 layoutMs=0.149375 drawingMs=0.11275 base[tilePrepareMs=3.448371 compileMs=0.0 gpuMs=0.0 copyMs=0.460208] overlay[tilePrepareMs=0.849171 compileMs=0.502251 gpuMs=3.957876 copyMs=0.479167]
+[info] profile edge=128 phase=focus ms=14.880625 layoutMs=0.153292 drawingMs=0.133375 base[tilePrepareMs=3.463957 compileMs=0.0 gpuMs=0.0 copyMs=0.463584] overlay[tilePrepareMs=0.908835 compileMs=0.620627 gpuMs=7.095583 copyMs=0.428459]
+[info] profile edge=128 phase=focus ms=13.619209 layoutMs=0.1325 drawingMs=0.111084 base[tilePrepareMs=3.481584 compileMs=0.0 gpuMs=0.0 copyMs=0.304667] overlay[tilePrepareMs=0.907995 compileMs=0.58971 gpuMs=5.775125 copyMs=0.436375]
+[info] profile edge=128 phase=focus ms=13.668166 layoutMs=0.162916 drawingMs=0.131417 base[tilePrepareMs=3.453668 compileMs=0.0 gpuMs=0.0 copyMs=0.310125] overlay[tilePrepareMs=0.872752 compileMs=0.523458 gpuMs=5.992417 copyMs=0.358416]
+[info] profile edge=128 phase=focus ms=11.89775 layoutMs=0.14025 drawingMs=0.151708 base[tilePrepareMs=3.462332 compileMs=0.0 gpuMs=0.0 copyMs=0.33275] overlay[tilePrepareMs=0.875961 compileMs=0.514541 gpuMs=4.243166 copyMs=0.403542]
+[info] profile edge=128 phase=focus ms=16.765958 layoutMs=0.143875 drawingMs=0.12625 base[tilePrepareMs=3.436497 compileMs=0.0 gpuMs=0.0 copyMs=0.318875] overlay[tilePrepareMs=0.919835 compileMs=0.630832 gpuMs=8.799457 copyMs=0.438291]
+[info] profile edge=128 phase=scroll ms=10.676375 layoutMs=0.134125 drawingMs=0.134458 base[tilePrepareMs=3.453626 compileMs=0.0 gpuMs=0.0 copyMs=0.313208] overlay[tilePrepareMs=0.841045 compileMs=0.305624 gpuMs=3.576333 copyMs=0.492542]
+[info] profile edge=128 phase=scroll ms=59.39825 layoutMs=0.972041 drawingMs=0.120542 base[tilePrepareMs=3.720538 compileMs=3.784875 gpuMs=43.455041 copyMs=0.469292] overlay[tilePrepareMs=0.845503 compileMs=0.359083 gpuMs=4.094834 copyMs=0.473541]
+[info] profile edge=128 phase=scroll ms=68.83625 layoutMs=0.646042 drawingMs=0.1295 base[tilePrepareMs=3.871463 compileMs=5.504084 gpuMs=50.999292 copyMs=0.471792] overlay[tilePrepareMs=0.84846 compileMs=0.461375 gpuMs=4.136957 copyMs=0.475416]
+[info] profile edge=128 phase=scroll ms=64.50725 layoutMs=0.712 drawingMs=0.131416 base[tilePrepareMs=3.728045 compileMs=5.151958 gpuMs=46.332041 copyMs=0.498208] overlay[tilePrepareMs=0.875376 compileMs=0.462586 gpuMs=4.666083 copyMs=0.497791]
+[info] profile edge=128 phase=scroll ms=57.49175 layoutMs=1.004333 drawingMs=0.118333 base[tilePrepareMs=3.8845 compileMs=5.312834 gpuMs=39.155083 copyMs=0.502375] overlay[tilePrepareMs=0.893418 compileMs=0.477664 gpuMs=4.253916 copyMs=0.482]
+[info] profile edge=128 phase=scroll ms=55.546625 layoutMs=0.726666 drawingMs=0.114084 base[tilePrepareMs=3.95196 compileMs=5.424252 gpuMs=37.805624 copyMs=0.51775] overlay[tilePrepareMs=0.852084 compileMs=0.485334 gpuMs=3.777333 copyMs=0.474083]
+[info] profile edge=128 phase=scroll ms=59.347125 layoutMs=1.120958 drawingMs=0.130417 base[tilePrepareMs=3.962455 compileMs=5.484376 gpuMs=40.212209 copyMs=0.514875] overlay[tilePrepareMs=0.871253 compileMs=0.491917 gpuMs=4.468832 copyMs=0.549667]
+[info] profile edge=128 phase=scroll ms=56.073625 layoutMs=0.728958 drawingMs=0.133334 base[tilePrepareMs=4.055164 compileMs=5.589458 gpuMs=36.960292 copyMs=0.502375] overlay[tilePrepareMs=0.881916 compileMs=0.481082 gpuMs=4.567584 copyMs=0.509208]
+[info] profile edge=128 phase=scroll ms=58.576166 layoutMs=1.1905 drawingMs=0.129458 base[tilePrepareMs=4.156955 compileMs=5.404749 gpuMs=39.708751 copyMs=0.507458] overlay[tilePrepareMs=0.896376 compileMs=0.516544 gpuMs=3.840959 copyMs=0.518667]
+[info] profile edge=128 phase=scroll ms=58.179792 layoutMs=0.726083 drawingMs=0.116792 base[tilePrepareMs=4.080668 compileMs=5.770251 gpuMs=38.563708 copyMs=0.542958] overlay[tilePrepareMs=0.902751 compileMs=0.569251 gpuMs=4.566124 copyMs=0.521958]
+[info] profile edge=128 phase=scroll ms=59.57175 layoutMs=0.700708 drawingMs=0.110875 base[tilePrepareMs=3.961133 compileMs=7.166584 gpuMs=39.027124 copyMs=0.514667] overlay[tilePrepareMs=0.898751 compileMs=0.467833 gpuMs=4.494749 copyMs=0.554708]
+[info] profile edge=128 phase=scroll ms=56.915125 layoutMs=1.099125 drawingMs=0.112 base[tilePrepareMs=3.985585 compileMs=5.543208 gpuMs=39.39521 copyMs=0.499375] overlay[tilePrepareMs=0.881914 compileMs=0.496001 gpuMs=2.959626 copyMs=0.49425]
+[success] Total time: 7 s, completed Oct 28, 2026, 1:48:13 p.m.
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 0.582s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 2 total 0.591s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.643s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.643s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.059s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.06s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.01s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.01s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+==> X sirin.desktop.RenderServiceSuite.in-flight obsolete failure cannot replace the next generation result 2.042s munit.FailException: desktop/src/test/scala/sirin/desktop/RenderServiceSuite.scala:34 executed=[1, 2] result=None
+33:      service.submit(request(1));assert(entered.await(2,TimeUnit.SECONDS))
+34:      service.submit(request(2));release.countDown();assert(done.await(2,TimeUnit.SECONDS),s"executed=$executed result=${service.poll()}")
+35:      val result=service.poll().get
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.RenderServiceSuite.$init$$$anonfun$2(RenderServiceSuite.scala:34)
+sirin.desktop.RenderServiceSuite: finished 2.045s
+Test run sirin.desktop.RenderServiceSuite finished: 1 failed, 0 ignored, 2 total 2.045s
+[error] Failed: Total 8, Failed 1, Errors 0, Passed 7
+[error] Failed tests:
+[error] 	sirin.desktop.RenderServiceSuite
+[error] (desktopJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 4 s, completed Oct 28, 2026, 1:48:17 p.m.

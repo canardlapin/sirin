@@ -5,6 +5,9 @@ import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.{ControlThrowable, NonFatal}
 
+trait CommittedRead extends Committed:
+  def apply[A](signal: Signal[A]): Value[A]
+
 enum KernelError(message: String) extends RuntimeException(message):
   case WrongThread extends KernelError("UI runtime used by a different thread")
   case Disposed extends KernelError("UI runtime is disposed")
@@ -503,6 +506,26 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
         live = false
         compactEffects()
 
+  /** Backend capture over declared nodes. The reader expires after this call. */
+  def withCommitted[A](body: CommittedRead => A): A =
+    control()
+    ensureGraph()
+    var live = true
+    val reader = new CommittedRead:
+      def apply[B](signal: Signal[B]): Value[B] =
+        checkOwner()
+        if !live then throw KernelError.ExpiredTransaction
+        nodes.getOrElse(signal, throw KernelError.ReadOnlyPhase).value.asInstanceOf[Value[B]]
+    try HeadlessRuntime.readOnly(this, false)(body(reader))
+    finally live = false
+  /** Wake-only backend notification; may run on a worker, never under a transport lock. */
+  def onActivity(wake: () => Unit): Subscription =
+    installation()
+    val remove = activity.onWake(() => HeadlessRuntime.readOnly(this, false)(wake()))
+    new Subscription:
+      def cancel(): Unit = { installation(); remove() }
+  def wakeFailures: Long = { control(); activity.wakeFailures }
+
   /** Explicit committed read pins this root until close. */
   def read[A](signal: Signal[A]): Value[A] =
     checkOwner()
@@ -922,6 +945,16 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       else ProgressDrain(0, progressBindings.filter(_.alive).map(_.snapshot.pending).sum, Vector.empty)
     WorkPump(progress, scheduler.drain(math.max(0, budget - progress.delivered)))
 
+  /** Backend event-loop wait in this runtime's clock domain: -1 means no deadline. */
+  def activityWaitMillis: Int =
+    control()
+    val now=timeNanos()
+    if hasReady(now) then 0
+    else nextDeadline.fold(-1) { due =>
+      val delta=math.max(0L,due-now)
+      (delta/1000000L+(if delta%1000000L==0 then 0 else 1)).min(Int.MaxValue.toLong).toInt
+    }
+
   def awaitActivity(timeoutMillis: Long): Boolean =
     control()
     require(timeoutMillis >= 0 && timeoutMillis <= 60000, "activity wait must be bounded to 60 seconds")
@@ -945,6 +978,10 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private def nextDeadline: Option[Long] = deadlines.flatMap(_.due).minOption
   private def hasReady(now: Long): Boolean = eventHub.pending > 0 || effectQueue.exists(_.live()) ||
     progressBindings.exists(_.canDrain) || scheduler.hasCompletions || nextDeadline.exists(_ <= now)
+  /** Backend resolves transactional intents after settle against its complete interaction tree. */
+  def takeFocusRequests(): Vector[Long] = {control();docking.takeFocusRequests()}
+  def publishFocus(references: Set[Long],ancestors: Set[Long],keyboard: Boolean)(using txn: UiTxn): Unit =
+    capability(txn)(docking.publishFocus(references,ancestors,keyboard))
   def attachments: Vector[RefAttachment] = { control(); docking.attachments }
   def traces: Vector[TraceRecord] = { control(); traceRing.toVector }
   def driverSnapshot: DriverSnapshot =
@@ -1018,6 +1055,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   def close(): Unit =
     installation()
     detachClock()
+    activity.clearWakes()
     docking.clear()
     eventHub.clear()
     changeBindings.clear()

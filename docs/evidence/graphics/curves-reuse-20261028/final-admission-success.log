@@ -1,0 +1,140 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.035s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.043s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.045s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.056s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.057s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.048s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.058s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.058s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.091s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.101s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.12s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.13s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.079s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.079s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.21s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.22s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.215s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.225s
+Test run sirin.graphics.CurvedStrokeSuite started
+sirin.graphics.CurvedStrokeSuite: finished 1.003s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 1.013s
+[info] Passed: Total 63, Failed 0, Errors 0, Passed 63
+[success] Total time: 4 s, completed Oct 28, 2026, 1:37:43 p.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1501 ms)
+[info] Discovered 3236 classes and 20606 methods after classloading
+[info] Checking intermediate code (quick) (157 ms)
+[info] Discovered 3209 classes and 15936 methods after optimization
+[info] Optimizing (debug mode) (2631 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6134 ms)
+[info] Compiling to native code (4776 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (138 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11257 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51907'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51909'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51911'.
+Test run sirin.graphics.TextDataSuite startedTest run sirin.graphics.ValuesSuite started
+
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51912'.
+sirin.graphics.ValuesSuite: finished 0.005s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.005s
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51913'.
+Test run sirin.graphics.PreparationSuite started
+Test run sirin.graphics.CurvedStrokeSuite started
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51916'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51918'.
+Test run sirin.graphics.GeometrySuite started
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.GeometrySuite: finished 0.009s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.009s
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51920'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51922'.
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.002s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.002s
+sirin.graphics.TextDataSuite: finished 0.071s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.071s
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '51924'.
+Test run sirin.graphics.DrawingResourcesSuite started
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.006s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.006s
+sirin.graphics.DrawingResourcesSuite: finished 0.021s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.021s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.005s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.005s
+sirin.graphics.StrokePreparationSuite: finished 0.105s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.105s
+sirin.graphics.PreparationSuite: finished 0.148s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.148s
+sirin.graphics.CurvedStrokeSuite: finished 8.239s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 8.239s
+[info] Passed: Total 63, Failed 0, Errors 0, Passed 63
+[success] Total time: 22 s, completed Oct 28, 2026, 1:38:05 p.m.
+[info] Linking (multithreadingEnabled=detect) (1109 ms)
+[info] Discovered 3121 classes and 20227 methods after classloading
+[info] Checking intermediate code (quick) (49 ms)
+[info] Discovered 3088 classes and 15822 methods after optimization
+[info] Optimizing (debug mode) (1210 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (5497 ms)
+[info] Compiling to native code (4882 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (123 ms)
+[info] Postprocessing (0 ms)
+[info] Total (8612 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '51944'.
+Test run sirin.render.StrokeGradientSuite started
+sirin.render.StrokeGradientSuite: finished 2.192s
+Test run sirin.render.StrokeGradientSuite finished: 0 failed, 0 ignored, 5 total 2.192s
+Test run sirin.graphics.RebasedGradientSuite started
+sirin.graphics.RebasedGradientSuite: finished 0.201s
+Test run sirin.graphics.RebasedGradientSuite finished: 0 failed, 0 ignored, 1 total 0.201s
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=321083,298708,295833,295375,311625,295500,308125,335292,305833,294042
+synchronized-render-readback-ns=6929167,8283708,8286750,8327208,8433875,8849958,9542875,9565250,9646375,9705375
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 1.982s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 8 total 1.982s
+Test run sirin.render.CurvesReuseSuite started
+sirin.render.CurvesReuseSuite: finished 8.131s
+Test run sirin.render.CurvesReuseSuite finished: 0 failed, 0 ignored, 6 total 8.131s
+[info] Passed: Total 20, Failed 0, Errors 0, Passed 20
+[success] Total time: 22 s, completed Oct 28, 2026, 1:38:27 p.m.

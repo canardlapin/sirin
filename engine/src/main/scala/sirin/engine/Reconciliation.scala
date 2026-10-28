@@ -4,12 +4,16 @@ import sirin.*
 
 enum MountedSnapshot:
   case Empty
+  case Referenced(reference: Long,child: MountedSnapshot)
+  case Control(instance: Long,view: View)
+  case Styled(child: MountedSnapshot, decorations: Vector[Decoration])
+  case Scroll(instance: Long, child: MountedSnapshot)
   case Outlet(reference: Long, child: MountedSnapshot)
   case Reparented(key: GlobalKey, instance: Long, child: MountedSnapshot)
-  case VirtualRows(instance: Long, revision: Revision, first: Int, total: Int, leading: Lp, trailing: Lp, rows: MountedSnapshot)
+  case VirtualRows(instance: Long, revision: Revision, first: Int, total: Int, leading: Lp, trailing: Lp, rowHeight: Lp, rows: MountedSnapshot)
   /** Opaque leaf description; no painting or input routing is performed. */
   case Leaf(view: View)
-  case Group(children: Vector[MountedSnapshot])
+  case Group(children: Vector[MountedSnapshot], horizontal: Boolean = false, gap: Lp = Lp.zero, alignment: Alignment = Alignment.Start)
   case Component(identity: MountedIdentity, props: Any, child: MountedSnapshot)
   case Rows(entries: Vector[(Any, MountedSnapshot)])
   case Branch(key: Any, instance: Long, child: MountedSnapshot)
@@ -18,12 +22,16 @@ enum MountedSnapshot:
 object MountedSnapshot:
   private[engine] val equality: Equality[MountedSnapshot] = (a, b) => (a, b) match
     case (Empty, Empty) => true
+    case (Referenced(i,x),Referenced(j,y)) => i==j && equality.same(x,y)
+    case (Control(i,x),Control(j,y)) => i==j && x==y
+    case (Styled(x, a), Styled(y, b)) => a == b && equality.same(x, y)
+    case (Scroll(i, x), Scroll(j, y)) => i == j && equality.same(x, y)
     case (Outlet(i, x), Outlet(j, y)) => i == j && equality.same(x, y)
     case (Reparented(k, i, x), Reparented(l, j, y)) => k == l && i == j && equality.same(x, y)
-    case (VirtualRows(i, r, f, t, l, e, x), VirtualRows(j, s, g, u, m, h, y)) =>
-      i == j && r == s && f == g && t == u && l == m && e == h && equality.same(x, y)
+    case (VirtualRows(i, r, f, t, l, e, a, x), VirtualRows(j, s, g, u, m, h, b, y)) =>
+      i == j && r == s && f == g && t == u && l == m && e == h && a == b && equality.same(x, y)
     case (Leaf(x), Leaf(y)) => x == y
-    case (Group(x), Group(y)) => x.size == y.size && x.zip(y).forall((p, q) => equality.same(p, q))
+    case (Group(x, h, g, a), Group(y, i, j, b)) => h == i && g == j && a == b && x.size == y.size && x.zip(y).forall((p, q) => equality.same(p, q))
     case (Component(i, x, c), Component(j, y, d)) =>
       i == j && i.definition.asInstanceOf[sirin.Component.Token[Any]].equality.same(x, y) && equality.same(c, d)
     case (Rows(x), Rows(y)) => x.size == y.size && x.zip(y).forall((p, q) => p._1 == q._1 && equality.same(p._2, q._2))
@@ -71,14 +79,31 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
   private def plain(view: View): View = view match
     case View.Decorated(inner, _) => plain(inner)
     case View.StackDecoration(inner, _) => plain(inner)
+    case View.TextDecoration(inner, _) => plain(inner)
+    case View.ButtonDecoration(inner, _) => plain(inner)
     case other => other
   private def keyOf(view: View, default: Any): Any = view match
     case View.Decorated(_, Decoration.Keyed(key)) => key
     case View.Decorated(inner, _) => keyOf(inner, default)
+    case View.ButtonDecoration(_, Decoration.Keyed(key)) => key
+    case View.ButtonDecoration(inner, _) => keyOf(inner, default)
+    case View.TextDecoration(_, Decoration.Keyed(key)) => key
+    case View.TextDecoration(inner, _) => keyOf(inner, default)
     case View.StackDecoration(_, Decoration.Keyed(key)) => key
     case View.StackDecoration(inner, _) => keyOf(inner, default)
     case _ => default
-  private def directDependencies(view: View): Vector[Signal[?]] = plain(view) match
+  private def styles(view: View): Vector[Decoration] = view match
+    case View.Decorated(inner, decoration) => styles(inner) :+ decoration
+    case View.StackDecoration(inner, decoration) => styles(inner) :+ decoration
+    case View.TextDecoration(inner, decoration) => styles(inner) :+ decoration
+    case View.ButtonDecoration(inner, decoration) => styles(inner) :+ decoration
+    case _ => Vector.empty
+  private def directDependencies(view: View): Vector[Signal[?]] =
+    styles(view).collect { case Decoration.Visible(signal) => signal } ++ leafDependencies(view)
+  private def leafDependencies(view: View): Vector[Signal[?]] = plain(view) match
+    case p: Button.Description => Vector(p.label,p.binding.enabled,p.binding.running)
+    case p: Text.Description => Vector(p.content)
+    case p: View.ScrollContent => directDependencies(p.content)
     case p: Component.Placement[?] => Vector(p.props)
     case p: ForEach.Description[?, ?] => Vector(p.items)
     case p: Switch.Plain[?] => Vector(p.value)
@@ -107,6 +132,10 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
   private def references(view: View): Vector[NodeRef] = view match
     case View.Decorated(inner, Decoration.Ref(ref)) => references(inner) :+ ref
     case View.Decorated(inner, _) => references(inner)
+    case View.ButtonDecoration(inner, Decoration.Ref(ref)) => references(inner) :+ ref
+    case View.ButtonDecoration(inner, _) => references(inner)
+    case View.TextDecoration(inner, Decoration.Ref(ref)) => references(inner) :+ ref
+    case View.TextDecoration(inner, _) => references(inner)
     case View.StackDecoration(inner, Decoration.Ref(ref)) => references(inner) :+ ref
     case View.StackDecoration(inner, _) => references(inner)
     case _ => Vector.empty
@@ -131,8 +160,15 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
       val view = provider.fold(lastView)(_(reader))
       if slot.exists(s => !sameKey(keyOf(view, position), key) || !s.accepts(plain(view))) then throw KernelError.DisposedScope
       view
-    def dependencies: Vector[Signal[?]] = slot.toVector.flatMap(_.dependencies)
-    def snapshot: MountedSnapshot = slot.fold[MountedSnapshot](MountedSnapshot.Empty)(_.snapshot)
+    def dependencies: Vector[Signal[?]] = directDependencies(lastView) ++ slot.toVector.flatMap(_.dependencies)
+    def snapshot: MountedSnapshot =
+      val value = slot.fold[MountedSnapshot](MountedSnapshot.Empty)(_.snapshot)
+      val decorations = styles(lastView).filter {
+        case Decoration.Keyed(_) | Decoration.Ref(_) => false
+        case _ => true
+      }
+      val styled=if decorations.isEmpty then value else MountedSnapshot.Styled(value, decorations)
+      references(lastView).foldLeft(styled)((child,ref) => MountedSnapshot.Referenced(runtime.docking.reference(ref).id,child))
     def retire()(using UiTxn): Unit = slot.foreach(_.scope.dispose())
     def sync(view: View, read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
       if !lastView.eq(view) then change(lastView)(v => lastView = v)(view)
@@ -147,6 +183,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
           case p: ForEach.Description[?, ?] => new RowsSlot(parent, p.asInstanceOf[ForEach.Description[Any, Any]], reader => requested(reader))
           case p: Switch.Plain[?] => new SwitchSlot(parent, p.asInstanceOf[Switch.Plain[Any]], None, reader => requested(reader))
           case p: Switch.Keyed[?, ?] => new SwitchSlot(parent, null, Some(p.asInstanceOf[Switch.Keyed[Any, Any]]), reader => requested(reader))
+          case p: View.ScrollContent => new ScrollSlot(parent, p)
           case p: View.Stack => new StackSlot(parent, p, reader => requested(reader))
           case p: DockOutlet.Description => new OutletSlot(parent, p)
           case p: RetainedPlacement => new PortalSlot(parent, p)
@@ -173,15 +210,32 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
   private final class LeafSlot(parent: runtime.OwnedScope, initial: View) extends Slot:
     val scope = parent.child("leaf")
     private var view = initial
-    def accepts(next: View): Boolean = next match
-      case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] => false
-      case _ => true
+    def accepts(next: View): Boolean =
+      if view.isInstanceOf[Button.Description] != next.isInstanceOf[Button.Description] then false
+      else next match
+        case _: View.ScrollContent => false
+        case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] => false
+        case _ => true
     def refresh(next: View): Boolean =
       if view.eq(next) then false
       else { change(view)(v => view = v)(next); true }
     def dependencies: Vector[Signal[?]] = Vector.empty
-    def snapshot: MountedSnapshot = if view eq View.Empty then MountedSnapshot.Empty else MountedSnapshot.Leaf(view)
+    def snapshot: MountedSnapshot = view match
+      case _: Button.Description => MountedSnapshot.Control(scope.id,view)
+      case _ => if view eq View.Empty then MountedSnapshot.Empty else MountedSnapshot.Leaf(view)
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = false
+
+  private final class ScrollSlot(parent: runtime.OwnedScope, initial: View.ScrollContent) extends Slot:
+    val scope = parent.child("scroll")
+    private var description = initial
+    private val child = new Holder(scope, 0)
+    def accepts(view: View): Boolean = view.isInstanceOf[View.ScrollContent]
+    def refresh(view: View): Boolean =
+      if description.eq(view) then false
+      else { change(description)(description = _)(view.asInstanceOf[View.ScrollContent]); true }
+    def dependencies: Vector[Signal[?]] = directDependencies(description.content) ++ child.dependencies
+    def snapshot: MountedSnapshot = MountedSnapshot.Scroll(scope.id, child.snapshot)
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = child.sync(description.content, read)
 
   private final class OutletSlot(parent: runtime.OwnedScope, initial: DockOutlet.Description) extends Slot:
     val scope = parent.child("outlet")
@@ -391,7 +445,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     def snapshot: MountedSnapshot = failure.fold[MountedSnapshot](metadata.fold[MountedSnapshot](MountedSnapshot.Empty) { value =>
       MountedSnapshot.VirtualRows(scope.id, value.revision, value.first, value.total,
         Lp(value.first.toDouble * description.rowHeight.toDouble),
-        Lp((value.total - value.first - value.entries.size).toDouble * description.rowHeight.toDouble), rows.snapshot)
+        Lp((value.total - value.first - value.entries.size).toDouble * description.rowHeight.toDouble), description.rowHeight, rows.snapshot)
     })(MountedSnapshot.Unavailable(_))
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
       var changed = rows.refresh(rowsDescription)
@@ -489,7 +543,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
       if description.eq(view) then false
       else { change(description)(v => description = v)(view.asInstanceOf[View.Stack]); true }
     def dependencies: Vector[Signal[?]] = description.children.flatMap(directDependencies) ++ children.flatMap(_._2.dependencies)
-    def snapshot: MountedSnapshot = MountedSnapshot.Group(children.map(_._2.snapshot))
+    def snapshot: MountedSnapshot = MountedSnapshot.Group(children.map(_._2.snapshot), description.horizontal, description.gap.getOrElse(Lp.zero), description.alignment.getOrElse(Alignment.Start))
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
       val keyed = description.children.zipWithIndex.map((view, index) => keyOf(view, index) -> view)
       duplicateKeys(keyed.map(_._1))

@@ -1,0 +1,39 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (19991 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1245 ms)
+[info] Discovered 2706 classes and 18451 methods after classloading
+[info] Checking intermediate code (quick) (91 ms)
+[info] Discovered 2665 classes and 14370 methods after optimization
+[info] Optimizing (debug mode) (1784 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6487 ms)
+[info] Compiling to native code (4877 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (133 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10446 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '51223'.
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=294125,275375,282625,278250,283541,283000,274958,273917,273500,274084
+synchronized-render-readback-ns=7341250,8488666,8545958,8555833,8586958,8594000,8597667,8668583,8724291,8873708
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 1.444s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 6 total 1.444s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 16 s, completed Oct 28, 2026, 10:08:00 a.m.

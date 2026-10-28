@@ -1,0 +1,26 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (19991 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Linking (multithreadingEnabled=detect) (1283 ms)
+[info] Discovered 2516 classes and 17177 methods after classloading
+[info] Checking intermediate code (quick) (80 ms)
+[info] Discovered 2437 classes and 13121 methods after optimization
+[info] Optimizing (debug mode) (1735 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6350 ms)
+[info] Compiling to native code (5077 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (123 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10213 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50988'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50991'.
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+sirin.render.OffscreenSuite: finished 0.076s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 1 total 0.076s
+[info] Passed: Total 1, Failed 0, Errors 0, Passed 1
+[success] Total time: 12 s, completed Oct 28, 2026, 10:04:39 a.m.

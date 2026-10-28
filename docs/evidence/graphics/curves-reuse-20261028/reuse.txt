@@ -1,0 +1,4 @@
+scale=1.0 cpu=PixelCacheStats(6,16220,9,6,4,2) gpu=GpuAssetStats(6,5,4194304,15296,15296,0) command-bytes=1248
+scale=1.25 cpu=PixelCacheStats(10,40241,20,10,8,2) gpu=GpuAssetStats(10,5,4194304,37904,37904,0) command-bytes=1248
+scale=1.5 cpu=PixelCacheStats(14,74394,31,14,12,2) gpu=GpuAssetStats(14,5,4194304,70048,70048,0) command-bytes=1248
+scale=2.0 cpu=PixelCacheStats(18,133180,42,18,16,2) gpu=GpuAssetStats(18,5,4194304,125376,125376,0) command-bytes=1248

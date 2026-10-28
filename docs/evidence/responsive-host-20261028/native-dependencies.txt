@@ -1,0 +1,6 @@
+desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib:
+	/private/tmp/sirin-responsive-20261028/desktop/target/native/libsirin_desktop.dylib (compatibility version 0.0.0, current version 0.0.0)
+	@rpath/libwgpu_native.dylib (compatibility version 0.0.0, current version 0.0.0)
+	@rpath/SDL3.framework/Versions/A/SDL3 (compatibility version 401.0.0, current version 401.18.0)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1800.101.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)

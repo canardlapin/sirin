@@ -1,0 +1,45 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (16742 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/text-native/target/scala-3.7.4/sirin-text-native-test' on port '57549'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/text-native/target/scala-3.7.4/sirin-text-native-test' on port '57551'.
+Test run sirin.graphics.text.NativeFontSuite started
+sirin.graphics.text.NativeFontSuite: finished 0.224s
+Test run sirin.graphics.text.NativeFontSuite finished: 0 failed, 0 ignored, 7 total 0.224s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 1 s, completed Oct 28, 2026, 7:56:23 a.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/unicode/target/scala-3.7.4/sirin-probe-unicode-test' on port '57553'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/unicode/target/scala-3.7.4/sirin-probe-unicode-test' on port '57556'.
+Test run sirin.graphics.unicode.BidiLineSuite started
+Test run sirin.graphics.unicode.UnicodeSuite started
+sirin.graphics.unicode.UnicodeSuite: finished 2.845s
+Test run sirin.graphics.unicode.UnicodeSuite finished: 0 failed, 0 ignored, 8 total 2.845s
+sirin.graphics.unicode.BidiLineSuite: finished 25.674s
+Test run sirin.graphics.unicode.BidiLineSuite finished: 0 failed, 0 ignored, 4 total 25.674s
+[info] Passed: Total 12, Failed 0, Errors 0, Passed 12
+[success] Total time: 26 s, completed Oct 28, 2026, 7:56:50 a.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '57578'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '57580'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '57582'.
+Test run sirin.graphics.text.EditingGeometrySuite startedTest run sirin.graphics.text.ParagraphSuite started
+
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '57583'.
+Test run sirin.graphics.text.WrappingSuite started
+Test run sirin.graphics.text.TextUiSuite started
+sirin.graphics.text.ParagraphSuite: finished 0.257s
+Test run sirin.graphics.text.ParagraphSuite finished: 0 failed, 0 ignored, 8 total 0.257s
+sirin.graphics.text.TextUiSuite: finished 0.285s
+Test run sirin.graphics.text.TextUiSuite finished: 0 failed, 0 ignored, 8 total 0.285s
+sirin.graphics.text.WrappingSuite: finished 0.327s
+Test run sirin.graphics.text.WrappingSuite finished: 0 failed, 0 ignored, 9 total 0.327s
+sirin.graphics.text.EditingGeometrySuite: finished 0.366s
+Test run sirin.graphics.text.EditingGeometrySuite finished: 0 failed, 0 ignored, 10 total 0.366s
+[info] Passed: Total 35, Failed 0, Errors 0, Passed 35
+[success] Total time: 1 s, completed Oct 28, 2026, 7:56:50 a.m.
+[success] Total time: 0 s, completed Oct 28, 2026, 7:56:51 a.m.

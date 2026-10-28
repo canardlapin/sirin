@@ -1,0 +1,73 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-host-validation-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-host-validation-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-host-validation-20261028/)
+[info] compiling 15 Scala sources to /private/tmp/sirin-host-validation-20261028/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-host-validation-20261028/text-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-host-validation-20261028/graphics-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources to /private/tmp/sirin-host-validation-20261028/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 12 Scala sources and 1 Java source to /private/tmp/sirin-host-validation-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources to /private/tmp/sirin-host-validation-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.242s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.253s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.17s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.17s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 1.036s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 1.036s
+[info] Passed: Total 4, Failed 0, Errors 0, Passed 4
+[success] Total time: 10 s, completed Oct 28, 2026, 10:52:58 a.m.
+[info] running (fork) sirin.desktop.WindowSpike failures
+[info] partialInitStage=1 liveWindows=0 liveRequests=0
+[info] partialInitStage=2 liveWindows=0 liveRequests=0
+[info] partialInitStage=3 liveWindows=0 liveRequests=0
+[info] partialInitStage=4 liveWindows=0 liveRequests=0
+[info] partialInitStage=5 liveWindows=0 liveRequests=0
+[info] partialInitStage=6 liveWindows=0 liveRequests=0
+[info] partialInitStage=7 liveWindows=0 liveRequests=0
+[info] partialInitStage=8 liveWindows=0 liveRequests=0
+[success] Total time: 1 s, completed Oct 28, 2026, 10:52:59 a.m.
+[info] running (fork) sirin.desktop.WindowSpike resize
+[info] idlePresents=0
+[info] ffmAbi=passed firstThread=true pixels=1280x800 presents=4 wakeups=2 workerWake=true
+[info] cleanShutdown=true liveWindows=0
+[success] Total time: 4 s, completed Oct 28, 2026, 10:53:04 a.m.
+[info] running (fork) sirin.desktop.DesktopWorkbench empty
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-host-validation-20261028/target/bg-jobs/sbt_391836fc/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] presented=1 generation=1 pixels=1200x720 worker=sirin-worker-0 renderMs=1678 tiles=60 programBytes=883248 readbackBytes=3502080 surfaceUploadBytes=3456000 feedbackPasses=1 capture=/private/tmp/sirin-host-validation-20261028/desktop/target/frames/frame-1.png
+[info] hostPresentations=1 viewportFeedbackPasses=1 nativeWakeFailures=0 driver=DriverSnapshot(2,4,32,0,0,0,0,None,34)
+[success] Total time: 5 s, completed Oct 28, 2026, 10:53:09 a.m.
+[info] running (fork) sirin.desktop.DesktopWorkbench scenario
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-host-validation-20261028/target/bg-jobs/sbt_391836fc/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] presented=1 generation=2 pixels=1200x720 worker=sirin-worker-1 renderMs=1194 tiles=60 programBytes=1271456 readbackBytes=3502080 surfaceUploadBytes=3456000 feedbackPasses=1 capture=/private/tmp/sirin-host-validation-20261028/desktop/target/frames/frame-2.png
+[info] presented=2 generation=4 pixels=1280x800 worker=sirin-worker-0 renderMs=1270 tiles=70 programBytes=1355824 readbackBytes=4096000 surfaceUploadBytes=4096000 feedbackPasses=2 capture=/private/tmp/sirin-host-validation-20261028/desktop/target/frames/frame-4.png
+[info] presented=3 generation=5 pixels=1280x800 worker=sirin-worker-1 renderMs=1114 tiles=70 programBytes=882480 readbackBytes=4096000 surfaceUploadBytes=4096000 feedbackPasses=3 capture=/private/tmp/sirin-host-validation-20261028/desktop/target/frames/frame-5.png
+[info] presented=4 generation=7 pixels=1280x800 worker=sirin-worker-1 renderMs=1179 tiles=70 programBytes=1513856 readbackBytes=4096000 surfaceUploadBytes=4096000 feedbackPasses=4 capture=/private/tmp/sirin-host-validation-20261028/desktop/target/frames/frame-7.png
+[info] hostPresentations=4 viewportFeedbackPasses=4 nativeWakeFailures=0 driver=DriverSnapshot(10,12,57,0,0,0,0,None,67)
+[success] Total time: 12 s, completed Oct 28, 2026, 10:53:21 a.m.

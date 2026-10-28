@@ -1,0 +1,8 @@
+5c04ca3654253962bb1296bf34241b424969fc042198c7243eeef8eb33d82177  desktop/target/package/Sirin.app/Contents/MacOS/Sirin
+3653d07cdc6e0b3f56d210bb1ce5b8af8ab7552e7b757ddc350d6541c2fbd45e  desktop/target/package/Sirin.app/Contents/app/Sirin.cfg
+3b2b7d6ced0065a6c91c778feb3aa90dbeb95069566e4069e3196736cdc0f380  desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib
+e5e50f3c36e9ce7ac50ccbc499c8299880e8fb8fee57bb3a7a2b890477ce8498  desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/release
+c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0  desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java
+1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1  desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar
+73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639  desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar
+8434546a973eb0bea4cbb2f8d185f9fdbd122a6231608c3a898dfd1a4aa15035  desktop/target/package/Sirin.app/Contents/app/sirin.jar

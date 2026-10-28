@@ -8,14 +8,17 @@ private[engine] final class RuntimeNodeRef(val runtime: HeadlessRuntime)(val own
   val content: Cell[MountedSnapshot] = owner.cell[MountedSnapshot](MountedSnapshot.Empty)(using MountedSnapshot.equality)
   var registered = true
   def alive: Boolean = registered && runtime.scopeAvailable(owner)
-  private def unsupported[A]: A = { if !registered then throw KernelError.DisposedScope; runtime.ensureScope(owner); throw KernelError.Deferred("focus/input routing") }
-  def focus()(using txn: UiTxn): Unit = runtime.capability(txn)(unsupported)
-  def hasFocus: Signal[Boolean] = unsupported
-  def containsFocus: Signal[Boolean] = unsupported
-  def part(id: PartId): SemanticTarget = SemanticTarget(this, Some(id))
-  def focusedPart: Signal[Option[PartId]] = unsupported
-  def focusPart(id: PartId)(using txn: UiTxn): Unit = runtime.capability(txn)(unsupported)
-  def focusRing: Signal[Boolean] = unsupported
+  val focused=owner.cell(false)
+  val containing=owner.cell(false)
+  val ring=owner.cell(false)
+  private def checked[A](body: => A): A = { if !registered then throw KernelError.DisposedScope;runtime.ensureScope(owner);body }
+  def focus()(using txn: UiTxn): Unit = runtime.capability(txn)(checked(runtime.docking.requestFocus(this)))
+  def hasFocus: Signal[Boolean] = checked(Inputs.from(focused))
+  def containsFocus: Signal[Boolean] = checked(Inputs.from(containing))
+  def part(id: PartId): SemanticTarget = checked(SemanticTarget(this, Some(id)))
+  def focusedPart: Signal[Option[PartId]] = checked(Signal.const(None))
+  def focusPart(id: PartId)(using txn: UiTxn): Unit = runtime.capability(txn)(checked(throw KernelError.Deferred("semantic part focus")))
+  def focusRing: Signal[Boolean] = checked(Inputs.from(ring))
 
 private[engine] final class RuntimePanel(val runtime: HeadlessRuntime)(val owner: runtime.OwnedScope,
     val key: GlobalKey, val content: MountedView) extends Reparentable:
@@ -32,6 +35,22 @@ private[engine] final class DockingRuntime(val runtime: HeadlessRuntime):
   private val claims = mutable.ArrayBuffer.empty[Attachment]
   private val requests = mutable.ArrayBuffer.empty[Request]
   private var published = Vector.empty[RefAttachment]
+  private var focusRequests=Vector.empty[Long]
+  def requestFocus(ref: RuntimeNodeRef): Unit =
+    val before=focusRequests;runtime.recordUndo(() => focusRequests=before)
+    require(focusRequests.size<256,"focus intent capacity")
+    focusRequests :+= ref.id
+  def takeFocusRequests(): Vector[Long] =
+    val attached=published.map(_.reference).toSet
+    val result=focusRequests.filter(id => attached(id) && refs.exists(r => r.alive && r.id==id))
+    focusRequests.filterNot(result.toSet).foreach(id => runtime.note(new IllegalStateException(s"unattached focus intent: $id")))
+    focusRequests=Vector.empty;result
+  def publishFocus(references: Set[Long],ancestors: Set[Long],keyboard: Boolean)(using UiTxn): Unit =
+    val attached=published.map(_.reference).toSet
+    refs.filter(_.alive).foreach { r =>
+      val focused=references(r.id) && attached(r.id)
+      r.focused.set(focused);r.containing.set((focused || ancestors(r.id)) && attached(r.id));r.ring.set(focused && keyboard)
+    }
   def dependencies: Vector[Signal[?]] = panels.filter(_.alive).map(_.content.snapshot).toVector
   def attachments: Vector[RefAttachment] = published
   private[engine] def candidateCount: Int = claims.size + requests.size
@@ -106,10 +125,14 @@ private[engine] final class DockingRuntime(val runtime: HeadlessRuntime):
             case _ => false
           } then { ref.content.set(next); changed = true }
     }
+    refs.filter(_.alive).filterNot(grouped.contains).foreach { ref =>
+      if ref.focused.get || ref.containing.get || ref.ring.get then
+        ref.focused.set(false);ref.containing.set(false);ref.ring.set(false);changed=true
+    }
     changed
   def commit(): Unit =
     published = claims.filter(c => c.ref.alive && runtime.scopeAvailable(c.scope)).map(c => RefAttachment(c.ref.id, c.scope.id, c.outlet)).distinct.toVector
     refs.filterInPlace(_.alive)
     panels.filterInPlace(_.alive)
     claims.clear(); requests.clear()
-  def clear(): Unit = { published = Vector.empty; refs.clear(); panels.clear(); claims.clear(); requests.clear() }
+  def clear(): Unit = { focusRequests=Vector.empty; published = Vector.empty; refs.clear(); panels.clear(); claims.clear(); requests.clear() }

@@ -4,7 +4,7 @@ target/
 .bloop/
 .idea/
 .DS_Store
-native/vendor/
+/native/vendor
 .mote/local/
 .mote/tmp/
 .mote/authority/
