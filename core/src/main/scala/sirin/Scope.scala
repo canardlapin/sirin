@@ -1,5 +1,5 @@
-// Public contracts. The headless host implements the cell/effect/lifetime subset;
-// node references, commands and other host services remain provisional.
+// Public contracts. The headless host implements cells, lifetimes, latest tasks
+// and commands through a controlled scheduler. Desktop services remain provisional.
 package sirin
 
 import scala.concurrent.duration.FiniteDuration

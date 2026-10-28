@@ -2,8 +2,9 @@
 
 The JVM/Native `HeadlessRuntime` implements transactions, static and dynamic
 signals, scoped ownership, observations, queued effects and keyed headless
-component reconciliation. Widget hosting, tasks, commands, channels and event
-streams are later stages. Calling those unsupported `Scope` methods raises `KernelError.Deferred`;
+component reconciliation, latest tasks and commands through a controlled scheduler.
+Widget hosting, real worker adapters, channels and event streams are later stages.
+Calling those unsupported `Scope` methods raises `KernelError.Deferred`;
 there are no successful placeholder implementations.
 
 ```scala
@@ -86,3 +87,54 @@ Equality for its lifetime.
 not virtualized realization or minimal change delivery. Collection changes and
 filtered-source revision streams remain deferred. See
 `docs/evidence/c1-reconciliation-20261027.md` for tests, review and limits.
+
+## Controlled tasks and commands
+
+`scope.latest(input)(work)` settles Pending with the final candidate input and
+reserves work only after structural stabilization. Equal/final-equal inputs launch
+nothing. LatestOnly suppresses obsolete results; Progressive can show an older
+result while newer work stays pending, and never regresses accepted generations.
+Input failure publishes Failed. Capacity waiting resumes when resources retire.
+
+The host owns a finite `scheduler` (default capacity 256), with explicit `tickets`,
+`run(id)` and `deliver(id)` controls. Work runs under a worker guard that forbids
+UI access even though this deterministic adapter uses the owner thread. This is
+not a threaded executor. Work is never run by a transaction or effect flush.
+
+```scala
+val host = new HeadlessRuntime(workCapacity = 8)
+val scope = host.scope("preview")
+val input = scope.cell(3)
+val preview = scope.latest(input)(n => Work(n * 2))
+val ticket = host.scheduler.tickets.head.id
+host.scheduler.run(ticket)     // execute captured work, record its outcome
+host.scheduler.deliver(ticket) // terminal bookkeeping, then UI reconciliation
+assert(host.read(preview) == Value.Ok(TaskState.Done(Completed(3, Outcome.Succeeded(6), true))))
+host.close()
+```
+
+Actions and asynchronous commands implement the accepted dispatch contracts:
+general/argument enablement, implicit refusal attempts, after-commit launch,
+independent concurrency and acceptance, per-command serial queues, and stable
+read-only status. `withArg` reads the staged argument again at dispatch. Failed
+enablement disables and reports. Same-command reentrant dispatch refuses.
+`running` includes serial waiters. Full queues/global capacity refuse explicitly.
+SnapshotAssociated passes the dispatch-time snapshot back to application code;
+monotonic saved-revision reconciliation remains an application responsibility.
+
+`Invocation.cancel` suppresses application completion. Cancellation is staged;
+refusal restores it. Soft Supersede cancellation still follows the acceptance
+policy. A cancelled executing serial slot remains occupied until work terminates
+and is delivered, even when work ignores cancellation. Queued cancellation may
+terminalize without execution. Every terminal handle receives data, including
+policy-suppressed outcomes, while lastResult records only accepted outcomes.
+Asynchronous `current` is the latest accepted dispatch at terminal delivery;
+synchronous actions are current at their immediate execution point.
+
+Terminal bookkeeping commits before the separate application completion transaction.
+A refused/defective completion cannot strand resources or retry work. If terminal
+bookkeeping itself fails (for example, a structural builder defect), the completed
+ticket remains available for redelivery without rerunning work. Owner disposal
+retires tickets and prevents delivery; disposing an observation alone leaves a
+workspace-owned job alive. Retained handles keep data, not worker resources.
+See `docs/evidence/c1-work-20261027.md` for qualification and remaining gates.

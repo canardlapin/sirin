@@ -1,4 +1,4 @@
-// Provisional A-0b skeleton: contracts and authoring shape, not an engine.
+// Work values and task policies. Progress channels remain a provisional contract.
 package sirin
 
 import scala.util.NotGiven
@@ -11,6 +11,7 @@ trait Cancellation:
   */
 opaque type Work[+O] = Cancellation => O
 object Work:
+  private[sirin] def execute[O](work: Work[O], cancellation: Cancellation): O = work(cancellation)
   def apply[O](body: Cancellation ?=> O)(using NotGiven[UiTxn]): Work[O] = c => body(using c)
 
 opaque type Capacity = Int

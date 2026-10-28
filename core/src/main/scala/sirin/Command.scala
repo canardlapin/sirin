@@ -1,4 +1,4 @@
-// Provisional A-0b skeleton: public shape only, not implemented.
+// Command contracts; executed by the bounded headless host.
 package sirin
 
 opaque type CommandId = String
@@ -26,6 +26,9 @@ trait CommandStatus[+R]:
   */
 trait Invocation[+R]:
   def observe(scope: Scope): Signal[Option[CommandResult[R]]]
+  /** Requests cancellation and suppresses application reconciliation. An executing
+    * serial job retains its slot until termination; external effects cannot be undone.
+    */
   def cancel()(using UiTxn): Unit
 
 enum Dispatched[+R]:
@@ -46,4 +49,13 @@ trait Command[-A, +R] extends CommandStatus[R]:
 object Command:
   extension [A, R](command: Command[A, R])
     /** Includes argument-specific enablement and rechecks it at dispatch. */
-    def withArg(arg: Signal[A]): Command[Unit, R] = ???
+    def withArg(arg: Signal[A]): Command[Unit, R] = new Command[Unit, R]:
+      def id: CommandId = command.id
+      def label: String = command.label
+      def policy: WorkPolicy = command.policy
+      def running: Signal[Int] = command.running
+      def lastResult: Signal[Option[CommandResult[R]]] = command.lastResult
+      def lastRefusal: Signal[Option[String]] = command.lastRefusal
+      val enabled: Signal[Boolean] = command.enabledFor(arg)
+      def enabledFor(unit: Signal[Unit]): Signal[Boolean] = unit.zip(enabled).map(_._2)
+      def dispatch(unit: Unit)(using UiTxn): Dispatched[R] = command.dispatch(arg.get)

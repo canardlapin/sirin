@@ -564,6 +564,51 @@ event watch for this path.
 | Bidi, segmentation, line breaking | **ICU4X through its C FFI** is the lead candidate. ICU4C remains an option. | Compare equivalent capabilities in **trimmed** deployments: ICU4X custom data against ICU4C filtered through its data build tool. Neither untrimmed size is a fair comparison. ICU4X C API coverage of segmenters and bidi is confirmed. |
 | Accessibility | AccessKit C bindings, with the semantic model owned in Scala | Attaching to SDL windows (NSView, HWND, AT-SPI). Which threads action callbacks run on. Behavior with real assistive technology. |
 
+**Controlled headless work.** C1.6a/C1.7 first use an explicit finite-capacity
+scheduler with separate execution and terminal delivery controls. Work runs under
+a worker guard without UI ownership, even in this deterministic owner-thread
+adapter. It is not qualification of a threaded executor or progress channels.
+Reservations, invocation handles, queue order, status, cancellation requests and starts
+participate in transaction rollback. Only successful outer publication exposes work.
+`running` counts all accepted nonterminal invocations, including serial waiters.
+Serial capacity counts waiting jobs beyond the executing slot. A cancelled executing
+job retains its serial slot until actual termination and terminal delivery; queued
+cancellation can terminate without executing. Explicit cancellation suppresses
+application reconciliation; soft supersession requests cancellation but leaves
+acceptance to the selected policy. Neither can undo external effects.
+
+Every terminal invocation exposes its outcome to its live explicit observers,
+including outcomes suppressed by acceptance. `current` means latest accepted
+dispatch generation at terminal delivery; refused dispatches do not advance it.
+Synchronous actions are current at their immediate execution point, even when
+multiple synchronous results publish together. Same-command reentrant dispatch
+refuses before invoking start, preserving command admission limits.
+LatestOnly suppresses stale application reconciliation and lastResult updates;
+Progressive accepts them marked stale; EveryInvocation and SnapshotAssociated
+preserve independent outcomes. Snapshot association and monotonic save markers
+remain explicit application code over captured S, which the kernel cannot inspect.
+Command status retains one accepted result and one refusal, not invocation history.
+Terminal bookkeeping commits before a separate owner-checked application completion
+transaction. Refusal/defect in that handler is reported without retaining the job,
+retrying work or blocking the serial queue. A failure of terminal bookkeeping
+itself retains the already-completed ticket for explicit redelivery; work is
+never executed twice. Synchronous actions execute in dispatch's
+implicit attempt and publish their terminal data only with the outer transaction.
+
+Input-driven latest bindings settle Pending/failure state with the candidate input
+and launch only after publication. Worker factories and reservations run once
+after the final structural fixed point; intermediate/final-equal structural
+inputs launch nothing. Equal commits and change-and-restore launch no
+work. Failed input publishes Failed and invalidates previous work. LatestOnly drops
+obsolete generations; Progressive can show a stale success while a newer input is
+pending, and never replaces a result with an older accepted generation. Stable input
+accepts its eventual current result while capacity is available. Capacity waiting
+keeps Pending without retaining a Work closure; successful retirement/disposal
+resumes waiting bindings without polling. Disposing the job
+owner retires scheduler resources and forbids delivery; disposing only an observing
+scope removes that observation. Retained invocation handles own terminal data, not
+worker resources or an unbounded set of disposed observer cells.
+
 ### 6.1 The foreign-function boundary *(revised after review)*
 
 - **A pointer-only C shim is the default, not a fallback.** Scala Native

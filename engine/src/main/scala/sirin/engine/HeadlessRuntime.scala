@@ -55,9 +55,9 @@ object HeadlessRuntime:
 
 /** Deterministic single-thread host. Graph edits settle privately between passes.
   * Scoped resources are owned until transactional disposal. Desktop hosting,
-  * component reconciliation, commands and native retirement are separate stages.
+  * native hosting, real worker adapters and GPU retirement are separate stages.
   */
-final class HeadlessRuntime(val settleBudget: Int = 100):
+final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256):
   require(settleBudget > 0, "positive settle pass budget required")
   private val owner = Thread.currentThread()
   private var closed = false
@@ -71,6 +71,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
   private val scopes = mutable.LinkedHashMap.empty[Long, OwnedScope]
   private val watches = mutable.ArrayBuffer.empty[Watch]
   private val mounts = mutable.ArrayBuffer.empty[MountedView]
+  private val workBindings = mutable.ArrayBuffer.empty[WorkBinding]
+  val scheduler = new ControlledScheduler(this, workCapacity)
   private final case class EffectJob(live: () => Boolean, run: () => CommitResult[Unit])
   private val effectQueue = mutable.Queue.empty[EffectJob]
   private val reported = mutable.ArrayBuffer.empty[Throwable]
@@ -217,6 +219,17 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
         finally HeadlessRuntime.phase.set(Some(p))
       case _ => body
 
+  private[engine] def control(): Unit = installation()
+  private[engine] def worker[A](body: => A): A = guarded(body)
+  private[engine] def currentTransaction: UiTxn = active.get
+  private[engine] def nextInvocationId(): Long = freshId()
+  private[engine] def note(error: Throwable): Unit = reported += error
+  private[engine] def ensureScope(scope: OwnedScope): Unit = checkScope(scope)
+  private[engine] def declare[A](scope: Scope)(body: OwnedScope => A): A = scope match
+    case s: HeadlessRuntime#OwnedScope if s.runtime eq this =>
+      val owned = s.asInstanceOf[OwnedScope]
+      construct(owned) { edit { _ => checkScope(owned); body(owned) } }
+    case _ => fail(KernelError.ForeignSignal)
   private[engine] def lawful[A](body: => A): A = guarded(body)
   private[engine] def capability[A](txn: UiTxn)(body: => A): A = transaction(txn).boundary(body)
   private[engine] def build[A](scope: OwnedScope)(body: => A): A =
@@ -254,6 +267,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
 
   final class OwnedScope private[HeadlessRuntime](val id: Long, val name: String,
       val parent: Option[OwnedScope], val identity: Option[ScopeIdentity]) extends Scope:
+    val runtime: HeadlessRuntime = HeadlessRuntime.this
     private[HeadlessRuntime] var live = true
     private[HeadlessRuntime] var generation = 0L
     private[HeadlessRuntime] val pins = mutable.LinkedHashSet.empty[Signal[?]]
@@ -323,12 +337,26 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     def ref(): NodeRef = deferred("node references")
     def on[A](event: Event[A])(run: A => Action): Unit = deferred("events")
     def debounce[A](signal: Signal[A], quiet: FiniteDuration): Signal[A] = deferred("deadlines")
-    def latest[I, O](input: Signal[I], policy: LatestPolicy)(work: I => Work[O]): Signal[TaskState[I, O]] = deferred("tasks")
+    def latest[I, O](input: Signal[I], policy: LatestPolicy)(work: I => Work[O]): Signal[TaskState[I, O]] = construct(this) { edit { t =>
+      checkScope(this)
+      val binding = new LatestRuntime(HeadlessRuntime.this)(this, input, policy, work)
+      workBindings += binding
+      t.undo += (() => workBindings -= binding)
+      binding.signal
+    } }
     def progress[P](delivery: Delivery, capacity: Capacity)(receive: P => Action): ProgressChannel[P] = deferred("channels")
-    def action[A](id: String, label: String, enabled: Signal[Boolean], enabledFor: Signal[A => Boolean])(run: A => Action): Command[A, Unit] = deferred("commands")
+    def action[A](id: String, label: String, enabled: Signal[Boolean], enabledFor: Signal[A => Boolean])(run: A => Action): Command[A, Unit] = construct(this) { edit { _ =>
+      checkScope(this)
+      val noWork = Work(())
+      new RuntimeCommand[A, Unit, Unit](HeadlessRuntime.this)(this, id, label, WorkPolicy.download,
+        _ => enabled, enabledFor, true)(arg => { run(arg); Job((), noWork) })((_, _) => ())
+    } }
     def command[A, S, R](id: String, label: String, policy: WorkPolicy,
         enabled: CommandStatus[R] => Signal[Boolean], enabledFor: Signal[A => Boolean])(
-        start: A => UiTxn ?=> Job[S, R])(complete: (S, CommandResult[R]) => Action): Command[A, R] = deferred("commands")
+        start: A => UiTxn ?=> Job[S, R])(complete: (S, CommandResult[R]) => Action): Command[A, R] = construct(this) { edit { _ =>
+      checkScope(this)
+      new RuntimeCommand[A, S, R](HeadlessRuntime.this)(this, id, label, policy, enabled, enabledFor, false)(start)(complete)
+    } }
     def animate(target: Signal[Double], transition: Transition): Presentation[Double] = deferred("animation")
     def reparent(key: GlobalKey, content: View): Reparentable = deferred("reparenting")
 
@@ -511,6 +539,10 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
             notifying = true
             try HeadlessRuntime.readOnly(this, true)(txn.after.foreach(callback => report(callback())))
             finally notifying = false
+            if scheduler.available && workBindings.exists(b => b.alive && b.pending) then
+              transact(()) match
+                case CommitResult.Failed(error) => reported += error
+                case _ => ()
           case _ => ()
         result
 
@@ -518,7 +550,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     (sources.iterator.filter(s => s.live && s.scope.forall(valid(_, disposed))).map(s => s: Signal[?]) ++
       roots.iterator ++ scopes.valuesIterator.filter(valid(_, disposed)).flatMap(_.pins) ++
       watches.iterator.filter(watchLive(_, disposed)).map(_.signal) ++
-      mounts.iterator.filter(m => mountedAvailable(m, disposed)).flatMap(_.dependencies)).toVector.distinct
+      mounts.iterator.filter(m => mountedAvailable(m, disposed)).flatMap(_.dependencies) ++
+      workBindings.iterator.filter(_.alive).flatMap(_.dependencies)).toVector.distinct
 
   /** Values and topology are copied. Only the final settled graph is installed. */
   private def settle(writes: collection.Map[Source[?], Any], disposed: Set[OwnedScope],
@@ -604,6 +637,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     nodes.clear(); nodes ++= graph
 
   private def publish(txn: Transaction): Vector[() => Unit] =
+    workBindings.foreach(_.begin())
     var candidate = settle(txn.writes, txn.disposals.toSet)
     var structuralPass = 0
     var changedStructure = true
@@ -615,7 +649,12 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
       mounts.toVector.filter(m => mountedAvailable(m, txn.disposals.toSet)).foreach { mount =>
         if mount.reconcile(read)(using txn) then changedStructure = true
       }
+      workBindings.toVector.filter(_.alive).foreach { binding =>
+        if binding.reconcile(read)(using txn) then changedStructure = true
+      }
       if changedStructure then candidate = settle(txn.writes, txn.disposals.toSet, candidate)
+    workBindings.toVector.filter(_.alive).foreach(_.prepare()(using txn))
+    candidate = settle(txn.writes, txn.disposals.toSet, candidate)
     val disposed = txn.disposals.toSet
     val revisions = txn.writes.iterator.collect {
       case (source, value) if source.committed && source.live && source.scope.forall(valid(_, disposed)) &&
@@ -634,6 +673,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     sources.foreach(_.committed = true)
     watches.filterInPlace(watchLive(_))
     mounts.filterInPlace(m => mountedAvailable(m))
+    workBindings.filterInPlace(_.alive)
     compactEffects()
     notifying = true
     try HeadlessRuntime.readOnly(this, true) {
@@ -666,7 +706,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     installation()
     val releases = scopes.values.toVector.reverse.flatMap(_.releases.toVector.reverse)
     scopes.values.foreach { s => s.live = false; s.generation += 1; s.releases.clear(); s.pins.clear() }
-    scopes.clear(); watches.clear(); mounts.clear(); effectQueue.clear(); roots.clear(); nodes.clear(); sources.clear()
+    scopes.clear(); watches.clear(); mounts.clear(); workBindings.clear(); scheduler.clear(); effectQueue.clear(); roots.clear(); nodes.clear(); sources.clear()
     // Keep ownership guards active during release, then invalidate the host.
     releases.foreach(release)
     closed = true
