@@ -21,8 +21,9 @@ changed and why.
 > commands become layout, interaction, accessibility, and GPU rendering
 > through explicit stages that can be inspected.
 
-Sirin is a desktop UI engine and standard toolkit for Scala Native. Scala owns
-the interface semantics: state propagation, component identity and lifetime,
+Sirin is a desktop UI engine and standard toolkit for Scala, with Native-first
+delivery and an intended JVM desktop shipping target. Scala owns the interface
+semantics: state propagation, component identity and lifetime,
 layout, input routing, text editing behavior, the accessibility model, scene
 construction, and rendering strategy. Native libraries supply the lower-level
 services: windows and events, GPU access, font shaping and rasterization,
@@ -60,6 +61,54 @@ and a comprehensive rich-text editor.
 **Claims we must earn rather than assume:** that Sirin is faster or uses less
 memory than GPUI. Clear semantics and useful diagnostics can be shown first;
 performance claims require published workloads.
+
+### 1.1 JVM usability and elegance bar
+
+**Owner direction (2026-10-27):** Sirin's JVM proposition must offer a clear,
+substantial usability and elegance advantage over ScalaFX. This is a product
+acceptance requirement. The advantage must be evident to an experienced Scala
+application developer building and maintaining realistic interfaces.
+
+One shared programming model should serve JVM and Scala Native applications.
+The JVM target lets applications retain their Java/Scala library ecosystem and
+development tools. Native-first describes delivery order; JVM desktop shipping
+requires its own host qualification. Today the JVM runs the executable headless
+kernel and tests; a working JVM desktop toolkit is still a target.
+
+The required advantage has two parts:
+
+- **Authoring and extension.** Idiomatic, readable Scala should make forms,
+  validation, editable keyed collections, asynchronous workflows and custom
+  interactive graphics straightforward to compose. State ownership, identity,
+  subscriptions, cancellation and resource lifetime must stay locally clear as
+  applications grow. Routine features should require little framework ceremony
+  or manual coordination. Reusable widgets and custom surfaces must compose
+  through public APIs, with the same quality as built-in controls. Changing a
+  feature should remain understandable without tracing framework internals.
+- **The resulting application.** Default controls and layout must produce a
+  polished, coherent interface with strong typography and predictable behavior.
+  Keyboard navigation, focus, text editing/IME, accessibility, display scaling
+  and responsiveness are part of usability. Ordinary desktop workflows must
+  meet the ScalaFX baseline; Sirin's improvements in composition, customization
+  and interaction must be apparent in the finished application.
+
+**Demonstration gate.** Implement matched Sirin and ScalaFX applications for a
+validated form, an editable collection retaining drafts through reorder, an
+asynchronous search/save workflow and a graphics-rich workspace. Pin the ScalaFX
+baseline and dependencies, and use the same behavior, data and interaction
+requirements. Compare complete working programs, including error handling,
+cleanup, testing and representative feature changes. Use competent ScalaFX
+implementations and document strengths, costs and missing capabilities on both
+sides. This is an earned comparison, not a claim of existing superiority.
+
+Review the source and operate the applications side by side. Assess how readily
+Scala developers can understand, extend, test and diagnose them, alongside visual
+and interaction quality. Record the concrete advantages and tradeoffs, including
+owner approval of the experience. Concise examples, fewer lines, novel syntax,
+Native packaging or passing kernel laws cannot by themselves meet this gate.
+If the advantage is ambiguous or depends on omitting ordinary application needs,
+revise the API, toolkit or tooling before claiming a compelling JVM alternative.
+Performance superiority requires separate measured workloads.
 
 ## 2. Position in the workspace
 
@@ -181,7 +230,9 @@ compile against skeletal interfaces:
 - there is no unnecessary framework context,
 - no subscription needs manual cleanup,
 - nothing remounts accidentally,
-- nothing uses privileged internals.
+- nothing uses privileged internals,
+- realistic authoring and feature changes meet the ScalaFX comparison bar (§1.1);
+  provisional APIs alone cannot establish that advantage.
 
 The first corpus and its review are in `examples/` (`examples/REVIEW.md`).
 The kernel owner's rulings on the semantic questions it raised are in
@@ -553,17 +604,6 @@ event watch for this path.
   and subscriptions, but not a workspace-scoped job the panel was only
   observing.
 
-## 6. Native stack (all choices validated in Stage 0)
-
-| Subsystem | Initial choice | Stage-0 risk to falsify |
-|---|---|---|
-| Windows, events, clipboard | SDL3 behind `PlatformShell` | IME quality: SDL's composition events compared with native `NSTextInputClient` and TSF. There is no native menu bar. Each gap gets a small per-OS adapter. |
-| GPU | `wgpu-native`, with a pinned release and pinned `webgpu.h` | Header and ABI churn (the `webgpu.h` standardization changed many signatures). Struct-by-value and callback ABI from Scala Native. |
-| Shaping | HarfBuzz | Low risk. |
-| Font loading, rasterization | FreeType for rasterization. Fallback discovery through CoreText, DirectWrite, or fontconfig. | Fallback lists differ per OS. Color emoji (COLR/CBDT/sbix). |
-| Bidi, segmentation, line breaking | **ICU4X through its C FFI** is the lead candidate. ICU4C remains an option. | Compare equivalent capabilities in **trimmed** deployments: ICU4X custom data against ICU4C filtered through its data build tool. Neither untrimmed size is a fair comparison. ICU4X C API coverage of segmenters and bidi is confirmed. |
-| Accessibility | AccessKit C bindings, with the semantic model owned in Scala | Attaching to SDL windows (NSView, HWND, AT-SPI). Which threads action callbacks run on. Behavior with real assistive technology. |
-
 **Controlled headless work.** C1.6a/C1.7 first use an explicit finite-capacity
 scheduler with separate execution and terminal delivery controls. Work runs under
 a worker guard without UI ownership, even in this deterministic owner-thread
@@ -608,6 +648,17 @@ resumes waiting bindings without polling. Disposing the job
 owner retires scheduler resources and forbids delivery; disposing only an observing
 scope removes that observation. Retained invocation handles own terminal data, not
 worker resources or an unbounded set of disposed observer cells.
+
+## 6. Native stack (all choices validated in Stage 0)
+
+| Subsystem | Initial choice | Stage-0 risk to falsify |
+|---|---|---|
+| Windows, events, clipboard | SDL3 behind `PlatformShell` | IME quality: SDL's composition events compared with native `NSTextInputClient` and TSF. There is no native menu bar. Each gap gets a small per-OS adapter. |
+| GPU | `wgpu-native`, with a pinned release and pinned `webgpu.h` | Header and ABI churn (the `webgpu.h` standardization changed many signatures). Struct-by-value and callback ABI from Scala Native. |
+| Shaping | HarfBuzz | Low risk. |
+| Font loading, rasterization | FreeType for rasterization. Fallback discovery through CoreText, DirectWrite, or fontconfig. | Fallback lists differ per OS. Color emoji (COLR/CBDT/sbix). |
+| Bidi, segmentation, line breaking | **ICU4X through its C FFI** is the lead candidate. ICU4C remains an option. | Compare equivalent capabilities in **trimmed** deployments: ICU4X custom data against ICU4C filtered through its data build tool. Neither untrimmed size is a fair comparison. ICU4X C API coverage of segmenters and bidi is confirmed. |
+| Accessibility | AccessKit C bindings, with the semantic model owned in Scala | Attaching to SDL windows (NSView, HWND, AT-SPI). Which threads action callbacks run on. Behavior with real assistive technology. |
 
 ### 6.1 The foreign-function boundary *(revised after review)*
 
@@ -817,15 +868,19 @@ reference implementation.
 ```text
 sirin-core      public types, View/Component, signals, commands, geometry, service interfaces
 sirin-engine    transactions, dependency graph, mounting, layout, input routing, semantics, scene prep
-sirin-desktop   PlatformShell (SDL3 + per-OS adapters), wgpu backend, text services, AccessKit (Native only)
+sirin-desktop   PlatformShell (SDL3 + per-OS adapters), wgpu backend, text services, AccessKit (host-specific adapters)
 sirin-widgets   behaviors + default design system (an ordinary client of core/engine)
 sirin-testkit   controlled scheduler, headless host, interaction drivers, reference evaluator, conformance
 sirin-tooling   inspector, traces, packaging helpers
 ```
 
 `sirin-core`, `sirin-engine`, `sirin-widgets`, and `sirin-testkit` are
-cross-built for the JVM and Native, with the JVM used for fast tests only.
-`sirin-desktop` is Native only. The engine must not depend on the widgets.
+cross-built for the JVM and Native. Current JVM execution is headless; desktop
+hosting ships Native-first, with an intended JVM shipping target (§1.1).
+`sirin-desktop` isolates the host adapters. JVM windowing, rendering, text,
+accessibility, resource retirement and packaging require separate implementation
+and behavioral qualification; cross-building the engine does not establish them.
+The engine must not depend on the widgets.
 
 There are three API surfaces with separate stability levels:
 
@@ -853,8 +908,12 @@ below is an **escalation threshold, not a target**.
 
 **Decision gate:** if an incremental edit-to-window cycle takes more than
 about 20 seconds, evaluate a **JVM development host**. It would bind the
-same native libraries through Panama FFM on JDK 25, and is a development
-aid, not a shipped target. On macOS it needs `-XstartOnFirstThread`. The
+same native libraries through Panama FFM on JDK 25 as an initial development
+milestone toward the JVM desktop target (§1.1). This binding approach is a
+proposal requiring qualification. A development host alone does not establish
+shipping support or satisfy the usability/elegance gate. The intended JVM product
+target stands independently of the Native iteration-time threshold. On macOS it
+needs `-XstartOnFirstThread`. The
 idea of generating both bindings from one description is deferred, because
 it is a project of its own. Even then, a shared binding description would
 not guarantee the same memory-lifetime or callback semantics on both hosts,
@@ -863,6 +922,11 @@ the platform interface stays independent of Scala Native from the start.
 Until then, the iteration story is restart with restored state.
 
 ## 11. Validation
+
+**Product acceptance.** The matched ScalaFX authoring and application comparison
+in §1.1 must demonstrate a clear usability and elegance advantage. Kernel laws,
+API compilation and visual regression tests are necessary evidence, but do not
+substitute for that comparison or owner approval of the actual experience.
 
 **Structural performance contracts** (testable now):
 
