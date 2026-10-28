@@ -1,0 +1,202 @@
+[
+  {
+    "path": "core/src/main/scala/sirin/App.scala",
+    "sha256": "8c41c90956194de97412031b5576539d661802919d95621c794fe2522c2b10ce"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Collection.scala",
+    "sha256": "8bcaf383d1c6fd60b24869e1a94dac60ec03a728507c279e195e7deecadb0f21"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Command.scala",
+    "sha256": "b9d73ca4f2bf913b5b91c1a69756695719b2e10932d38cb79e6f7d6947527176"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Component.scala",
+    "sha256": "190fdb805f5b25ed8799f54dc0791c3a0cf14916fcdec0c38f907cc3e82f438e"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Element.scala",
+    "sha256": "2a1e0b28a2dcd741ce07fa1341676b39c0d929c3c9519586b38eabfc61390df0"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Geometry.scala",
+    "sha256": "5ebd5f42d20dd5c721e195edcdb8e2ebcf58c3140d9f8dd739cc6b3bb275d9da"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Handle.scala",
+    "sha256": "00f74ba7c2ce1b3e1fa899f88d9cb3aad88efe5da373fb4da98dffe20d12feea"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Input.scala",
+    "sha256": "63abc88564ac2b86fadb25c789dd96db28ac7801f403a52207605203d7bf2fca"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Reactive.scala",
+    "sha256": "077cba9ebdfa2f0340d96aa018fccb59618de2c0de0ae542dd514569c4b6544d"
+  },
+  {
+    "path": "core/src/main/scala/sirin/SchemaId.scala",
+    "sha256": "ea808a1ffada20c8d5be604bf4387a5550c8db665671dd2f2926e7e82fac0e6e"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Scope.scala",
+    "sha256": "4b4196945dc394e42284e9b4aad9df9f010e0315ed56aaa43e7436cf17f7dc87"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Semantics.scala",
+    "sha256": "b660171f8730ca60a75497222f85a7731598703572c8ec83af7ec993e5b411ee"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Task.scala",
+    "sha256": "64d3409816350d856b1d5bc44c4ca6c31c4f5def25d26c4ab63747dee147c8a4"
+  },
+  {
+    "path": "core/src/main/scala/sirin/Theme.scala",
+    "sha256": "1efe0be2216c2b2b46b5ce825e80c1bbeeacbf2944d992e34141377b179c235a"
+  },
+  {
+    "path": "core/src/main/scala/sirin/View.scala",
+    "sha256": "ce1a34604c94e15489b882acbc8f6a66df87d56a95b4a8d26c5c8a47b018c296"
+  },
+  {
+    "path": "core/src/test/scala/sirin/AuthoringValuesSuite.scala",
+    "sha256": "759fb67c44a49e12ee553ea9aaa4313c667f388503f77564d03adc5833a64810"
+  },
+  {
+    "path": "core/src/test/scala/sirin/HandleSuite.scala",
+    "sha256": "6d5f6eaa46aed89917bfadf1974ed8c04863ed8e3c5a46bda4a5af5789d6fb9c"
+  },
+  {
+    "path": "core/src/test/scala/sirin/ViewRebuildSuite.scala",
+    "sha256": "e199bbd3c23b48a0bb5455224c876e3dfb7314b8de2fd7d70136c99a9e39e0e0"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/CommandRuntime.scala",
+    "sha256": "1d3c5eda6c072a473495987f111853bf34e668a77d8ba3ab775bb1ad20c81f36"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/ControlledScheduler.scala",
+    "sha256": "6187b7cad5271263bfe71c82b78cce183c15c7adf4d1ce835bef1b1b44e4ec1a"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/HeadlessRuntime.scala",
+    "sha256": "b189df5189a795855e04c7c6c2d38bad8c492352a143977444ad8eace274817c"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/LatestRuntime.scala",
+    "sha256": "cd56ec01e4aa29314ea7423bf4d1fc0a78b5d987ec43e13aaf46cff50ac9b01c"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/ProgressRuntime.scala",
+    "sha256": "d2d5da80d018ea406470b459d704ccb12476973dde31f69dca5924b3882ba655"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/Reconciliation.scala",
+    "sha256": "8f84e88b2efb118c4c5e90f279277cfecfd3532030ace188d234eccc2b01c8bc"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/SynchronousKeyedCell.scala",
+    "sha256": "fe8cad6726ae310cfb803c9c2658b291ab7bc9a588df8f2f3bcf558536e00421"
+  },
+  {
+    "path": "engine/src/main/scala/sirin/engine/WorkTransport.scala",
+    "sha256": "12a3437d8059437e6282a60ce16c356f77321e1fc93a947d0aee105c17487f27"
+  },
+  {
+    "path": "engine/src/test/scala/sirin/engine/ProgressWorkerSuite.scala",
+    "sha256": "1070d6f85230a805f55398259c657af565d1d86d4540b6b1514ff74fdb77b7c4"
+  },
+  {
+    "path": "engine/src/test/scala/sirin/engine/ReconciliationSuite.scala",
+    "sha256": "ff526635092cd72f8317e6ac9215ecab5703d439b166bc70a69a1c8198fd8ee1"
+  },
+  {
+    "path": "engine/src/test/scala/sirin/engine/TopologyLifetimeSuite.scala",
+    "sha256": "933fc33b4493f26be1c16cf2b6ef817d16a310e1f9d47ecd75c3aaf0cdff2f64"
+  },
+  {
+    "path": "engine/src/test/scala/sirin/engine/TransactionSuite.scala",
+    "sha256": "60a35b0f8af0bdf2f31985dd4ba2db6af2d9f8a35b770c47fcacbc6ba4ea8937"
+  },
+  {
+    "path": "engine/src/test/scala/sirin/engine/WorkCommandSuite.scala",
+    "sha256": "7a4af6d560b95e5224f39767b88fce719cb86526eb32df3084b8e68517ca8719"
+  },
+  {
+    "path": "testkit/src/main/scala/sirin/testkit/LatestModel.scala",
+    "sha256": "6a900a82e5b7a0d6d8646a0218b60295aa3edc2e9d34fe3a1409bcf40b2a71a2"
+  },
+  {
+    "path": "testkit/src/main/scala/sirin/testkit/LifetimeModel.scala",
+    "sha256": "51bca35bb3c953b94eff3503c81f610916475a92d0ab95b65b2ccc939ca301a1"
+  },
+  {
+    "path": "testkit/src/main/scala/sirin/testkit/ProgressModel.scala",
+    "sha256": "9395f90346f3b3578a622e11aa39b203d2c38281bd5ad4c11b1264460d10a21f"
+  },
+  {
+    "path": "testkit/src/main/scala/sirin/testkit/ReconciliationModel.scala",
+    "sha256": "370dd5318d3afbb1172116a922077b3e43eb22b491dcd273e172ba98584ef9d5"
+  },
+  {
+    "path": "testkit/src/main/scala/sirin/testkit/ReferenceModel.scala",
+    "sha256": "9606e733892529b2feb0dc5698c769608bab03596dd4f3af75f9303098a75d7d"
+  },
+  {
+    "path": "testkit/src/main/scala/sirin/testkit/WorkModel.scala",
+    "sha256": "01ea16a361f06ed13f663e1dbe96cee174b4735f2fb20eb60815d89b769301d1"
+  },
+  {
+    "path": "testkit/src/test/scala/sirin/testkit/LatestAgreementSuite.scala",
+    "sha256": "ea9ad8333ead81e3f299b462f559d63182c7b6228e2467893c108d368d67cbd5"
+  },
+  {
+    "path": "testkit/src/test/scala/sirin/testkit/LifetimeAgreementSuite.scala",
+    "sha256": "ad27658d4702e9daa9a598ab6081852567090e83904aa62d7a988df87a242cc0"
+  },
+  {
+    "path": "testkit/src/test/scala/sirin/testkit/ProgressAgreementSuite.scala",
+    "sha256": "3705b7bfd6c5c68560ffada32c154a3849a4d5c9be6528dc429fe5ff73332ed8"
+  },
+  {
+    "path": "testkit/src/test/scala/sirin/testkit/ReconciliationAgreementSuite.scala",
+    "sha256": "839fb5120bc1c4796f7277f317fdc7c9d3c3ee4b1134032590f843fab22074e7"
+  },
+  {
+    "path": "testkit/src/test/scala/sirin/testkit/ReferenceAgreementSuite.scala",
+    "sha256": "e87c45ec8205707828d9767af40925e3cb0a3abd1886a5284fadb7a5440be421"
+  },
+  {
+    "path": "testkit/src/test/scala/sirin/testkit/WorkAgreementSuite.scala",
+    "sha256": "6d78c87da78df396e283a6657102928e2865d6b258bdc4abbe02351d134b028d"
+  },
+  {
+    "path": "specimens/workbench/src/main/scala/sirin/specimen/RunWorkbench.scala",
+    "sha256": "a56b31a8f202a22e39670705070ee14f2e80a8144ba2a3bddf2c6db24683b730"
+  },
+  {
+    "path": "specimens/workbench/src/main/scala/sirin/specimen/Workbench.scala",
+    "sha256": "a288580f98f61425b0f9d9bfd7adc1598b822837ece17e045ba3411182e13a22"
+  },
+  {
+    "path": "specimens/workbench/src/test/scala/sirin/specimen/WorkbenchSuite.scala",
+    "sha256": "6b042b6feeea15eb92e15292eb522787f68db843280a19810d3ec39471e7c685"
+  },
+  {
+    "path": "specimens/scalafx-workbench/src/main/scala/sirin/comparison/Workbench.scala",
+    "sha256": "d4c91d8045ea283677e41d459d6ec66e938c0021f9c5cdc9d3fe85409d3d6005"
+  },
+  {
+    "path": "project/build.properties",
+    "sha256": "d24588794d56b7bda7e561d899310803eba64264d1cfa5570f7d63f33641e4a7"
+  },
+  {
+    "path": "project/plugins.sbt",
+    "sha256": "53ad72bdd39ab0bbac1feb8965884a7f54084aaa5e866c5370c84716a305afe8"
+  },
+  {
+    "path": "build.sbt",
+    "sha256": "61b5d57cf65cbb71fab13055d90bb98308b452fef23f7e4370e17b5b5e42d291"
+  }
+]

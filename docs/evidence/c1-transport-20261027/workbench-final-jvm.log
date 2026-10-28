@@ -1,0 +1,13 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (15114 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.WorkbenchSuite started
+sirin.specimen.WorkbenchSuite: finished 0.709s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 5 total 0.747s
+[info] Passed: Total 5, Failed 0, Errors 0, Passed 5
+[success] Total time: 10 s, completed Oct 27, 2026, 10:22:26 p.m.

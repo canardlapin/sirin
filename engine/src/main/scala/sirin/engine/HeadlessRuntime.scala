@@ -39,10 +39,27 @@ final case class LifetimeSnapshot(scopes: Set[Long], cells: Set[Long], nodes: In
     edges: Int, subscriptions: Int, pendingEffects: Int, mounts: Int = 0)
 
 object HeadlessRuntime:
-  private final class ReadPhase(val runtime: HeadlessRuntime, val notification: Boolean, val constructionRoot: Option[Long]):
+  private final class ReadPhase(val runtime: HeadlessRuntime, val notification: Boolean, val constructionRoot: Option[Long], val worker: Boolean = false):
     var failure: Option[Throwable] = None
   private val phase = new ThreadLocal[Option[ReadPhase]]:
     override def initialValue(): Option[ReadPhase] = None
+  private val transactions = new ThreadLocal[List[Throwable => Unit]]:
+    override def initialValue(): List[Throwable => Unit] = Nil
+  private[engine] def producerAccess(): Unit =
+    if phase.get().exists(p => !p.worker) || transactions.get().nonEmpty then
+      val error = KernelError.ReadOnlyPhase
+      phase.get().foreach(_.failure = Some(error))
+      transactions.get().headOption.foreach(_(error))
+      throw error
+  private[engine] def runWorker[A](body: => A): A =
+    val previous = phase.get()
+    val current = new ReadPhase(null, false, None, true)
+    phase.set(Some(current))
+    try
+      val value = body
+      current.failure.foreach(error => throw error)
+      value
+    finally phase.set(previous)
   private def readOnly[A](runtime: HeadlessRuntime, notification: Boolean, constructionRoot: Option[Long] = None)(body: => A): A =
     val previous = phase.get()
     val current = new ReadPhase(runtime, notification, constructionRoot)
@@ -60,6 +77,12 @@ object HeadlessRuntime:
 final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256):
   require(settleBudget > 0, "positive settle pass budget required")
   private val owner = Thread.currentThread()
+  private[engine] def ownerThread: Thread = owner
+  private[engine] val activity = new Activity
+  private var publishing = false
+  private var progressCursor = 0
+  private var preferProgress = true
+  private val progressBindings = mutable.ArrayBuffer.empty[ProgressBinding]
   private var closed = false
   private var notifying = false
   private var active: Option[Transaction] = None
@@ -129,7 +152,9 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     var initial = true
 
   private def checkOwner(): Unit =
-    if Thread.currentThread() ne owner then throw KernelError.WrongThread
+    if Thread.currentThread() ne owner then
+      HeadlessRuntime.phase.get().filter(_.worker).foreach(_.failure = Some(KernelError.WrongThread))
+      throw KernelError.WrongThread
     if closed then throw KernelError.Disposed
 
   private def fail(error: Throwable): Nothing =
@@ -152,6 +177,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     active match
       case Some(current) if current eq txn => current
       case _ => fail(KernelError.ExpiredTransaction)
+
+  private[engine] def reservationKey(txn: UiTxn): Object = transaction(txn).reservationKey
 
   private def valid(scope: OwnedScope, disposed: Set[OwnedScope] = Set.empty): Boolean =
     scope.live && !disposed(scope) && scope.parent.forall(valid(_, disposed))
@@ -220,7 +247,6 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       case _ => body
 
   private[engine] def control(): Unit = installation()
-  private[engine] def worker[A](body: => A): A = guarded(body)
   private[engine] def currentTransaction: UiTxn = active.get
   private[engine] def nextInvocationId(): Long = freshId()
   private[engine] def note(error: Throwable): Unit = reported += error
@@ -344,7 +370,14 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       t.undo += (() => workBindings -= binding)
       binding.signal
     } }
-    def progress[P](delivery: Delivery, capacity: Capacity)(receive: P => Action): ProgressChannel[P] = deferred("channels")
+    def progress[P](delivery: Delivery, capacity: Capacity)(receive: P => Action): ProgressChannel[P] = construct(this) { edit { t =>
+      checkScope(this)
+      val binding = new RuntimeProgress(HeadlessRuntime.this)(this, delivery, capacity, receive)
+      progressBindings += binding
+      if publishing then binding.freeze()
+      t.undo += (() => { progressBindings -= binding; binding.dispose() })
+      binding
+    } }
     def action[A](id: String, label: String, enabled: Signal[Boolean], enabledFor: Signal[A => Boolean])(run: A => Action): Command[A, Unit] = construct(this) { edit { _ =>
       checkScope(this)
       val noWork = Work(())
@@ -426,6 +459,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   def afterCommit(callback: () => Unit)(using txn: UiTxn): Unit = transaction(txn).boundary { active.get.after += callback }
 
   private final class Transaction extends UiTxn:
+    val reservationKey = new Object
     val writes = mutable.LinkedHashMap.empty[Source[?], Any]
     val after = mutable.ArrayBuffer.empty[() => Unit]
     val memo = mutable.HashMap.empty[Signal[?], Value[Any]]
@@ -517,6 +551,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
           case NonFatal(error) => CommitResult.Failed(error)
       case None =>
         val txn = new Transaction
+        val previousGuards = HeadlessRuntime.transactions.get()
+        HeadlessRuntime.transactions.set((error => if txn.poison.isEmpty then txn.poison = Some(error)) :: previousGuards)
         active = Some(txn)
         var result: CommitResult[A] = null
         var releases = Vector.empty[() => Unit]
@@ -533,6 +569,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
         finally
           if !result.isInstanceOf[CommitResult.Committed[?]] then txn.rollback(0)
           active = None
+          HeadlessRuntime.transactions.set(previousGuards)
         result match
           case CommitResult.Committed(_) =>
             releases.foreach(release)
@@ -637,6 +674,15 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     nodes.clear(); nodes ++= graph
 
   private def publish(txn: Transaction): Vector[() => Unit] =
+    publishing = true
+    progressBindings.foreach(_.freeze())
+    try publishCandidate(txn)
+    finally
+      publishing = false
+      progressBindings.foreach(_.thaw())
+
+  private def publishCandidate(txn: Transaction): Vector[() => Unit] =
+    progressBindings.foreach(_.prepare()(using txn))
     workBindings.foreach(_.begin())
     var candidate = settle(txn.writes, txn.disposals.toSet)
     var structuralPass = 0
@@ -674,6 +720,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     watches.filterInPlace(watchLive(_))
     mounts.filterInPlace(m => mountedAvailable(m))
     workBindings.filterInPlace(_.alive)
+    progressBindings.foreach(_.commit())
+    progressBindings.filterInPlace(_.alive)
     compactEffects()
     notifying = true
     try HeadlessRuntime.readOnly(this, true) {
@@ -702,8 +750,51 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
         count += 1
     EffectDrain(count, effectQueue.count(_.live()), errors.result())
 
+  def progressQueues: Vector[ProgressQueueSnapshot] =
+    control()
+    progressBindings.filter(_.alive).map(_.snapshot).toVector
+
+  def drainProgress(budget: Int = 100): ProgressDrain =
+    control()
+    require(budget > 0, "positive progress delivery budget required")
+    var delivered = 0
+    var blocked = false
+    val failures = Vector.newBuilder[CommitResult[Unit]]
+    while delivered < budget && !blocked do
+      val bindings = progressBindings.toVector
+      val start = if bindings.isEmpty then 0 else Math.floorMod(progressCursor, bindings.size)
+      val next = (bindings.drop(start) ++ bindings.take(start)).find(_.canDrain)
+      next.foreach(b => progressCursor = bindings.indexOf(b) + 1)
+      next match
+        case None => blocked = true
+        case Some(binding) => binding.drainOne() match
+          case Some(CommitResult.Committed(_)) => delivered += 1
+          case Some(result) => failures += result; blocked = true
+          case None => blocked = true
+    ProgressDrain(delivered, progressBindings.filter(_.alive).map(_.snapshot.pending).sum, failures.result())
+
+  def pump(budget: Int = 100): WorkPump =
+    control()
+    require(budget > 0, "positive pump budget required")
+    val hasCompletions = scheduler.hasCompletions
+    val progressBudget = if !hasCompletions then budget else if budget > 1 then budget / 2 else
+      preferProgress = !preferProgress
+      if preferProgress then 1 else 0
+    val progress = if progressBudget > 0 then drainProgress(progressBudget)
+      else ProgressDrain(0, progressBindings.filter(_.alive).map(_.snapshot.pending).sum, Vector.empty)
+    WorkPump(progress, scheduler.drain(math.max(0, budget - progress.delivered)))
+
+  def awaitActivity(timeoutMillis: Long): Boolean =
+    control()
+    require(timeoutMillis >= 0 && timeoutMillis <= 60000, "activity wait must be bounded to 60 seconds")
+    val stamp = activity.stamp
+    if progressBindings.exists(_.canDrain) || scheduler.hasCompletions then true
+    else activity.awaitAfter(stamp, timeoutMillis)
+
   def close(): Unit =
     installation()
+    progressBindings.foreach(_.dispose())
+    progressBindings.clear()
     val releases = scopes.values.toVector.reverse.flatMap(_.releases.toVector.reverse)
     scopes.values.foreach { s => s.live = false; s.generation += 1; s.releases.clear(); s.pins.clear() }
     scopes.clear(); watches.clear(); mounts.clear(); workBindings.clear(); scheduler.clear(); effectQueue.clear(); roots.clear(); nodes.clear(); sources.clear()

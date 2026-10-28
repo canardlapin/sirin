@@ -146,6 +146,22 @@ lazy val root = project
   .settings(publish / skip := true)
 
 // Named per-platform test commands; CI calls these rather than relying on `+test`.
-addCommandAlias("testJVM", "; coreJVM/test; engineJVM/test; testkitJVM/test")
-addCommandAlias("testNative", "; coreNative/test; engineNative/test; testkitNative/test")
+addCommandAlias("testJVM", "; coreJVM/test; engineJVM/test; testkitJVM/test; workbenchJVM/test")
+addCommandAlias("testNative", "; coreNative/test; engineNative/test; testkitNative/test; workbenchNative/test")
 addCommandAlias("testAll", "; testJVM; testNative")
+
+// Executable public-API behaviour specimen; no desktop renderer required.
+lazy val workbench = crossProject(JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("specimens/workbench"))
+  .dependsOn(engine)
+  .settings(name := "sirin-workbench-specimen", publish / skip := true, testDeps)
+
+// Competent JavaFX-backed authoring baseline; compile explicitly with JDK 25+.
+lazy val scalafxWorkbench = project
+  .in(file("specimens/scalafx-workbench"))
+  .settings(
+    name := "sirin-scalafx-comparison",
+    publish / skip := true,
+    libraryDependencies += "org.scalafx" %% "scalafx" % "26.0.0-R38"
+  )

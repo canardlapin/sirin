@@ -1,0 +1,42 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (15114 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.WorkbenchSuite started
+==> X sirin.specimen.WorkbenchSuite.public application runs on real workers with bounded import and saved snapshot 0.339s munit.ComparisonFailException: specimens/workbench/src/test/scala/sirin/specimen/WorkbenchSuite.scala:11
+10:  test("public application runs on real workers with bounded import and saved snapshot") {
+11:    assertEquals(trace(), Vector("search=Result: sirin", "imported=6 rows=8", "dirty=false channel=Drained"))
+12:  }
+values are not the same
+=> Obtained
+Vector(
+  "search=Result: sirin",
+  "imported=6 rows=8",
+  "dirty=true channel=Drained"
+)
+=> Diff (- expected, + obtained)
+   "imported=6 rows=8",
+-  "dirty=false channel=Drained"
++  "dirty=true channel=Drained"
+ )
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.specimen.WorkbenchSuite.$init$$$anonfun$1(WorkbenchSuite.scala:11)
+==> X sirin.specimen.WorkbenchSuite.saving an older revision leaves later edits dirty 5.038s munit.FailException: specimens/workbench/src/test/scala/sirin/specimen/WorkbenchSuite.scala:48 assertion failed
+47:      accepted(host.transact { model.document.set("one"); model.save.dispatch(()) })
+48:      assert(entered.await(5, TimeUnit.SECONDS))
+49:      accepted(host.transact { model.document.set("two") })
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.specimen.WorkbenchSuite.$init$$$anonfun$3(WorkbenchSuite.scala:48)
+sirin.specimen.WorkbenchSuite: finished 5.546s
+Test run sirin.specimen.WorkbenchSuite finished: 2 failed, 0 ignored, 4 total 5.577s
+[error] Failed: Total 4, Failed 2, Errors 0, Passed 2
+[error] Failed tests:
+[error] 	sirin.specimen.WorkbenchSuite
+[error] (workbenchJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 15 s, completed Oct 27, 2026, 10:15:47 p.m.

@@ -1,4 +1,4 @@
-// Work values and task policies. Progress channels remain a provisional contract.
+// Work values, task policies and scoped bounded progress contracts.
 package sirin
 
 import scala.util.NotGiven

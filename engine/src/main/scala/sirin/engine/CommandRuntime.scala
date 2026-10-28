@@ -136,7 +136,7 @@ private[engine] final class RuntimeCommand[A, S, R](val runtime: HeadlessRuntime
           case Concurrency.RefuseWhileRunning => UiTxn.require(entries.isEmpty, "command busy")
           case Concurrency.Serial(capacity) => UiTxn.require(entries.size < capacity.value + 1L, "command queue full")
           case _ => ()
-        UiTxn.require(runtime.scheduler.available, "work capacity full")
+        UiTxn.require(runtime.scheduler.available, runtime.scheduler.refusal.getOrElse("work capacity full"))
       starting = true
       val job = try start(arg) finally starting = false
       val stamp = nextGeneration()

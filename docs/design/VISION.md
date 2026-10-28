@@ -607,7 +607,8 @@ event watch for this path.
 **Controlled headless work.** C1.6a/C1.7 first use an explicit finite-capacity
 scheduler with separate execution and terminal delivery controls. Work runs under
 a worker guard without UI ownership, even in this deterministic owner-thread
-adapter. It is not qualification of a threaded executor or progress channels.
+adapter. The real-worker/progress extension below shares these semantics; neither
+adapter alone qualifies a desktop host.
 Reservations, invocation handles, queue order, status, cancellation requests and starts
 participate in transaction rollback. Only successful outer publication exposes work.
 `running` counts all accepted nonterminal invocations, including serial waiters.
@@ -648,6 +649,46 @@ resumes waiting bindings without polling. Disposing the job
 owner retires scheduler resources and forbids delivery; disposing only an observing
 scope removes that observation. Retained invocation handles own terminal data, not
 worker resources or an unbounded set of disposed observer cells.
+
+**Bounded progress and worker transport.** The headless host may attach one
+fixed pool of Scala-created threads. It shares command scheduling/acceptance with
+the controlled adapter; workers receive only captured Work and cancellation tokens.
+Synchronized queues publish jobs/outcomes and bound physical admission separately
+from logical ticket ownership. Disposal cancels/detaches running jobs and removes
+queued ones; late detached results are discarded. A saturated physical queue leaves
+accepted tickets pending for retry, never silently loses them. Shutdown requests
+stop without joining on the UI owner; an explicit bounded await reports unfinished
+workers. An executing serial slot is never released by a cancellation request.
+
+Progress producers operate on synchronized, finite queues. Ordered and CompleteStream
+both preserve accepted order in this first transport. CoalesceLatest may replace a
+committed, unleased tail; an uncommitted UI reservation is an ordering/capacity
+barrier. UI offers reserve individual entries transactionally. Undo restores only
+that reservation or replaced tail and preserves independently accepted worker offers.
+Reservation identities contain no transaction/host reference and are cleared on
+commit with replacement history. Releasing a receiver lease on rollback wakes
+producers whose coalescing capacity becomes available.
+During publication, a short locked operation freezes each queue; candidate evaluation
+and user code run without transport locks. Frozen queues accept no producer offers
+until publication commits or rolls back. tryEmit reports Full during this barrier;
+blocking emit waits off the UI owner. New channels stay unpublished until commit.
+ChannelState, committed UI reservations, consumption and close/cancel intents publish
+together. A receiver refusal/defect retains the accepted head for explicit retry;
+one drain stops on that failure and reports it rather than retrying indefinitely.
+
+Runtime cancellation tokens register race-safe wakeups for blocked producers and
+remove them on exit. Arbitrary user Cancellation implementations have only a flag;
+those use a bounded worker-only wait/recheck fallback. Channel cancellation/disposal
+wakes all producers. Work, receiver callbacks and cancellation listeners never run
+under queue/pool locks. The UI owner explicitly pumps progress and completed work;
+a pump budgets progress and terminal delivery fairly, and terminal delivery can
+precede remaining progress. Separate completion controls can also deliver first. Terminal completion does not imply channels have drained;
+applications choose graceful close or explicit abandonment. A wakeable activity wait
+supports bounded headless driving without a polling loop. The executable
+`specimens/workbench` exercises this public API on JVM and Native; its compiled
+ScalaFX controller counterpart is preliminary authoring evidence, not interactive
+qualification of the §1.1 bar. Foreign C producers remain
+a separate pointer-only shim integration; they never enter these Scala endpoints.
 
 ## 6. Native stack (all choices validated in Stage 0)
 
