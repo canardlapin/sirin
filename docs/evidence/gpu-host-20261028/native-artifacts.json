@@ -1,0 +1,26 @@
+{
+  "wgpu-macos-aarch64/lib/libwgpu_native.dylib": {
+    "sha256": "e72e8f1777dd0315bfee91c6b7e7b105234d5c1cc1621db4cf92ffee2ac2ae32",
+    "bytes": 6933424
+  },
+  "SDL3.xcframework/macos-arm64_x86_64/SDL3.framework/Versions/A/SDL3": {
+    "sha256": "626285366f11d66a70912cc767f00330b985e618b696aee1cfe0ca2f41357f4c",
+    "bytes": 5230304
+  },
+  "text/lib/libharfbuzz.a": {
+    "sha256": "7a21b090347472453cacdfde4b00ae235b97b306525ea203526bc463ed9b380e",
+    "bytes": 2116008
+  },
+  "text/lib/libfreetype.a": {
+    "sha256": "35bd8260dc52e27d3ebbfb0fc5d069436865d41386206944b2de53de92d1e40c",
+    "bytes": 931256
+  },
+  "unicode/libicu4x_probe.a": {
+    "sha256": "7e3192c97bd3df6b66b24993addad67ef82d3ecb00ceb5569110e8b3a4f22de4",
+    "bytes": 9879864
+  },
+  "thorvg/install/lib/libthorvg-1.a": {
+    "sha256": "286beea96f3e5a72549005823d638fb08855e412aaa26592c5f708b953c8168a",
+    "bytes": 424488
+  }
+}

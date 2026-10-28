@@ -1,0 +1,23 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+startup mainToFirstPresentMs=3706.488917 windowSetupMs=934.595916 renderSessionSetupMs=93.863833
+presented=1 generation=2 renderMs=1181.625667 uploadBytes=172030 readbackBytes=0 pixels=1200x720 feedback=1 focus=None
+inputToPresent phase=measured kind=action ms=182.222
+presented=2 generation=4 renderMs=117.9455 uploadBytes=17728 readbackBytes=0 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+inputToPresent phase=measured kind=action ms=190.905875
+presented=3 generation=5 renderMs=173.40725 uploadBytes=6688 readbackBytes=0 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+presented=4 generation=6 renderMs=152.418541 uploadBytes=29792 readbackBytes=0 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 68)))
+inputToPresent phase=measured kind=action ms=570.1265
+presented=5 generation=7 renderMs=559.28075 uploadBytes=144640 readbackBytes=0 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 68)))
+presented=6 generation=8 renderMs=136.285125 uploadBytes=33872 readbackBytes=0 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(scroll, 88)))
+inputToPresent phase=measured kind=scroll ms=391.613916
+presented=7 generation=10 renderMs=370.874917 uploadBytes=149032 readbackBytes=0 pixels=1200x720 feedback=2 focus=Some(NodeId(Vector(scroll, 88)))
+presented=8 generation=12 renderMs=451.215667 uploadBytes=165344 readbackBytes=0 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(scroll, 88)))
+presented=9 generation=13 renderMs=571.092375 uploadBytes=170132 readbackBytes=0 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(scroll, 88)))
+presented=10 generation=14 renderMs=104.852542 uploadBytes=41088 readbackBytes=0 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(control, 143)))
+inputToPresent phase=measured kind=action ms=39.036791
+presented=11 generation=15 renderMs=21.185417 uploadBytes=3152 readbackBytes=0 pixels=1280x800 feedback=3 focus=Some(NodeId(Vector(control, 143)))
+hostPresentations=11 feedbackPasses=3 nativeWakeFailures=0 driver=DriverSnapshot(1,2,65,0,0,0,0,None,66)
+renderSession shaped=48 GPU=BatchGpuStats(0,26214400,115248,29466,788784,2145,0,356,352) CPU=BatchCacheStats(256,10368,104,58932,195,19708,104,0) tiles=entries=71 pixels=1040384 hits=350 misses=352

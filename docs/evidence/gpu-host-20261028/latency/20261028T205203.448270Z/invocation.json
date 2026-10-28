@@ -1,0 +1,13 @@
+{
+  "kind": "qualification",
+  "package_sha256": {
+    "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+    "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "0bc147848f30c4e3b1a661e81f6c718a5580bc686b49e7ddc5d670468246fd86",
+    "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+    "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639",
+    "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "a4feee35e3c3f2012b51193460a091e78c2d95cb928569dfb91288ea0c537ba7"
+  },
+  "quiet_preflight_passed": false,
+  "status": "not_run",
+  "qualified": false
+}

@@ -98,3 +98,15 @@ rendering semantics. Shipping requires a clearly better authoring experience
 than ScalaFX while meeting the visible interaction, quality and tooling bar.
 If that advantage is ambiguous, revise the API and repeat the matched tasks;
 do not weaken the product requirement or declare superiority from compilation.
+
+## Retained GPU integration checkpoint
+
+The isolated `codex/retained-gpu-host-20261028` candidate consolidates the newer
+batch renderer with the responsive host and presents retained tile textures on
+one shared device/instance. It preserves input/focus and Work policies. See the
+[contract](2026-10-28-gpu-host.md) and
+[evidence](../evidence/gpu-host-20261028/README.md). Four-scale integration pixels,
+retirement/cancellation/resize, actual packaged-window controls and 735 Scala
+cases passed. The final diagnostic meets frozen action/scroll percentiles, but
+quiet qualification remains open after the one refused preflight. Editing, IME,
+accessibility and full visual approval remain separate gates.

@@ -68,6 +68,7 @@ object Calls:
   private val linker = Linker.nativeLinker()
   private val handles = scala.collection.mutable.Map.empty[(String, Option[MemoryLayout], Vector[MemoryLayout]), MethodHandle]
   private def layout(value: Any): MemoryLayout = value match
+    case null => ValueLayout.ADDRESS
     case _: Ptr[?] => ValueLayout.ADDRESS
     case _: Int => ValueLayout.JAVA_INT
     case _: Double => ValueLayout.JAVA_DOUBLE
@@ -78,6 +79,7 @@ object Calls:
     val handle = handles.synchronized { handles.getOrElseUpdate((name, result, types),
       linker.downcallHandle(library.find(name).orElseThrow(), result.fold(FunctionDescriptor.ofVoid(types*))(r => FunctionDescriptor.of(r, types*)))) }
     handle.invokeWithArguments(args.map {
+      case null => MemorySegment.NULL
       case p: Ptr[?] => p.raw: AnyRef
       case other => other.asInstanceOf[AnyRef]
     }.asJava)

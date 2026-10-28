@@ -64,12 +64,13 @@ static void *await_request(WGPUInstance instance, Request *r) {
   request_release(r);
   return result;
 }
+void bgpu_close(void *raw);
 typedef struct Desktop {
   SDL_Window *window; SDL_MetalView metal;
   WGPUInstance instance; WGPUSurface surface; WGPUAdapter adapter;
   WGPUDevice device; WGPUQueue queue; WGPURenderPipeline blit; WGPUTextureFormat format;
   uint32_t width, height, wake_type, window_id;
-  pthread_t owner; int configured, copy_dst;
+  pthread_t owner; int configured, copy_dst; void *batch;
 } Desktop;
 static _Atomic int live_windows;
 int sirin_desktop_fault(int stage) {
@@ -93,6 +94,7 @@ static void destroy(Desktop *d) {
   if (d->blit) wgpuRenderPipelineRelease(d->blit);
   if (d->queue) wgpuQueueRelease(d->queue);
   if (d->device) wgpuDeviceRelease(d->device);
+  if (d->batch) bgpu_close(d->batch);
   if (d->adapter) wgpuAdapterRelease(d->adapter);
   if (d->surface) wgpuSurfaceRelease(d->surface);
   if (d->instance) wgpuInstanceRelease(d->instance);
@@ -361,3 +363,38 @@ int sirin_desktop_gpu_batch(void **raw,int count,unsigned char *out) {
   }
   wgpuCommandBufferRelease(command);wgpuCommandEncoderRelease(encoder);map_release(m);return ok?0:5;
 }
+
+// Isolated implementation namespace; exported pointer-only batch ABI is unchanged.
+#define release desktop_batch_release
+#define message desktop_batch_message
+#define adapter_cb desktop_batch_adapter_cb
+#define device_cb desktop_batch_device_cb
+#define error_cb desktop_batch_error_cb
+#define await desktop_batch_await
+#define Mapping desktop_batch_Mapping
+#define map_release desktop_batch_map_release
+#define mapped desktop_batch_mapped
+#define readback desktop_batch_readback
+#define texture(...) desktop_batch_texture(__VA_ARGS__)
+#define buffer(...) desktop_batch_buffer(__VA_ARGS__)
+#define pipeline(...) desktop_batch_pipeline(__VA_ARGS__)
+#define program_free desktop_batch_program_free
+#define pass desktop_batch_pass
+#include "../../probes/render/src/main/resources/scala-native/sirin_batch.c"
+#undef release
+#undef message
+#undef adapter_cb
+#undef device_cb
+#undef error_cb
+#undef await
+#undef Mapping
+#undef map_release
+#undef mapped
+#undef readback
+#undef texture
+#undef buffer
+#undef pipeline
+#undef pass
+#undef program_free
+
+#include "gpu_frames.c"

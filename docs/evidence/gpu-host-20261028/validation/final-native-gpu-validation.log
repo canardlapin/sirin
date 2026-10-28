@@ -1,0 +1,60 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2331 ms)
+[info] Discovered 3502 classes and 21837 methods after classloading
+[info] Checking intermediate code (quick) (137 ms)
+[info] Discovered 3470 classes and 17134 methods after optimization
+[info] Optimizing (debug mode) (2907 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (7915 ms)
+[info] Compiling to native code (5620 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (180 ms)
+[info] Postprocessing (0 ms)
+[info] Total (14320 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '55419'.
+Test run sirin.render.StrokeGradientSuite started
+sirin.render.StrokeGradientSuite: finished 2.232s
+Test run sirin.render.StrokeGradientSuite finished: 0 failed, 0 ignored, 5 total 2.232s
+Test run sirin.render.CurvesReuseSuite started
+sirin.render.CurvesReuseSuite: finished 8.298s
+Test run sirin.render.CurvesReuseSuite finished: 0 failed, 0 ignored, 6 total 8.298s
+Test run sirin.graphics.RebasedGradientSuite started
+sirin.graphics.RebasedGradientSuite: finished 0.202s
+Test run sirin.graphics.RebasedGradientSuite finished: 0 failed, 0 ignored, 1 total 0.202s
+Test run sirin.render.BatchSuite started
+batch-adapter=Apple M2 Pro
+comparison=curves-layers-1.0 checked=3072 excluded=0 worstByteError=0
+comparison=curves-layers-1.25 checked=4800 excluded=0 worstByteError=0
+comparison=curves-layers-1.5 checked=6910 excluded=2 worstByteError=0
+comparison=curves-layers-2.0 checked=12288 excluded=0 worstByteError=0
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=0
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=0
+comparison=textures-text-1.5 checked=6775 excluded=137 worstByteError=0
+comparison=textures-text-2.0 checked=12253 excluded=35 worstByteError=0
+sirin.render.BatchSuite: finished 4.676s
+Test run sirin.render.BatchSuite finished: 0 failed, 0 ignored, 13 total 4.676s
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=1159708,573416,301875,285916,378750,270875,1414875,640000,333833,3241792
+synchronized-render-readback-ns=8412042,8514792,8602291,8798125,9157500,9718666,9818334,9994500,10569166,10620875
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 2.219s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 8 total 2.219s
+[info] Passed: Total 33, Failed 0, Errors 0, Passed 33
+[success] Total time: 37 s, completed Oct 28, 2026, 4:57:06 p.m.

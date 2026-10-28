@@ -40,6 +40,17 @@ object TiledRenderer:
     bounds(Vector(Point(x,y),Point(x+r.width,y),Point(x+r.width,y+r.height),Point(x,y+r.height)).map(matrix.apply))
       .map(b => Rect(b.x-2,b.y-2,b.width+4,b.height+4))
   }
+  private[sirin] def withoutEmptyMasks(d: PreparedDrawing,hasInk: (ResolvedFont,Int,Double) => Boolean): PreparedDrawing =
+    val commands=d.commands.flatMap {
+      case PreparedCommand.Glyphs(run,origin,color,matrix,clips) =>
+        val scale=PixelProgram.glyphScale(matrix)
+        val glyphs=run.glyphs.filter(g => g.ink.nonEmpty || (scale>0 && hasInk(run.font,g.id,scale)))
+        if glyphs.isEmpty then Vector.empty else
+          val subset=new ShapedRun(run.source,run.font,run.options,glyphs,run.range,run.context)
+          Vector(PreparedCommand.Glyphs(subset,origin,color,matrix,clips))
+      case command => Vector(command)
+    }
+    new PreparedDrawing(d.source,d.target,d.capabilities,commands,d.resources,d.visitedCommands,d.preparedPoints)
   def tile(drawing: PreparedDrawing,area: Rect): PreparedDrawing =
     val move=Affine.translation(-area.x,-area.y)
     val commands=drawing.commands.flatMap {
@@ -96,17 +107,6 @@ final class TileCache(gpu: OffscreenGpu,rasterize: (ResolvedFont,Int,Double,Int)
   var hits=0L;var misses=0L
   private def check(): Unit=require(Thread.currentThread() eq owner,"tile cache thread mismatch")
   def stats: TileCacheStats={check();TileCacheStats(entries.size,reservedPixels,entries.count(_.program.nonEmpty),used)}
-  private def stripEmptyMasks(d: PreparedDrawing): PreparedDrawing =
-    val commands=d.commands.flatMap {
-      case PreparedCommand.Glyphs(run,origin,color,matrix,clips) =>
-        val scale=PixelProgram.glyphScale(matrix)
-        val glyphs=run.glyphs.filter(g => g.ink.nonEmpty || (scale>0 && rasterize(run.font,g.id,scale,2097152).byteSize>0))
-        if glyphs.isEmpty then Vector.empty else
-          val subset=new ShapedRun(run.source,run.font,run.options,glyphs,run.range,run.context)
-          Vector(PreparedCommand.Glyphs(subset,origin,color,matrix,clips))
-      case command => Vector(command)
-    }
-    new PreparedDrawing(d.source,d.target,d.capabilities,commands,d.resources,d.visitedCommands,d.preparedPoints)
   private def key(d: PreparedDrawing): Vector[Any] = d.commands.map {
     case PreparedCommand.Glyphs(run,origin,color,matrix,clips) => (run.font,run.glyphs,origin,color,matrix,clips)
     case other => other
@@ -155,7 +155,8 @@ final class TileCache(gpu: OffscreenGpu,rasterize: (ResolvedFont,Int,Double,Int)
       if cancelled() then throw new InterruptedException("obsolete tiled frame")
       val position=(x,y)
       val preparedAt=System.nanoTime()
-      val prepared=stripEmptyMasks(TiledRenderer.tile(drawing,Rect(x,y,math.min(chunk,width-x),math.min(chunk,height-y))))
+      val prepared=TiledRenderer.withoutEmptyMasks(TiledRenderer.tile(drawing,Rect(x,y,math.min(chunk,width-x),math.min(chunk,height-y))),
+        (font,id,scale) => rasterize(font,id,scale,2097152).byteSize>0)
       val signature=key(prepared)
       preparationNanos+=System.nanoTime()-preparedAt
       variants.get(position).flatMap(_.find(e => e.signature==signature && e.image.nonEmpty)) match

@@ -104,10 +104,23 @@ it is not adopted. The [offscreen evidence](../evidence/graphics/2026-10-28-offs
 records pixel oracles, copy paths, format restrictions, timings and open gates.
 The bounded continuation adds path-space polyline strokes (caps/joins/dashes),
 transformed linear-light gradients and explicit retained GPU program owners.
-Curved strokes, glyph gradients, cross-program atlases and production hosting
-remain open. See [the continuation receipt](../evidence/graphics/2026-10-28-strokes-gradients.md).
+The following slice admits bounded quadratic/cubic normal ribbons and gradient
+glyph masks, then adds a confined decode/raster LRU and pinned shared GPU vec4
+arena across independent drawings. Stationary cusps, production texture atlases
+and production hosting remain open. See
+[the curves/reuse receipt](../evidence/graphics/2026-10-28-curves-reuse.md). See [the continuation receipt](../evidence/graphics/2026-10-28-strokes-gradients.md).
 
-This advances parts of G-0/G-1 only. No gate or full capability row is complete.
+The next implementation slice freezes a 320x180 standalone corpus and numeric
+quality/resource/timing budgets in
+[the batch contract](../evidence/graphics/batch-20261028/contract.json).
+It adds bounded CPU winding/clip tessellation, ordered GPU triangle batches,
+translation-normalized shared geometry and pinned R8 glyph/RGBA image texture
+cells. The reference interpreter remains the pixel oracle; the new owner is
+separate from the concurrently developed host. Measurement and acceptance are
+recorded in the tranche receipt. Fixed cells, two isolated layers and explicit
+work/target bounds are admission limits, not production/browser qualification.
+
+This advances parts of G-0/G-1 and the G-2 nucleus. No gate or full capability row is complete.
 Production rendering/preparation, full text/fallback services, image formats/decoding/streaming updates,
 remaining geometry/paint operations,
 general authoring corpus, full renderer comparison/backend decision and UI hosting remain open. A
@@ -387,3 +400,15 @@ The first deliverables are the general drawing/recording contract and corpus,
 then the nucleus and bounded renderer comparison, followed by full capability
 and host qualification. Intaglio Native portability and adapter recording tests
 can proceed independently, joining the consumer acceptance track when ready.
+
+The bounded triangle/texture tranche now has
+[measured four-scale evidence](../evidence/graphics/2026-10-28-batch.md), including
+full 320x180 corpus pixel comparisons and cold/warm/resource budgets. Production
+packing, mounted host acceptance and the full G-1/G-2 exit remain open.
+
+The subsequent [retained GPU host candidate](2026-10-28-gpu-host.md) consolidates
+the batch and responsive-host checkpoints, presents shared-device immutable tile
+textures directly, and verifies four-scale integration pixels and bounded
+retirement. Its final diagnostic meets the frozen latency targets, but the
+quiet qualification remains open. This advances the mounted host integration;
+it does not close G-1/G-2 or the complete browser-class inventory.

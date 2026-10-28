@@ -23,6 +23,8 @@ public final class NativeWindow implements AutoCloseable {
     private static final MethodHandle RESIZE = bind("sirin_desktop_resize", JAVA_INT, ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle CLEAR = bind("sirin_desktop_clear", JAVA_INT, ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle PIXELS = bind("sirin_desktop_pixels", JAVA_INT, ADDRESS, ADDRESS, JAVA_INT, JAVA_INT);
+    private static final MethodHandle BATCH = bind("sirin_desktop_batch_start",JAVA_INT,ADDRESS,ADDRESS,ADDRESS,ADDRESS);
+    private static final MethodHandle GPU = bind("sirin_desktop_frame_present",JAVA_INT,ADDRESS,ADDRESS);
     private static final MethodHandle LIVE = bind("sirin_desktop_live", JAVA_INT);
     private static final MethodHandle LATE = bind("sirin_desktop_late",JAVA_INT);
     private static final MethodHandle LATE_OBJECTS = bind("sirin_desktop_late_objects",JAVA_INT);
@@ -141,6 +143,24 @@ public final class NativeWindow implements AutoCloseable {
             if (result < 0) throw new IllegalStateException("surface pixel upload unsupported or failed");
             return result != 0;
         } catch (Throwable e) { throw failure(e); }
+    }
+    /** Main prepares an independently referenced renderer handle for one worker. */
+    public MemorySegment prepareRenderer(String shader) {
+        checkOwner();
+        try (Arena a = Arena.ofConfined()) {
+            MemorySegment out=a.allocate(ADDRESS),error=a.allocate(512);
+            int status=(int)BATCH.invokeExact(handle,a.allocateFrom(shader),out,error);
+            if(status!=0)throw new IllegalStateException("batch renderer: "+error.getString(0));
+            return out.get(ADDRESS,0);
+        } catch(Throwable e){throw failure(e);}
+    }
+    public boolean presentGpu(MemorySegment packet) {
+        checkOwner();
+        try {
+            int result=(int)GPU.invokeExact(handle,packet);
+            if(result<0)throw new IllegalStateException("GPU frame presentation failed");
+            return result!=0;
+        } catch(Throwable e){throw failure(e);}
     }
     @Override public synchronized void close() {
         if (closed) return;

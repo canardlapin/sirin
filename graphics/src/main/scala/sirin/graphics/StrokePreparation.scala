@@ -145,4 +145,35 @@ private[graphics] object StrokePreparation:
         fragments.foreach(p => stroke(p,closed && p.size>1 && p.head.a==p.last.b))
     val contours=StrokeCurves.flatten(path,style,density,tolerance,maxPoints,maxDepth)
     contours.foreach { case Contour(pieces,closed) => contour(pieces,closed) }
-    Path(polygons.toVector.flatMap(p => Vector(PathSegment.MoveTo(p.head))++p.tail.map(PathSegment.LineTo.apply):+PathSegment.Close))
+    // Remove exact opposite edges before storing the prepared path. Ribbon
+    // diagonals and shared interfaces contribute zero winding. Extracting
+    // closed walks from the remaining balanced graph preserves the winding
+    // function, including self-intersections and multiple contour windings.
+    val net=scala.collection.mutable.LinkedHashMap.empty[(Point,Point),Int]
+    polygons.foreach { ps => ps.zip(ps.drop(1):+ps.head).foreach { (a,b) =>
+      if a!=b then
+        val reverse=(b,a)
+        net.get(reverse) match
+          case Some(1) => net.remove(reverse)
+          case Some(n) => net(reverse)=n-1
+          case None => val edge=(a,b);net(edge)=net.getOrElse(edge,0)+1
+    }}
+    val outgoing=scala.collection.mutable.LinkedHashMap.empty[Point,ArrayBuffer[Point]]
+    net.foreach { case ((a,b),count) =>
+      val next=outgoing.getOrElseUpdate(a,ArrayBuffer.empty[Point])
+      for _ <- 0 until count do next+=b
+    }
+    val segments=ArrayBuffer.empty[PathSegment]
+    while outgoing.nonEmpty do
+      val start=outgoing.head._1
+      segments+=PathSegment.MoveTo(start)
+      var current=start;var closed=false
+      while !closed do
+        val next=outgoing.getOrElse(current,throw new IllegalArgumentException("unbalanced stroke boundary"))
+        val end=next.remove(next.size-1)
+        if next.isEmpty then outgoing.remove(current)
+        current=end
+        if current==start then {segments+=PathSegment.Close;closed=true}
+        else segments+=PathSegment.LineTo(current)
+        require(segments.size<=maxPoints,"stroke boundary point budget")
+    Path(segments.toVector)

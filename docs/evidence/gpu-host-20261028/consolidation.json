@@ -1,0 +1,28 @@
+{
+  "host_base": "f4acc6c",
+  "graphics_from": "/Users/bbuchsbaum/code/scala/sirin",
+  "copied": {
+    "graphics/README.md": "1c0afe752ddc4e1bce74021461267ef90a69c410f6eb71657d7364b4a51b1505",
+    "graphics/src/main/scala/sirin/graphics/StrokePreparation.scala": "0bc1cefc3424d79e9dbcb5ef858c881939daa713af02c8e3cf15d69edfa2172d",
+    "graphics/src/test/scala/sirin/graphics/StrokeBoundarySuite.scala": "3365f01ae5aa9fb0aa28b233cf65ddf07115ed11f434f93cc9f6371ed8ca8ad1",
+    "probes/render/README.md": "547c16d24581e18fac0fe1debb5509b87c2ab44a6c20304435cdec9416f17ef4",
+    "probes/render/src/main/resources/batch.wgsl": "6a6975ebf2abb6113339aa30e25f3b4755b6d5bbce449a0e3e0177ceac6a5eb9",
+    "probes/render/src/main/resources/scala-native/sirin_batch.c": "93608557de58f90c8c0688b56e566dba46ced4c1463d12cbe66ce244a9a78049",
+    "probes/render/src/test/scala/sirin/render/BatchSuite.scala": "c3b74fbe775578c597be7cbfd297c91f36ee72a925ec2c0e0e9e5a7d72672e5e",
+    "docs/plans/2026-10-27-graphics-api.md": "596bea094b9ab2233d74dc552fdd429b7008390ddf83838e2b0dea98de92bd72",
+    "docs/plans/2026-10-27-graphics-resources.md": "267c8ace535bd562af6681bbb9dad5b80a46c9d73c411ecc546aab500d4947d7",
+    "docs/evidence/graphics/2026-10-28-batch.md": "dd040a25925b47526b73669845f047e9fa5ae9a19c2c570afb931a88de73abfc",
+    "probes/render/src/main/scala/sirin/render/BatchOracle.scala": "efb889e694018e7ee67a0b5b70b15f4ad30791e231b09ef13a45ebff49f2d2f2",
+    "probes/render/src/main/scala/sirin/render/BatchProgram.scala": "dbc41536381ab12fa37423fc600531af1d3ad7dd0cec25c77fdb15df42379a71",
+    "probes/render/src/main/scala/sirin/render/BatchGpu.scala": "95f9ae0c3797816e68e1777585dc3d3ae2038f245b62baa2b56678849748442d",
+    "probes/render/src/main/scala/sirin/render/BatchBenchmark.scala": "7d3ff176a9a49b747320f986cd7aa81fa4582a1ccaa49fe65b1bd7bd43e13a76"
+  },
+  "preserved_host_files": [
+    "PixelProgram.scala",
+    "sirin_gpu.c",
+    "desktop",
+    "host",
+    "engine"
+  ],
+  "prior_graphics_contract_sha256": "9036581d266e355cb7abb30f0a2cadd582fde2bd62e10a386d162c64e0e46093"
+}

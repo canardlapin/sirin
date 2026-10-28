@@ -1,0 +1,12 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+startup mainToFirstPresentMs=1875.019583 windowSetupMs=323.968708 renderSessionSetupMs=23.280417
+presented=1 generation=2 renderMs=424.976167 uploadBytes=172030 readbackBytes=0 pixels=1200x720 feedback=1 focus=None
+presented=2 generation=3 renderMs=19.771916 uploadBytes=0 readbackBytes=0 pixels=1200x720 feedback=1 focus=None
+2026-10-28 17:03:22.839 Sirin[112:262044470] +[IMKClient subclass]: chose IMKClient_Modern
+inputToPresent phase=measured kind=action ms=86.660917
+presented=3 generation=5 renderMs=28.52975 uploadBytes=6688 readbackBytes=0 pixels=1200x720 feedback=1 focus=Some(NodeId(Vector(control, 79)))
+hostPresentations=3 feedbackPasses=1 nativeWakeFailures=0 driver=DriverSnapshot(1,2,42,0,0,0,0,None,43)
+renderSession shaped=20 GPU=BatchGpuStats(0,26214400,22704,28158,145584,217,0,352,17) CPU=BatchCacheStats(256,9936,100,56316,0,11626,100,0) tiles=entries=66 pixels=962304 hits=174 misses=66

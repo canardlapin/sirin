@@ -1,0 +1,14 @@
+status=failed
+samplesComplete=true
+targetsMet=false
+expectedGeometry=600x360logical/1200x720physical
+observedGeometry=600x360logical/1200x720physical
+geometryStable=true
+geometryChecks=1212
+steps=240
+warmups=40
+measured=200
+mainToFirstPresentationNs=1218846208
+windowSetupNs=216907417
+renderSessionSetupNs=34867459
+failure=java.lang.IllegalArgumentException: requirement failed: frozen warmed latency targets missed; receipt retained

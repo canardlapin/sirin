@@ -12,9 +12,14 @@ import sirin.text.ResolvedTextLayout
 sealed trait FrameOutput:
   def request: FrameRequest
   def layout: LayoutResult
+  def close(): Unit=()
 final case class LayoutFeedback(request: FrameRequest,layout: LayoutResult) extends FrameOutput
 final case class RenderedFrame(request: FrameRequest, layout: LayoutResult, pixels: ImageSnapshot,
-    programBytes: Long, readbackBytes: Long, maskBytes: Long, workerNanos: Long, worker: String, tiles: Int, capture: Path,profile: String="",queueNanos: Long=0,sessionSetupNanos: Long=0) extends FrameOutput
+    programBytes: Long, readbackBytes: Long, maskBytes: Long, workerNanos: Long, worker: String, tiles: Int, capture: Path,profile: String="",queueNanos: Long=0,sessionSetupNanos: Long=0,gpuFrame: Option[sirin.render.GpuFrame]=None) extends FrameOutput:
+  def width: Int=gpuFrame.fold(pixels.width)(_.width)
+  def height: Int=gpuFrame.fold(pixels.height)(_.height)
+  def present(window: NativeWindow): Boolean=gpuFrame.fold(window.present(pixels.pixelsCopy,pixels.width,pixels.height))(_.present(window))
+  override def close(): Unit=gpuFrame.foreach(_.close())
 
 object DevelopmentTheme extends Theme:
   def reducedMotion: Boolean = true
@@ -30,7 +35,7 @@ trait RenderBackend extends AutoCloseable:
   def stats: String
 
 /** Long-lived native ownership stays entirely on its dedicated Scala-created thread. */
-final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128) extends RenderBackend:
+final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,batch: Option[sirin.render.BatchGpu]=None) extends RenderBackend:
   require(tileEdge>=32 && tileEdge<=192,"tile edge budget")
   private val unicode=NativeUnicode.open()
   private val faces=scala.collection.mutable.Map.empty[TextStyle,Vector[NativeFont]]
@@ -40,10 +45,13 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128) ex
   private var maskBytes=0L
   private lazy val bytes=Vector("NotoSans-Regular.ttf","NotoSansHebrew-Regular.ttf","NotoNaskhArabic-Regular.ttf","NotoSansDevanagari-Regular.ttf")
     .map(name => FontData.copy(Files.readAllBytes(fontRoot.resolve(name))))
-  private val gpu=try OffscreenGpu.open() catch case e: Throwable => {unicode.close();throw e}
-  private val tiles=new sirin.graphics.desktop.TileCache(gpu,raster,tileEdge,32,24L*1024*1024,onImageEvicted=image => composite.invalidateSource(image))
-  private val composite=new sirin.graphics.desktop.TileCache(gpu,raster,tileEdge,32,24L*1024*1024)
+  private lazy val gpu=try OffscreenGpu.open() catch case e: Throwable => {unicode.close();throw e}
+  private lazy val tiles=new sirin.graphics.desktop.TileCache(gpu,raster,tileEdge,32,24L*1024*1024,onImageEvicted=image => composite.invalidateSource(image))
+  private lazy val composite=new sirin.graphics.desktop.TileCache(gpu,raster,tileEdge,32,24L*1024*1024)
   private var previousBase=Option.empty[(FramePayload,LayoutResult,sirin.graphics.RenderTarget)]
+  private lazy val gpuTiles=new sirin.graphics.desktop.GpuTileCache(batch.get,tileEdge)
+  private var gpuBase=Option.empty[(FramePayload,LayoutResult,sirin.graphics.PreparedDrawing)]
+  private var gpuDrawing=Option.empty[(FramePayload,LayoutResult,sirin.graphics.PreparedDrawing)]
   var shaped=0L
   private def configured(style: TextStyle): Vector[NativeFont] = faces.getOrElseUpdate(style, {
     val size=style match
@@ -70,6 +78,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128) ex
         require(mask.byteSize<=16L*1024*1024,"session mask budget")
         masks(key)=mask;maskBytes+=mask.byteSize;mask
   def render(request: FrameRequest,cancelled: () => Boolean): FrameOutput =
+    if batch.nonEmpty then return renderGpu(request,cancelled)
     val began=System.nanoTime()
     def check(): Unit = if cancelled() then throw new InterruptedException("obsolete frame")
     check()
@@ -119,14 +128,67 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128) ex
     val capture=captureRoot.resolve(s"frame-${request.generation}.png")
     if java.lang.Boolean.getBoolean("sirin.capture") then FrameWorker.save(result.image,capture)
     RenderedFrame(request,layout,result.image,result.programBytes,result.readbackBytes,result.maskBytes,System.nanoTime()-began,Thread.currentThread().getName,result.tiles,capture,s"layoutMs=${layoutNanos/1e6} drawingMs=${drawingNanos/1e6} base[$baseProfile] overlay[${composite.lastProfile}]")
-  def stats: String = s"shaped=$shaped tileHits=${tiles.hits} tileMisses=${tiles.misses} baseCache=${tiles.stats} compositeCache=${composite.stats} resources=${gpu.resourceStats}"
+  private def renderGpu(request: FrameRequest,cancelled: () => Boolean): FrameOutput =
+    val began=System.nanoTime()
+    def check(): Unit=if cancelled() then throw new InterruptedException("obsolete GPU frame")
+    check()
+    val payload=request.payload
+    val baseKey=payload.copy(focus=None,keyboardFocus=false,pressed=None)
+    val before=batch.get.stats
+    var prepared=0
+    val (layout,drawing)=gpuDrawing match
+      case Some((prior,layout,drawing)) if prior==payload => (layout,drawing)
+      case _ =>
+        gpuDrawing=None
+        val (layout,base)=gpuBase match
+          case Some((prior,layout,base)) if prior==baseKey => (layout,base)
+          case _ =>
+            gpuBase=None
+            val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls) { text =>
+              check()
+              layouts.remove(text) match
+                case Some(value) => layouts(text)=value;value
+                case None =>
+                  val value=ResolvedTextLayout(NativeParagraph.wrap(text.content,configured(text.style),unicode,text.maxWidth.toDouble,ParagraphOptions()))
+                  if layouts.size>=256 then layouts.remove(layouts.head._1)
+                  layouts(text)=value;shaped+=1;value
+            }
+            check()
+            if layout.viewports.exists(v => !payload.viewports.get(v.instance).contains(v.viewport)) then return LayoutFeedback(request,layout)
+            val target=batch.get.target(payload.pixelWidth,payload.pixelHeight,1).copy(logicalToDevice=Affine.scale(
+              payload.pixelWidth/payload.logicalWidth,payload.pixelHeight/payload.logicalHeight))
+            val base=DrawingPreparation.prepare(layout.drawing(DevelopmentTheme),target).fold(e => throw new IllegalStateException(e.toString),identity)
+            prepared+=1;gpuBase=Some((baseKey,layout,base));(layout,base)
+        val overlay=DrawingPreparation.prepare(layout.overlay(DevelopmentTheme,payload.focus,payload.keyboardFocus,payload.pressed),base.target)
+          .fold(e => throw new IllegalStateException(e.toString),identity)
+        prepared+=1
+        val composed=sirin.graphics.desktop.GpuTileCache.compose(base,overlay)
+        (layout,composed)
+    val unchanged=prepared==0
+    val frame=if unchanged then gpuTiles.frame(drawing.target.width,drawing.target.height) else gpuTiles.render(drawing,cancelled)
+    try
+      check()
+      gpuDrawing=Some((payload,layout,drawing))
+      val after=batch.get.stats
+      val uploaded=after.meshUploadBytes-before.meshUploadBytes+after.textureUploadBytes-before.textureUploadBytes+after.programUploadBytes-before.programUploadBytes
+      val capture=captureRoot.resolve(s"frame-${request.generation}.png")
+      val capturing=java.lang.Boolean.getBoolean("sirin.capture")
+      if capturing then FrameWorker.save(frame.readback(),capture)
+      RenderedFrame(request,layout,null,uploaded,if capturing then frame.width.toLong*frame.height*4 else 0,0,System.nanoTime()-began,Thread.currentThread().getName,
+        ((frame.width+tileEdge-1)/tileEdge)*((frame.height+tileEdge-1)/tileEdge),capture,
+        s"prepared=$prepared tilePrepared=${if unchanged then 0 else gpuTiles.lastPrepared} compiled=${if unchanged then 0 else gpuTiles.lastCompiled} submissions=${after.submissions-before.submissions} cache=${gpuTiles.stats}",gpuFrame=Some(frame))
+    catch case e: Throwable => {frame.close();throw e}
+  def stats: String = batch match
+    case Some(value) => s"shaped=$shaped GPU=${value.stats} CPU=${value.cacheStats} tiles=${gpuTiles.stats}"
+    case None => s"shaped=$shaped tileHits=${tiles.hits} tileMisses=${tiles.misses} baseCache=${tiles.stats} compositeCache=${composite.stats} resources=${gpu.resourceStats}"
   def close(): Unit =
-    try {tiles.close();composite.close()}
+    try
+      batch match
+        case Some(value) => try gpuTiles.close() finally value.close()
+        case None => try {tiles.close();composite.close()} finally gpu.close()
     finally
-      try gpu.close()
-      finally
-        faces.valuesIterator.flatten.foreach(_.close());extraFaces.values.foreach(_.close());unicode.close()
-        layouts.clear();masks.clear();faces.clear();extraFaces.clear();previousBase=None
+      faces.valuesIterator.flatten.foreach(_.close());extraFaces.values.foreach(_.close());unicode.close()
+      layouts.clear();masks.clear();faces.clear();extraFaces.clear();previousBase=None;gpuBase=None;gpuDrawing=None
 
 object FrameWorker:
   def render(request: FrameRequest,fontRoot: Path,captureRoot: Path)(using cancellation: Cancellation): FrameOutput =
@@ -173,11 +235,13 @@ final class RenderService(fontRoot: Path,captureRoot: Path,wake: () => Unit,fact
                 case other => other)
             catch case e: Throwable => Left(e)
             val notify=synchronized {
-              if !stopped.get() && latest.get()==request.generation then {result.set(Some((request.generation,value)));true} else false
+              if !stopped.get() && latest.get()==request.generation then
+                result.getAndSet(Some((request.generation,value))).foreach(_._2.foreach(_.close()));true
+              else {value.foreach(_.close());false}
             }
             if notify then wake()
     catch case e: Throwable =>
-      synchronized {fatal.set(e);result.set(Some((latest.get(),Left(e))))}
+      synchronized {fatal.set(e);result.getAndSet(Some((latest.get(),Left(e)))).foreach(_._2.foreach(_.close()))}
       if !stopped.get() then wake() else closeFailure.set(e)
     finally
       session.foreach { s =>
@@ -190,12 +254,12 @@ final class RenderService(fontRoot: Path,captureRoot: Path,wake: () => Unit,fact
     require(!stopped.get(),"renderer retired")
     Option(fatal.get()).foreach(throw _)
     require(thread.isAlive,"render owner terminated")
-    latest.set(request.generation);queue.clear();result.set(None);require(queue.offer(Some((request,System.nanoTime()))))
+    latest.set(request.generation);queue.clear();result.getAndSet(None).foreach(_._2.foreach(_.close()));require(queue.offer(Some((request,System.nanoTime()))))
   }
   def poll(): Option[(Long,Either[Throwable,FrameOutput])] = result.getAndSet(None)
   private[desktop] def awaitStopped(millis: Long): Boolean = {thread.join(millis); !thread.isAlive}
   def close(): Unit =
-    synchronized {if stopped.compareAndSet(false,true) then {queue.clear();require(queue.offer(None))}}
+    synchronized {if stopped.compareAndSet(false,true) then {queue.clear();result.getAndSet(None).foreach(_._2.foreach(_.close()));require(queue.offer(None))}}
     thread.join(10000)
     require(!thread.isAlive,"render owner did not retire")
     Option(closeFailure.get()).foreach(throw _)

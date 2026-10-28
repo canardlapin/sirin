@@ -1,0 +1,14 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+startup mainToFirstPresentMs=1391.584334 windowSetupMs=207.361291 renderSessionSetupMs=39.078208
+presented=1 generation=2 renderMs=481.124958 uploadBytes=172030 readbackBytes=0 pixels=1200x720 feedback=1 focus=None
+benchmarkReceipt=/private/tmp/sirin-gpu-host-20261028/desktop/target/benchmarks/run-1793221692818-4778887238447041 status=failed targetsMet=false
+renderSession shaped=19 GPU=BatchGpuStats(0,26214400,18480,28158,125392,129,0,352,15) CPU=BatchCacheStats(256,10272,100,56316,0,3088,100,0) tiles=entries=60 pixels=864000 hits=0 misses=60
+Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: benchmark fixture changed: expected=600x360logical/1200x720physical observed=640x400logical/1280x800physical
+	at scala.Predef$.require(Predef.scala:337)
+	at sirin.desktop.BenchmarkFixture.observe(BenchmarkFixture.scala:18)
+	at sirin.desktop.DesktopWorkbench$.run(DesktopWorkbench.scala:144)
+	at sirin.desktop.DesktopWorkbench$.main(DesktopWorkbench.scala:21)
+	at sirin.desktop.DesktopWorkbench.main(DesktopWorkbench.scala)

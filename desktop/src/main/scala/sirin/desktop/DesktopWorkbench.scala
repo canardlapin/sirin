@@ -21,7 +21,7 @@ object DesktopWorkbench:
     try run(window,root,args,mainEnteredAt,windowSetupNanos)
     finally window.close()
     require(NativeWindow.liveWindows()==0 && NativeWindow.liveRequests()==0,"native window/request leaked")
-    require(sirin.render.OffscreenGpu.liveOwners==0,"render device leaked")
+    require(sirin.render.OffscreenGpu.liveOwners==0 && sirin.render.BatchGpu.liveOwners==0 && sirin.render.GpuFrame.liveFrames==0 && sirin.render.GpuFrame.liveTiles==0,"render device/frame leaked")
   private def run(window: NativeWindow,root: Path,args: Array[String],mainEnteredAt: Long,windowSetupNanos: Long): Unit =
     val interactive=args.contains("interactive")
     val scenario=args.contains("scenario")
@@ -31,6 +31,7 @@ object DesktopWorkbench:
     val fixture=new BenchmarkFixture
     val runtime=new HeadlessRuntime(workCapacity=8)
     var pool=Option.empty[WorkerPool]
+    var current=Option.empty[RenderedFrame]
     var renderer=Option.empty[RenderService]
     var subscription=Option.empty[Subscription]
     val coordinator=new FrameCoordinator
@@ -69,7 +70,12 @@ object DesktopWorkbench:
     try
       pool=Some(runtime.scheduler.startWorkers(2))
       subscription=Some(runtime.onActivity(() => wake()))
-      renderer=Some(new RenderService(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/frames"),() => wake()))
+      val sharedRenderer=window.prepareRenderer(sirin.render.BatchGpu.shaderSource)
+      renderer=Some(new RenderService(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/frames"),() => wake(),Some(() => {
+        val gpu=sirin.render.BatchGpu.shared(sharedRenderer)
+        try new RenderSession(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/frames"),batch=Some(gpu))
+        catch case e: Throwable => {gpu.close();throw e}
+      })))
       val scope=runtime.scope("workbench")
       val app=new VisibleWorkbench(scope)
       ok(runtime.transact {
@@ -88,7 +94,6 @@ object DesktopWorkbench:
       val viewports=scala.collection.mutable.Map.empty[Long,RowViewport]
       var bindings=capture()
       var facts=window.waitEvent(0)
-      var current=Option.empty[RenderedFrame]
       var presentedPayload=Option.empty[FramePayload]
       var repaint=true;var running=true;var presented=0;var feedbacks=0;var feedbackChain=0
       var scenarioStage=0;var lastFrameAt=0L;var lastGeometryAt=0L
@@ -168,19 +173,20 @@ object DesktopWorkbench:
                 feedbacks+=1;feedbackChain+=1;require(feedbackChain<20,"viewport feedback failed to settle")
                 recapture=true
                 // Empty feedback can leave the request unchanged; retain this result for presentation.
-                current=None
+                current.foreach(_.close());frame.close();current=None
               else frame match
-                case rendered: RenderedFrame => current=Some(rendered);repaint=true
+                case rendered: RenderedFrame => current.foreach(_.close());current=Some(rendered);repaint=true
                 case _: LayoutFeedback => throw new IllegalStateException("settled feedback omitted pixels")
+            case (_,Right(frame)) => frame.close()
             case _ => ()
           }
           current.filter(f => coordinator.accepts(f.request)).foreach { frame =>
             val settled=frame.layout.viewports.forall(v => viewports.get(v.instance).contains(v.viewport))
             var presentCallNanos=0L;var presentReturnedAt=0L
             def present(): Boolean =
-              if benchmark then fixture.observe(BenchmarkGeometry(frame.request.payload.logicalWidth.toInt,frame.request.payload.logicalHeight.toInt,frame.pixels.width,frame.pixels.height))
+              if benchmark then fixture.observe(BenchmarkGeometry(frame.request.payload.logicalWidth.toInt,frame.request.payload.logicalHeight.toInt,frame.width,frame.height))
               val began=System.nanoTime()
-              val accepted=window.present(frame.pixels.pixelsCopy,frame.pixels.width,frame.pixels.height)
+              val accepted=frame.present(window)
               presentReturnedAt=System.nanoTime();presentCallNanos=presentReturnedAt-began
               accepted
             if !recapture && settled && repaint && present() then
@@ -209,10 +215,10 @@ object DesktopWorkbench:
                     (input.handleNanos/1e6).toString,(frame.queueNanos/1e6).toString,(frame.workerNanos/1e6).toString,(presentCallNanos/1e6).toString,
                     ((endpointAt-presentReturnedAt)/1e6).toString,(if collections.exists(_<0) then -1L else collections.sum).toString,
                     (if gcMillis.exists(_<0) then -1L else gcMillis.sum).toString,frame.profile,
-                    frame.request.payload.logicalWidth.toInt.toString,frame.request.payload.logicalHeight.toInt.toString,frame.pixels.width.toString,frame.pixels.height.toString)
+                    frame.request.payload.logicalWidth.toInt.toString,frame.request.payload.logicalHeight.toInt.toString,frame.width.toString,frame.height.toString)
                 println(s"inputToPresent phase=${if warming then "warmup" else "measured"} kind=$kind ms=$elapsed")
               };sample=None
-              println(s"presented=$presented generation=${frame.request.generation} renderMs=${frame.workerNanos/1000000.0} uploadBytes=${frame.programBytes} readbackBytes=${frame.readbackBytes} pixels=${frame.pixels.width}x${frame.pixels.height} feedback=$feedbacks focus=${interaction.state.focused}")
+              println(s"presented=$presented generation=${frame.request.generation} renderMs=${frame.workerNanos/1000000.0} uploadBytes=${frame.programBytes} readbackBytes=${frame.readbackBytes} pixels=${frame.width}x${frame.height} feedback=$feedbacks focus=${interaction.state.focused}")
               if scenario then
                 scenarioStage match
                   case 0 => inject(1,1);scenarioStage=1
@@ -230,7 +236,7 @@ object DesktopWorkbench:
                     require(frame.layout.viewports.exists(_.viewport.offset.toDouble>0),"PageDown did not scroll")
                     window.resize(800,600);scenarioStage=7
                   case 7 =>
-                    require(frame.pixels.width<=1280 && frame.pixels.height<=800,"resize budget failed")
+                    require(frame.width<=1280 && frame.height<=800,"resize budget failed")
                     ok(runtime.transact {app.extra.set(true);app.extraRef.focus()})
                     scenarioStage=8;recapture=true
                   case 8 =>
@@ -281,6 +287,7 @@ object DesktopWorkbench:
           case Some(original) => original.addSuppressed(error)
           case None => throw error
       finally
+        current.foreach(_.close());current=None
         coordinator.retire()
         subscription.foreach(_.cancel())
         try renderer.foreach(_.close())

@@ -1,0 +1,20 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 19 Scala sources and 1 Java source to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[warn] -- [E198] Unused Symbol Warning: /private/tmp/sirin-gpu-host-20261028/desktop/src/main/scala/sirin/render/BatchGpu.scala:6:22 
+[warn] 6 |import java.nio.file.{Files,Path as FilePath}
+[warn]   |                      ^^^^^
+[warn]   |                      unused import
+[warn] -- [E198] Unused Symbol Warning: /private/tmp/sirin-gpu-host-20261028/desktop/src/main/scala/sirin/render/BatchGpu.scala:6:33 
+[warn] 6 |import java.nio.file.{Files,Path as FilePath}
+[warn]   |                            ^^^^^^^^^^^^^^^^
+[warn]   |                            unused import
+[error] No warnings can be incurred under -Werror (or -Xfatal-warnings)
+[warn] two warnings found
+[error] one error found
+[error] (desktopJVM / Compile / compileIncremental) Compilation failed
+[error] Total time: 6 s, completed Oct 28, 2026, 4:37:08 p.m.

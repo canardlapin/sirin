@@ -678,6 +678,11 @@ qualifies a headless driver, not a rendered frame or full Stage 1 exit.
     device/pipeline creation, uploads, shader dispatch, readback and synchronized
     retirement can block. All callbacks record native-owned state only. Native
     metadata/live-owner getters are bounded plain externs,
+  - the isolated batched-render probe's `bgpu_open`, `bgpu_close`,
+    `bgpu_mesh_acquire`, `bgpu_asset_acquire`, `bgpu_retain`, `bgpu_replay`,
+    and `bgpu_program_close`: pipeline/resource creation, uploads, submission,
+    readback and synchronized retirement can block. Callbacks write native-owned
+    state only; bounded metadata getters and reference releases are plain externs,
   - font enumeration,
   - the font-service shim's `sg_text_open`, `sg_text_close`, `sg_text_metrics`,
     `sg_text_shape`, `sg_text_glyph`, `sg_text_carets`, `sg_text_run_free`, `sg_text_raster`, and
@@ -1360,6 +1365,41 @@ includes actual OS capture/resize, asynchronous request timeout and late-result
 ownership controls, native input facts and clean close. Performance protocols
 separate cold initialization from warm input-to-presentation and retain failures;
 no usability or ScalaFX superiority claim follows from successful dispatch alone.
+
+**Retained GPU host candidate (2026-10-28).** The development window prepares and
+owns the bounded batch device, lending a separately referenced handle to its
+Scala-created render worker. The worker owns compilation and cache mutation;
+the UI owner only presents complete immutable frames on that same device.
+The surface is created on the batch instance; wgpu instance-owned IDs never cross
+independent registries. Host uploads defer their completion fence until a bounded
+group of at most four tile programs submits. The standalone Native probe keeps
+its original synchronous upload and replay behavior.
+The earlier PixelProgram/readback path remains a reference implementation.
+The new frame path exports completed tile textures and performs no routine CPU
+RGBA readback or presentation upload. Explicit capture is an accounted readback.
+Prepared base commands survive focus/press changes; their overlay commands are
+appended before tile compilation and sample resolution, preserving painter order
+and linear-light composition. An unchanged request also bypasses tile preparation,
+compilation, upload and GPU dispatch. Changed tile signatures reuse bounded CPU
+geometry and asset caches; this does not promise zero work for arbitrary edits,
+pan or zoom. Target, scale and device changes invalidate affected variants.
+
+Temporary tile programs retain the existing batch limits (640x360, 16 programs,
+192MiB payload); completed variants obey 256 entries and 1,048,576 pixels.
+Native atomic references independently protect exported immutable textures from
+cache eviction. All exported output textures, including stale/displayed frames,
+share a 16MiB cap; at most three complete frame packets may exist. Packets validate
+one device and exact non-overlapping full-target coverage. Replacement, obsolete
+results, unpolled mailboxes, feedback and close explicitly retire their references;
+close does not depend on a future frame. GPU resource mutation stays on the
+render worker and surface operations on the process main thread. The device's
+final owner is the window; native callbacks still write native state only.
+This changes graphics ownership and transfer mechanics, not application Work,
+transactions, identity, scheduling or command/focus policy.
+
+The integration contract and unchanged performance gates are recorded in
+`docs/plans/2026-10-28-gpu-host.md`. Pixel evidence and a successful diagnostic do
+not qualify the fixed 50ms action p95 gate without its quiet-run preflight.
 
 ## 10. Developer iteration (new section)
 

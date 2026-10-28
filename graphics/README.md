@@ -192,3 +192,10 @@ Next: expand cusp support, paint families and the general reference corpus,
 and implement texture atlases/production geometry
 preparation and host composition under the native gates. Full paths/paint/compositing support, UI hosting, Intaglio Native/adapter
 qualification and browser comparisons remain open in the graphics plan.
+
+The bounded [triangle/texture continuation](../docs/evidence/graphics/2026-10-28-batch.md)
+adds exact stroke-boundary compaction, CPU winding/clip tessellation, ordered GPU
+batches and shared R8 glyph/RGBA image texture cells in the isolated render probe.
+Its four-scale corpus and fixed resource/performance budgets are recorded in the
+receipt. Production packing, mounted host integration and browser qualification
+remain open.

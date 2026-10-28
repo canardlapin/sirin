@@ -62,3 +62,18 @@ Optional `-Dsirin.capture=true` writes renderer PNGs; these are separate from OS
 screenshots. The [plan](../docs/plans/2026-10-28-responsive-workbench.md) defines
 this slice; [the earlier receipt](../docs/evidence/jvm-host-20261028/README.md)
 retains the original host baseline.
+
+## Retained GPU candidate
+
+The default workbench in `codex/retained-gpu-host-20261028` uses the bounded batch
+renderer with a window-owned device shared with the render worker. Completed
+immutable tile textures present directly to the surface. Normal frames report
+zero readback bytes; optional `-Dsirin.capture=true` explicitly reads pixels.
+The older PixelProgram renderer and its tests remain as reference comparisons.
+
+Unchanged requests skip layout, drawing/tile preparation, compilation, upload
+and dispatch. Focus/press changes reuse prepared base commands; changed tiles
+combine base and overlay before sample resolution. Resizing or changing scale
+invalidates target-dependent variants. Cache variants, exported texture bytes and
+outstanding frame packets have separate enforced bounds, including references
+surviving eviction. See `docs/plans/2026-10-28-gpu-host.md` for scope and gates.

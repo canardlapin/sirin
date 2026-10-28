@@ -1,0 +1,32 @@
+{
+  "scope": "same packaged host latency protocol as f4acc6c",
+  "geometry": {
+    "logical": [
+      600,
+      360
+    ],
+    "physical": [
+      1200,
+      720
+    ],
+    "rows": 100
+  },
+  "warmup_per_class": 20,
+  "measured_per_class": 100,
+  "budgets_ms": {
+    "action_p95": 50,
+    "action_p99": 100,
+    "scroll_p95": 100,
+    "scroll_p99": 200
+  },
+  "quiet_idle_percent_min": 85,
+  "quiet_max_load1m": "half available CPU count",
+  "qualification_attempts": 1,
+  "diagnostic_qualified": false,
+  "protocol_files": {
+    "desktop/tools/run-latency.py": "3df73d436147677f2e170a6e98668dfb880c755e94ca3ce87b2bbb7b9f53505a",
+    "desktop/tools/latency-preflight.py": "6288ab194199aaefa7fccf301987fe46de16eccc9f2120f83a0177042984df2d",
+    "desktop/tools/latency_receipt.py": "675a3cf08abeb0b06aaa03ba12cc102bc2032e57ce8c35416d88c62bbd758df4",
+    "desktop/src/main/scala/sirin/desktop/BenchmarkFixture.scala": "c477c95e629daf615f7123d8f71f76e8c9228066945801794bb5817b6ae6b2ed"
+  }
+}

@@ -1,0 +1,24 @@
+
+thread '<unnamed>' (261896742) panicked at /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/wgpu-core-29.0.3/src/storage.rs:135:46:
+Surface[Id(0,1)] does not exist
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread '<unnamed>' (261896742) panicked at library/core/src/panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:
+   0:        0x120f40990 - <std::sys::backtrace::BacktraceLock::print::DisplayBacktrace as core::fmt::Display>::fmt::hfd528c9d14c1136f
+   1:        0x120f4f974 - core::fmt::write::h2ddadfca81aeb692
+   2:        0x120f289ec - std::io::Write::write_fmt::hc70e63382e9f29d2
+   3:        0x120f2ae0c - std::sys::backtrace::BacktraceLock::print::hea663f6050de4073
+   4:        0x120f2c248 - std::panicking::default_hook::{{closure}}::hbcaf474e707f3b7d
+   5:        0x120f2c0fc - std::panicking::default_hook::hff9145c2c6e89cdf
+   6:        0x120f2ca40 - std::panicking::panic_with_hook::he6431e171a67d1a5
+   7:        0x120f2c700 - std::panicking::panic_handler::{{closure}}::h42f8d27eb97efb5c
+   8:        0x120f2af18 - std::sys::backtrace::__rust_end_short_backtrace::h0de35f7407a5e0d8
+   9:        0x120f21c1c - __rustc[eb8946e36839644a]::rust_begin_unwind
+  10:        0x120f82bb8 - core::panicking::panic_nounwind_fmt::h3db3f511675e5bd7
+  11:        0x120f82b1c - core::panicking::panic_nounwind::h50f882120c826cee
+  12:        0x120f82cbc - core::panicking::panic_cannot_unwind::h396781a6699a759f
+  13:        0x120c037a4 - _wgpuSurfaceGetCapabilities
+  14:        0x1205347f8 - _sirin_desktop_batch_start
+thread caused non-unwinding panic. aborting.

@@ -1,0 +1,183 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:72:70: error: no member named 'desktop_batch_texture' in 'struct WGPUTexelCopyTextureInfo'
+   72 |   WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=texture;
+      |                                                                  ~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:73:68: error: no member named 'desktop_batch_buffer' in 'struct WGPUTexelCopyBufferInfo'
+   73 |   WGPUTexelCopyBufferInfo dst=WGPU_TEXEL_COPY_BUFFER_INFO_INIT;dst.buffer=buffer;dst.layout.bytesPerRow=stride;dst.layout.rowsPerImage=height;
+      |                                                                ~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:117:18: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupLayoutEntry'
+  117 |       entries[i].buffer.type=WGPUBufferBindingType_ReadOnlyStorage;
+      |       ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:121:18: error: no member named 'desktop_batch_texture' in 'struct WGPUBindGroupLayoutEntry'
+  121 |       entries[i].texture.sampleType=WGPUTextureSampleType_UnfilterableFloat;
+      |       ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:122:18: error: no member named 'desktop_batch_texture' in 'struct WGPUBindGroupLayoutEntry'
+  122 |       entries[i].texture.viewDimension=WGPUTextureViewDimension_2D;
+      |       ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:124:107: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupLayoutEntry'
+  124 |     entries[5].binding=8;entries[5].visibility=WGPUShaderStage_Vertex|WGPUShaderStage_Fragment;entries[5].buffer.type=WGPUBufferBindingType_Uniform;
+      |                                                                                                ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:132:7: error: no member named 'desktop_batch_texture' in 'struct WGPUBindGroupLayoutEntry'
+  132 |     e.texture.sampleType=WGPUTextureSampleType_UnfilterableFloat;e.texture.viewDimension=WGPUTextureViewDimension_2D;
+      |     ~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:132:68: error: no member named 'desktop_batch_texture' in 'struct WGPUBindGroupLayoutEntry'
+  132 |     e.texture.sampleType=WGPUTextureSampleType_UnfilterableFloat;e.texture.viewDimension=WGPUTextureViewDimension_2D;
+      |                                                                  ~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:175:81: error: no member named 'desktop_batch_texture' in 'struct WGPUBindGroupLayoutEntry'
+  175 |   entries[0].binding=5;entries[0].visibility=WGPUShaderStage_Compute;entries[0].texture.sampleType=WGPUTextureSampleType_UnfilterableFloat;
+      |                                                                      ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:176:14: error: no member named 'desktop_batch_texture' in 'struct WGPUBindGroupLayoutEntry'
+  176 |   entries[0].texture.viewDimension=WGPUTextureViewDimension_2D;
+      |   ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:179:81: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupLayoutEntry'
+  179 |   entries[2].binding=7;entries[2].visibility=WGPUShaderStage_Compute;entries[2].buffer.type=WGPUBufferBindingType_Storage;
+      |                                                                      ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:180:81: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupLayoutEntry'
+  180 |   entries[3].binding=8;entries[3].visibility=WGPUShaderStage_Compute;entries[3].buffer.type=WGPUBufferBindingType_Uniform;
+      |                                                                      ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:254:7: error: no member named 'desktop_batch_texture' in 'struct WGPUTexelCopyTextureInfo'
+  254 |   dst.texture=kind==1?s->images:s->masks;dst.origin=(WGPUOrigin3D){(uint32_t)(slot%(1024/cell)*cell),(uint32_t)(slot/(1024/cell)*cell),0};
+      |   ~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:378:17: note: expanded from macro 'texture'
+  378 | #define texture desktop_batch_texture
+      |                 ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:284:13: error: conflicting types for 'program_free'
+  284 | static void program_free(BgpuProgram*p){
+      |             ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_gpu.c:205:13: note: previous definition is here
+  205 | static void program_free(SgpuProgram*p){
+      |             ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:326:35: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupEntry'
+  326 |   entries[0].binding=0;entries[0].buffer=p->data;entries[0].size=(uint64_t)ndata*4;
+      |                        ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:327:35: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupEntry'
+  327 |   entries[1].binding=1;entries[1].buffer=p->indices;entries[1].size=(uint64_t)(nindices?nindices:1)*8;
+      |                        ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:328:35: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupEntry'
+  328 |   entries[2].binding=2;entries[2].buffer=s->geometry;entries[2].size=(uint64_t)s->mesh_capacity*8;
+      |                        ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:330:35: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupEntry'
+  330 |   entries[5].binding=8;entries[5].buffer=p->phases;entries[5].size=16;
+      |                        ~~~~~~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+In file included from /private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:382:
+/private/tmp/sirin-gpu-host-20261028/desktop/native/../../probes/render/src/main/resources/scala-native/sirin_batch.c:343:25: error: no member named 'desktop_batch_buffer' in 'struct WGPUBindGroupEntry'
+  343 |   re[2].binding=7;re[2].buffer=p->accumulation;re[2].size=(uint64_t)w*h*16;
+      |                   ~~~~~ ^
+/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c:379:16: note: expanded from macro 'buffer'
+  379 | #define buffer desktop_batch_buffer
+      |                ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+[info] compiling 16 Scala sources to /private/tmp/sirin-gpu-host-20261028/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 16 Scala sources to /private/tmp/sirin-gpu-host-20261028/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 14 Scala sources to /private/tmp/sirin-gpu-host-20261028/engine/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 2 Scala sources to /private/tmp/sirin-gpu-host-20261028/text-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-gpu-host-20261028/graphics-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 3 Scala sources to /private/tmp/sirin-gpu-host-20261028/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 4 Scala sources to /private/tmp/sirin-gpu-host-20261028/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 18 Scala sources and 1 Java source to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[error] -- [E006] Not Found Error: /private/tmp/sirin-gpu-host-20261028/desktop/src/main/scala/sirin/render/BatchGpu.scala:129:66 
+[error] 129 |    catch case e: Throwable => BatchShim.bgpu_close(native);throw e
+[error]     |                                                                  ^
+[error]     |                                                          Not found: e
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] one error found
+[error] java.lang.IllegalArgumentException: requirement failed: desktop transport compilation failed
+[error] 	at scala.Predef$.require(Predef.scala:281)
+[error] 	at $23fd4992d6ac189c9cef$.$anonfun$desktopJVM$8(build.sbt:323)
+[error] 	at scala.Function1.$anonfun$compose$1(Function1.scala:49)
+[error] 	at sbt.internal.util.$tilde$greater.$anonfun$$u2219$1(TypeFunctions.scala:63)
+[error] 	at sbt.std.Transform$$anon$4.work(Transform.scala:69)
+[error] 	at sbt.Execute.$anonfun$submit$2(Execute.scala:283)
+[error] 	at sbt.internal.util.ErrorHandling$.wideConvert(ErrorHandling.scala:24)
+[error] 	at sbt.Execute.work(Execute.scala:292)
+[error] 	at sbt.Execute.$anonfun$submit$1(Execute.scala:283)
+[error] 	at sbt.ConcurrentRestrictions$$anon$4.$anonfun$submitValid$1(ConcurrentRestrictions.scala:265)
+[error] 	at sbt.CompletionService$$anon$2.call(CompletionService.scala:65)
+[error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+[error] 	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:545)
+[error] 	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+[error] 	at java.base/java.lang.Thread.run(Thread.java:1474)
+[error] (desktopJVM / desktopNativeLibrary) java.lang.IllegalArgumentException: requirement failed: desktop transport compilation failed
+[error] Total time: 10 s, completed Oct 28, 2026, 4:35:49 p.m.

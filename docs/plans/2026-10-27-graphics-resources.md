@@ -176,10 +176,25 @@ identity; it is not a public native handle or successful renderer stub.
 The continuation adds explicit probe-owned retained programs with finite inventory
 bounds, source-upload counters and synchronous replay/retirement. Program storage,
 output textures/views and bind groups persist; readback/staging remain per call.
-This retains complete packed image/glyph payloads, without a cross-program atlas
-or cache. Replacement requires new preparation and retention. Closing a program
+The next bounded slice separates immutable image/mask payloads from per-drawing
+programs. A confined decoded/raster LRU and fixed-capacity shared GPU vec4 arena
+reuse those payloads by snapshot/font/raster identity. Programs pin stable spans;
+only idle spans can evict. CPU and GPU payload/count bounds are independent,
+and allocated arena capacity is charged to the device budget. Glyph paint is
+sampled independently of mask coverage. This is a Native qualification resource
+store; production texture atlases and host caching remain open. Replacement requires new preparation and retention. Closing a program
 clears CPU dependency references; closing the GPU retires every child. See
 [the continuation receipt](../evidence/graphics/2026-10-28-strokes-gradients.md).
+
+The bounded triangle/texture continuation uses a separate `BatchGpu` owner.
+Translation-normalized CPU meshes share pinned stable GPU spans; ordered index
+and paint records batch consecutive draws without reordering. R8 glyph cells and
+linear-premultiplied RGBA32Float image cells replace vec4 source buffers for this
+path. Per-source clamping prevents atlas bleed. Fixed cell sizes, a two-layer
+limit and a 640x360 device-target limit reject explicitly. Independent CPU cache,
+GPU capacity and per-program payload counters retain their distinct meanings.
+See the [frozen batch contract](../evidence/graphics/batch-20261028/contract.json).
+Mounted host integration and the full G-1 corpus remain separate gates.
 
 The target description must identify the backend build, actual device identity
 and non-reused device generation, target color/alpha/format, logical-to-device
@@ -270,8 +285,19 @@ bounded preparation/offscreen/ThorVG seam now has
 [executable evidence](../evidence/graphics/2026-10-28-offscreen.md). The vector and image-viewer
 specimens advance the public-only corpus; the remaining general consumers stay
 open. Shared logical editing geometry and CPU preparation are now implemented.
-Next renderer work qualifies curved strokes/glyph gradients and the broader G-1
-corpus, adds shared atlas/production resource preparation, and joins the mounted host through
+Next renderer work expands cusp/paint coverage and the broader G-1 corpus,
+adds texture atlas/production resource preparation, and joins the mounted host through
 the existing native gates. ThorVG remains unadopted: the tested configuration's
 color mismatch, BGRA target requirement and sampling/crop limits are recorded,
 not waived. No full G-2 exit or browser-quality qualification is claimed.
+
+The bounded triangle/texture tranche now has
+[measured four-scale evidence](../evidence/graphics/2026-10-28-batch.md), including
+full 320x180 corpus pixel comparisons and cold/warm/resource budgets. Production
+packing, mounted host acceptance and the full G-1/G-2 exit remain open.
+
+The [retained GPU host candidate](2026-10-28-gpu-host.md) now joins that bounded
+renderer to the mounted JVM host through immutable shared-device tile frames.
+It removes routine readback/upload and verifies bounded retirement and four-scale
+pixels. The frozen diagnostic passes; quiet-run host qualification remains open.
+Production packing and the full G-1/G-2 exit are still separate requirements.

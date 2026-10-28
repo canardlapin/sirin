@@ -1,0 +1,84 @@
+[
+  {
+    "run": "20261028T205203.448270Z",
+    "kind": "qualification",
+    "status": "not_run",
+    "qualified": false,
+    "package_sha256": {
+      "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+      "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "0bc147848f30c4e3b1a661e81f6c718a5580bc686b49e7ddc5d670468246fd86",
+      "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+      "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639",
+      "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "a4feee35e3c3f2012b51193460a091e78c2d95cb928569dfb91288ea0c537ba7"
+    },
+    "source_revision": "v1-before-empty-mask-culling"
+  },
+  {
+    "run": "20261028T205231.884346Z",
+    "kind": "diagnostic",
+    "status": "failed",
+    "qualified": false,
+    "package_sha256": {
+      "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+      "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "0bc147848f30c4e3b1a661e81f6c718a5580bc686b49e7ddc5d670468246fd86",
+      "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+      "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639",
+      "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "a4feee35e3c3f2012b51193460a091e78c2d95cb928569dfb91288ea0c537ba7"
+    },
+    "source_revision": "v1-before-empty-mask-culling",
+    "measurements": {
+      "action": {
+        "samples": 100,
+        "p50_ms": 21.228417,
+        "p95_ms": 34.97525,
+        "p99_ms": 51.801292,
+        "max_ms": 189.043292,
+        "zero_compiled_frames": 0,
+        "p95_worker_ms": 27.426958
+      },
+      "scroll": {
+        "samples": 100,
+        "p50_ms": 125.072833,
+        "p95_ms": 165.089584,
+        "p99_ms": 177.838042,
+        "max_ms": 183.763958,
+        "zero_compiled_frames": 0,
+        "p95_worker_ms": 156.9015
+      }
+    }
+  },
+  {
+    "run": "20261028T210413.617949Z",
+    "kind": "diagnostic",
+    "status": "passed",
+    "qualified": false,
+    "package_sha256": {
+      "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+      "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "0bc147848f30c4e3b1a661e81f6c718a5580bc686b49e7ddc5d670468246fd86",
+      "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+      "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639",
+      "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "5d7cc3c28b6f56186924d24fc5900710ac5646ba51636191e5f9e707efdf829f"
+    },
+    "source_revision": "v2-empty-mask-culling",
+    "measurements": {
+      "action": {
+        "samples": 100,
+        "p50_ms": 16.52075,
+        "p95_ms": 16.985083,
+        "p99_ms": 22.917375,
+        "max_ms": 30.7425,
+        "zero_compiled_frames": 0,
+        "p95_worker_ms": 14.951667
+      },
+      "scroll": {
+        "samples": 100,
+        "p50_ms": 16.55625,
+        "p95_ms": 17.060167,
+        "p99_ms": 17.637417,
+        "max_ms": 25.263083,
+        "zero_compiled_frames": 99,
+        "p95_worker_ms": 5.158625
+      }
+    }
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "distinct_scala_test_cases": 735,
+  "by_scope": {
+    "JVM_alias": 309,
+    "Native_alias": 309,
+    "font": 7,
+    "unicode": 12,
+    "paragraph": 40,
+    "Native_GPU": 33,
+    "desktop": 25
+  },
+  "python_receipt_tests": 6,
+  "examples_compiled": true,
+  "full_log": "validation/full-validation-1.log",
+  "final_desktop_log": "validation/desktop-validation-2.log",
+  "final_Native_GPU_log": "validation/final-native-gpu-validation.log",
+  "additional_regressions": "final desktop includes two tests added after the full matrix; final Native GPU rerun after shared compiler change",
+  "prior_failures_preserved": true
+}

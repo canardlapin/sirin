@@ -1,0 +1,2 @@
+Sources, retained artifact hashes, four-scale pixels and final diagnostic verified.
+Quiet qualification remains open; no diagnostic is a qualified result.

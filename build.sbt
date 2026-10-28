@@ -294,12 +294,15 @@ lazy val desktopJVM = project.in(file("desktop"))
       val repo = (ThisBuild / baseDirectory).value
       Seq(repo / "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala",
         repo / "probes/paragraph/src/main/scala/sirin/graphics/text/NativeTextServices.scala",
-        repo / "probes/render/src/main/scala/sirin/render/PixelProgram.scala")
+        repo / "probes/render/src/main/scala/sirin/render/PixelProgram.scala",
+        repo / "probes/render/src/main/scala/sirin/render/BatchProgram.scala")
     },
     Compile / resourceGenerators += Def.task {
       val output = (Compile / resourceManaged).value / "raster.wgsl"
       IO.copyFile((ThisBuild / baseDirectory).value / "probes/render/src/main/resources/raster.wgsl", output)
-      Seq(output)
+      val batch = (Compile / resourceManaged).value / "batch.wgsl"
+      IO.copyFile((ThisBuild / baseDirectory).value / "probes/render/src/main/resources/batch.wgsl", batch)
+      Seq(output,batch)
     }.taskValue,
     desktopNativeLibrary := {
       import scala.sys.process._

@@ -1,0 +1,92 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2586 ms)
+[info] Discovered 3503 classes and 21834 methods after classloading
+[info] Checking intermediate code (quick) (233 ms)
+[info] Discovered 3471 classes and 17131 methods after optimization
+[info] Optimizing (debug mode) (3861 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (11383 ms)
+[info] Compiling to native code (9594 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (355 ms)
+[info] Postprocessing (0 ms)
+[info] Total (20208 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '62273'.
+Test run sirin.render.StrokeGradientSuite started
+sirin.render.StrokeGradientSuite: finished 7.380s
+Test run sirin.render.StrokeGradientSuite finished: 0 failed, 0 ignored, 5 total 7.380s
+Test run sirin.render.CurvesReuseSuite started
+sirin.render.CurvesReuseSuite: finished 10.064s
+Test run sirin.render.CurvesReuseSuite finished: 0 failed, 0 ignored, 6 total 10.064s
+Test run sirin.graphics.RebasedGradientSuite started
+sirin.graphics.RebasedGradientSuite: finished 0.230s
+Test run sirin.graphics.RebasedGradientSuite finished: 0 failed, 0 ignored, 1 total 0.230s
+Test run sirin.render.BatchSuite started
+batch-adapter=Apple M2 Pro
+comparison=curves-layers-1.0 checked=3072 excluded=0 worstByteError=0
+comparison=curves-layers-1.25 checked=4800 excluded=0 worstByteError=0
+comparison=curves-layers-1.5 checked=6910 excluded=2 worstByteError=0
+comparison=curves-layers-2.0 checked=12288 excluded=0 worstByteError=0
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=1
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=0
+comparison=textures-text-1.5 checked=6775 excluded=137 worstByteError=0
+comparison=textures-text-2.0 checked=12253 excluded=35 worstByteError=0
+sirin.render.BatchSuite: finished 5.671s
+Test run sirin.render.BatchSuite finished: 0 failed, 0 ignored, 13 total 5.671s
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=357542,304542,310666,304708,300083,297709,297458,298125,296667,297375
+synchronized-render-readback-ns=32538042,51064416,54183667,63539458,63746333,92882750,96532542,108495250,153096375,219312625
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 13.754s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 8 total 13.754s
+[info] Passed: Total 33, Failed 0, Errors 0, Passed 33
+[success] Total time: 68 s (0:01:08.0), completed Oct 28, 2026, 3:32:08 p.m.
+[info] Defining probeRender / Compile / mainClass
+[info] The new value will be used by probeRender / Compile / bspBuildTargetRun, probeRender / Compile / packageBin / packageOptions, probeRender / Compile / selectMainClass
+[info] Reapplying settings...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Linking (multithreadingEnabled=detect) (1416 ms)
+[info] Discovered 1899 classes and 12305 methods after classloading
+[info] Checking intermediate code (quick) (82 ms)
+[info] Multithreading was not explicitly enabled - initial class loading has not detected any usage of system threads. Multithreading support will be disabled to improve performance.
+[info] Linking (multithreadingEnabled=false) (516 ms)
+[info] Discovered 1801 classes and 11604 methods after classloading
+[info] Checking intermediate code (quick) (23 ms)
+[info] Discovered 1777 classes and 9199 methods after optimization
+[info] Optimizing (debug mode) (1520 ms)
+[info] Produced 59 LLVM IR files
+[info] Generating intermediate code (7328 ms)
+[info] Compiling to native code (6857 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (218 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11962 ms)
+benchmark-adapter=Apple M2 Pro
+corpus-comparison scale=1.0 Comparison(57504,96,0,0,None)
+{"scale":1.0,"coldMs":{"p50":821.298458,"p95":980.276209,"p99":980.276209},"submitCompleteMs":{"p50":5.711875,"p95":6.726708,"p99":9.338708},"readbackMs":{"p50":17.96475,"p95":31.687708,"p99":31.687708},"replacementMs":{"p50":5.417458,"p95":12.606,"p99":25.156041},"oracleChecked":57504,"oracleExcluded":96,"oracleWorstByteError":0,"triangles":73012,"drawBatches":3,"meshResources":29,"textureResources":22,"grayCpuBytes":804,"overlayMeshUploadBytes":48,"warmUploadBytes":0,"warmRasterizations":0,"statsBeforeUpdates":{"payloadBytes":39124912,"meshUploadBytes":173376,"textureUploadBytes":66340,"programUploadBytes":699312,"entries":51,"evictions":0},"timingBudgetPassed":true}
+corpus-comparison scale=1.25 Comparison(89932,68,1,0,None)
+{"scale":1.25,"coldMs":{"p50":1987.212833,"p95":2536.926916,"p99":2536.926916},"submitCompleteMs":{"p50":6.480417,"p95":9.647625,"p99":16.781125},"readbackMs":{"p50":35.547375,"p95":57.19175,"p99":57.19175},"replacementMs":{"p50":8.190708,"p95":10.607,"p99":41.033625},"oracleChecked":89932,"oracleExcluded":68,"oracleWorstByteError":1,"triangles":88212,"drawBatches":3,"meshResources":65,"textureResources":22,"grayCpuBytes":1174,"overlayMeshUploadBytes":48,"warmUploadBytes":0,"warmRasterizations":0,"statsBeforeUpdates":{"payloadBytes":46115312,"meshUploadBytes":1114176,"textureUploadBytes":2164666,"programUploadBytes":2257568,"entries":154,"evictions":17},"timingBudgetPassed":true}
+corpus-comparison scale=1.5 Comparison(129528,72,1,0,None)
+{"scale":1.5,"coldMs":{"p50":1595.000458,"p95":1810.762209,"p99":1810.762209},"submitCompleteMs":{"p50":6.795875,"p95":8.918458,"p99":11.94975},"readbackMs":{"p50":36.145875,"p95":120.525709,"p99":120.525709},"replacementMs":{"p50":3.717833,"p95":4.949417,"p99":44.024458},"oracleChecked":129528,"oracleExcluded":72,"oracleWorstByteError":1,"triangles":112012,"drawBatches":3,"meshResources":51,"textureResources":22,"grayCpuBytes":1679,"overlayMeshUploadBytes":48,"warmUploadBytes":0,"warmRasterizations":0,"statsBeforeUpdates":{"payloadBytes":54700912,"meshUploadBytes":1807008,"textureUploadBytes":4263497,"programUploadBytes":4127824,"entries":228,"evictions":49},"timingBudgetPassed":true}
+corpus-comparison scale=2.0 Comparison(230176,224,0,0,None)
+{"scale":2.0,"coldMs":{"p50":1646.620916,"p95":2953.723667,"p99":2953.723667},"submitCompleteMs":{"p50":8.179458,"p95":12.205667,"p99":16.988625},"readbackMs":{"p50":46.967,"p95":59.461875,"p99":59.461875},"replacementMs":{"p50":5.470625,"p95":7.548209,"p99":9.725666},"oracleChecked":230176,"oracleExcluded":224,"oracleWorstByteError":0,"triangles":142812,"drawBatches":3,"meshResources":32,"textureResources":22,"grayCpuBytes":2718,"overlayMeshUploadBytes":48,"warmUploadBytes":0,"warmRasterizations":0,"statsBeforeUpdates":{"payloadBytes":76316912,"meshUploadBytes":2148144,"textureUploadBytes":6363367,"programUploadBytes":6434880,"entries":283,"evictions":81},"timingBudgetPassed":true}
+[success] Total time: 146 s (0:02:26.0), completed Oct 28, 2026, 3:34:40 p.m.

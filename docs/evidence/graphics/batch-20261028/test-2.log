@@ -1,0 +1,19 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[error] -- [E007] Type Mismatch Error: /Users/bbuchsbaum/code/scala/sirin/probes/render/src/test/scala/sirin/render/BatchSuite.scala:14:167 
+[error] 14 |  private val gradient=Paint.LinearGradient(Point(0,0),Point(64,32),Vector(ColorStop(0,Color(1,0,0,0.8)),ColorStop(0.4,Color(0,1,0)),ColorStop(1,Color(0,0,1))),Extend.Reflect)
+[error]    |                                                                                                                                                                ^^^^^^^^^^^^^^
+[error]    |       Found:    (sirin.graphics.Extend.Reflect : sirin.graphics.Extend)
+[error]    |       Required: sirin.graphics.Affine
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] one error found
+[error] (probeRender / Test / compileIncremental) Compilation failed
+[error] Total time: 13 s, completed Oct 28, 2026, 2:44:49 p.m.

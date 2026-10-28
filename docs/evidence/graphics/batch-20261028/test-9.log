@@ -1,0 +1,37 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Linking (multithreadingEnabled=detect) (2205 ms)
+[info] Discovered 3429 classes and 21574 methods after classloading
+[info] Checking intermediate code (quick) (171 ms)
+[info] Discovered 3397 classes and 16928 methods after optimization
+[info] Optimizing (debug mode) (3544 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (9631 ms)
+[info] Compiling to native code (6776 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (198 ms)
+[info] Postprocessing (0 ms)
+[info] Total (16941 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '58461'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '58463'.
+Test run sirin.render.BatchSuite started
+batch-adapter=Apple M2 Pro
+comparison=curves-layers-1.0 checked=3068 excluded=4 worstByteError=0
+comparison=curves-layers-1.25 checked=4793 excluded=7 worstByteError=0
+comparison=curves-layers-1.5 checked=6905 excluded=7 worstByteError=0
+==> X sirin.render.BatchSuite.four-scale batched fills, curved strokes, holes, nested clips, gradients and isolated layers match reference 6.885s java.lang.IllegalArgumentException: requirement failed: mesh triangle budget
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=1
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=0
+comparison=textures-text-1.5 checked=6775 excluded=137 worstByteError=0
+comparison=textures-text-2.0 checked=12253 excluded=35 worstByteError=0
+sirin.render.BatchSuite: finished 9.971s
+Test run sirin.render.BatchSuite finished: 1 failed, 0 ignored, 11 total 9.971s
+[error] Failed: Total 11, Failed 1, Errors 0, Passed 10
+[error] Failed tests:
+[error] 	sirin.render.BatchSuite
+[error] (probeRender / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 29 s, completed Oct 28, 2026, 3:03:17 p.m.

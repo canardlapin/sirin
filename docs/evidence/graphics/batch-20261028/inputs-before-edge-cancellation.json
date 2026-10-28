@@ -1,0 +1,24 @@
+{
+  "frozen_before_measurement_utc": "2026-10-28T19:00:50.148460+00:00",
+  "head": "ae1817f1dc6fe54b4b69902c29395520a2f48cb0",
+  "os": "macOS-15.1.1-arm64-arm-64bit-Mach-O",
+  "workspace": "active shared worktree; no release-candidate claim",
+  "sha256": {
+    "probes/render/src/main/scala/sirin/render/BatchProgram.scala": "b0d04d147a9dd0de30ee2571b0e2f2bf62ccd303438b99e6ab10f33ced9ccdf9",
+    "probes/render/src/main/scala/sirin/render/BatchGpu.scala": "95f9ae0c3797816e68e1777585dc3d3ae2038f245b62baa2b56678849748442d",
+    "probes/render/src/main/scala/sirin/render/BatchBenchmark.scala": "ef5a0da51a5bca72fbf2cc5fcbc7009b67e9fe3f9a44824fe95191dfe755704b",
+    "probes/render/src/main/resources/batch.wgsl": "53cfd7c74e20f1163eb806078b8eee072801482651d11e1453b5640a258b5d69",
+    "probes/render/src/main/resources/scala-native/sirin_batch.c": "93608557de58f90c8c0688b56e566dba46ced4c1463d12cbe66ce244a9a78049",
+    "probes/render/src/test/scala/sirin/render/BatchSuite.scala": "aa1d2cd2bada8f10f0825a59cb9ab7b88c802666986fbe6437a2c10a7c5b3417",
+    "docs/evidence/graphics/batch-20261028/contract.json": "9036581d266e355cb7abb30f0a2cadd582fde2bd62e10a386d162c64e0e46093",
+    "graphics/src/test/resources/fonts/NotoSans-Regular.ttf": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "graphics/src/test/resources/fonts/NotoSansHebrew-Regular.ttf": "a7fa16fffb27bedb060a0866267c29e9859aeb9c21cc33f5b3aaf6eb062eca85",
+    "graphics/src/test/resources/fonts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+    "graphics/src/test/resources/fonts/NotoNaskhArabic-Regular.ttf": "2f4b88e6ee50fa82c617e2d1d4ba18281cb1c6cd71c3af3ec64970c23995db4b",
+    "native/vendor/wgpu-macos-aarch64/lib/libwgpu_native.dylib": "e72e8f1777dd0315bfee91c6b7e7b105234d5c1cc1621db4cf92ffee2ac2ae32",
+    "native/vendor/text/lib/libharfbuzz.a": "7a21b090347472453cacdfde4b00ae235b97b306525ea203526bc463ed9b380e",
+    "native/vendor/text/lib/libfreetype.a": "35bd8260dc52e27d3ebbfb0fc5d069436865d41386206944b2de53de92d1e40c",
+    "docs/evidence/graphics/batch-20261028/implementation-revision.json": "7be26112213f13e9a148fdad96c55dca5999c066f91a5c4106445c744a117cbe"
+  },
+  "implementation_revision": "implementation-revision.json; original quality, timing and payload acceptance unchanged"
+}

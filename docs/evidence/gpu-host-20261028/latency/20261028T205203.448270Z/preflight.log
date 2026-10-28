@@ -1,0 +1,23 @@
+{
+  "protocol": "three_interval_samples_idle85_load_half_cpus_v1",
+  "logical_cpus": 10,
+  "samples": [
+    {
+      "at_utc": "2026-10-28T20:52:05.809746+00:00",
+      "cpu_idle_percent": 25.69,
+      "load_1m": 10.57
+    },
+    {
+      "at_utc": "2026-10-28T20:52:13.165181+00:00",
+      "cpu_idle_percent": 29.42,
+      "load_1m": 9.95
+    },
+    {
+      "at_utc": "2026-10-28T20:52:20.336441+00:00",
+      "cpu_idle_percent": 39.33,
+      "load_1m": 9.96
+    }
+  ],
+  "accepted": false,
+  "output": "/private/tmp/sirin-gpu-host-20261028/desktop/target/latency-runs/20261028T205203.448270Z/preflight"
+}

@@ -158,3 +158,49 @@ The older receipt remains the record of the earlier implementation.
 The [curves/reuse contract](../../docs/evidence/graphics/curves-reuse-20261028/contract.json)
 and [receipt](../../docs/evidence/graphics/2026-10-28-curves-reuse.md) cover the next
 bounded continuation. Previous receipts remain historical records of their slices.
+
+## Bounded triangle and texture slice
+
+`BatchGpu` is a separate explicit direct-wgpu device owner in this probe. Its
+`BatchCompiler` intersects winding fills with path clips using a CPU scanbeam
+triangulation. It preserves both fill rules, overlapping stroke unions and
+painter order. Translation-normalized geometry shares a fixed GPU storage arena;
+per-program index/paint records combine consecutive draws into one ordered batch.
+Layer boundaries split batches and use isolated intermediate targets. The shader
+uses padded triangle bounds with canonical half-open fragment predicates to avoid
+hardware edge snapping. It requires Float32Blendable and renders the same 4x4
+sample grid in four streamed rows into linear-premultiplied RGBA32Float
+attachments, then resolves/unpremultiplies to sRGB-straight RGBA8. Streaming keeps
+the higher precision within the original memory bound. The failed half-float and
+fixed-function coverage attempts are retained in the evidence logs.
+
+Exact retained FreeType masks occupy R8Unorm atlas cells (64x64 maximum per glyph).
+Images occupy RGBA32Float texture cells (256x256 maximum per snapshot), decoded to
+linear premultiplied pixels before manual nearest/bilinear `textureLoad` sampling.
+Source-clamped fetches keep adjacent atlas cells independent, including fractional
+crops. Gradient paint stays independent of coverage. Placement uses the mask's
+actual quantized raster density. Atlas cells and geometry spans stay fixed while
+pinned by programs; only idle entries evict. Failed admission rolls back acquired
+references. A replay submits/resolves without uploads; `submit()` synchronously
+waits for completion without readback, while `render()` also returns pixels.
+
+The [frozen contract](../../docs/evidence/graphics/batch-20261028/contract.json)
+sets scene sizes, quality, work/resource bounds and timing budgets before coding.
+The standalone `BatchBenchmark` draws 512 ordered translucent marks, 100 curves,
+16 labels in four scripts, an image and nested clip/layer composition at 320x180
+logical pixels. It measures 10 cold preparations, 120 warmups and 600 completed
+submissions per scale, plus readback, overlay and immutable image replacement.
+It is a bounded implementation corpus, not pinned browser fixtures, GPU timestamp
+profiling, display latency, human visual approval or the full 1280x720 G-1 corpus.
+The host/reference source files remain independent and unchanged by this slice.
+
+```sh
+sbt 'probeRender/testOnly sirin.render.BatchSuite'
+sbt 'set probeRender / Compile / mainClass := Some("sirin.render.BatchBenchmark")' 'probeRender/run'
+```
+
+The completed [batch receipt](../../docs/evidence/graphics/2026-10-28-batch.md)
+contains the four-scale full-corpus pixel comparisons, frozen-budget measurements,
+resource-pressure checks and preserved failed attempts. Exact opposite stroke
+edges are compacted before flattening, and unchanged trapezoid boundaries merge
+across scanbeam strips; existing point/triangle budgets remain unchanged.
