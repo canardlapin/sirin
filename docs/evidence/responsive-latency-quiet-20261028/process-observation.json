@@ -1,0 +1,9 @@
+{
+  "observed_local": "2026-10-28 16:24:09 America/Toronto",
+  "source": "top -l 2 -s 1 -o cpu -n 12 -stats pid,command,cpu,threads; second interval",
+  "pid": 29484,
+  "reported_command": "com.apple.Virtua",
+  "cpu_percent_one_core_100": 190.8,
+  "aggregate_idle_percent": 68.5,
+  "interpretation": "A virtual-machine process used about1.9 cores in this later observation. This does not establish causation for prior samples. No process was stopped."
+}
