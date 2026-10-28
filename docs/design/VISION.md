@@ -377,6 +377,45 @@ row Inputs, atomically to observers. Explicit reparenting owns the panel in a
 stable scope and moves its placement between named outlets; ordinary owner
 changes reset local state.
 
+The headless reconciler settles structural bindings against the candidate graph,
+not arbitrary raw staged writes. Component props and row Inputs therefore obey
+source and output equality cutoffs. Structural edits and delivered Inputs settle
+privately with signals before publication; duplicate keys or builder defects reject
+the whole candidate. A bounded structural pass budget remains distinct from a
+proven dependency cycle. Failed structural bindings expose Unavailable and retire
+the affected subtree; recovery mounts fresh state instead of silently showing
+old content.
+
+Component builders run once per mount and declare state through their new scope.
+Their construction phase permits cell/child/observation/lease declarations only
+within that new ownership subtree. Captured transaction writes, other owners or
+runtimes, arbitrary reads and disposal are forbidden during construction. Props
+remain a read-only Inputs facade. Staged reads, including derivations from Inputs,
+follow the current structural source and ancestor placement through a controlled
+reader; committed propagation uses delivered Inputs and stable equality. Root
+description replacement invalidates speculative memoization. Removed/retyped or
+rekeyed ancestors make old Inputs unavailable during staged reads. Key functions and equality callbacks are read-only as well.
+
+The headless host supports replacing a root description to exercise definition,
+dependency and static-child identity. Moving a description to an ordinary new
+owner resets its state. Headless snapshots describe mounted structure only;
+they do not establish painting, interaction or public native outlet/reparenting.
+ForEach and Switch boundary identity is owner, placement key and structural kind,
+not a builder closure allocation. Retained rows/branches keep their originally
+built descriptions; current descriptions supply Inputs and builders for new keys.
+Changing builder captures for retained state requires live Inputs, explicit stable
+component dependencies or a new boundary key. A boundary keeps its declared equality for its lifetime. Compiler-derived
+SchemaId evidence distinguishes input/key types independently of lambda allocation;
+an incompatible schema resets the boundary. Generic structural helpers carry
+SchemaId evidence to their call sites rather than erasing their parameter types.
+Abstract and value-dependent types require explicit lawful schema IDs; automatic
+derivation accepts static nominal types and static object members, and refuses
+local-object prefixes. Explicit IDs must distinguish incompatible types. Sequence
+and CollectionSource storage representations also have different schemas.
+Keys must have lawful immutable equality/hash behavior. ForEach over small sequences and synchronous keyed cells currently performs
+explicit O(n) reconciliation. Collection change events and viewport realization
+remain separate C1.3/C1.6b obligations.
+
 **Commands.** Definition builders receive stable read-only `CommandStatus`
 (`running: Signal[Int]`, last result, last refusal). Results include invocation
 identity and a current/stale bit for Progressive acceptance. Every dispatch,

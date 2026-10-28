@@ -1,9 +1,9 @@
 # Headless core
 
 The JVM/Native `HeadlessRuntime` implements transactions, static and dynamic
-signals, scoped ownership, observations and queued effects. Widget hosting,
-component reconciliation, tasks, commands, channels and event streams are later
-stages. Calling those unsupported `Scope` methods raises `KernelError.Deferred`;
+signals, scoped ownership, observations, queued effects and keyed headless
+component reconciliation. Widget hosting, tasks, commands, channels and event
+streams are later stages. Calling those unsupported `Scope` methods raises `KernelError.Deferred`;
 there are no successful placeholder implementations.
 
 ```scala
@@ -34,7 +34,9 @@ rejects the whole candidate. The budget is configurable at host construction.
 Scope child names are diagnostic. `scope.mount(position, definition)` exercises
 static owner/position/definition identity. Replacing the definition resets that
 position's scope; placing the same definition twice is an error. This is the
-headless lifecycle boundary, not component rendering or keyed reconciliation.
+static headless lifecycle boundary. `host.mount(owner, view)` separately mounts
+component, stack, ForEach and Switch descriptions and exposes a read-only
+`MountedSnapshot`; opaque leaves are retained without rendering.
 
 Scope operations join an active transaction. Refused attempts undo mounts,
 observations, staged writes and disposal. `scope.callback(action)` validates
@@ -54,3 +56,33 @@ node/edge/owner/cell/watch/job counts, not process memory. The implementation st
 traverses/copies graph metadata each transaction; performance is unqualified.
 
 See `docs/design/VISION.md` for semantics and `docs/evidence/` for qualification.
+
+`Component` builders run once per mount with a stable read-only `Inputs[P]`.
+Same-key ForEach replacement/reordering and same-key keyed Switch updates deliver
+new Inputs while retaining local cells and effects. Changed definition tokens,
+dependency references, placement keys, owners or incompatible input schemas
+remount. Ordinary root description updates are transactional through
+`MountedView.update`; duplicate keys or builder defects roll the candidate back.
+Failed sources expose `MountedSnapshot.Unavailable`, retire their subtree and
+mount fresh state on recovery. There is no native outlet/reparent implementation.
+
+Staged reads from Inputs follow the current source and ancestor placement,
+including source rebinds and removals. Committed propagation respects source and
+output equality. Construction can declare cells/children/observations/leases in
+its new ownership subtree; captured writes and foreign-owner operations refuse.
+ForEach/Switch closure allocation is not boundary identity: retained keys keep
+originally built descriptions. Supply dynamic captures through Inputs or explicit
+component dependencies, or change a boundary key when a new mount is required.
+
+ForEach/Switch require `SchemaId` for complete input and key types. Concrete static
+types derive it; generic helpers forward the relevant evidence to their callers.
+Abstract, local-object and value-dependent types need explicit lawful schema IDs
+that distinguish incompatible types. Sequence and CollectionSource row storage
+representations also have different schemas. A boundary retains its initial
+Equality for its lifetime.
+
+`scope.keyed` supports transactional synchronous keyed mutation and explicit
+`CollectionSource.keyedSnapshot`. This is a small O(n) source/reconciliation path,
+not virtualized realization or minimal change delivery. Collection changes and
+filtered-source revision streams remain deferred. See
+`docs/evidence/c1-reconciliation-20261027.md` for tests, review and limits.

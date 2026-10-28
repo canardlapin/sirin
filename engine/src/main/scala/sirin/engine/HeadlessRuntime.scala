@@ -14,6 +14,8 @@ enum KernelError(message: String) extends RuntimeException(message):
   case ReadOnlyPhase extends KernelError("mutation or undeclared read in a read-only phase")
   case CycleDetected extends KernelError("dependency cycle detected")
   case BudgetExceeded extends KernelError("topology settle pass budget exceeded")
+  case DuplicateKey extends KernelError("duplicate sibling key")
+  case InvalidKeyChange extends KernelError("replacement changed a stable key")
   case DuplicatePlacement extends KernelError("static position already mounted with this definition")
   case Deferred(feature: String) extends KernelError(s"headless feature not implemented: $feature")
 
@@ -34,16 +36,16 @@ trait Subscription:
 final class ScopeDefinition(val name: String)
 final case class ScopeIdentity(owner: Long, position: Int, definition: ScopeDefinition)
 final case class LifetimeSnapshot(scopes: Set[Long], cells: Set[Long], nodes: Int,
-    edges: Int, subscriptions: Int, pendingEffects: Int)
+    edges: Int, subscriptions: Int, pendingEffects: Int, mounts: Int = 0)
 
 object HeadlessRuntime:
-  private final class ReadPhase(val runtime: HeadlessRuntime, val notification: Boolean):
+  private final class ReadPhase(val runtime: HeadlessRuntime, val notification: Boolean, val constructionRoot: Option[Long]):
     var failure: Option[Throwable] = None
   private val phase = new ThreadLocal[Option[ReadPhase]]:
     override def initialValue(): Option[ReadPhase] = None
-  private def readOnly[A](runtime: HeadlessRuntime, notification: Boolean)(body: => A): A =
+  private def readOnly[A](runtime: HeadlessRuntime, notification: Boolean, constructionRoot: Option[Long] = None)(body: => A): A =
     val previous = phase.get()
-    val current = new ReadPhase(runtime, notification)
+    val current = new ReadPhase(runtime, notification, constructionRoot)
     phase.set(Some(current))
     try
       val result = body
@@ -68,6 +70,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
   private val sources = mutable.LinkedHashSet.empty[Source[?]]
   private val scopes = mutable.LinkedHashMap.empty[Long, OwnedScope]
   private val watches = mutable.ArrayBuffer.empty[Watch]
+  private val mounts = mutable.ArrayBuffer.empty[MountedView]
   private final case class EffectJob(live: () => Boolean, run: () => CommitResult[Unit])
   private val effectQueue = mutable.Queue.empty[EffectJob]
   private val reported = mutable.ArrayBuffer.empty[Throwable]
@@ -203,6 +206,39 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
         case CommitResult.Refused(reason) => throw new IllegalStateException(reason)
         case CommitResult.Joined(_) => throw new IllegalStateException("unexpected nested mount")
 
+  private def construct[A](scope: OwnedScope)(body: => A): A =
+    checkOwner()
+    HeadlessRuntime.phase.get() match
+      case Some(p) if p.constructionRoot.nonEmpty =>
+        def under(s: OwnedScope): Boolean = p.constructionRoot.contains(s.id) || s.parent.exists(under)
+        if (p.runtime ne this) || !under(scope) then fail(KernelError.ReadOnlyPhase)
+        HeadlessRuntime.phase.set(None)
+        try body
+        finally HeadlessRuntime.phase.set(Some(p))
+      case _ => body
+
+  private[engine] def lawful[A](body: => A): A = guarded(body)
+  private[engine] def capability[A](txn: UiTxn)(body: => A): A = transaction(txn).boundary(body)
+  private[engine] def build[A](scope: OwnedScope)(body: => A): A =
+    HeadlessRuntime.readOnly(this, false, Some(scope.id))(body)
+  private[engine] def structuralEdit[A](body: UiTxn ?=> A): A = edit(t => body(using t))
+  private[engine] def recordUndo(action: () => Unit): Unit = active.get.undo += action
+  private[engine] def invalidateReads(): Unit = active.get.memo.clear()
+  private[engine] def scopeAvailable(scope: OwnedScope): Boolean =
+    valid(scope, active.fold(Set.empty[OwnedScope])(_.disposals.toSet))
+
+  private def mountedAvailable(mount: MountedView, disposed: Set[OwnedScope] = Set.empty): Boolean =
+    (mount.runtime eq this) && scopes.get(mount.owner.id).exists(valid(_, disposed))
+
+  def mount(owner: OwnedScope, view: View): MountedView = structuralEdit {
+    checkScope(owner)
+    val root = owner.child("headless-mount")
+    val mounted = new MountedView(this)(root, view)
+    mounts += mounted
+    recordUndo(() => mounts -= mounted)
+    mounted
+  }
+
   /** Names are diagnostic; explicit mount supplies static positional identity. */
   def scope(name: String): OwnedScope = edit { t => createScope(name, None, None, t) }
 
@@ -223,9 +259,9 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     private[HeadlessRuntime] val pins = mutable.LinkedHashSet.empty[Signal[?]]
     private[HeadlessRuntime] val releases = mutable.ArrayBuffer.empty[() => Unit]
     def isDisposed: Boolean = { checkOwner(); !valid(this) }
-    def cell[A](initial: A)(using Equality[A]): Cell[A] = edit { _ => checkScope(this); createCell(initial, Some(this)) }
-    def child(name: String): OwnedScope = edit(t => createScope(name, Some(this), None, t))
-    def mount(position: Int, definition: ScopeDefinition): OwnedScope = edit { t =>
+    def cell[A](initial: A)(using Equality[A]): Cell[A] = construct(this) { edit { _ => checkScope(this); createCell(initial, Some(this)) } }
+    def child(name: String): OwnedScope = construct(this) { edit(t => createScope(name, Some(this), None, t)) }
+    def mount(position: Int, definition: ScopeDefinition): OwnedScope = construct(this) { edit { t =>
       require(position >= 0, "nonnegative static position required")
       checkScope(this)
       scopes.values.find(s => s.identity.exists(i => i.owner == id && i.position == position) && valid(s, t.disposals.toSet)).foreach { existing =>
@@ -234,21 +270,21 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
         t.memo.clear()
       }
       createScope(definition.name, Some(this), Some(ScopeIdentity(id, position, definition)), t)
-    }
+    } }
     def dispose()(using txn: UiTxn): Unit = transaction(txn).boundary {
       if live then
         active.get.disposals += this
         active.get.memo.clear()
     }
-    def onDispose(callback: () => Unit): Unit = edit { t =>
+    def onDispose(callback: () => Unit): Unit = construct(this) { edit { t =>
       checkScope(this)
       releases += callback
       t.undo += (() => { releases -= callback; release(callback) })
-    }
-    def observe[A](signal: Signal[A])(callback: Value[A] => Unit): Subscription = edit { t =>
+    } }
+    def observe[A](signal: Signal[A])(callback: Value[A] => Unit): Subscription = construct(this) { edit { t =>
       checkScope(this)
       addWatch(signal, Some(this), value => callback(value.asInstanceOf[Value[A]]), Some(t))
-    }
+    } }
     def effect[A](signal: Signal[A])(run: A => Action): Unit =
       observe(signal) {
         case Value.Ok(value) => enqueue(Some(this), () => true, () => transact(run(value)))
@@ -257,7 +293,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
       ()
     /** A generation-checked asynchronous delivery; stale delivery is a no-op. */
     def callback(run: Action): () => CommitResult[Unit] =
-      checkScope(this)
+      construct(this) { checkScope(this) }
       val stamp = generation
       () =>
         mutation()
@@ -279,7 +315,10 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
         pins -= signal
         throw error
     private def deferred[A](feature: String): A = { checkScope(this); fail(KernelError.Deferred(feature)) }
-    def keyed[K, A](initial: Seq[A])(key: A => K): KeyedCell[K, A] = deferred("keyed collections")
+    def keyed[K, A](initial: Seq[A])(key: A => K)(using Equality[A]): KeyedCell[K, A] = construct(this) { edit { _ =>
+      checkScope(this)
+      SynchronousKeyedCell.create(HeadlessRuntime.this)(this, initial, key)
+    } }
     def events[A]: EventSource[A] = deferred("events")
     def ref(): NodeRef = deferred("node references")
     def on[A](event: Event[A])(run: A => Action): Unit = deferred("events")
@@ -354,7 +393,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     checkOwner()
     LifetimeSnapshot(scopes.values.filter(valid(_)).map(_.id).toSet,
       sources.filter(s => s.live && s.scope.forall(valid(_))).map(_.id).toSet,
-      nodes.size, nodes.values.map(_.inputs.size).sum, watches.count(watchLive(_)), effectQueue.count(_.live()))
+      nodes.size, nodes.values.map(_.inputs.size).sum, watches.count(watchLive(_)), effectQueue.count(_.live()), mounts.count(m => mountedAvailable(m, active.fold(Set.empty[OwnedScope])(_.disposals.toSet))))
 
   def afterCommit(callback: () => Unit)(using txn: UiTxn): Unit = transaction(txn).boundary { active.get.after += callback }
 
@@ -396,6 +435,14 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
           checkSource(source)
           writes.get(source).map(Value.Ok(_)).getOrElse(nodes(source).value)
         case constant: Signal.Constant[?] => Value.Ok(constant.value)
+        case input: Signal.Input[?] => staged(input.delivered) match
+          case Value.Failed(error) => Value.Failed(error)
+          case Value.Ok(_) =>
+            try staged(guarded(input.speculative(reader)))
+            catch
+              case failure: Signal.InputFailure => Value.Failed(failure.error)
+              case error: KernelError => throw error
+              case NonFatal(error) => Value.Failed(error)
         case derived: Signal.Derived[?] => compute(derived, reader)
         case dynamic: Signal.Dynamic[?, ?] => staged(dynamic.input) match
           case Value.Failed(error) => Value.Failed(error)
@@ -470,11 +517,13 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
   private def graphRoots(disposed: Set[OwnedScope]): Vector[Signal[?]] =
     (sources.iterator.filter(s => s.live && s.scope.forall(valid(_, disposed))).map(s => s: Signal[?]) ++
       roots.iterator ++ scopes.valuesIterator.filter(valid(_, disposed)).flatMap(_.pins) ++
-      watches.iterator.filter(watchLive(_, disposed)).map(_.signal)).toVector.distinct
+      watches.iterator.filter(watchLive(_, disposed)).map(_.signal) ++
+      mounts.iterator.filter(m => mountedAvailable(m, disposed)).flatMap(_.dependencies)).toVector.distinct
 
   /** Values and topology are copied. Only the final settled graph is installed. */
-  private def settle(writes: collection.Map[Source[?], Any], disposed: Set[OwnedScope]): mutable.LinkedHashMap[Signal[?], Node] =
-    val work: mutable.LinkedHashMap[Signal[?], Node] = mutable.LinkedHashMap.from(nodes.iterator.map((s, n) => s -> n.copyNode()))
+  private def settle(writes: collection.Map[Source[?], Any], disposed: Set[OwnedScope],
+      base: collection.Map[Signal[?], Node] = nodes): mutable.LinkedHashMap[Signal[?], Node] =
+    val work: mutable.LinkedHashMap[Signal[?], Node] = mutable.LinkedHashMap.from(base.iterator.map((s, n) => s -> n.copyNode()))
     val required = graphRoots(disposed)
     var dirty = Set.empty[Signal[?]]
     var pass = 0
@@ -493,7 +542,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
           val node = work.getOrElseUpdate(signal, signal match
             case source: Source[?] =>
               if source.runtime ne this then throw KernelError.ForeignSignal
-              new Node(source, Vector.empty, source.equality.asInstanceOf[Equality[Any]], Value.Ok(source.initial), true)
+              new Node(source, Vector.empty, source.equality.asInstanceOf[Equality[Any]], Value.Ok(source.initial), source.committed)
             case constant: Signal.Constant[?] => new Node(signal, Vector.empty, constant.valueEquality.asInstanceOf[Equality[Any]], Value.Ok(constant.value), true)
             case derived: Signal.Derived[?] => new Node(signal, derived.inputs, derived.equality.asInstanceOf[Equality[Any]], Value.Failed(KernelError.BudgetExceeded), false)
             case dynamic: Signal.Dynamic[?, ?] => new Node(signal, Vector(dynamic.input), dynamic.equality.asInstanceOf[Equality[Any]], Value.Failed(KernelError.BudgetExceeded), false)
@@ -555,8 +604,19 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     nodes.clear(); nodes ++= graph
 
   private def publish(txn: Transaction): Vector[() => Unit] =
+    var candidate = settle(txn.writes, txn.disposals.toSet)
+    var structuralPass = 0
+    var changedStructure = true
+    while changedStructure do
+      if structuralPass >= settleBudget then throw KernelError.BudgetExceeded
+      structuralPass += 1
+      changedStructure = false
+      val read: Signal[?] => Option[Value[Any]] = s => candidate.get(s).map(_.value)
+      mounts.toVector.filter(m => mountedAvailable(m, txn.disposals.toSet)).foreach { mount =>
+        if mount.reconcile(read)(using txn) then changedStructure = true
+      }
+      if changedStructure then candidate = settle(txn.writes, txn.disposals.toSet, candidate)
     val disposed = txn.disposals.toSet
-    val candidate = settle(txn.writes, disposed)
     val revisions = txn.writes.iterator.collect {
       case (source, value) if source.committed && source.live && source.scope.forall(valid(_, disposed)) &&
           !same(source.equality.asInstanceOf[Equality[Any]], nodes(source).value, Value.Ok(value)) => source -> source.revision.next
@@ -573,6 +633,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     sources.filterInPlace(s => s.live && s.scope.forall(valid(_)))
     sources.foreach(_.committed = true)
     watches.filterInPlace(watchLive(_))
+    mounts.filterInPlace(m => mountedAvailable(m))
     compactEffects()
     notifying = true
     try HeadlessRuntime.readOnly(this, true) {
@@ -605,7 +666,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100):
     installation()
     val releases = scopes.values.toVector.reverse.flatMap(_.releases.toVector.reverse)
     scopes.values.foreach { s => s.live = false; s.generation += 1; s.releases.clear(); s.pins.clear() }
-    scopes.clear(); watches.clear(); effectQueue.clear(); roots.clear(); nodes.clear(); sources.clear()
+    scopes.clear(); watches.clear(); mounts.clear(); effectQueue.clear(); roots.clear(); nodes.clear(); sources.clear()
     // Keep ownership guards active during release, then invalidate the host.
     releases.foreach(release)
     closed = true

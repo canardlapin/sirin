@@ -102,12 +102,15 @@ trait Signal[+A]:
       case _ => false)
 
 object Signal:
+  private[sirin] final class InputFailure(val error: Throwable) extends scala.util.control.ControlThrowable
   private[sirin] trait Reader:
     def apply[A](signal: Signal[A]): Value[A]
     def revision(cell: Cell[?]): Revision
   private[sirin] final class Constant[A](val value: A) extends Signal[A]
-  private[sirin] final class Derived[A](val inputs: Vector[Signal[?]], val compute: Reader => Value[A], val equality: Equality[A]) extends Signal[A]:
+  private[sirin] class Derived[A](val inputs: Vector[Signal[?]], val compute: Reader => Value[A], val equality: Equality[A]) extends Signal[A]:
     override private[sirin] def valueEquality: Equality[A] = equality
+  private[sirin] final class Input[A](val delivered: Signal[A], val speculative: Reader => Signal[A])
+      extends Derived[A](Vector(delivered), reader => reader(delivered), delivered.valueEquality) with Inputs[A]
   private[sirin] final class Dynamic[A, B](val input: Signal[A], val select: A => Signal[B], val equality: Equality[B]) extends Signal[B]:
     override private[sirin] def valueEquality: Equality[B] = equality
 

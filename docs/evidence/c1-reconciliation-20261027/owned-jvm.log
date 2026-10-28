@@ -1,0 +1,46 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (10223 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.043s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.085s
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.069s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.109s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.128s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.128s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 2 s, completed Oct 27, 2026, 8:24:05 p.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.161s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.162s
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TopologyLifetimeSuite: finished 0.238s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.243s
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.ReconciliationSuite: finished 0.573s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.574s
+[info] Passed: Total 81, Failed 0, Errors 0, Passed 81
+[success] Total time: 7 s, completed Oct 27, 2026, 8:24:13 p.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/testkit/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.testkit.ReferenceAgreementSuite started
+sirin.testkit.ReferenceAgreementSuite: finished 2.943s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.946s
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 5.291s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 5.298s
+Test run sirin.testkit.LifetimeAgreementSuite started
+sirin.testkit.LifetimeAgreementSuite: finished 7.604s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 7.604s
+[info] Passed: Total 5, Failed 0, Errors 0, Passed 5
+[success] Total time: 10 s, completed Oct 27, 2026, 8:24:23 p.m.
+[info] compiling 6 Scala sources to /Users/bbuchsbaum/code/scala/sirin/examples/target/scala-3.7.4/classes ...
+[info] done compiling
+[success] Total time: 2 s, completed Oct 27, 2026, 8:24:25 p.m.

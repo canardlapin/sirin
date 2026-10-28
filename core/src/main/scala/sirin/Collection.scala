@@ -27,6 +27,9 @@ trait CollectionSource[K, +A]:
 
   /** An O(n) copy of the whole collection; named so the cost is visible. */
   def snapshot: Signal[IndexedSeq[A]]
+
+  /** Explicit O(n) key/value copy for synchronous full-list reconciliation. */
+  def keyedSnapshot: Signal[IndexedSeq[(K, A)]]
   def filterBy[Q](query: Signal[Q])(keep: (Q, A) => Boolean): CollectionSource[K, A]
 
 /** A UI-owned keyed collection. Writes are transactional. */

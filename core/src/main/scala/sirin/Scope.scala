@@ -24,7 +24,7 @@ trait NodeRef:
   */
 trait Scope:
   def cell[A](initial: A)(using Equality[A]): Cell[A]
-  def keyed[K, A](initial: Seq[A])(key: A => K): KeyedCell[K, A]
+  def keyed[K, A](initial: Seq[A])(key: A => K)(using Equality[A]): KeyedCell[K, A]
   def events[A]: EventSource[A]
   def ref(): NodeRef
 

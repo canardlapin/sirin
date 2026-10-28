@@ -12,11 +12,11 @@ trait ViewRebuild[V <: View]:
   def apply(view: V, decoration: Decoration): V
 
 object ViewRebuild:
-  given ViewRebuild[View] = ???
+  given ViewRebuild[View] = (view, decoration) => View.Decorated(view, decoration)
   given ViewRebuild[TextView] = ???
   given ViewRebuild[TextFieldView] = ???
   given ViewRebuild[ButtonView] = ???
-  given ViewRebuild[StackView] = ???
+  given ViewRebuild[StackView] = (view, decoration) => View.StackDecoration(view, decoration)
 
 enum Decoration:
   case Padding(horizontal: Lp, vertical: Lp)
@@ -52,7 +52,16 @@ extension [V <: View](view: V)(using rebuild: ViewRebuild[V])
   def offset(value: Presentation[Point]): V = rebuild(view, Decoration.Offset(value))
 
 object View:
-  def empty: View = ???
+  private[sirin] case object Empty extends View
+  private[sirin] final case class Decorated(view: View, decoration: Decoration) extends View
+  private[sirin] final case class Stack(children: Vector[View], horizontal: Boolean,
+      gap: Option[Lp] = None, alignment: Option[Alignment] = None) extends StackView:
+    def spacing(value: Lp): StackView = copy(gap = Some(value))
+    def align(value: Alignment): StackView = copy(alignment = Some(value))
+  private[sirin] final case class StackDecoration(view: StackView, decoration: Decoration) extends StackView:
+    def spacing(value: Lp): StackView = copy(view = view.spacing(value))
+    def align(value: Alignment): StackView = copy(view = view.align(value))
+  def empty: View = Empty
 
 trait TextView extends View:
   def style(s: TextStyle): TextView
@@ -107,10 +116,10 @@ trait StackView extends View:
   def align(cross: Alignment): StackView
 
 object Column:
-  def apply(children: View*): StackView = ???
+  def apply(children: View*): StackView = View.Stack(children.toVector, horizontal = false)
 
 object Row:
-  def apply(children: View*): StackView = ???
+  def apply(children: View*): StackView = View.Stack(children.toVector, horizontal = true)
 
 object Spacer:
   def apply(): View         = ???
@@ -158,16 +167,25 @@ object Popup:
 
 /** Row builder runs once per mounted key, receiving live Inputs. */
 object ForEach:
-  def apply[K, A](source: CollectionSource[K, A])(row: Inputs[A] => View): View = ???
+  private[sirin] final case class Description[K, A](items: Signal[Seq[A]], key: A => K,
+      row: Inputs[A] => View, equality: Equality[A], schema: String) extends View
+  def apply[K, A](source: CollectionSource[K, A])(row: Inputs[A] => View)(using Equality[A], SchemaId[K], SchemaId[A]): View =
+    Description(source.keyedSnapshot, (pair: (K, A)) => pair._1,
+      (inputs: Inputs[(K, A)]) => row(Inputs.from(inputs.map(_._2))),
+      (a, b) => a._1 == b._1 && summon[Equality[A]].same(a._2, b._2), s"source:${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")
   /** Explicit O(n) reconciliation for small sequences. */
-  def apply[K, A](items: Signal[Seq[A]], key: A => K)(row: Inputs[A] => View): View = ???
+  def apply[K, A](items: Signal[Seq[A]], key: A => K)(row: Inputs[A] => View)(using Equality[A], SchemaId[K], SchemaId[A]): View =
+    Description(items, key, row, summon[Equality[A]], s"sequence:${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")
 
 object Switch:
   /** Unequal values remount the branch. */
-  def apply[A](value: Signal[A])(branch: A => View): View = ???
+  private[sirin] final case class Plain[A](value: Signal[A], branch: A => View, equality: Equality[A], schema: String) extends View
+  private[sirin] final case class Keyed[K, A](value: Signal[A], key: A => K, branch: Inputs[A] => View, equality: Equality[A], schema: String) extends View
+  def apply[A](value: Signal[A])(branch: A => View)(using Equality[A], SchemaId[A]): View = Plain(value, branch, summon[Equality[A]], summon[SchemaId[A]].value)
   /** Same key preserves the branch and delivers live replacement Inputs. */
-  def keyed[K, A](value: Signal[A])(key: A => K)(branch: Inputs[A] => View): View = ???
+  def keyed[K, A](value: Signal[A])(key: A => K)(branch: Inputs[A] => View)(using Equality[A], SchemaId[K], SchemaId[A]): View =
+    Keyed(value, key, branch, summon[Equality[A]], s"${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")
 
 object Show:
   /** Boolean keyed Switch sugar; no new lifetime model. */
-  def apply(when: Signal[Boolean])(content: => View): View = ???
+  def apply(when: Signal[Boolean])(content: => View): View = Switch(when)(value => if value then content else View.empty)
