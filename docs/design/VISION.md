@@ -467,6 +467,67 @@ Keys must have lawful immutable equality/hash behavior. ForEach over small seque
 explicit O(n) reconciliation. Collection change events and viewport realization
 remain separate C1.3/C1.6b obligations.
 
+**Retained outlets and synchronous virtualization.** Registrations created in an
+aborted transaction are invalid permanently, even when their owner survives.
+Candidate attachment buffers are cleared after every publication attempt.
+Filtered reads inside a handler follow staged source and query values, including
+chained filters and recovery from failure; committed materialization remains the
+scroll-time source. Materialized projections settle before structural mount
+decisions, so a simultaneous viewport/query edit cannot retire rows from an
+intermediate projection. Delivery of unequal retained Inputs defers descendant
+reconciliation until the next settled pass (component, keyed row and keyed
+switch alike). A headless NodeRef owns an
+attachment identity; DockOutlet(ref) declares an outlet attachment. This slice
+implements attachment/docking only: focus, native accessibility and input APIs
+remain explicitly deferred. A ref attaches to at most one live structural node;
+foreign refs fail. Reparent registers one runtime-global key with a stable owning
+scope and mounts its content under that owner, independently of placement. Its
+`.at(target)` description requests one placement. Duplicate live global keys,
+multiple placement descriptions for a panel, duplicate ref attachments and more
+than one panel in an outlet reject the candidate. Missing/disposed/unmounted
+outlets hide the panel without disposing it; its tasks, effects and drafts remain
+owned. Owner disposal retires content and clears placement. Moving a target is
+transactional and changes placement without rebuilding the content. Candidate
+attachment/placement claims are rebuilt each structural pass, so removed branches
+cannot leave stale claims. A panel targeting its own content, or a cycle through
+nested panels/outlets, is a proven structural cycle and rejects publication.
+Headless snapshots expose outlet content and retained panel identity; they do not
+establish native placement, focus or painting.
+
+CollectionSource.window(bounds) is a reactive, revision-tagged range protocol:
+entries, actual first index, total size and revision come from one candidate
+source state. Bounds clamp to the source; window production copies only that
+range. VirtualRows uses it without calling snapshot/keyedSnapshot or scanning
+the whole source. Headless mounts accept host-supplied root/default or per-node
+viewports; a new viewport defaults to zero height and realizes nothing. Positive
+finite row height, nonnegative finite offset/height and nonnegative overscan are
+required. The half-open viewport includes partially visible rows; overscan extends
+both ends and clamps to the source. Zero height realizes no overscan. Leading and
+trailing extents are finite and reflect unrealized rows. Visible keyed rows retain
+Inputs/drafts across replacement, reorder and overlapping scroll; leaving the
+realized range disposes that row scope. Selection and persistent edits belong to
+the caller's list/document model, not to ephemeral realized rows. Viewport edits,
+row creation/retirement, content and revisions publish or roll back together.
+Replacing a source rebinds its window while retaining compatible realized keys;
+failed sources retire realized content and expose Unavailable until recovery.
+
+Filtered sources own a synchronous materialized projection in the originating
+scope. Source/query changes may scan and rebuild that projection; viewport-only
+changes must not rerun the predicate or compare the whole stored list. Its
+revision advances once per unequal final published projection, including failure
+transitions; changes batches span successive readable revisions and may have an
+empty delta list after recovery. Initial readable publication is initialization.
+Failures are visible through revision/window/value signals and do not emit an
+unrepresentable Changes failure. Requested projection successes/failures stay stable while their dependencies
+are unchanged. Staged memo invalidation follows recorded read dependencies on
+source writes; rollback, disposal and description changes clear it completely.
+Chained filters settle privately and share the
+same event-capacity preflight/rollback as keyed sources. Internal comparisons of
+an identical immutable Value wrapper may cut off immediately under lawful
+reflexive equality; unequal staged writes still cross the equality guard. This
+slice is synchronous, not remote paging, variable-height realization, scroll
+anchoring, editing persistence policy or a production rendering qualification.
+
 **Commands.** Definition builders receive stable read-only `CommandStatus`
 (`running: Signal[Int]`, last result, last refusal). Results include invocation
 identity and a current/stale bit for Progressive acceptance. Every dispatch,
@@ -549,8 +610,8 @@ contains from/to cell revisions and deterministic removals, insertions, moves an
 same-key replacements; intermediate mutations/change-and-restore and failed
 transactions produce no batch. It joins the same event capacity preflight. The
 first publication of a new source is initialization, not a change from revision
-zero. Filtered CollectionSource revision/delta streams and viewport realization
-remain the separate C1.6b slice.
+zero. Filtered CollectionSource revision/delta streams and fixed-height viewport
+realization follow the materialization and lifetime contract above.
 
 Debounce exposes the initial settled value immediately, then replaces one pending
 value/deadline per binding after each unequal final committed input. Success and

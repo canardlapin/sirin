@@ -1,0 +1,59 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (18370 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.RetainedVirtualSuite started
+sirin.engine.RetainedVirtualSuite: finished 0.169s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 11 total 0.178s
+[info] Passed: Total 11, Failed 0, Errors 0, Passed 11
+[success] Total time: 4 s, completed Oct 28, 2026, 9:28:12 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/testkit/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/testkit/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+==> X sirin.testkit.VirtualCollectionAgreementSuite.projection revisions, visible intervals, identity and draft lifetimes agree with full-state oracle 0.765s munit.ComparisonFailException: testkit/src/test/scala/sirin/testkit/VirtualCollectionAgreementSuite.scala:60
+59:          actual.zip(next.rows).foreach { case ((_, id), model) =>
+60:            assertEquals(identities.getOrElseUpdate(model.generation, id), id)
+61:            assertEquals(read(r, drafts(id)), model.draft)
+values are not the same
+=> Obtained
+36
+=> Diff (- expected, + obtained)
+-81
++36
+
+Failing seed: YEAVdNtKwoifoE7RcMdB49UHXE-KFjDWhtaPwpPxjPO=
+You can reproduce this failure by adding the following override to your suite:
+
+  override def scalaCheckInitialSeed = "YEAVdNtKwoifoE7RcMdB49UHXE-KFjDWhtaPwpPxjPO="
+
+Falsified after 42 passed tests.
+> ARG_0: List("(Vector(Scroll(106,40)),false)", "(Vector(Scroll(73,10), Filter(4)),false)")
+> ARG_0_ORIGINAL: List("(Vector(Scroll(106,40), Assign(Vector(0, 20, 2, 3, 26, 24, 31, 7, 8, 9, 10, 11, 12, 27, 14, 25, 29, 17, 18, 30))),false)", "(Vector(Scroll(73,10), Filter(4)),false)", "(Vector(Scroll(177,10), Scroll(107,0)),false)", "(Vector(Scroll(285,25), Scroll(3,10)),false)", "(Vector(Assign(Vector(28, 1, 2, 3, 23, 5, 6, 7, 8, 25, 10, 11, 12, 24, 14, 22, 20, 17, 34, 19)), Assign(Vector(0, 27, 2, 31, 25, 22, 6, 7, 8, 29, 10, 11, 32, 34, 14, 15, 33, 17, 18, 21))),false)", "(Vector(Scroll(171,40), Scroll(233,40)),false)", "(Vector(Assign(Vector(26, 1, 2, 3, 4, 29, 31, 7, 23, 9, 33, 11, 12, 13, 14, 27, 24, 17, 18, 21)), Assign(Vector(0, 25, 2, 3, 20, 5, 27, 7, 8, 30, 21, 11, 12, 13, 34, 15, 16, 26, 31, 19))),false)", "(Vector(Assign(Vector(30, 1, 2, 3, 25, 23, 6, 20, 32, 9, 21, 11, 22, 13, 14, 27, 16, 17, 18, 19)), Scroll(277,10)),false)", "(Vector(Scroll(335,40), Scroll(213,40)),false)", "(Vector(Assign(Vector(0, 23, 21, 3, 26, 30, 6, 7, 8, 27, 10, 11, 32, 13, 25, 15, 31, 24, 22, 19)), Filter(31)),false)", "(Vector(Assign(Vector(0, 21, 2, 20, 33, 5, 31, 28, 29, 34, 10, 23, 12, 27, 14, 15, 25, 30, 18, 19)), Filter(7)),true)", "(Vector(Scroll(13,40), Filter(28)),false)", "(Vector(Assign(Vector(0, 1, 27, 32, 24, 25, 6, 7, 8, 9, 10, 21, 31, 13, 14, 15, 16, 22, 28, 19)), Assign(Vector(22, 1, 33, 3, 4, 5, 6, 32, 8, 28, 10, 20, 24, 21, 31, 15, 25, 17, 18, 34))),true)", "(Vector(Filter(3), Filter(2)),false)", "(Vector(Assign(Vector(0, 23, 29, 28, 4, 25, 33, 7, 21, 9, 10, 32, 22, 13, 20, 30, 16, 17, 26, 19)), Scroll(216,10)),false)", "(Vector(Filter(15), Filter(1)),false)", "(Vector(Scroll(168,0), Scroll(138,10)),false)", "(Vector(Scroll(195,40), Scroll(313,25)),true)", "(Vector(Scroll(226,10), Assign(Vector(0, 32, 2, 3, 31, 5, 6, 7, 21, 20, 22, 11, 33, 27, 14, 15, 16, 24, 23, 28))),false)", "(Vector(Scroll(239,10), Assign(Vector(0, 1, 2, 3, 28, 5, 6, 7, 21, 27, 20, 26, 30, 22, 14, 23, 31, 24, 18, 19))),false)", "(Vector(Scroll(161,10), Scroll(240,0)),false)", "(Vector(Scroll(244,40), Assign(Vector(23, 1, 2, 21, 4, 20, 6, 7, 31, 9, 10, 11, 27, 13, 25, 15, 16, 17, 18, 34))),false)", "(Vector(Scroll(113,25), Scroll(29,10)),false)", "(Vector(Assign(Vector(0, 1, 2, 3, 4, 25, 31, 7, 21, 9, 34, 27, 33, 13, 14, 28, 16, 17, 18, 20)), Scroll(181,10)),false)", "(Vector(Assign(Vector(0, 30, 2, 32, 4, 22, 25, 28, 8, 9, 10, 33, 21, 13, 14, 29, 16, 17, 18, 19)), Scroll(166,10)),false)", "(Vector(Scroll(279,10), Assign(Vector())),false)", "(Vector(Assign(Vector(0, 1, 33, 3, 34, 5, 6, 7, 27, 29, 10, 30, 22, 20, 21, 15, 32, 31, 18, 23)), Filter(13)),false)", "(Vector(Scroll(167,0), Assign(Vector())),true)", "(Vector(Assign(Vector(0, 31, 24, 3, 25, 5, 6, 34, 8, 33, 10, 11, 12, 13, 28, 15, 16, 17, 32, 19)), Assign(Vector())),false)", "(Vector(Scroll(50,25), Assign(Vector(29, 33, 27, 25, 4, 5, 6, 26, 8, 9, 24, 11, 12, 13, 22, 23, 30, 17, 18, 32))),false)", "(Vector(Scroll(327,40), Scroll(170,10)),false)", "(Vector(Scroll(258,25), Scroll(348,40)),false)", "(Vector(Assign(Vector()), Assign(Vector(32, 34, 28, 27, 23, 5, 6, 7, 33, 9, 29, 11, 12, 13, 14, 25, 24, 17, 18, 19))),false)", "(Vector(Filter(2), Scroll(151,40)),true)", "(Vector(Scroll(321,25), Filter(9)),false)", "(Vector(Assign(Vector()), Filter(7)),false)", "(Vector(Scroll(231,40), Assign(Vector(0, 1, 22, 3, 24, 33, 6, 7, 20, 9, 26, 25, 12, 13, 14, 15, 23, 17, 31, 19))),false)", "(Vector(Scroll(202,40), Filter(24)),true)", "(Vector(Filter(0), Assign(Vector(0, 1, 2, 3, 33, 5, 31, 7, 8, 32, 10, 27, 30, 26, 14, 34, 21, 29, 18, 19))),false)", "(Vector(Scroll(100,40), Scroll(183,40)),false)")
+    at munit.ComparisonFailException.withMessage(ComparisonFailException.scala:55)
+    at munit.ComparisonFailException.withMessage(ComparisonFailException.scala:47)
+    at munit.ScalaCheckSuite.propToTry(ScalaCheckSuite.scala:104)
+    at munit.ScalaCheckSuite.$init$$$anonfun$1$$anonfun$1$$anonfun$1(ScalaCheckSuite.scala:58)
+    at scala.concurrent.impl.Promise$Transformation.run(Promise.scala:475)
+    at munit.Suite$$anon$1.execute(Suite.scala:28)
+    at scala.concurrent.impl.Promise$Transformation.submitWithValue(Promise.scala:429)
+    at scala.concurrent.impl.Promise$DefaultPromise.submitWithValue(Promise.scala:338)
+    at scala.concurrent.impl.Promise$DefaultPromise.dispatchOrAddCallbacks(Promise.scala:312)
+    at scala.concurrent.impl.Promise$DefaultPromise.transform(Promise.scala:128)
+    at munit.ScalaCheckSuite.$init$$$anonfun$1$$anonfun$1(ScalaCheckSuite.scala:60)
+    at munit.Test.withBodyMap$$anonfun$1(Test.scala:30)
+    at munit.MUnitRunner.runTestBody$$anonfun$1$$anonfun$1(MUnitRunner.scala:298)
+sirin.testkit.VirtualCollectionAgreementSuite: finished 0.768s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 1 failed, 0 ignored, 1 total 0.77s
+[error] Failed: Total 1, Failed 1, Errors 0, Passed 0
+[error] Failed tests:
+[error] 	sirin.testkit.VirtualCollectionAgreementSuite
+[error] (testkitJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 3 s, completed Oct 28, 2026, 9:28:15 a.m.

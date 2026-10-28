@@ -109,6 +109,8 @@ object Signal:
   private[sirin] final class Constant[A](val value: A) extends Signal[A]
   private[sirin] class Derived[A](val inputs: Vector[Signal[?]], val compute: Reader => Value[A], val equality: Equality[A]) extends Signal[A]:
     override private[sirin] def valueEquality: Equality[A] = equality
+  private[sirin] final class Speculative[A](val delivered: Signal[A], val speculative: Reader => Value[A])
+      extends Derived[A](Vector(delivered), reader => reader(delivered), delivered.valueEquality)
   private[sirin] final class Input[A](val delivered: Signal[A], val speculative: Reader => Signal[A])
       extends Derived[A](Vector(delivered), reader => reader(delivered), delivered.valueEquality) with Inputs[A]
   private[sirin] final class Dynamic[A, B](val input: Signal[A], val select: A => Signal[B], val equality: Equality[B]) extends Signal[B]:

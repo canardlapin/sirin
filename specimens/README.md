@@ -84,3 +84,9 @@ qualifies visual quality, accessibility, focus,
 keyboard use, text editing, startup, packaging or the clear usability/elegance
 superiority required by VISION §1.1. A matched interactive JVM workbench and
 competent ScalaFX UI remain the acceptance experiment once the Sirin host exists.
+
+`StructuralWorkbench` adds a public-API filtered 1,000-row source, two retained
+editor outlets and a fixed-height virtual list. Its test supplies a headless
+viewport and drives filter/move actions. It is a structural specimen, not a
+visible or interactive app. The [host plan](../docs/plans/2026-10-28-interactive-host.md)
+defines the next visible implementation and matched ScalaFX experiment.

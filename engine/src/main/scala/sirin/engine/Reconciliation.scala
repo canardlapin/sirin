@@ -4,6 +4,9 @@ import sirin.*
 
 enum MountedSnapshot:
   case Empty
+  case Outlet(reference: Long, child: MountedSnapshot)
+  case Reparented(key: GlobalKey, instance: Long, child: MountedSnapshot)
+  case VirtualRows(instance: Long, revision: Revision, first: Int, total: Int, leading: Lp, trailing: Lp, rows: MountedSnapshot)
   /** Opaque leaf description; no painting or input routing is performed. */
   case Leaf(view: View)
   case Group(children: Vector[MountedSnapshot])
@@ -15,6 +18,10 @@ enum MountedSnapshot:
 object MountedSnapshot:
   private[engine] val equality: Equality[MountedSnapshot] = (a, b) => (a, b) match
     case (Empty, Empty) => true
+    case (Outlet(i, x), Outlet(j, y)) => i == j && equality.same(x, y)
+    case (Reparented(k, i, x), Reparented(l, j, y)) => k == l && i == j && equality.same(x, y)
+    case (VirtualRows(i, r, f, t, l, e, x), VirtualRows(j, s, g, u, m, h, y)) =>
+      i == j && r == s && f == g && t == u && l == m && e == h && equality.same(x, y)
     case (Leaf(x), Leaf(y)) => x == y
     case (Group(x), Group(y)) => x.size == y.size && x.zip(y).forall((p, q) => equality.same(p, q))
     case (Component(i, x, c), Component(j, y, d)) =>
@@ -39,6 +46,25 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     desired = view
     runtime.invalidateReads()
   }
+  private var defaultViewport = Option.empty[Cell[RowViewport]]
+  private var virtuals = Vector.empty[VirtualSlot]
+  private def hostViewport: Cell[RowViewport] = defaultViewport.getOrElse {
+    val cell = owner.cell(RowViewport.empty)
+    change(defaultViewport)(defaultViewport = _)(Some(cell))
+    cell
+  }
+  /** Headless convenience: the default for virtual nodes without an override. */
+  def setViewport(viewport: RowViewport)(using txn: UiTxn): Unit = runtime.capability(txn) {
+    runtime.ensureScope(owner)
+    hostViewport.set(viewport)
+  }
+  /** Production hosts supply each virtual node's viewport by its mounted ID. */
+  def setViewport(instance: Long, viewport: RowViewport)(using txn: UiTxn): Unit = runtime.capability(txn) {
+    runtime.ensureScope(owner)
+    virtuals.find(v => v.scope.id == instance && runtime.scopeAvailable(v.scope)) match
+      case Some(slot) => slot.viewport.set(Some(viewport))
+      case None => UiTxn.refuse("virtual node is no longer mounted")
+  }
   def dispose()(using UiTxn): Unit = owner.dispose()
   def isDisposed: Boolean = owner.isDisposed
 
@@ -58,10 +84,17 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     case p: Switch.Plain[?] => Vector(p.value)
     case p: Switch.Keyed[?, ?] => Vector(p.value)
     case p: View.Stack => p.children.flatMap(directDependencies)
+    case p: RetainedPlacement => Vector(p.outlet)
+    case p: DockOutlet.Description =>
+      val ref = runtime.docking.reference(p.ref)
+      if ref.alive then Vector(ref.content) else Vector.empty
+    case p: VirtualRows.Description[?, ?] => Vector(p.source.revision)
     case _ => Vector.empty
   private[engine] def dependencies: Vector[Signal[?]] = directDependencies(desired) ++ holder.dependencies
   private[engine] def reconcile(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
     var changed = holder.sync(desired, read)
+    val kept = virtuals.filter(v => runtime.scopeAvailable(v.scope))
+    if kept.size != virtuals.size then change(virtuals)(virtuals = _)(kept)
     val next = holder.snapshot
     val current = read(output)
     if current.forall(v => !runtime.lawful(v match
@@ -70,6 +103,13 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
       output.set(next)
       changed = true
     changed
+
+  private def references(view: View): Vector[NodeRef] = view match
+    case View.Decorated(inner, Decoration.Ref(ref)) => references(inner) :+ ref
+    case View.Decorated(inner, _) => references(inner)
+    case View.StackDecoration(inner, Decoration.Ref(ref)) => references(inner) :+ ref
+    case View.StackDecoration(inner, _) => references(inner)
+    case _ => Vector.empty
 
   private def sameKey(a: Any, b: Any): Boolean = runtime.lawful(a == b)
   private def sameDeps(a: Option[AnyRef], b: Option[AnyRef]): Boolean = (a, b) match
@@ -108,11 +148,18 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
           case p: Switch.Plain[?] => new SwitchSlot(parent, p.asInstanceOf[Switch.Plain[Any]], None, reader => requested(reader))
           case p: Switch.Keyed[?, ?] => new SwitchSlot(parent, null, Some(p.asInstanceOf[Switch.Keyed[Any, Any]]), reader => requested(reader))
           case p: View.Stack => new StackSlot(parent, p, reader => requested(reader))
+          case p: DockOutlet.Description => new OutletSlot(parent, p)
+          case p: RetainedPlacement => new PortalSlot(parent, p)
+          case p: VirtualRows.Description[?, ?] => new VirtualSlot(parent, p.asInstanceOf[VirtualRows.Description[Any, Any]], reader => requested(reader))
           case other => new LeafSlot(parent, other)
         change(slot)(v => slot = v)(Some(created))
         changed = true
       else if slot.get.refresh(next) then changed = true
       if slot.get.step(read) then changed = true
+      references(view).foreach(runtime.docking.attach(_, slot.get.scope, false))
+      plain(view) match
+        case outlet: DockOutlet.Description => runtime.docking.attach(outlet.ref, slot.get.scope, true)
+        case _ => ()
       changed
 
   private trait Slot:
@@ -127,7 +174,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     val scope = parent.child("leaf")
     private var view = initial
     def accepts(next: View): Boolean = next match
-      case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack => false
+      case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] => false
       case _ => true
     def refresh(next: View): Boolean =
       if view.eq(next) then false
@@ -135,6 +182,52 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     def dependencies: Vector[Signal[?]] = Vector.empty
     def snapshot: MountedSnapshot = if view eq View.Empty then MountedSnapshot.Empty else MountedSnapshot.Leaf(view)
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = false
+
+  private final class OutletSlot(parent: runtime.OwnedScope, initial: DockOutlet.Description) extends Slot:
+    val scope = parent.child("outlet")
+    private var description = initial
+    private var content: MountedSnapshot = MountedSnapshot.Empty
+    def accepts(view: View): Boolean = view.isInstanceOf[DockOutlet.Description]
+    def refresh(view: View): Boolean =
+      if description.eq(view) then false
+      else { change(description)(description = _)(view.asInstanceOf[DockOutlet.Description]); true }
+    def dependencies: Vector[Signal[?]] =
+      val ref = runtime.docking.reference(description.ref)
+      if ref.alive then Vector(ref.content) else Vector.empty
+    def snapshot: MountedSnapshot =
+      val ref = runtime.docking.reference(description.ref)
+      if ref.alive then MountedSnapshot.Outlet(ref.id, content) else MountedSnapshot.Empty
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      val ref = runtime.docking.reference(description.ref)
+      val next = if !ref.alive then MountedSnapshot.Empty else read(ref.content) match
+        case Some(Value.Ok(value)) => value.asInstanceOf[MountedSnapshot]
+        case Some(Value.Failed(error)) => MountedSnapshot.Unavailable(error)
+        case None => return true
+      if runtime.lawful(MountedSnapshot.equality.same(content, next)) then false
+      else { change(content)(content = _)(next); true }
+
+  private final class PortalSlot(parent: runtime.OwnedScope, initial: RetainedPlacement) extends Slot:
+    val scope = parent.child("retained-placement")
+    private var description = initial
+    private var failure = Option.empty[Throwable]
+    def accepts(view: View): Boolean = view.isInstanceOf[RetainedPlacement]
+    def refresh(view: View): Boolean =
+      if description.eq(view) then false
+      else { change(description)(description = _)(view.asInstanceOf[RetainedPlacement]); true }
+    def dependencies: Vector[Signal[?]] = if runtime.docking.panel(description.panel).alive then Vector(description.outlet) else Vector.empty
+    def snapshot: MountedSnapshot = if !runtime.docking.panel(description.panel).alive then MountedSnapshot.Empty
+      else failure.fold[MountedSnapshot](MountedSnapshot.Empty)(MountedSnapshot.Unavailable(_))
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      val panel = runtime.docking.panel(description.panel)
+      if !panel.alive then false
+      else read(description.outlet) match
+        case None => true
+        case Some(value) =>
+          val next = value match
+            case Value.Failed(error) => Some(error)
+            case Value.Ok(ref) => runtime.docking.place(panel, scope, ref.asInstanceOf[NodeRef]); None
+          if failure == next then false
+          else { change(failure)(failure = _)(next); true }
 
   private final class ComponentSlot(parent: runtime.OwnedScope, key: Any, initial: Component.Placement[Any], requested: Signal.Reader => View) extends Slot:
     val scope = parent.child(initial.template.name)
@@ -191,7 +284,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
           val i = instance.get
           i.input.set(value)
           change(instance)(v => instance = v)(Some(i.copy(value = value)))
-          changed = true
+          return true
         val i = instance.get
         if i.child.sync(i.view, read) then changed = true
         changed
@@ -229,11 +322,13 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
         rows.filterNot(r => runtime.lawful(keys(r.key))).foreach(_.scope.dispose())
         var changed = failure.nonEmpty || rows.size != keyed.size || !runtime.lawful(rows.map(_.key) == keyed.map(_._1))
         if failure.nonEmpty then change(failure)(v => failure = v)(None)
+        var delivered = false
         val next = keyed.map { (key, value) => runtime.lawful(previous.get(key)) match
           case Some(row) =>
             if runtime.lawful(equality.same(row.value, value)) then row
             else
               row.input.set(value)
+              delivered = true
               changed = true
               row.copy(value = value)
           case None =>
@@ -255,8 +350,72 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
             Row(key, rowScope, input, new Holder(rowScope, 0, Some(reader => { lookup(reader); view })), view, value)
         }
         if changed then change(rows)(v => rows = v)(next)
-        rows.foreach(row => if row.child.sync(row.view, read) then changed = true)
+        if !delivered then rows.foreach(row => if row.child.sync(row.view, read) then changed = true)
         changed
+
+  private final class VirtualSlot(parent: runtime.OwnedScope, initial: VirtualRows.Description[Any, Any], requested: Signal.Reader => View) extends Slot:
+    val scope = parent.child("virtual-rows")
+    val viewport = scope.cell(Option.empty[RowViewport])
+    private val effectiveViewport = viewport.zip(hostViewport).map((local, fallback) => local.getOrElse(fallback))
+    private var description = initial
+    private def windowFor(value: VirtualRows.Description[Any, Any]): Signal[CollectionWindow[Any, Any]] =
+      val bounds = effectiveViewport.map(v => RowViewport.bounds(v, value.rowHeight, value.overscan))
+      runtime.lawful(value.source.window(bounds))
+    private var window = windowFor(initial)
+    private def rowsFor(value: VirtualRows.Description[Any, Any], source: Signal[CollectionWindow[Any, Any]]): ForEach.Description[Any, Any] =
+      ForEach.Description[Any, (Any, Any)](source.map(_.entries.toSeq)(using (a, b) =>
+        a.size == b.size && a.zip(b).forall((x, y) => x._1 == y._1 && value.equality.same(x._2, y._2))), _._1,
+        inputs => value.row(Inputs.from(inputs.map(_._2)(using value.equality))),
+        (a, b) => a._1 == b._1 && value.equality.same(a._2, b._2), value.schema).asInstanceOf[ForEach.Description[Any, Any]]
+    private var rowsDescription = rowsFor(initial, window)
+    private val rows = new RowsSlot(scope, rowsDescription, reader => plain(requested(reader)) match
+      case latest: VirtualRows.Description[?, ?] if accepts(latest) =>
+        val typed = latest.asInstanceOf[VirtualRows.Description[Any, Any]]
+        if typed.eq(description) then rowsDescription else rowsFor(typed, windowFor(typed))
+      case _ => throw KernelError.DisposedScope)
+    private var metadata = Option.empty[CollectionWindow[Any, Any]]
+    private var failure = Option.empty[Throwable]
+    change(virtuals)(virtuals = _)(virtuals :+ this)
+    def accepts(view: View): Boolean = view match
+      case value: VirtualRows.Description[?, ?] => value.schema == description.schema
+      case _ => false
+    def refresh(view: View): Boolean =
+      if description.eq(view) then false
+      else
+        val next = view.asInstanceOf[VirtualRows.Description[Any, Any]]
+        change(description)(description = _)(next)
+        change(window)(window = _)(windowFor(next))
+        change(rowsDescription)(rowsDescription = _)(rowsFor(next, window))
+        true
+    def dependencies: Vector[Signal[?]] = Vector(window, description.source.revision, effectiveViewport) ++ rows.dependencies
+    def snapshot: MountedSnapshot = failure.fold[MountedSnapshot](metadata.fold[MountedSnapshot](MountedSnapshot.Empty) { value =>
+      MountedSnapshot.VirtualRows(scope.id, value.revision, value.first, value.total,
+        Lp(value.first.toDouble * description.rowHeight.toDouble),
+        Lp((value.total - value.first - value.entries.size).toDouble * description.rowHeight.toDouble), rows.snapshot)
+    })(MountedSnapshot.Unavailable(_))
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      var changed = rows.refresh(rowsDescription)
+      read(window) match
+        case None => return true
+        case Some(Value.Failed(error)) =>
+          if !failure.exists(_ eq error) then { change(failure)(failure = _)(Some(error)); changed = true }
+        case Some(Value.Ok(raw)) =>
+          val value = raw.asInstanceOf[CollectionWindow[Any, Any]]
+          (read(description.source.revision), read(effectiveViewport)) match
+            case (Some(Value.Ok(revision)), Some(Value.Ok(view))) =>
+              val bounds = RowViewport.bounds(view.asInstanceOf[RowViewport], description.rowHeight, description.overscan)
+              val expectedFirst = bounds.from.min(value.total)
+              val expectedSize = bounds.until.min(value.total) - expectedFirst
+              if value.total < 0 || value.first != expectedFirst || value.entries.size != expectedSize || value.revision != revision then throw KernelError.StaleWindow
+              require((value.total.toDouble * description.rowHeight.toDouble).isFinite, "virtual extent overflow")
+            case (None, _) | (_, None) => return true
+            case _ => throw KernelError.StaleWindow
+          if failure.nonEmpty then { change(failure)(failure = _)(None); changed = true }
+          if !metadata.exists(m => m.revision == value.revision && m.first == value.first && m.total == value.total && m.entries.size == value.entries.size) then
+            change(metadata)(metadata = _)(Some(value))
+            changed = true
+      if rows.step(read) then changed = true
+      changed
 
   private final class SwitchSlot(parent: runtime.OwnedScope, initialPlain: Switch.Plain[Any], initialKeyed: Option[Switch.Keyed[Any, Any]], requested: Signal.Reader => View) extends Slot:
     val scope = parent.child("switch")
@@ -314,7 +473,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
           val b = branch.get
           b.input.set(value)
           change(branch)(v => branch = v)(Some(b.copy(value = value)))
-          changed = true
+          return true
         val b = branch.get
         if b.child.sync(b.view, read) then changed = true
         changed

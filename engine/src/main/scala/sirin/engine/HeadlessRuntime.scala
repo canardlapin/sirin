@@ -10,6 +10,10 @@ enum KernelError(message: String) extends RuntimeException(message):
   case Disposed extends KernelError("UI runtime is disposed")
   case DisposedScope extends KernelError("scope or provisional cell is disposed")
   case ExpiredTransaction extends KernelError("transaction capability is no longer active")
+  case StaleWindow extends KernelError("range window does not match candidate revision or bounds")
+  case DuplicateGlobalKey extends KernelError("duplicate retained global key")
+  case DuplicateReference extends KernelError("node reference has multiple attachments")
+  case ForeignNodeRef extends KernelError("node reference or panel belongs to another runtime")
   case ForeignEvent extends KernelError("event belongs to another runtime or is unsupported")
   case ForeignSignal extends KernelError("signal belongs to another runtime or is unsupported")
   case ReadOnlyPhase extends KernelError("mutation or undeclared read in a read-only phase")
@@ -86,6 +90,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private var progressCursor = 0
   private var preferProgress = true
   private val progressBindings = mutable.ArrayBuffer.empty[ProgressBinding]
+  private[engine] val docking = new DockingRuntime(this)
   private val eventHub = new EventHub(this, eventCapacity)
   private val changeBindings = mutable.ArrayBuffer.empty[CommittedCollection]
   private val traceRing = mutable.Queue.empty[TraceRecord]
@@ -152,7 +157,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       (a, b) => a.revision == b.revision && equality.same(a.value, b.value))
     def set(value: A)(using txn: UiTxn): Unit =
       val t = transaction(txn)
-      t.boundary { checkSource(this); t.writes(this) = value; t.memo.clear() }
+      t.boundary { checkSource(this); t.writes(this) = value; t.invalidate(this) }
     def update(f: A => A)(using txn: UiTxn): Unit =
       val t = transaction(txn)
       t.boundary { set(f(get)) }
@@ -223,7 +228,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private def select(dynamic: Signal.Dynamic[?, ?], value: Any): Either[Throwable, Signal[?]] =
     try Right(guarded(dynamic.asInstanceOf[Signal.Dynamic[Any, Any]].select(value)))
     catch case NonFatal(error) => Left(error)
-  private def same(eq: Equality[Any], a: Value[Any], b: Value[Any]): Boolean = (a, b) match
+  private def same(eq: Equality[Any], a: Value[Any], b: Value[Any]): Boolean = if a eq b then true else (a, b) match
     case (Value.Ok(x), Value.Ok(y)) => guarded(eq.same(x, y))
     case (Value.Failed(x), Value.Failed(y)) => x eq y
     case _ => false
@@ -297,12 +302,18 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     val index = txn.occurrences.size
     txn.occurrences += Occurrence(origin, value, txn.cause)
     txn.undo += (() => txn.occurrences.dropRightInPlace(txn.occurrences.size - index))
+  private[engine] def stagedValue[A](signal: Signal[A])(using txn: UiTxn): Value[A] =
+    try transaction(txn).staged(signal).asInstanceOf[Value[A]]
+    catch case KernelError.DisposedScope => Value.Failed(KernelError.DisposedScope)
+  private[engine] def registerBinding(binding: WorkBinding): Unit =
+    workBindings += binding
+    recordUndo(() => workBindings -= binding)
   private[engine] def registerCollection(binding: CommittedCollection): Unit =
     changeBindings += binding
     recordUndo(() => changeBindings -= binding)
   private[engine] def newEvents[A](owner: OwnedScope): EventSource[A] = eventHub.create(owner)
   private[engine] def recordUndo(action: () => Unit): Unit = active.get.undo += action
-  private[engine] def invalidateReads(): Unit = active.get.memo.clear()
+  private[engine] def invalidateReads(): Unit = active.get.clearMemo()
   private[engine] def scopeAvailable(scope: OwnedScope): Boolean =
     valid(scope, active.fold(Set.empty[OwnedScope])(_.disposals.toSet))
 
@@ -347,14 +358,14 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       scopes.values.find(s => s.identity.exists(i => i.owner == id && i.position == position) && valid(s, t.disposals.toSet)).foreach { existing =>
         if existing.identity.exists(_.definition eq definition) then fail(KernelError.DuplicatePlacement)
         t.disposals += existing
-        t.memo.clear()
+        t.clearMemo()
       }
       createScope(definition.name, Some(this), Some(ScopeIdentity(id, position, definition)), t)
     } }
     def dispose()(using txn: UiTxn): Unit = transaction(txn).boundary {
       if live then
         active.get.disposals += this
-        active.get.memo.clear()
+        active.get.clearMemo()
     }
     def onDispose(callback: () => Unit): Unit = construct(this) { edit { t =>
       checkScope(this)
@@ -403,7 +414,10 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       checkScope(this)
       eventHub.create(this)
     } }
-    def ref(): NodeRef = deferred("node references")
+    def ref(): NodeRef = construct(this) { edit { _ =>
+      checkScope(this)
+      docking.createRef(this)
+    } }
     def on[A](event: Event[A])(run: A => Action): Unit = construct(this) { edit { _ =>
       checkScope(this)
       eventHub.on(this, event, run)
@@ -445,7 +459,10 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       new RuntimeCommand[A, S, R](HeadlessRuntime.this)(this, id, label, policy, enabled, enabledFor, false)(start)(complete)
     } }
     def animate(target: Signal[Double], transition: Transition): Presentation[Double] = deferred("animation")
-    def reparent(key: GlobalKey, content: View): Reparentable = deferred("reparenting")
+    def reparent(key: GlobalKey, content: View): Reparentable = construct(this) { edit { _ =>
+      checkScope(this)
+      docking.createPanel(this, key, content)
+    } }
 
   private def watchLive(w: Watch, disposed: Set[OwnedScope] = Set.empty): Boolean = w.live && w.scope.forall(valid(_, disposed))
   private def enqueue(scope: Option[OwnedScope], live: () => Boolean, run: () => CommitResult[Unit]): Unit =
@@ -527,6 +544,22 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     val after = mutable.ArrayBuffer.empty[() => Unit]
     val memo = mutable.HashMap.empty[Signal[?], Value[Any]]
     val visiting = mutable.HashSet.empty[Signal[?]]
+    private val readStack = mutable.ArrayBuffer.empty[Signal[?]]
+    private val memoParents = mutable.HashMap.empty[Signal[?], mutable.HashSet[Signal[?]]]
+    private val memoChildren = mutable.HashMap.empty[Signal[?], mutable.HashSet[Signal[?]]]
+    private def noteRead(signal: Signal[?]): Unit = readStack.lastOption.foreach { parent =>
+      memoParents.getOrElseUpdate(signal, mutable.HashSet.empty) += parent
+      memoChildren.getOrElseUpdate(parent, mutable.HashSet.empty) += signal
+    }
+    def invalidate(source: Signal[?]): Unit =
+      val pending = mutable.Queue(source)
+      val seen = mutable.HashSet.empty[Signal[?]]
+      while pending.nonEmpty do
+        val signal = pending.dequeue()
+        if seen.add(signal) then
+          memo.remove(signal)
+          memoParents.get(signal).foreach(_.foreach(pending.enqueue(_)))
+    def clearMemo(): Unit = { memo.clear(); memoParents.clear(); memoChildren.clear() }
     val disposals = mutable.LinkedHashSet.empty[OwnedScope]
     val undo = mutable.ArrayBuffer.empty[() => Unit]
     val frames = mutable.ArrayBuffer(new Frame)
@@ -548,18 +581,37 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     private val reader: Signal.Reader = new Signal.Reader:
       def apply[A](signal: Signal[A]): Value[A] = staged(signal).asInstanceOf[Value[A]]
       def revision(cell: Cell[?]): Revision = cell match
-        case source: Source[?] => checkSource(source); candidateRevision(source)
+        case source: Source[?] => noteRead(source); checkSource(source); candidateRevision(source)
         case _ => fail(KernelError.ForeignSignal)
-    def staged(signal: Signal[?]): Value[Any] = memo.getOrElseUpdate(signal, {
+    def staged(signal: Signal[?]): Value[Any] =
+      noteRead(signal)
+      memo.getOrElseUpdate(signal, {
       if visiting(signal) then
         poison = Some(KernelError.CycleDetected)
         fail(KernelError.CycleDetected)
+      memoChildren.remove(signal).foreach(_.foreach { child =>
+        memoParents.get(child).foreach { parents =>
+          parents -= signal
+          if parents.isEmpty then memoParents.remove(child)
+        }
+      })
       visiting += signal
+      readStack += signal
       try signal match
         case source: Source[?] =>
           checkSource(source)
           writes.get(source).map(Value.Ok(_)).getOrElse(nodes(source).value)
         case constant: Signal.Constant[?] => Value.Ok(constant.value)
+        case projected: Signal.Speculative[?] =>
+          try
+            staged(projected.delivered) match
+              case Value.Failed(error: KernelError) => throw error
+              case _ => () // Ordinary application failure may recover speculatively.
+            guarded(projected.speculative(reader)).asInstanceOf[Value[Any]]
+          catch
+            case failure: Signal.InputFailure => Value.Failed(failure.error)
+            case error: KernelError => throw error
+            case NonFatal(error) => Value.Failed(error)
         case input: Signal.Input[?] => staged(input.delivered) match
           case Value.Failed(error) => Value.Failed(error)
           case Value.Ok(_) =>
@@ -575,7 +627,9 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
             case Left(error) => Value.Failed(error)
             case Right(inner) => staged(inner)
         case _ => fail(KernelError.ForeignSignal)
-      finally visiting -= signal
+      finally
+        readStack.remove(readStack.size - 1)
+        visiting -= signal
     })
     private[sirin] def read[A](signal: Signal[A]): A = boundary { valueOf(staged(signal)).asInstanceOf[A] }
     def require(condition: Boolean, reason: => String): Unit = boundary { if !condition then refuse(reason) }
@@ -601,7 +655,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
           disposals.clear(); disposals ++= savedDisposals
           after.dropRightInPlace(after.size - savedAfter)
           rollback(savedUndo)
-          memo.clear()
+          clearMemo()
     }
 
   def transact[A](body: UiTxn ?=> A): CommitResult[A] =
@@ -631,6 +685,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
           case NonFatal(error) => result = CommitResult.Failed(error)
         finally
           if !result.isInstanceOf[CommitResult.Committed[?]] then txn.rollback(0)
+          docking.beginPass()
           active = None
           HeadlessRuntime.transactions.set(previousGuards)
         transactionCount += 1L
@@ -656,7 +711,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
 
   private def graphRoots(disposed: Set[OwnedScope]): Vector[Signal[?]] =
     (sources.iterator.filter(s => s.live && s.scope.forall(valid(_, disposed))).map(s => s: Signal[?]) ++
-      roots.iterator ++ scopes.valuesIterator.filter(valid(_, disposed)).flatMap(_.pins) ++
+      docking.dependencies.iterator ++ roots.iterator ++ scopes.valuesIterator.filter(valid(_, disposed)).flatMap(_.pins) ++
       watches.iterator.filter(watchLive(_, disposed)).map(_.signal) ++
       mounts.iterator.filter(m => mountedAvailable(m, disposed)).flatMap(_.dependencies) ++
       workBindings.iterator.filter(_.alive).flatMap(_.dependencies) ++
@@ -765,13 +820,17 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       structuralPass += 1
       txn.structuralPasses += 1
       changedStructure = false
+      docking.beginPass()
       val read: Signal[?] => Option[Value[Any]] = s => candidate.get(s).map(_.value)
-      mounts.toVector.filter(m => mountedAvailable(m, txn.disposals.toSet)).foreach { mount =>
-        if mount.reconcile(read)(using txn) then changedStructure = true
-      }
       workBindings.toVector.filter(_.alive).foreach { binding =>
         if binding.reconcile(read)(using txn) then changedStructure = true
       }
+      // Settle materialized projections before making irreversible row-lifetime decisions.
+      if !changedStructure then
+        mounts.toVector.filter(m => mountedAvailable(m, txn.disposals.toSet)).foreach { mount =>
+          if mount.reconcile(read)(using txn) then changedStructure = true
+        }
+        if docking.prepare(read)(using txn) then changedStructure = true
       if changedStructure then candidate = settle(txn.writes, txn.disposals.toSet, candidate)
     workBindings.toVector.filter(_.alive).foreach(_.prepare()(using txn))
     candidate = settle(txn.writes, txn.disposals.toSet, candidate)
@@ -800,6 +859,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     progressBindings.filterInPlace(_.alive)
     changeBindings.filterInPlace(_.alive)
     publishEvents()
+    docking.commit()
     compactEffects()
     notifying = true
     try HeadlessRuntime.readOnly(this, true) {
@@ -885,6 +945,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private def nextDeadline: Option[Long] = deadlines.flatMap(_.due).minOption
   private def hasReady(now: Long): Boolean = eventHub.pending > 0 || effectQueue.exists(_.live()) ||
     progressBindings.exists(_.canDrain) || scheduler.hasCompletions || nextDeadline.exists(_ <= now)
+  def attachments: Vector[RefAttachment] = { control(); docking.attachments }
   def traces: Vector[TraceRecord] = { control(); traceRing.toVector }
   def driverSnapshot: DriverSnapshot =
     control()
@@ -957,6 +1018,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   def close(): Unit =
     installation()
     detachClock()
+    docking.clear()
     eventHub.clear()
     changeBindings.clear()
     progressBindings.foreach(_.dispose())

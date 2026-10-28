@@ -1,4 +1,4 @@
-// Provisional A-0 skeleton (VISION §4.1): public shape only, not implemented.
+// Synchronous keyed collections and range-based realization contracts.
 package sirin
 
 enum Delta[+K]:
@@ -10,12 +10,18 @@ enum Delta[+K]:
 /** A batch of changes taking a source from one revision to the next. */
 final case class Changes[+K](from: Revision, to: Revision, deltas: Seq[Delta[K]])
 
+final case class IndexRange(from: Int, until: Int):
+  require(from >= 0 && until >= from, "invalid range bounds")
+final case class CollectionWindow[K, +A](revision: Revision, first: Int, total: Int, entries: IndexedSeq[(K, A)])
+
 /** A keyed, revisioned source with key/index lookup, range access, and
   * change deltas (VISION §4). Reads are transactional.
   */
 trait CollectionSource[K, +A]:
   def revision: Signal[Revision]
   def changes: Event[Changes[K]]
+  /** Reactive bounded copy; never implements range access through a full snapshot. */
+  def window(bounds: Signal[IndexRange]): Signal[CollectionWindow[K, A]]
   def size(using UiTxn): Int
   def keyAt(index: Int)(using UiTxn): K
   def indexOf(key: K)(using UiTxn): Option[Int]
@@ -51,6 +57,11 @@ trait KeyedCell[K, A] extends CollectionSource[K, A]:
   * to the caller, independently of row realization. Positive height required.
   */
 object VirtualRows:
+  private[sirin] final case class Description[K, A](source: CollectionSource[K, A], rowHeight: Lp, overscan: Int,
+      row: Inputs[A] => View, equality: Equality[A], schema: String) extends View
   def apply[K, A](source: CollectionSource[K, A], rowHeight: Lp, overscan: Int)(
       row: Inputs[A] => View
-  ): View = ???
+  )(using Equality[A], SchemaId[K], SchemaId[A]): View =
+    require(rowHeight.toDouble.isFinite && rowHeight.toDouble > 0, "positive finite row height required")
+    require(overscan >= 0, "negative overscan")
+    Description(source, rowHeight, overscan, row, summon[Equality[A]], s"virtual:${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")

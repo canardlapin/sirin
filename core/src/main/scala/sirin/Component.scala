@@ -49,4 +49,7 @@ trait Reparentable:
   def at(outlet: Signal[NodeRef]): View
 
 object DockOutlet:
-  def apply(ref: NodeRef): View = ???
+  private[sirin] final case class Description(ref: NodeRef) extends View
+  def apply(ref: NodeRef): View = Description(ref)
+
+private[sirin] final case class RetainedPlacement(panel: Reparentable, outlet: Signal[NodeRef]) extends View
