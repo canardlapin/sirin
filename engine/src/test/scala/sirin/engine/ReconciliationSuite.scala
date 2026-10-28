@@ -318,7 +318,7 @@ class ReconciliationSuite extends munit.FunSuite:
     assertEquals(components(ok(r, root.snapshot)).head._2, Item(1, "one"))
   }
 
-  test("keyed collection operations have transactional validation and explicit deferred events") {
+  test("keyed collection operations have transactional validation and committed change events") {
     val r = new HeadlessRuntime
     val owner = r.scope("owner")
     val source = owner.keyed(Seq(Item(1, "one"), Item(2, "two")))(_.id)
@@ -331,7 +331,11 @@ class ReconciliationSuite extends munit.FunSuite:
     }, CommitResult.Failed(KernelError.InvalidKeyChange))
     assertEquals(ok(r, source.snapshot), before)
     assertEquals(r.transact { source.replace(Item(99, "missing")) }, CommitResult.Refused("missing collection key"))
-    assertEquals(intercept[KernelError](source.changes), KernelError.Deferred("collection change events"))
+    val batches = mutable.ArrayBuffer.empty[Changes[Int]]
+    owner.on(source.changes)(batches += _)
+    assertEquals(r.transact { source.replace(Item(2, "updated")) }, CommitResult.Committed(()))
+    r.drainEvents()
+    assertEquals(batches.toVector.map(_.deltas.toVector), Vector(Vector(Delta.Replaced(2))))
     val query = owner.cell("TH")
     val filtered = source.filterBy(query)((q, item) => item.label.startsWith(q))
     assertEquals(ok(r, filtered.snapshot), IndexedSeq(Item(3, "THREE")))

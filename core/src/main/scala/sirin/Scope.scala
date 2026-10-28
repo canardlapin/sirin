@@ -1,5 +1,5 @@
-// Public contracts. The headless host implements cells, lifetimes, latest tasks
-// and commands through a controlled scheduler. Desktop services remain provisional.
+// Public contracts. The headless host implements owned reactive state, events,
+// deadlines, tasks and commands. Desktop services remain provisional.
 package sirin
 
 import scala.concurrent.duration.FiniteDuration
@@ -32,7 +32,10 @@ trait Scope:
   def effect[A](signal: Signal[A])(run: A => Action): Unit
   def on[A](event: Event[A])(run: A => Action): Unit
 
-  /** A deadline-driven signal: follows `signal` after `quiet` without change. */
+  /** Exposes the initial settled value, then follows unequal committed input
+    * after a positive quiet period. Owns one replaceable monotonic deadline;
+    * disposal cancels it. Failed input follows the same quiet-period rule.
+    */
   def debounce[A](signal: Signal[A], quiet: FiniteDuration): Signal[A]
 
   /** Superseding input work; obsolete publication is checked independently of cancellation. */

@@ -1,0 +1,65 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (16742 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.155s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.169s
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.269s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.277s
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TopologyLifetimeSuite: finished 0.319s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.328s
+Test run sirin.engine.WorkCommandSuite started
+sirin.engine.WorkCommandSuite: finished 0.343s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.351s
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.ReconciliationSuite: finished 0.363s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.371s
+Test run sirin.engine.EventDeadlineSuite started
+sirin.engine.EventDeadlineSuite: finished 0.368s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 17 total 0.376s
+[info] Passed: Total 140, Failed 0, Errors 0, Passed 140
+[success] Total time: 5 s, completed Oct 28, 2026, 7:54:46 a.m.
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.EventDeadlineAgreementSuite: finished 1.05s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 1.051s
+[info] Passed: Total 1, Failed 0, Errors 0, Passed 1
+[success] Total time: 1 s, completed Oct 28, 2026, 7:54:48 a.m.
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.WorkbenchSuite started
+==> X sirin.specimen.WorkbenchSuite.public application runs on real workers with bounded import and saved snapshot 0.086s munit.ComparisonFailException: specimens/workbench/src/test/scala/sirin/specimen/WorkbenchSuite.scala:12
+11:  test("public application runs on real workers with bounded import and saved snapshot") {
+12:    assertEquals(trace(), Vector("search=Result: sirin", "imported=6 rows=8", "dirty=false channel=Drained"))
+13:  }
+values are not the same
+=> Obtained
+Vector(
+  "search=Result: ",
+  "imported=6 rows=8",
+  "dirty=false channel=Drained"
+)
+=> Diff (- expected, + obtained)
+ Vector(
+-  "search=Result: sirin",
++  "search=Result: ",
+   "imported=6 rows=8",
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.specimen.WorkbenchSuite.$init$$$anonfun$1(WorkbenchSuite.scala:12)
+sirin.specimen.WorkbenchSuite: finished 0.452s
+Test run sirin.specimen.WorkbenchSuite finished: 1 failed, 0 ignored, 6 total 0.454s
+[error] Failed: Total 6, Failed 1, Errors 0, Passed 5
+[error] Failed tests:
+[error] 	sirin.specimen.WorkbenchSuite
+[error] (workbenchJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 2 s, completed Oct 28, 2026, 7:54:49 a.m.

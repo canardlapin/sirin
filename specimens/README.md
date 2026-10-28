@@ -2,7 +2,8 @@
 
 `workbench` is executable on JVM and Native. Its application model imports only
 public `sirin.*` contracts; the separate driver supplies `HeadlessRuntime` and a
-fixed two-thread pool. It exercises latest search, revision-associated save,
+fixed two-thread pool. It exercises 150 ms debounced latest search, event-driven
+save requests, revision-associated save,
 keyed row editing and a capacity-two lossless import. There is no renderer yet.
 
 ```sh
@@ -32,7 +33,9 @@ channel, then drains accepted records; create another session for another import
 Completion and progress have separate bounded transport queues: completion alone
 never establishes that the channel has drained.
 
-The driver pumps on its UI owner, parks with `awaitActivity`, and uses a bounded
+The unified driver services events, deadlines, progress, completions and effects
+on its UI owner. It parks with `awaitActivity` until activity/the next deadline,
+and uses a bounded
 shutdown await after nonblocking host close. An uncooperative Work may outlive that
 await; cancellation cannot undo external effects. Scala-created workers may call
 Scala producer endpoints. A foreign C producer requires a separate pointer-only
@@ -41,7 +44,8 @@ shim integration.
 ## Preliminary ScalaFX comparison
 
 `scalafx-workbench` is a compiled application-controller counterpart. It uses
-ScalaFX properties and subscriptions, JavaFX `Task`/`AnimationTimer`, bounded
+ScalaFX properties and subscriptions, JavaFX `Task`/`AnimationTimer`/
+`PauseTransition`, bounded
 executors, a FIFO, retained row objects and explicit close. It does not implement
 a replacement framework or an artificial transaction layer. Canceled queued
 searches are removed so a stable latest query can progress when physical workers
@@ -60,7 +64,7 @@ sbt --java-home /path/to/jdk-25 scalafxWorkbench/compile
 
 | Concern | Sirin specimen | ScalaFX specimen |
 |---|---|---|
-| Latest search | `scope.latest(query)` | Task cancellation, queue removal and generation guard |
+| Latest search | `scope.latest(scope.debounce(query, 150.millis))` | PauseTransition, Task cancellation, queue removal and generation guard |
 | Bounded complete stream | Scoped `ProgressChannel`, capacity, owner pump | Capacity-two FIFO, worker put, pulse drain, cancellation and epoch guard |
 | Save association | Committed `Versioned` snapshot and serial command | Captured text/revision and single-worker bounded executor |
 | Draft retention | Keyed component scope and live Inputs | Retained row objects keyed by ID during refresh |
@@ -74,7 +78,9 @@ bindings. Source size alone would conflate different contracts and is not scored
 
 This is **preliminary authoring evidence**. ScalaFX is compile-checked only here;
 its interactive behavior and saturation/cancellation scenarios still need runtime
-qualification. Neither specimen qualifies visual quality, accessibility, focus,
+qualification. The added virtual-clock rapid-typing control qualifies Sirin's debounce/disposal
+path. ScalaFX's matching 150 ms timer remains compile-only. Neither specimen
+qualifies visual quality, accessibility, focus,
 keyboard use, text editing, startup, packaging or the clear usability/elegance
 superiority required by VISION §1.1. A matched interactive JVM workbench and
 competent ScalaFX UI remain the acceptance experiment once the Sirin host exists.

@@ -10,6 +10,7 @@ enum KernelError(message: String) extends RuntimeException(message):
   case Disposed extends KernelError("UI runtime is disposed")
   case DisposedScope extends KernelError("scope or provisional cell is disposed")
   case ExpiredTransaction extends KernelError("transaction capability is no longer active")
+  case ForeignEvent extends KernelError("event belongs to another runtime or is unsupported")
   case ForeignSignal extends KernelError("signal belongs to another runtime or is unsupported")
   case ReadOnlyPhase extends KernelError("mutation or undeclared read in a read-only phase")
   case CycleDetected extends KernelError("dependency cycle detected")
@@ -72,10 +73,12 @@ object HeadlessRuntime:
 
 /** Deterministic single-thread host. Graph edits settle privately between passes.
   * Scoped resources are owned until transactional disposal. Desktop hosting,
-  * native hosting, real worker adapters and GPU retirement are separate stages.
+  * native hosting and GPU retirement are separate stages.
   */
-final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256):
+final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256,
+    val clock: MonotonicClock = MonotonicClock.system(), eventCapacity: Int = 4096, traceCapacity: Int = 256):
   require(settleBudget > 0, "positive settle pass budget required")
+  require(eventCapacity > 0 && traceCapacity > 0, "positive event and trace capacities required")
   private val owner = Thread.currentThread()
   private[engine] def ownerThread: Thread = owner
   private[engine] val activity = new Activity
@@ -83,6 +86,23 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private var progressCursor = 0
   private var preferProgress = true
   private val progressBindings = mutable.ArrayBuffer.empty[ProgressBinding]
+  private val eventHub = new EventHub(this, eventCapacity)
+  private val changeBindings = mutable.ArrayBuffer.empty[CommittedCollection]
+  private val traceRing = mutable.Queue.empty[TraceRecord]
+  private def appendTrace(record: TraceRecord): Unit =
+    traceRing.enqueue(record)
+    while traceRing.size > traceCapacity do traceRing.dequeue()
+  private var causeSerial = 0L
+  private var causeContext = (CauseKind.Transaction, Option.empty[Long])
+  private var activeTurns = 0L
+  private var deliveredUnits = 0L
+  private var transactionCount = 0L
+  private var parkCount = 0L
+  private var driverCursor = 0
+  private var lastTime = 0L
+  private val detachClock = clock match
+    case manual: ManualClock => manual.onAdvance(() => activity.signal())
+    case _ => () => ()
   private var closed = false
   private var notifying = false
   private var active: Option[Transaction] = None
@@ -261,6 +281,26 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private[engine] def build[A](scope: OwnedScope)(body: => A): A =
     HeadlessRuntime.readOnly(this, false, Some(scope.id))(body)
   private[engine] def structuralEdit[A](body: UiTxn ?=> A): A = edit(t => body(using t))
+  private[engine] def transactionCause: Long = active.get.cause
+  private[engine] def caused[A](kind: CauseKind, parent: Option[Long] = None)(body: => A): A =
+    val before = causeContext
+    causeContext = kind -> parent
+    try body finally causeContext = before
+  private[engine] def timeNanos(): Long =
+    val now = lawful(clock.nowNanos)
+    require(now >= lastTime, "monotonic clock moved backwards")
+    lastTime = now
+    now
+  private[engine] def stageOccurrence(origin: EventOrigin, value: Any): Unit =
+    val txn = active.get
+    UiTxn.require(txn.occurrences.size < eventCapacity, "event staging capacity full")(using txn)
+    val index = txn.occurrences.size
+    txn.occurrences += Occurrence(origin, value, txn.cause)
+    txn.undo += (() => txn.occurrences.dropRightInPlace(txn.occurrences.size - index))
+  private[engine] def registerCollection(binding: CommittedCollection): Unit =
+    changeBindings += binding
+    recordUndo(() => changeBindings -= binding)
+  private[engine] def newEvents[A](owner: OwnedScope): EventSource[A] = eventHub.create(owner)
   private[engine] def recordUndo(action: () => Unit): Unit = active.get.undo += action
   private[engine] def invalidateReads(): Unit = active.get.memo.clear()
   private[engine] def scopeAvailable(scope: OwnedScope): Boolean =
@@ -359,10 +399,24 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       checkScope(this)
       SynchronousKeyedCell.create(HeadlessRuntime.this)(this, initial, key)
     } }
-    def events[A]: EventSource[A] = deferred("events")
+    def events[A]: EventSource[A] = construct(this) { edit { _ =>
+      checkScope(this)
+      eventHub.create(this)
+    } }
     def ref(): NodeRef = deferred("node references")
-    def on[A](event: Event[A])(run: A => Action): Unit = deferred("events")
-    def debounce[A](signal: Signal[A], quiet: FiniteDuration): Signal[A] = deferred("deadlines")
+    def on[A](event: Event[A])(run: A => Action): Unit = construct(this) { edit { _ =>
+      checkScope(this)
+      eventHub.on(this, event, run)
+    } }
+    def debounce[A](signal: Signal[A], quiet: FiniteDuration): Signal[A] = construct(this) { edit { t =>
+      checkScope(this)
+      val nanos = quiet.toNanos
+      require(quiet.length > 0 && nanos > 0 && BigInt(quiet.length) * quiet.unit.toNanos(1) == BigInt(nanos), "quiet period must be positive and representable")
+      val binding = new DebounceRuntime(HeadlessRuntime.this)(this, signal, nanos)
+      workBindings += binding
+      t.undo += (() => workBindings -= binding)
+      binding.signal
+    } }
     def latest[I, O](input: Signal[I], policy: LatestPolicy)(work: I => Work[O]): Signal[TaskState[I, O]] = construct(this) { edit { t =>
       checkScope(this)
       val binding = new LatestRuntime(HeadlessRuntime.this)(this, input, policy, work)
@@ -396,7 +450,10 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private def watchLive(w: Watch, disposed: Set[OwnedScope] = Set.empty): Boolean = w.live && w.scope.forall(valid(_, disposed))
   private def enqueue(scope: Option[OwnedScope], live: () => Boolean, run: () => CommitResult[Unit]): Unit =
     val stamp = scope.map(_.generation)
-    effectQueue.enqueue(EffectJob(() => live() && scope.forall(s => valid(s) && stamp.contains(s.generation)), run))
+    val cause = active.map(_.cause)
+    effectQueue.enqueue(EffectJob(() => live() && scope.forall(s => valid(s) && stamp.contains(s.generation)),
+      () => caused(CauseKind.Effect, cause)(run())))
+    activity.signal()
   private def compactEffects(): Unit =
     val kept = effectQueue.filter(_.live()).toVector
     effectQueue.clear()
@@ -459,6 +516,12 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   def afterCommit(callback: () => Unit)(using txn: UiTxn): Unit = transaction(txn).boundary { active.get.after += callback }
 
   private final class Transaction extends UiTxn:
+    causeSerial = Math.addExact(causeSerial, 1L)
+    val cause = causeSerial
+    val context = causeContext
+    var graphPasses = 0
+    var structuralPasses = 0
+    val occurrences = mutable.ArrayBuffer.empty[Occurrence]
     val reservationKey = new Object
     val writes = mutable.LinkedHashMap.empty[Source[?], Any]
     val after = mutable.ArrayBuffer.empty[() => Unit]
@@ -570,6 +633,14 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
           if !result.isInstanceOf[CommitResult.Committed[?]] then txn.rollback(0)
           active = None
           HeadlessRuntime.transactions.set(previousGuards)
+        transactionCount += 1L
+        val outcome = result match
+          case CommitResult.Committed(_) => TraceOutcome.Committed
+          case CommitResult.Refused(_) => TraceOutcome.Refused
+          case CommitResult.Failed(KernelError.CycleDetected) => TraceOutcome.CycleDetected
+          case CommitResult.Failed(KernelError.BudgetExceeded) => TraceOutcome.BudgetExceeded
+          case _ => TraceOutcome.Failed
+        appendTrace(TraceRecord(txn.cause, txn.context._2, txn.context._1, outcome, txn.graphPasses, txn.structuralPasses))
         result match
           case CommitResult.Committed(_) =>
             releases.foreach(release)
@@ -588,7 +659,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       roots.iterator ++ scopes.valuesIterator.filter(valid(_, disposed)).flatMap(_.pins) ++
       watches.iterator.filter(watchLive(_, disposed)).map(_.signal) ++
       mounts.iterator.filter(m => mountedAvailable(m, disposed)).flatMap(_.dependencies) ++
-      workBindings.iterator.filter(_.alive).flatMap(_.dependencies)).toVector.distinct
+      workBindings.iterator.filter(_.alive).flatMap(_.dependencies) ++
+      changeBindings.iterator.filter(_.alive).map(_.dependency)).toVector.distinct
 
   /** Values and topology are copied. Only the final settled graph is installed. */
   private def settle(writes: collection.Map[Source[?], Any], disposed: Set[OwnedScope],
@@ -601,6 +673,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     while pending do
       if pass >= settleBudget then throw KernelError.BudgetExceeded
       pass += 1
+      active.foreach(_.graphPasses += 1)
       val seen = mutable.HashSet.empty[Signal[?]]
       val visiting = mutable.HashSet.empty[Signal[?]]
       val ordered = mutable.ArrayBuffer.empty[(Node, Int)]
@@ -690,6 +763,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     while changedStructure do
       if structuralPass >= settleBudget then throw KernelError.BudgetExceeded
       structuralPass += 1
+      txn.structuralPasses += 1
       changedStructure = false
       val read: Signal[?] => Option[Value[Any]] = s => candidate.get(s).map(_.value)
       mounts.toVector.filter(m => mountedAvailable(m, txn.disposals.toSet)).foreach { mount =>
@@ -701,6 +775,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       if changedStructure then candidate = settle(txn.writes, txn.disposals.toSet, candidate)
     workBindings.toVector.filter(_.alive).foreach(_.prepare()(using txn))
     candidate = settle(txn.writes, txn.disposals.toSet, candidate)
+    val changes = changeBindings.toVector.filter(_.alive).flatMap(_.prepare(s => candidate.get(s).map(_.value)))
+    val publishEvents = eventHub.prepare(txn.occurrences.toVector ++ changes)
     val disposed = txn.disposals.toSet
     val revisions = txn.writes.iterator.collect {
       case (source, value) if source.committed && source.live && source.scope.forall(valid(_, disposed)) &&
@@ -722,6 +798,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     workBindings.filterInPlace(_.alive)
     progressBindings.foreach(_.commit())
     progressBindings.filterInPlace(_.alive)
+    changeBindings.filterInPlace(_.alive)
+    publishEvents()
     compactEffects()
     notifying = true
     try HeadlessRuntime.readOnly(this, true) {
@@ -767,7 +845,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
       next.foreach(b => progressCursor = bindings.indexOf(b) + 1)
       next match
         case None => blocked = true
-        case Some(binding) => binding.drainOne() match
+        case Some(binding) => caused(CauseKind.Progress)(binding.drainOne()) match
           case Some(CommitResult.Committed(_)) => delivered += 1
           case Some(result) => failures += result; blocked = true
           case None => blocked = true
@@ -788,11 +866,99 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
     control()
     require(timeoutMillis >= 0 && timeoutMillis <= 60000, "activity wait must be bounded to 60 seconds")
     val stamp = activity.stamp
-    if progressBindings.exists(_.canDrain) || scheduler.hasCompletions then true
-    else activity.awaitAfter(stamp, timeoutMillis)
+    val now = timeNanos()
+    if hasReady(now) then true
+    else
+      val waitMillis = boundedWaitMillis(timeoutMillis, now)
+      parkCount += 1L
+      val signalled = activity.awaitAfter(stamp, waitMillis)
+      signalled || hasReady(timeNanos())
+
+  private[engine] def boundedWaitMillis(timeoutMillis: Long, now: Long): Long = clock match
+    case _: ManualClock => timeoutMillis
+    case _ => nextDeadline.fold(timeoutMillis) { due =>
+      val delta = math.max(0L, due - now)
+      val ceiling = delta / 1000000L + (if delta % 1000000L == 0 then 0L else 1L)
+      math.min(timeoutMillis, ceiling)
+    }
+  private[engine] def deadlines: Vector[DeadlineBinding] = workBindings.collect { case d: DeadlineBinding if d.alive => d }.toVector
+  private def nextDeadline: Option[Long] = deadlines.flatMap(_.due).minOption
+  private def hasReady(now: Long): Boolean = eventHub.pending > 0 || effectQueue.exists(_.live()) ||
+    progressBindings.exists(_.canDrain) || scheduler.hasCompletions || nextDeadline.exists(_ <= now)
+  def traces: Vector[TraceRecord] = { control(); traceRing.toVector }
+  def driverSnapshot: DriverSnapshot =
+    control()
+    DriverSnapshot(activeTurns, deliveredUnits, transactionCount, parkCount, eventHub.pending,
+      effectQueue.count(_.live()), deadlines.count(_.due.nonEmpty), nextDeadline, traceRing.size)
+  def drainEvents(budget: Int = 100): EventDrain =
+    control()
+    require(budget > 0, "positive event budget required")
+    var count = 0
+    val failures = Vector.newBuilder[CommitResult[Unit]]
+    while count < budget && eventHub.pending > 0 do
+      eventHub.drainOne().foreach { result =>
+        count += 1
+        result match
+          case CommitResult.Committed(_) => ()
+          case other => failures += other
+      }
+    EventDrain(count, eventHub.pending, failures.result())
+  def drive(budget: Int = 100): DriverTurn =
+    control()
+    require(budget > 0, "positive driver budget required")
+    var count = 0
+    var empty = 0
+    var blockedProgress = false
+    var attemptedCompletions = Set.empty[Long]
+    val failures = Vector.newBuilder[CommitResult[Unit]]
+    def outcome(result: CommitResult[Unit]): Unit = result match
+      case CommitResult.Committed(_) => ()
+      case other => failures += other
+    while count < budget && empty < 5 do
+      val kind = driverCursor
+      driverCursor = (driverCursor + 1) % 5
+      var executed = false
+      kind match
+        case 0 => eventHub.drainOne().foreach { result => executed = true; outcome(result) }
+        case 1 =>
+          val now = timeNanos()
+          deadlines.filter(_.due.exists(_ <= now)).sortBy(_.due.get).headOption.foreach { binding =>
+            executed = true; outcome(binding.fire())
+          }
+        case 2 =>
+          if !blockedProgress then
+            val receipt = drainProgress(1)
+            executed = receipt.delivered > 0 || receipt.failures.nonEmpty
+            blockedProgress = receipt.failures.nonEmpty
+            receipt.failures.foreach(failures += _)
+        case 3 =>
+          scheduler.drainOne(attemptedCompletions).foreach { (id, result) =>
+            attemptedCompletions += id
+            executed = true
+            outcome(result)
+          }
+        case _ =>
+          compactEffects()
+          if effectQueue.nonEmpty then
+            executed = true
+            outcome(effectQueue.dequeue().run())
+      if executed then { count += 1; empty = 0 } else empty += 1
+    if count > 0 then { activeTurns += 1L; deliveredUnits += count }
+    val ready = hasReady(timeNanos())
+    val errors = failures.result()
+    val exhausted = count == budget && ready
+    if count > 0 then
+      causeSerial = Math.addExact(causeSerial, 1L)
+      appendTrace(TraceRecord(causeSerial, None, CauseKind.Driver,
+        if exhausted then TraceOutcome.BudgetExceeded else if errors.nonEmpty then TraceOutcome.Failed else TraceOutcome.Committed,
+        0, 0, count))
+    DriverTurn(count, ready, nextDeadline, errors, exhausted)
 
   def close(): Unit =
     installation()
+    detachClock()
+    eventHub.clear()
+    changeBindings.clear()
     progressBindings.foreach(_.dispose())
     progressBindings.clear()
     val releases = scopes.values.toVector.reverse.flatMap(_.releases.toVector.reverse)

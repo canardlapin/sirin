@@ -528,6 +528,63 @@ Transactions are forbidden there; events received during the loop are
 queued until it exits. Stage 0 decides between SDL main callbacks and an
 event watch for this path.
 
+**Headless events, deadlines and driver.** A scoped EventSource emits occurrences
+into its current transaction. Root refusal, nested attempt refusal and defects
+roll back those emissions. Successful publication routes occurrences, in emission
+order then subscription-registration order, to subscriptions live at that commit.
+Registration later in the same transaction participates; later transactions get no
+replay. The finite host event capacity counts routed deliveries, including map/filter
+candidates. Staged occurrences are also capped at the host capacity. Overflow
+refuses the publishing transaction before graph/lifetime
+publication. No accepted delivery is silently coalesced. Disposing either source
+or subscriber drops its pending deliveries and releases captured values/callbacks.
+Map/filter functions are read-only and evaluated once per candidate subscription
+at delivery. Each handler has a separate transaction against current state; a
+failed/refused handler is reported and consumed once, while other deliveries remain
+eligible. Handler-emitted events join that handler's transaction and append after
+already-queued deliveries. User callbacks never run while a queue lock is held.
+
+KeyedCell.changes describes only unequal final committed source values. Its batch
+contains from/to cell revisions and deterministic removals, insertions, moves and
+same-key replacements; intermediate mutations/change-and-restore and failed
+transactions produce no batch. It joins the same event capacity preflight. The
+first publication of a new source is initialization, not a change from revision
+zero. Filtered CollectionSource revision/delta streams and viewport realization
+remain the separate C1.6b slice.
+
+Debounce exposes the initial settled value immediately, then replaces one pending
+value/deadline per binding after each unequal final committed input. Success and
+Failed input values follow the same quiet-period rule; equality uses the input's
+lawful equality. Returning to the displayed value cancels a pending deadline.
+Only successful publication installs/replaces deadlines; rollback and final-equal
+edits do not postpone delivery. Deadlines use a monotonic clock, break ties by
+binding registration order, and belong to the creating scope. Committed disposal
+and provisional rollback clear pending/candidate input metadata even if a dead
+signal is retained. A due deadline gets
+one delivery transaction; failure is reported and consumed rather than busy-retried.
+Input commits at a due instant supersede that pending value if they publish before
+the driver services it. No background timer mutates UI state. A manual monotonic
+clock advances explicitly for deterministic tests and wakes a parked driver.
+Quiet periods must be positive and representable; overflow/backward clocks fail.
+
+The headless driver rotates event, deadline, progress, completion and effect work
+under one unit budget. Each unit delivers at most one candidate from its class;
+completion bookkeeping/reconciliation can entail separate transactions. A failed
+completion ticket is attempted once per turn, rotating past it to other ready
+tickets; a failed progress receiver stops progress delivery for that turn. Budget
+exhaustion with ready work reports BudgetExceeded, never inferred divergence.
+Individual transactions retain existing graph/structural pass limits; dependency
+cycles and exhausted budgets remain distinct. An empty turn schedules no active
+turn. Parking waits for transport activity or the earliest deadline, without a
+periodic idle poll. Legacy explicit drains/pump remain available. Bounded trace
+records contain numeric cause/parent IDs, cause/outcome enums and pass counts,
+never payloads, exceptions, scopes or callback closures. Active driver turns also
+record their unit count and exhaustion/failure outcome; idle turns add no trace.
+Event, deadline and effect
+follow-ons retain their originating transaction cause IDs. Counters and traces
+are observational and do not change publication or rollback semantics. This
+qualifies a headless driver, not a rendered frame or full Stage 1 exit.
+
 ### 5.4 Threads and background work
 
 - **The UI owner is the process main thread.** macOS AppKit and SDL require

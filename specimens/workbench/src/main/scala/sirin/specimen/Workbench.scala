@@ -1,6 +1,7 @@
 package sirin.specimen
 
 import sirin.*
+import scala.concurrent.duration.*
 
 final case class Record(id: Int, title: String)
 
@@ -12,7 +13,9 @@ trait Services:
 /** Application code uses public Sirin contracts. The driver supplies the host. */
 final class Workbench(scope: Scope, services: Services):
   val query = scope.cell("")
-  val search = scope.latest(query)(services.search)
+  val settledQuery = scope.debounce(query, 150.millis)
+  val search = scope.latest(settledQuery)(services.search)
+  val searchPending = query.zip(settledQuery).zip(search).map { case ((typed, settled), state) => typed != settled || state.pending }
   val rows = scope.keyed(Seq(Record(1, "First"), Record(2, "Second")))(_.id)
   val document = scope.cell("")
   private val saved = scope.cell(Revision.initial)
@@ -27,6 +30,13 @@ final class Workbench(scope: Scope, services: Services):
     case Outcome.Failed(error) => saveError.set(Some(error.getMessage))
     case Outcome.Cancelled => ()
   }
+  val saveRequested = scope.events[Unit]
+  scope.on(saveRequested) { _ => save.dispatch(()) match
+    case Dispatched.Started(_) => ()
+    case Dispatched.Refused(reason) => saveError.set(Some(reason))
+  }
+  val rowChangeCount = scope.cell(0)
+  scope.on(rows.changes)(_ => rowChangeCount.update(_ + 1))
   val rename = scope.action[(Int, String)]("rename", "Rename") { (id, title) =>
     UiTxn.require(title.trim.nonEmpty, "A title is required")
     UiTxn.require(rows.get(id).nonEmpty, "This row was removed")

@@ -2,7 +2,7 @@ package sirin.engine
 
 import sirin.*
 
-/** O(n) synchronous source. No event/delta or viewport qualification is implied. */
+/** O(n) synchronous snapshots; projected revision/delta streams and viewport realization remain deferred. */
 private[engine] class SnapshotSource[K, A](val runtime: HeadlessRuntime, protected val data: Signal[Vector[(K, A)]])(using eq: Equality[A]) extends CollectionSource[K, A]:
   def revision: Signal[Revision] = throw KernelError.Deferred("derived collection revisions")
   def changes: Event[Changes[K]] = throw KernelError.Deferred("collection change events")
@@ -39,10 +39,30 @@ private[engine] object SynchronousKeyedCell:
     }
     val storage = owner.cell(keyed(initial))(using (a, b) =>
       a.size == b.size && a.zip(b).forall((x, y) => x._1 == y._1 && eq.same(x._2, y._2)))
-    new SynchronousKeyedCell(runtime, storage, key, keyed)
+    new SynchronousKeyedCell(runtime)(owner, storage, key, keyed)
 
-private[engine] final class SynchronousKeyedCell[K, A](host: HeadlessRuntime, storage: Cell[Vector[(K, A)]], key: A => K,
+private[engine] final class SynchronousKeyedCell[K, A](host: HeadlessRuntime)(owner: host.OwnedScope, storage: Cell[Vector[(K, A)]], key: A => K,
     keyed: Seq[A] => Vector[(K, A)])(using Equality[A]) extends SnapshotSource(host, storage) with KeyedCell[K, A]:
+  private val stream = host.newEvents[Changes[K]](owner).asInstanceOf[RuntimeEventSource[Changes[K]]]
+  override val changes: Event[Changes[K]] = stream
+  private val versioned = storage.versioned
+  private var baseline = Option.empty[Versioned[Vector[(K, A)]]]
+  host.registerCollection(new CommittedCollection:
+    def alive: Boolean = host.scopeAvailable(owner)
+    def dependency: Signal[?] = versioned
+    def prepare(read: Signal[?] => Option[Value[Any]]): Option[Occurrence] =
+      read(versioned) match
+        case Some(Value.Ok(raw)) =>
+          val next = raw.asInstanceOf[Versioned[Vector[(K, A)]]]
+          val before = baseline
+          host.recordUndo(() => baseline = before)
+          baseline = Some(next)
+          before.filter(_.revision != next.revision).map { prior =>
+            val deltas = host.lawful(CollectionDelta(prior.value, next.value, summon[Equality[A]]))
+            Occurrence(stream.origin, Changes(prior.revision, next.revision, deltas), host.transactionCause)
+          }
+        case _ => throw KernelError.ForeignSignal
+  )
   override lazy val revision: Signal[Revision] = storage.versioned.map(_.revision)
   private def position(k: K)(using UiTxn): Int =
     val values = storage.get

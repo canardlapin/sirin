@@ -148,10 +148,16 @@ trait Cell[A] extends Signal[A]:
     */
   def snapshot(using UiTxn): Versioned[A]
 
-/** An occurrence, not a persistent value. */
+/** An occurrence, not a persistent value. Scoped handlers run in separate
+  * transactions after successful emission publication. Transformations are
+  * read-only and evaluated at delivery, without replay to later subscribers.
+  */
 trait Event[+A]:
   def map[B](f: A => B): Event[B]
   def filter(p: A => Boolean): Event[A]
 
 trait EventSource[A] extends Event[A]:
+  /** Stages an occurrence; refusal/defect rolls it back. Finite host delivery
+    * capacity can refuse publication, including subscription fanout.
+    */
   def emit(value: A)(using UiTxn): Unit

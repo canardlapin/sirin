@@ -1,0 +1,20 @@
+{
+  "core/src/main/scala/sirin/Reactive.scala": "6d61ca630543f87aac50b9489c6a10932cd068e96f48f1bffd30769826d98487",
+  "core/src/main/scala/sirin/Scope.scala": "4936756e57e8f78cd23b22e52f59cecddd308cf825274f65700b1caa1c894d86",
+  "engine/src/main/scala/sirin/engine/HeadlessRuntime.scala": "7f60f58fe6593387b0446bec8e3fe8eacece37613774abf26809ede0536b9de2",
+  "engine/src/main/scala/sirin/engine/ControlledScheduler.scala": "816962b41f19f6623e6704ae167c0b7bc348a5bf61d01efcd5edd4cd3606c094",
+  "engine/src/main/scala/sirin/engine/SynchronousKeyedCell.scala": "ed905330dc9882e600c2568b7a0f90d4ff599757013388f18eaff5ad8be66e00",
+  "engine/src/main/scala/sirin/engine/EventRuntime.scala": "d8dd0677ceba956e04b9abace710090de08c69a0ac84900f5e4b9436bf938d13",
+  "engine/src/main/scala/sirin/engine/DeadlineRuntime.scala": "5fc2b018fd1894a4be4c53311c26161b513cceae2084f1a1d15cde94ebcb729d",
+  "engine/src/main/scala/sirin/engine/Clock.scala": "b8372cf7666559ccbaf1a51af2f4afc82ecd1b07e8eb5624e67da98457f9e8b7",
+  "engine/src/main/scala/sirin/engine/Driver.scala": "96bc0b033591cc277b3b29db20e64fb760e914477ab5d723c2397b7be3682740",
+  "engine/src/test/scala/sirin/engine/EventDeadlineSuite.scala": "92dbf3e211cb02183ac347f490f63f6168ead3bdddfdd0c21d784d1e358212f4",
+  "engine/src/test/scala/sirin/engine/ReconciliationSuite.scala": "581ccd0f3072aebe93b2c7967e577650b1c547505a39772ad08e2beb30728061",
+  "engine/src/test/scala/sirin/engine/TopologyLifetimeSuite.scala": "c77482e47bf4f5c4b3f6bcd83145aa2238aa0f43f1d31693dd8aec14ac460b72",
+  "testkit/src/main/scala/sirin/testkit/EventDeadlineModel.scala": "85209d4d33fb991e9f19978e9a1480c008292ad9b220bd7400a2c911aea6fcdf",
+  "testkit/src/test/scala/sirin/testkit/EventDeadlineAgreementSuite.scala": "d5cb6a92914867abc0c19e4b1ab6cca601ecea60ea04af74dc747023373906ce",
+  "specimens/workbench/src/main/scala/sirin/specimen/Workbench.scala": "04bcf0372b7438f4ca3c9a4112c67fd345b1bd02bfa3927eaf7565c94ec21e3a",
+  "specimens/workbench/src/main/scala/sirin/specimen/RunWorkbench.scala": "cca36503718a6f8e352b6f8173bdac20dec1e5a5045f80d72269c9df98c13adb",
+  "specimens/workbench/src/test/scala/sirin/specimen/WorkbenchSuite.scala": "c348695d783dd023943a671eddf84f5b08df5966383b09328fa945e9494f5da6",
+  "specimens/scalafx-workbench/src/main/scala/sirin/comparison/Workbench.scala": "b6d169b0b00afdc6bcb7371bc1488d722d327082814b1cdcab25e81050ada519"
+}

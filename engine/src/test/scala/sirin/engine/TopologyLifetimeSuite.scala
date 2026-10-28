@@ -497,7 +497,11 @@ class TopologyLifetimeSuite extends munit.FunSuite:
     assertEquals(effects.toVector, Vector(1, 2))
     r.transact { child.dispose(); input.set(3) }
     assertEquals(r.flushEffects().executed, 0)
-    assertEquals(intercept[KernelError](model.events[Int]), KernelError.Deferred("events"))
+    val events = model.events[Int]
+    model.on(events)(input.set)
+    assertEquals(r.transact { events.emit(4) }, CommitResult.Committed(()))
+    assertEquals(r.drainEvents().delivered, 1)
+    assertEquals(r.transact { input.get }, CommitResult.Committed(4))
     r.close()
   }
 

@@ -17,6 +17,7 @@ final class ControlledScheduler private[engine](runtime: HeadlessRuntime, val ca
     var result: Option[Outcome[Any]] = None
   private val entries = mutable.LinkedHashMap.empty[Long, Ticket]
   private var nextId = 0L
+  private var completionCursor = 0L
   private var pool = Option.empty[WorkerTransport]
   private[engine] def refusal: Option[String] =
     if pool.exists(_.snapshot.closing) then Some("worker executor closed")
@@ -96,8 +97,17 @@ final class ControlledScheduler private[engine](runtime: HeadlessRuntime, val ca
       case None => CommitResult.Refused("retired work ticket")
       case Some(ticket) =>
         val outcome = ticket.result.getOrElse(throw new IllegalStateException("work has not terminated"))
-        ticket.terminal(outcome)
+        runtime.caused(CauseKind.Completion)(ticket.terminal(outcome))
   private[engine] def drain(budget: Int): Vector[CommitResult[Unit]] =
     collect()
     val ready = entries.valuesIterator.filter(_.result.nonEmpty).take(budget).map(_.id).toVector
     ready.map(deliver)
+
+  /** Each driver turn supplies IDs already attempted, including failed bookkeeping. */
+  private[engine] def drainOne(excluded: Set[Long]): Option[(Long, CommitResult[Unit])] =
+    collect()
+    val ready = entries.valuesIterator.filter(t => t.result.nonEmpty && !excluded(t.id)).map(_.id).toVector
+    (ready.filter(_ > completionCursor) ++ ready.filter(_ <= completionCursor)).headOption.map { id =>
+      completionCursor = id
+      id -> deliver(id)
+    }

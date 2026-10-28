@@ -17,12 +17,11 @@ object RunWorkbench:
   def settle(host: HeadlessRuntime)(done: => Boolean): Unit =
     val deadline = System.nanoTime() + 5000000000L
     while !done && System.nanoTime() < deadline do
-      val receipt = host.pump(8)
-      require(receipt.progress.failures.isEmpty && receipt.completions.forall {
-        case CommitResult.Committed(_) => true
-        case _ => false
-      }, s"delivery failed: $receipt")
-      if !done then host.awaitActivity(100)
+      val receipt = host.drive(8)
+      require(receipt.failures.isEmpty, s"delivery failed: $receipt")
+      if !done then
+        val remaining = math.max(0L, (deadline - System.nanoTime() + 999999L) / 1000000L)
+        host.awaitActivity(remaining.min(5000L))
     require(done, "workbench worker deadline exceeded")
   def trace(): Vector[String] =
     val host = new HeadlessRuntime(workCapacity = 8)
@@ -33,10 +32,10 @@ object RunWorkbench:
       val session = model.importing(workspace.child("import"))
       accepted(host.transact { model.query.set("sirin"); model.document.set("revision one") })
       accepted(host.transact {
-        requireStarted(model.save.dispatch(()))
+        model.saveRequested.emit(())
         requireStarted(session.run.dispatch(()))
       })
-      settle(host)(read(host, session.channel.state) == ChannelState.Drained && !read(host, model.search).pending && read(host, model.save.running) == 0)
+      settle(host)(read(host, session.channel.state) == ChannelState.Drained && !read(host, model.searchPending) && read(host, model.save.running) == 0 && !read(host, model.dirty) && read(host, model.rowChangeCount) == 6)
       Vector(s"search=${read(host, model.search).shown.get.head.title}",
         s"imported=${read(host, session.received)} rows=${read(host, model.rows.snapshot).size}",
         s"dirty=${read(host, model.dirty)} channel=${read(host, session.channel.state)}")

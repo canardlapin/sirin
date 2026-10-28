@@ -3,7 +3,7 @@ package sirin.comparison
 import scalafx.application.Platform
 import scalafx.beans.property.{BooleanProperty, ObjectProperty, StringProperty}
 import scalafx.collections.ObservableBuffer
-import javafx.animation.AnimationTimer
+import javafx.animation.{AnimationTimer, PauseTransition}
 import javafx.concurrent.Task
 import java.util.concurrent.{ArrayBlockingQueue, CancellationException, ThreadPoolExecutor, TimeUnit}
 import scala.collection.mutable
@@ -59,7 +59,11 @@ final class Workbench(services: Services) extends AutoCloseable:
   val document = StringProperty("")
   val dirty = BooleanProperty(false)
   val results = ObjectProperty(Vector.empty[Record])
+  private val typing = BooleanProperty(false)
+  private val taskPending = BooleanProperty(false)
   val searchPending = BooleanProperty(false)
+  searchPending <== typing || taskPending
+  private var settledQuery = ""
   val error = ObjectProperty(Option.empty[String])
   val importing = BooleanProperty(false)
   val imported = ObjectProperty(0)
@@ -83,19 +87,25 @@ final class Workbench(services: Services) extends AutoCloseable:
     generation += 1
     val epoch = generation
     val input = query.value
+    settledQuery = input
     searchTask.foreach { task => task.cancel(true); workers.remove(task); () }
     val task = new Task[Vector[Record]]:
       def call(): Vector[Record] = services.search(input, () => isCancelled)
     searchTask = Some(task)
-    searchPending.value = true
+    taskPending.value = true
     if !submit(task, workers, () => epoch == generation) { value =>
-      if epoch == generation then { results.value = value; searchPending.value = false }
-    } then searchPending.value = false
+      if epoch == generation then { results.value = value; taskPending.value = false }
+    } then taskPending.value = false
     // Task event handlers also settle the pending indicator on failure/cancel.
     task.stateProperty.addListener((_, _, state) =>
       if epoch == generation && (state == javafx.concurrent.Worker.State.FAILED || state == javafx.concurrent.Worker.State.CANCELLED) then
-        searchPending.value = false)
-  private val querySubscription = query.onChange((_, _, _) => search())
+        taskPending.value = false)
+  private val quiet = new PauseTransition(javafx.util.Duration.millis(150))
+  quiet.setOnFinished(_ => { typing.value = false; search() })
+  private val querySubscription = query.onChange { (_, _, _) =>
+    if query.value == settledQuery then { quiet.stop(); typing.value = false }
+    else { typing.value = true; quiet.playFromStart() }
+  }
   def refresh(values: Vector[Record]): Unit =
     owner()
     require(values.map(_.id).distinct.size == values.size, "Duplicate row ID")
@@ -157,6 +167,7 @@ final class Workbench(services: Services) extends AutoCloseable:
   def close(): Unit =
     owner()
     alive = false
+    quiet.stop()
     querySubscription.cancel()
     documentSubscription.cancel()
     tasks.toVector.foreach(_.cancel(true))

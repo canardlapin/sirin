@@ -1,0 +1,159 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (16742 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 12 Scala sources to /Users/bbuchsbaum/code/scala/sirin/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 5 Scala sources to /Users/bbuchsbaum/code/scala/sirin/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.191s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.243s
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.363s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.414s
+Test run sirin.engine.TopologyLifetimeSuite started
+==> X sirin.engine.TopologyLifetimeSuite.the public Scope facade executes its supported lifecycle and refuses deferred features 0.006s munit.FailException: engine/src/test/scala/sirin/engine/TopologyLifetimeSuite.scala:500 expected exception of type 'sirin.engine.KernelError' but body evaluated successfully
+499:    assertEquals(r.flushEffects().executed, 0)
+500:    assertEquals(intercept[KernelError](model.events[Int]), KernelError.Deferred("events"))
+501:    r.close()
+    at munit.Assertions.fail(Assertions.scala:297)
+    at munit.Assertions.fail$(Assertions.scala:20)
+    at munit.FunSuite.fail(FunSuite.scala:12)
+    at munit.Assertions.runIntercept(Assertions.scala:224)
+    at munit.Assertions.intercept(Assertions.scala:206)
+    at munit.Assertions.intercept$(Assertions.scala:20)
+    at munit.FunSuite.intercept(FunSuite.scala:12)
+    at sirin.engine.TopologyLifetimeSuite.$init$$$anonfun$27(TopologyLifetimeSuite.scala:500)
+sirin.engine.TopologyLifetimeSuite: finished 0.386s
+Test run sirin.engine.TopologyLifetimeSuite finished: 1 failed, 0 ignored, 28 total 0.438s
+Test run sirin.engine.WorkCommandSuite started
+sirin.engine.WorkCommandSuite: finished 0.422s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.467s
+Test run sirin.engine.ReconciliationSuite started
+==> X sirin.engine.ReconciliationSuite.keyed replacement, reorder and insertion preserve Inputs, draft and instance; builder runs once 0.223s munit.ComparisonFailException: engine/src/test/scala/sirin/engine/ReconciliationSuite.scala:48
+47:    val after = components(ok(r, mounted.snapshot))
+48:    assertEquals(after.map(_._2.asInstanceOf[Item].id), Vector(2, 1, 3))
+49:    after.take(2).foreach((id, p) => assertEquals(id.instance, identities(p.asInstanceOf[Item].id)))
+values are not the same
+=> Obtained
+Vector(
+  1,
+  2
+)
+=> Diff (- expected, + obtained)
+ Vector(
+-  2,
+   1,
+-  3
++  2
+ )
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.engine.ReconciliationSuite.$init$$$anonfun$1(ReconciliationSuite.scala:48)
+==> X sirin.engine.ReconciliationSuite.mixed list changes publish source, order, Inputs and derived values coherently 0.019s munit.ComparisonFailException: engine/src/test/scala/sirin/engine/ReconciliationSuite.scala:287
+286:    r.transact { items.setAll(Seq(Item(2, "TWO"), Item(3, "three"))) }
+287:    assertEquals(events.toVector, Vector(Vector(Item(1, "one"), Item(2, "two")), Vector(Item(2, "TWO"), Item(3, "three"))))
+288:    assertEquals(r.diagnostics, Vector.empty)
+values are not the same
+=> Obtained
+Vector(
+  Vector(
+    Item(
+      id = 1,
+      label = "one"
+    ),
+    Item(
+      id = 2,
+      label = "two"
+    )
+  )
+)
+=> Diff (- expected, + obtained)
+     )
+-  ),
+-  Vector(
+-    Item(
+-      id = 2,
+-      label = "TWO"
+-    ),
+-    Item(
+-      id = 3,
+-      label = "three"
+-    )
+   )
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.engine.ReconciliationSuite.$init$$$anonfun$13(ReconciliationSuite.scala:287)
+==> X sirin.engine.ReconciliationSuite.keyed collection operations have transactional validation and explicit deferred events 0.006s munit.ComparisonFailException: engine/src/test/scala/sirin/engine/ReconciliationSuite.scala:326
+325:    r.transact { source.insert(1, Item(3, "three")); source.move(1, 2); source.replace(Item(2, "TWO")); source.update(3)(_.copy(label = "THREE")) }
+326:    assertEquals(ok(r, source.snapshot), IndexedSeq(Item(3, "THREE"), Item(2, "TWO"), Item(1, "one")))
+327:    val before = ok(r, source.snapshot)
+values are not the same
+=> Obtained
+Vector(
+  Item(
+    id = 1,
+    label = "one"
+  ),
+  Item(
+    id = 2,
+    label = "two"
+  )
+)
+=> Diff (- expected, + obtained)
+   Item(
+-    id = 3,
+-    label = "THREE"
++    id = 1,
++    label = "one"
+   ),
+     id = 2,
+-    label = "TWO"
+-  ),
+-  Item(
+-    id = 1,
+-    label = "one"
++    label = "two"
+   )
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.engine.ReconciliationSuite.$init$$$anonfun$16(ReconciliationSuite.scala:326)
+==> X sirin.engine.ReconciliationSuite.Inputs and derived reads follow staged keyed replacements and attempt restoration 0.003s munit.ComparisonFailException: engine/src/test/scala/sirin/engine/ReconciliationSuite.scala:390
+389:      assertEquals(label.get, "ONE")
+390:    }, CommitResult.Committed(()))
+391:  }
+values are not the same
+=> Obtained
+Failed(
+  error = java.util.NoSuchElementException: key not found: 1
+)
+=> Diff (- expected, + obtained)
+-Committed(
+-  value = ()
++Failed(
++  error = java.util.NoSuchElementException: key not found: 1
+ )
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.engine.ReconciliationSuite.$init$$$anonfun$19(ReconciliationSuite.scala:390)
+==> X sirin.engine.ReconciliationSuite.filtered collections and structural snapshots preserve signed zero equality 0.005s munit.ComparisonFailException: engine/src/test/scala/sirin/engine/ReconciliationSuite.scala:485
+484:    r.transact { source.replace(-0.0) }
+485:    assertEquals(1.0 / ok(r, filtered.snapshot).head, Double.NegativeInfinity)
+486:    assertEquals(r.transact { 1.0 / input.get }, CommitResult.Committed(Double.NegativeInfinity))
+values are not the same
+=> Obtained
+Infinity
+=> Diff (- expected, + obtained)
+--Infinity
++Infinity
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.engine.ReconciliationSuite.$init$$$anonfun$24(ReconciliationSuite.scala:485)
+sirin.engine.ReconciliationSuite: finished 0.486s
+Test run sirin.engine.ReconciliationSuite finished: 5 failed, 0 ignored, 29 total 0.543s
+[error] Failed: Total 123, Failed 6, Errors 0, Passed 117
+[error] Failed tests:
+[error] 	sirin.engine.TopologyLifetimeSuite
+[error] 	sirin.engine.ReconciliationSuite
+[error] (engineJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 10 s, completed Oct 28, 2026, 7:47:00 a.m.
