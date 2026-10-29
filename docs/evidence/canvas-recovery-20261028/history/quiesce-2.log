@@ -1,0 +1,27 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+==> X sirin.desktop.RetainedCanvasSuite.retirement quiesces an in-flight request before replacement on the same worker 5.061s munit.FailException: desktop/src/test/scala/sirin/desktop/RetainedCanvasSuite.scala:107 worker did not enter: None
+106:    try
+107:      service.submit(1);assert(entered.await(5,java.util.concurrent.TimeUnit.SECONDS),s"worker did not enter: ${service.poll()}")
+108:      service.quiesce();assertEquals(closed.get(),1)
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.RetainedCanvasSuite.$init$$$anonfun$4(RetainedCanvasSuite.scala:107)
+sirin.desktop.RetainedCanvasSuite: finished 5.075s
+Test run sirin.desktop.RetainedCanvasSuite finished: 1 failed, 0 ignored, 1 total 5.081s
+[error] Failed: Total 1, Failed 1, Errors 0, Passed 0
+[error] Failed tests:
+[error] 	sirin.desktop.RetainedCanvasSuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 8 s, completed Oct 28, 2026, 9:18:43 p.m.

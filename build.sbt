@@ -295,7 +295,8 @@ lazy val desktopJVM = project.in(file("desktop"))
       Seq(repo / "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala",
         repo / "probes/paragraph/src/main/scala/sirin/graphics/text/NativeTextServices.scala",
         repo / "probes/render/src/main/scala/sirin/render/PixelProgram.scala",
-        repo / "probes/render/src/main/scala/sirin/render/BatchProgram.scala")
+        repo / "probes/render/src/main/scala/sirin/render/BatchProgram.scala",
+        repo / "probes/render/src/main/scala/sirin/render/BatchOracle.scala")
     },
     Compile / resourceGenerators += Def.task {
       val output = (Compile / resourceManaged).value / "raster.wgsl"

@@ -6,15 +6,18 @@ import scala.collection.mutable.ArrayBuffer
   * winding, so one nonzero fill forms their union without alpha overdraw.
   */
 private[graphics] object StrokePreparation:
-  def outline(path: Path, style: StrokeStyle, transform: Affine, tolerance: Double, maxPoints: Int, maxDepth: Int = 24): Path =
+  def outline(path: Path, style: StrokeStyle, transform: Affine, tolerance: Double, maxPoints: Int, maxDepth: Int = 24,control: PreparationControl=new PreparationControl,onVertices: Int => Unit=_ => ()): Path =
     val polygons = ArrayBuffer.empty[Vector[Point]]
     var work = 0
     var vertices = 0
     def step(): Unit =
+      control.checkpoint()
       work += 1
       require(work <= maxPoints * 8L, "stroke work budget")
     def polygon(ps: Vector[Point]): Unit =
+      control.checkpoint(ps.size)
       vertices += ps.size + 2
+      onVertices(vertices)
       require(vertices <= maxPoints, "stroke point budget")
       val area = ps.zip(ps.drop(1) :+ ps.head).map((a,b) => (a.x-ps.head.x)*(b.y-ps.head.y)-(a.y-ps.head.y)*(b.x-ps.head.x)).sum
       require(area.isFinite, "stroke polygon overflow")
@@ -38,7 +41,7 @@ private[graphics] object StrokePreparation:
         2*math.asin(math.sqrt(math.min(1,error/(2*deviceRadius))))
       val count = math.max(8,math.ceil(2*math.Pi/angle))
       require(count.isFinite && count <= maxPoints-vertices-2, "round stroke point budget")
-      polygon(Vector.tabulate(count.toInt)(i => plus(p,Point(radius*math.cos(i*2*math.Pi/count),radius*math.sin(i*2*math.Pi/count)))))
+      polygon(Vector.tabulate(count.toInt) { i => control.checkpoint();plus(p,Point(radius*math.cos(i*2*math.Pi/count),radius*math.sin(i*2*math.Pi/count))) })
     def cap(p: Point,u: Point,start: Boolean): Unit = style.cap match
       case LineCap.Butt => ()
       case LineCap.Round => disk(p)
@@ -143,7 +146,7 @@ private[graphics] object StrokePreparation:
           val joined=fragments.last++fragments.head
           fragments.remove(fragments.size-1);fragments(0)=joined
         fragments.foreach(p => stroke(p,closed && p.size>1 && p.head.a==p.last.b))
-    val contours=StrokeCurves.flatten(path,style,density,tolerance,maxPoints,maxDepth)
+    val contours=StrokeCurves.flatten(path,style,density,tolerance,maxPoints,maxDepth,control)
     contours.foreach { case Contour(pieces,closed) => contour(pieces,closed) }
     // Remove exact opposite edges before storing the prepared path. Ribbon
     // diagonals and shared interfaces contribute zero winding. Extracting
@@ -152,6 +155,7 @@ private[graphics] object StrokePreparation:
     val net=scala.collection.mutable.LinkedHashMap.empty[(Point,Point),Int]
     polygons.foreach { ps => ps.zip(ps.drop(1):+ps.head).foreach { (a,b) =>
       if a!=b then
+        control.checkpoint()
         val reverse=(b,a)
         net.get(reverse) match
           case Some(1) => net.remove(reverse)
@@ -169,6 +173,7 @@ private[graphics] object StrokePreparation:
       segments+=PathSegment.MoveTo(start)
       var current=start;var closed=false
       while !closed do
+        control.checkpoint()
         val next=outgoing.getOrElse(current,throw new IllegalArgumentException("unbalanced stroke boundary"))
         val end=next.remove(next.size-1)
         if next.isEmpty then outgoing.remove(current)

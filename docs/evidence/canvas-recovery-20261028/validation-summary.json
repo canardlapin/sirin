@@ -1,0 +1,20 @@
+{
+  "distinct_scala_test_cases": 749,
+  "by_scope": {
+    "JVM_alias": 313,
+    "Native_alias": 313,
+    "font": 7,
+    "unicode": 12,
+    "paragraph": 40,
+    "Native_GPU": 34,
+    "desktop": 30
+  },
+  "python_receipt_tests": 6,
+  "authoring_examples_compiled": 13,
+  "full_matrix_log": "validation/full-validation.log",
+  "full_matrix_tail": "desktop old quiescence harness failed; aliases and probes passed",
+  "final_desktop_log": "validation/desktop-final.log",
+  "final_Native_GPU_log": "validation/native-final.log",
+  "additional_pixel_cancellation_refresh": "validation/receipts-final.log",
+  "prior_failures_preserved": true
+}

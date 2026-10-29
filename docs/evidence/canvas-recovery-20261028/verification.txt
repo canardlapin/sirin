@@ -1,0 +1,2 @@
+Source/artifact hashes, all 16 pixel pairs, canvas counters and host diagnostic verified.
+Quiet qualification and spontaneous hardware-loss races remain open.

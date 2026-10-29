@@ -1,0 +1,61 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 4 Scala sources to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 4 Scala sources to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+canvasComparison scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(13824,0,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(13817,7,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(13824,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(24576,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(24576,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(24561,15,0,0,None)
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+==> X sirin.desktop.RetainedCanvasSuite.four-scale translated, zoomed and edited canvas agrees with independent reference 5.29s munit.ComparisonFailException: desktop/src/test/scala/sirin/desktop/RetainedCanvasSuite.scala:35
+34:    finally {canvas.close();prep.close();reference.close()}
+35:    assertEquals(BatchGpu.liveHealthRecords,0)
+36:  }
+values are not the same
+=> Obtained
+1
+=> Diff (- expected, + obtained)
+-0
++1
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.desktop.RetainedCanvasSuite.$init$$$anonfun$1(RetainedCanvasSuite.scala:35)
+==> X sirin.desktop.RetainedCanvasSuite.actual device destruction invokes native loss, rejects old resources and rebuilds pixels 0.06s munit.FailException: desktop/src/test/scala/sirin/desktop/RetainedCanvasSuite.scala:73 assertion failed
+72:      old.destroyDevice()
+73:      assert(old.isLost);assert(old.lossReason!=0,"actual native device-lost callback missing")
+74:      intercept[GraphicsDeviceLost](old.target(96,64,1))
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.RetainedCanvasSuite.$init$$$anonfun$3(RetainedCanvasSuite.scala:73)
+==> X sirin.desktop.RetainedCanvasSuite.retirement quiesces an in-flight request before replacement on the same worker 5.019s munit.FailException: desktop/src/test/scala/sirin/desktop/RetainedCanvasSuite.scala:107 assertion failed
+106:    try
+107:      service.submit(1);assert(entered.await(5,java.util.concurrent.TimeUnit.SECONDS))
+108:      service.quiesce();assertEquals(closed.get(),1)
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.RetainedCanvasSuite.$init$$$anonfun$4(RetainedCanvasSuite.scala:107)
+sirin.desktop.RetainedCanvasSuite: finished 10.905s
+Test run sirin.desktop.RetainedCanvasSuite finished: 3 failed, 0 ignored, 4 total 10.914s
+[error] Failed: Total 4, Failed 3, Errors 0, Passed 1
+[error] Failed tests:
+[error] 	sirin.desktop.RetainedCanvasSuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 17 s, completed Oct 28, 2026, 9:17:07 p.m.

@@ -20,17 +20,21 @@ final class BatchGpu private(private var handle: Ptr[Byte],val generation: Devic
   private def check(): Unit =
     require(Thread.currentThread() eq owner,"batch GPU owner thread mismatch")
     require(handle!=null,"batch GPU owner closed")
+    if BatchShim.bgpu_lost(handle)!=0 then throw new GraphicsDeviceLost
+  def isLost: Boolean={require(handle!=null,"batch GPU owner closed");BatchShim.bgpu_lost(handle)!=0}
+  private[sirin] def destroyDevice(): Unit={check();BatchShim.bgpu_destroy_device(handle)}
+  private[sirin] def lossReason: Int=BatchShim.bgpu_lost_reason(handle)
   def target(width: Int,height: Int,scale: Double): RenderTarget =
     check();require(scale.isFinite && scale>0,"invalid scale")
     RenderTarget(generation,width,height,Affine.scale(scale,scale))
-  def compile(drawing: PreparedDrawing): BatchProgram =
-    check();require(drawing.target.device eq generation,"batch device generation mismatch");compiler.compile(drawing)
+  def compile(drawing: PreparedDrawing,control: PreparationControl=new PreparationControl): BatchProgram =
+    check();require(drawing.target.device eq generation,"batch device generation mismatch");compiler.compile(drawing,control)
   def cacheStats: BatchCacheStats = {check();compiler.stats}
   def stats: BatchGpuStats =
     check()
     def field(i: Int)=BatchShim.bgpu_stat(handle,i)
     BatchGpuStats(field(0),field(1),field(2),field(3),field(4),field(5),field(6),field(7),field(8))
-  def retain(program: BatchProgram): BatchRetained =
+  def retain(program: BatchProgram,control: PreparationControl=new PreparationControl): BatchRetained =
     check();require(program.drawing.target.device eq generation,"batch device generation mismatch")
     require(program.meshes.size<=limits.meshEntries,"GPU mesh entry budget")
     require(program.assets.count(_.kind==1)<=limits.imageEntries && program.assets.count(_.kind==2)<=limits.glyphEntries,"GPU texture entry budget")
@@ -39,9 +43,12 @@ final class BatchGpu private(private var handle: Ptr[Byte],val generation: Devic
       val acquiredAssets=scala.collection.mutable.ArrayBuffer.empty[(Int,Int)]
       var transferred=false
       def status(code: Int,operation: String): Unit =
-        if code!=0 then throw new IllegalStateException(s"$operation status=$code: ${fromCString(BatchShim.bgpu_error(handle))}")
+        if code!=0 then
+          if isLost then throw new GraphicsDeviceLost
+          throw new IllegalStateException(s"$operation status=$code: ${fromCString(BatchShim.bgpu_error(handle))}")
       try
         val offsets=program.meshes.map { mesh =>
+          control.checkpoint()
           val out=alloc[CInt]()
           var code=BatchShim.bgpu_mesh_acquire(handle,mesh.token,null,mesh.count,out)
           if code==7 then
@@ -50,6 +57,7 @@ final class BatchGpu private(private var handle: Ptr[Byte],val generation: Devic
           status(code,"batch mesh admission");acquiredMeshes+=mesh.token;!out
         }
         val slots=program.assets.map { asset =>
+          control.checkpoint()
           val out=alloc[CInt]()
           var code=BatchShim.bgpu_asset_acquire(handle,asset.kind,asset.token,null,asset.width,asset.height,out)
           if code==7 then
@@ -75,6 +83,7 @@ final class BatchGpu private(private var handle: Ptr[Byte],val generation: Devic
         val assetIds=alloc[CInt](math.max(1,acquiredAssets.size));val kinds=alloc[CInt](math.max(1,acquiredAssets.size))
         acquiredAssets.indices.foreach { i => kinds(i)=acquiredAssets(i)._1;assetIds(i)=acquiredAssets(i)._2 }
         val out=alloc[Ptr[Byte]]();val t=program.drawing.target
+        control.checkpoint()
         status(BatchShim.bgpu_retain(handle,data,words.length,indices,program.triangleCount,steps.asInstanceOf[Ptr[Byte]],program.steps.size,
           t.width,t.height,program.maxLayers,meshIds,acquiredMeshes.size,assetIds,kinds,acquiredAssets.size,out),"batch retain")
         val native= !out;transferred=true
@@ -92,7 +101,9 @@ final class BatchGpu private(private var handle: Ptr[Byte],val generation: Devic
       val t=resource.program.drawing.target
       val out=if readback then alloc[Byte](t.width*t.height*4) else null
       val code=BatchShim.bgpu_replay(resource.handle,out)
-      if code!=0 then throw new IllegalStateException(s"batch replay status=$code: ${fromCString(BatchShim.bgpu_error(handle))}")
+      if code!=0 then
+        if isLost then throw new GraphicsDeviceLost
+        throw new IllegalStateException(s"batch replay status=$code: ${fromCString(BatchShim.bgpu_error(handle))}")
       if readback then Some(ImageSnapshot.copyRgba8(t.width,t.height,Array.tabulate(t.width*t.height*4)(i => out(i)))) else None
     }
   private[render] def retire(resource: BatchRetained): Unit =
@@ -112,6 +123,7 @@ final class BatchRetained private[render](private val owner: BatchGpu,private[re
   private[render] def clear(): Unit={handle=null;program=null}
 
 object BatchGpu:
+  def liveHealthRecords: Int=BatchShim.bgpu_health_live()
   def liveOwners: Int=BatchShim.bgpu_live()
   def open(limits: BatchLimits=BatchLimits()): BatchGpu = Zone.acquire { implicit zone =>
     val candidates=Vector(FilePath.of("probes/render/src/main/resources/batch.wgsl"),FilePath.of("src/main/resources/batch.wgsl"))
@@ -125,6 +137,10 @@ object BatchGpu:
       case e: Throwable => BatchShim.bgpu_close(handle);throw e
   }
 @extern private[render] object BatchShim:
+  def bgpu_lost(h: Ptr[Byte]): CInt=extern
+  def bgpu_lost_reason(h: Ptr[Byte]): CInt=extern
+  def bgpu_health_live(): CInt=extern
+  @blocking def bgpu_destroy_device(h: Ptr[Byte]): Unit=extern
   @blocking def bgpu_open(shader: CString,vertices: CInt,meshes: CInt,masks: CInt,images: CInt,out: Ptr[Ptr[Byte]],error: Ptr[Byte]): CInt=extern
   @blocking def bgpu_close(handle: Ptr[Byte]): Unit=extern
   def bgpu_adapter(handle: Ptr[Byte]): CString=extern

@@ -13,6 +13,7 @@ object DesktopWorkbench:
     case CommitResult.Committed(value) => value
     case other => throw new IllegalStateException(s"$other")
   def main(args: Array[String]): Unit =
+    if args.headOption.contains("canvas") then {CanvasWorkbench.main(args.drop(1));return}
     val mainEnteredAt=System.nanoTime()
     val root=Path.of(System.getProperty("sirin.repo", ".")).toAbsolutePath.normalize()
     val windowStarted=System.nanoTime()
@@ -21,7 +22,7 @@ object DesktopWorkbench:
     try run(window,root,args,mainEnteredAt,windowSetupNanos)
     finally window.close()
     require(NativeWindow.liveWindows()==0 && NativeWindow.liveRequests()==0,"native window/request leaked")
-    require(sirin.render.OffscreenGpu.liveOwners==0 && sirin.render.BatchGpu.liveOwners==0 && sirin.render.GpuFrame.liveFrames==0 && sirin.render.GpuFrame.liveTiles==0,"render device/frame leaked")
+    require(sirin.render.OffscreenGpu.liveOwners==0 && sirin.render.BatchGpu.liveOwners==0 && sirin.render.BatchGpu.liveHealthRecords==0 && sirin.render.GpuFrame.liveFrames==0 && sirin.render.GpuFrame.liveTiles==0,"render device/frame leaked")
   private def run(window: NativeWindow,root: Path,args: Array[String],mainEnteredAt: Long,windowSetupNanos: Long): Unit =
     val interactive=args.contains("interactive")
     val scenario=args.contains("scenario")
@@ -48,6 +49,9 @@ object DesktopWorkbench:
     val traces=scala.collection.mutable.ArrayBuffer.empty[(String,Double)]
     val warmups=scala.collection.mutable.ArrayBuffer.empty[(String,Double)]
     val warmupSteps=40 // fixed 20 action + 20 scroll turns before the measured 100/class
+    var recoveryPending=false;var consecutiveLosses=0;var recoveries=0
+    var latestRequest=Option.empty[FrameRequest]
+    val sharedRenderer=new java.util.concurrent.atomic.AtomicReference[java.lang.foreign.MemorySegment]()
     var samplesComplete=false
     var targetsMet=false
     var benchmarkFailure=Option.empty[Throwable]
@@ -70,9 +74,9 @@ object DesktopWorkbench:
     try
       pool=Some(runtime.scheduler.startWorkers(2))
       subscription=Some(runtime.onActivity(() => wake()))
-      val sharedRenderer=window.prepareRenderer(sirin.render.BatchGpu.shaderSource)
+      sharedRenderer.set(window.prepareRenderer(sirin.render.BatchGpu.shaderSource))
       renderer=Some(new RenderService(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/frames"),() => wake(),Some(() => {
-        val gpu=sirin.render.BatchGpu.shared(sharedRenderer)
+        val gpu=sirin.render.BatchGpu.shared(sharedRenderer.get())
         try new RenderSession(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/frames"),batch=Some(gpu))
         catch case e: Throwable => {gpu.close();throw e}
       })))
@@ -140,13 +144,23 @@ object DesktopWorkbench:
             inject(6,x=t.clip.x+5,y=t.clip.y+5,delta=if benchmarkStep%2==0 then -1 else 1)
           }
         benchmarkStep+=1
+      def recoverRenderer(): Unit =
+        consecutiveLosses+=1;require(consecutiveLosses<=3,"repeated graphics loss without presentation")
+        recoveryPending=true;current.foreach(_.close());current=None;presentedPayload=None
+        renderer.get.quiesce()
+        sharedRenderer.set(window.prepareRenderer(sirin.render.BatchGpu.shaderSource))
+        recoveries+=1
+        latestRequest.foreach(renderer.get.submit)
+        repaint=true
+        println(s"rendererRecovered=$recoveries")
       while running do
+        if window.rendererLost() then recoverRenderer()
         if benchmark then fixture.observe(BenchmarkGeometry(facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height()))
         pendingWake.set(false)
         val turn=runtime.drive(16)
         require(turn.failures.isEmpty && runtime.wakeFailures==0,s"driver failure: ${turn.failures}")
         if facts.quit() then running=false
-        NativeInput.decode(facts).filter(_ => running).foreach { input =>
+        NativeInput.decode(facts).filter(_ => running && !recoveryPending).foreach { input =>
           val positional=facts.kind()==3 || facts.kind()==4 || facts.kind()==6
           if !positional || facts.timestamp()>=lastGeometryAt then nativeInput(input,facts.timestamp())
         }
@@ -160,8 +174,9 @@ object DesktopWorkbench:
         if running && facts.width()>0 && facts.height()>0 && facts.logicalWidth()>0 && facts.logicalHeight()>0 then
           val payload=FramePayload(bindings.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),interaction.state.scrolls,
             interaction.state.focused,interaction.state.keyboard,interaction.state.pressed.map(_.target),viewports.toMap)
-          coordinator.request(payload).foreach(renderer.get.submit)
+          coordinator.request(payload).foreach { request => latestRequest=Some(request);renderer.get.submit(request) }
           renderer.get.poll().foreach {
+            case (generation,Left(_: sirin.graphics.GraphicsDeviceLost)) if coordinator.acceptsGeneration(generation) => recoverRenderer()
             case (generation,Left(error)) if coordinator.acceptsGeneration(generation) => throw error
             case (_,Right(frame)) if coordinator.accepts(frame.request) =>
               val active=frame.layout.viewports.map(_.instance).toSet
@@ -190,6 +205,7 @@ object DesktopWorkbench:
               presentReturnedAt=System.nanoTime();presentCallNanos=presentReturnedAt-began
               accepted
             if !recapture && settled && repaint && present() then
+              recoveryPending=false;consecutiveLosses=0
               if firstPresentationNanos==0 then
                 firstPresentationNanos=presentReturnedAt-mainEnteredAt
                 sessionSetupNanos=frame.sessionSetupNanos
@@ -245,10 +261,14 @@ object DesktopWorkbench:
                     require(ok(runtime.transact {app.count.get})==2,"newly mounted control lost activation/focus")
                     scenarioStage=10;inject(8)
                   case _ => ()
+              if args.contains("recovery") then
+                if presented==1 then window.destroyRenderer()
+                else if recoveries>0 then inject(8)
               if args.contains("close") && presented==1 then inject(8)
               if resizeControl && presented==1 then window.resize(640,400)
               if benchmark && !resizeControl && benchmarkStep<warmupSteps+200 && (benchmarkStep==0 || sampled) then nextBenchmark()
           }
+        if running && window.rendererLost() then recoverRenderer()
         if !running then ()
         else if !interactive && !benchmark && presented>0 && (!scenario || scenarioStage==10) && System.nanoTime()-lastFrameAt>2000000000L then running=false
         else if benchmark && traces.size>=200 then running=false
@@ -261,6 +281,7 @@ object DesktopWorkbench:
             math.max(0L,(end-System.nanoTime()+999999)/1000000).min(Int.MaxValue).toInt
           val timeout=if runtimeWait<0 then smokeWait else if smokeWait<0 then runtimeWait else math.min(runtimeWait,smokeWait)
           facts=window.waitEvent(timeout);repaint = repaint || facts.redraw()
+      require(!args.contains("recovery") || (recoveries==1 && presented>=2),"device recovery incomplete")
       require(!scenario || scenarioStage==10,"interaction scenario incomplete")
       if benchmark then
         require(benchmarkStep==warmupSteps+200 &&

@@ -26,7 +26,7 @@ object DrawingResources:
   /** Iterative traversal visits each shared drawing once and returns either a
     * complete inventory or a limit error, never a silently truncated inventory.
     */
-  def inspect(root: Drawing, limits: InspectionLimits = InspectionLimits()): Either[InspectionLimit, DrawingResources] =
+  def inspect(root: Drawing, limits: InspectionLimits = InspectionLimits(),control: PreparationControl=new PreparationControl): Either[InspectionLimit, DrawingResources] =
     // These final immutable resource classes have identity equality. No content
     // hashing or recursive Drawing.equals is needed to inspect a shared graph.
     val drawings = mutable.HashSet(root)
@@ -37,6 +37,7 @@ object DrawingResources:
     val stack = mutable.ArrayBuffer(root.commands.iterator)
     var commandCount = 0L
     while stack.nonEmpty do
+      control.checkpoint()
       val current = stack.last
       if !current.hasNext then stack.remove(stack.size - 1)
       else

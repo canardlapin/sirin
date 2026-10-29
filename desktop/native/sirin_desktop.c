@@ -94,6 +94,7 @@ static void destroy(Desktop *d) {
   if (d->blit) wgpuRenderPipelineRelease(d->blit);
   if (d->queue) wgpuQueueRelease(d->queue);
   if (d->device) wgpuDeviceRelease(d->device);
+  if (d->surface) {wgpuSurfaceRelease(d->surface);d->surface=NULL;}
   if (d->batch) bgpu_close(d->batch);
   if (d->adapter) wgpuAdapterRelease(d->adapter);
   if (d->surface) wgpuSurfaceRelease(d->surface);

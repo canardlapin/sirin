@@ -54,10 +54,13 @@ final class PreparedDrawing private[graphics] (val source: Drawing, val target: 
 object DrawingPreparation:
   private final case class Refusal(reason: PreparationFailure) extends RuntimeException
   def prepare(drawing: Drawing, target: RenderTarget, capabilities: RenderCapabilities = RenderCapabilities(),
-      limits: PreparationLimits = PreparationLimits()): Either[PreparationFailure, PreparedDrawing] =
+      limits: PreparationLimits = PreparationLimits(),control: PreparationControl=new PreparationControl): Either[PreparationFailure, PreparedDrawing] =
+    prepareUsing(drawing,target,capabilities,limits,control,None)
+  private[graphics] def prepareUsing(drawing: Drawing,target: RenderTarget,capabilities: RenderCapabilities,
+      limits: PreparationLimits,control: PreparationControl,cache: Option[PreparationCache]): Either[PreparationFailure,PreparedDrawing] =
     try
-      val engine = new Engine(target, capabilities, limits)
-      val resources = DrawingResources.inspect(drawing, InspectionLimits(limits.maxCommands, limits.maxCommands.toLong)).fold(
+      val engine = new Engine(target, capabilities, limits,control,cache)
+      val resources = DrawingResources.inspect(drawing, InspectionLimits(limits.maxCommands, limits.maxCommands.toLong),control).fold(
         error => throw Refusal(PreparationFailure.Budget(error.toString)), identity)
       engine.visit(drawing, target.logicalToDevice, Vector.empty, 0, 0)
       Right(new PreparedDrawing(drawing, target, capabilities, engine.output.result(), resources, engine.visited, engine.points))
@@ -65,7 +68,7 @@ object DrawingPreparation:
       case refused: Refusal => Left(refused.reason)
       case invalid: IllegalArgumentException => Left(PreparationFailure.Invalid(invalid.getMessage))
 
-  private class Engine(target: RenderTarget, caps: RenderCapabilities, limits: PreparationLimits):
+  private class Engine(target: RenderTarget, caps: RenderCapabilities, limits: PreparationLimits,control: PreparationControl,cache: Option[PreparationCache]):
     val output = Vector.newBuilder[PreparedCommand]
     var visited = 0
     var points = 0
@@ -106,6 +109,7 @@ object DrawingPreparation:
       val matrices = scala.collection.mutable.ArrayBuffer.empty[Affine]
       val clipStack = scala.collection.mutable.ArrayBuffer.empty[Vector[PreparedClip]]
       try drawing.commands.foreach { command =>
+        control.checkpoint()
         visited += 1
         budget(visited <= limits.maxCommands, "expanded commands")
         command match
@@ -131,13 +135,8 @@ object DrawingPreparation:
             fill(path,paint,rule,transform,clips)
           case DrawCommand.Stroke(path, value, style) =>
             supported(caps.strokes, "stroke")
-            val outline = try StrokePreparation.outline(path,style,transform,target.tolerance,limits.maxPoints-points,limits.maxCurveDepth)
-            catch
-              case e: IllegalArgumentException if e.getMessage.contains("cusp") =>
-                throw Refusal(PreparationFailure.Unsupported("stroke cusp"))
-              case e: IllegalArgumentException if e.getMessage.contains("budget") =>
-                throw Refusal(PreparationFailure.Budget(e.getMessage))
-            fill(outline,value,FillRule.NonZero,transform,clips)
+            val flat=geometry(path,Some(style),transform)
+            output += PreparedCommand.Fill(flat,paint(value,transform,flat),FillRule.NonZero,clips)
           case DrawCommand.FillInstances(path, batch, rule) =>
             batch.transforms.indices.foreach { i =>
               visited += 1
@@ -156,12 +155,36 @@ object DrawingPreparation:
       }
       finally active -= drawing
 
-    private def flatten(path: Path, transform: Affine): FlatPath =
+    private def flatten(path: Path,transform: Affine): FlatPath=geometry(path,None,transform)
+    private def geometry(path: Path,style: Option[StrokeStyle],transform: Affine): FlatPath =
+      def make(matrix: Affine): (FlatPath,Int,Int) =
+        val before=points
+        var required=0
+        val source=style.fold(path) { value =>
+          try StrokePreparation.outline(path,value,matrix,target.tolerance,limits.maxPoints-points,limits.maxCurveDepth,control,
+            count => required=math.max(required,count))
+          catch
+            case e: IllegalArgumentException if e.getMessage.contains("cusp") => throw Refusal(PreparationFailure.Unsupported("stroke cusp"))
+            case e: IllegalArgumentException if e.getMessage.contains("budget") => throw Refusal(PreparationFailure.Budget(e.getMessage))
+        }
+        val result=flattenRaw(source,matrix)
+        (result,points-before,math.max(required,points-before))
+      cache match
+        case None => make(transform)._1
+        case Some(value) =>
+          val remaining=limits.maxPoints-points
+          val (flat,count,required,hit)=value.geometry(path,style,transform,target.tolerance,limits.maxCurveDepth,control)(make)
+          if hit then
+            budget(required<=remaining,"cached geometry point budget")
+            points+=count;control.checkpoint(count)
+          flat
+    private def flattenRaw(path: Path, transform: Affine): FlatPath =
       val contours = Vector.newBuilder[Vector[Point]]
       var line = scala.collection.mutable.ArrayBuffer.empty[Point]
       var current = Point(0, 0)
       var start = Point(0, 0)
       def add(p: Point): Unit =
+        control.checkpoint()
         points += 1
         budget(points <= limits.maxPoints, "flattened points")
         line += p
@@ -182,6 +205,7 @@ object DrawingPreparation:
           val along = math.max(0, math.min(length, (p.x - a.x) * ux + (p.y - a.y) * uy))
           math.hypot(p.x - a.x - along * ux, p.y - a.y - along * uy)
       def cubic(a: Point, b: Point, c: Point, d: Point, depth: Int): Unit =
+        control.checkpoint()
         val error = math.max(distance(b, a, d), distance(c, a, d))
         require(error.isFinite, "curve error overflow")
         if error <= target.tolerance / 2 then add(d)
@@ -191,7 +215,9 @@ object DrawingPreparation:
           val abc = mid(ab, bc); val bcd = mid(bc, cd); val center = mid(abc, bcd)
           cubic(a, ab, abc, center, depth + 1)
           cubic(center, bcd, cd, d, depth + 1)
-      path.segments.foreach {
+      path.segments.foreach { segment =>
+        control.checkpoint()
+        segment match
         case PathSegment.MoveTo(p) => finish(); start = transform(p); add(start)
         case PathSegment.LineTo(p) => add(transform(p))
         case PathSegment.QuadraticTo(control, end) =>

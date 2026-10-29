@@ -1,0 +1,21 @@
+{
+  "run": "20261029T014416.694586Z",
+  "qualified": false,
+  "percentiles": {
+    "action": {
+      "n": 100,
+      "p50_ms": 16.50325,
+      "p95_ms": 18.10575,
+      "p99_ms": 25.142209,
+      "max_ms": 34.038167
+    },
+    "scroll": {
+      "n": 100,
+      "p50_ms": 16.561042,
+      "p95_ms": 17.04125,
+      "p99_ms": 17.747458,
+      "max_ms": 26.793708
+    }
+  },
+  "quiet_qualification": "unchanged; no new qualification attempt"
+}

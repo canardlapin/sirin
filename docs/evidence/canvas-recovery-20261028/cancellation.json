@@ -1,0 +1,40 @@
+{
+  "cpu_runs_JVM_then_Native": [
+    {
+      "checks": 251,
+      "work": 250,
+      "elapsed_ns": 518959,
+      "completed_entries": 0
+    },
+    {
+      "checks": 251,
+      "work": 250,
+      "elapsed_ns": 619333,
+      "completed_entries": 0
+    }
+  ],
+  "worker_retire_ns": [
+    1050417,
+    98208,
+    31250,
+    28209,
+    35167,
+    44375,
+    48875,
+    29791,
+    18750,
+    44375,
+    17708,
+    17250,
+    43833,
+    35542,
+    31458,
+    40542,
+    22000,
+    44125,
+    35125,
+    19292
+  ],
+  "cooperative_only": true,
+  "native_calls_are_not_preempted": true
+}

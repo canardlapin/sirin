@@ -1,0 +1,70 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.BenchmarkFixtureSuite started
+sirin.desktop.BenchmarkFixtureSuite: finished 0.033s
+Test run sirin.desktop.BenchmarkFixtureSuite finished: 0 failed, 0 ignored, 3 total 0.044s
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 1.567s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 8 total 1.567s
+renderSession GPU frame retirement test
+Test run sirin.desktop.GpuFrameSuite started
+sirin.desktop.GpuFrameSuite: finished 1.302s
+Test run sirin.desktop.GpuFrameSuite finished: 0 failed, 0 ignored, 6 total 1.302s
+canvasComparison scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(13824,0,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(13817,7,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(13824,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(24576,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(24576,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(24561,15,0,0,None)
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+==> X sirin.desktop.RetainedCanvasSuite.actual device destruction invokes native loss, rejects old resources and rebuilds pixels 0.07s munit.FailException: desktop/src/test/scala/sirin/desktop/RetainedCanvasSuite.scala:73 assertion failed
+72:      old.destroyDevice()
+73:      assert(old.isLost);assert(old.lossReason!=0,"actual native device-lost callback missing")
+74:      intercept[GraphicsDeviceLost](old.target(96,64,1))
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.RetainedCanvasSuite.$init$$$anonfun$3(RetainedCanvasSuite.scala:73)
+sirin.desktop.RetainedCanvasSuite: finished 5.518s
+Test run sirin.desktop.RetainedCanvasSuite finished: 1 failed, 0 ignored, 4 total 5.518s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.613s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.613s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.019s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.019s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.009s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.009s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 0.006s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 4 total 0.006s
+[error] Failed: Total 29, Failed 1, Errors 0, Passed 28
+[error] Failed tests:
+[error] 	sirin.desktop.RetainedCanvasSuite
+[error] (desktopJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 14 s, completed Oct 28, 2026, 9:21:31 p.m.

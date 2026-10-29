@@ -12,9 +12,12 @@ int sirin_desktop_gpu_tiles(void){return atomic_load(&gpu_tiles);}
 int sirin_desktop_gpu_frames(void){return atomic_load(&gpu_frames);}
 long long sirin_desktop_gpu_output_bytes(void){return atomic_load(&gpu_output_bytes);}
 
+static void desktop_lost_wake(int window,int type){if(window&&type)sirin_desktop_wake(window,type);}
+int sirin_desktop_renderer_lost(void*raw){Desktop*d=raw;return owner(d)&&d->batch?bgpu_lost(d->batch):0;}
+int sirin_desktop_renderer_destroy(void*raw){Desktop*d=raw;if(!owner(d)||!d->batch)return 4;bgpu_destroy_device(d->batch);return 0;}
 // Main owns the device lifetime; the worker receives one independent reference.
 int sirin_desktop_batch_start(void *raw,const char *shader,void **out,char *error){
-  Desktop*d=raw;*out=NULL;if(!owner(d)||d->batch)return 4;
+  Desktop*d=raw;*out=NULL;if(!owner(d)||(d->batch&&!bgpu_lost(d->batch)))return 4;
   Bgpu*s=NULL;int status=bgpu_open(shader,1048576,256,256,16,(void**)&s,error);
   if(status)return status;
   // wgpu surface IDs belong to their instance. Recreate on the batch instance
@@ -27,6 +30,7 @@ int sirin_desktop_batch_start(void *raw,const char *shader,void **out,char *erro
   WGPUSurfaceCapabilities caps=WGPU_SURFACE_CAPABILITIES_INIT;
   if(wgpuSurfaceGetCapabilities(surface,s->adapter,&caps)!=WGPUStatus_Success){wgpuSurfaceRelease(surface);bgpu_close(s);return 5;}
   int supported=0;
+  int copy_dst=(caps.usages&WGPUTextureUsage_CopyDst)!=0;
   for(size_t i=0;i<caps.formatCount;i++)if(caps.formats[i]==WGPUTextureFormat_BGRA8UnormSrgb)supported=1;
   wgpuSurfaceCapabilitiesFreeMembers(caps);
   if(!supported){snprintf(error,512,"shared batch surface requires BGRA8UnormSrgb");wgpuSurfaceRelease(surface);bgpu_close(s);return 4;}
@@ -37,7 +41,12 @@ int sirin_desktop_batch_start(void *raw,const char *shader,void **out,char *erro
   d->surface=surface;d->instance=s->instance;wgpuInstanceAddRef(d->instance);
   d->adapter=s->adapter;wgpuAdapterAddRef(d->adapter);
   d->device=s->device;wgpuDeviceAddRef(d->device);d->queue=s->queue;wgpuQueueAddRef(d->queue);
-  d->format=WGPUTextureFormat_BGRA8UnormSrgb;d->batch=s;s->deferred=1;
+  if(d->batch){
+    Bgpu*old=d->batch;atomic_store(&old->health->notify,NULL);bgpu_close(old);
+  }
+  d->copy_dst=copy_dst;d->format=WGPUTextureFormat_BGRA8UnormSrgb;d->batch=s;s->deferred=1;
+  atomic_store(&s->health->window,(int)d->window_id);atomic_store(&s->health->wake,(int)d->wake_type);
+  atomic_store(&s->health->notify,desktop_lost_wake);
   atomic_fetch_add(&s->refs,1);*out=s;return 0;
 }
 static void tile_release(DesktopTile*t){
@@ -83,7 +92,7 @@ void sirin_desktop_frame_close(void*raw){
   atomic_fetch_sub(&gpu_frames,1);free(f);
 }
 int sirin_desktop_frame_read(void*raw,unsigned char*out){
-  DesktopFrame*f=raw;
+  DesktopFrame*f=raw;if(bgpu_lost(f->owner))return 8;
   for(int i=0;i<f->count;i++){
     DesktopTile*t=f->tiles[i];size_t size=(size_t)t->w*t->h*4;
     unsigned char*tile=malloc(size);if(!tile)return 1;
@@ -127,7 +136,8 @@ static void draw_frame(Desktop*d,DesktopFrame*f,WGPUTextureView view){
   wgpuCommandBufferRelease(command);wgpuCommandEncoderRelease(encoder);wgpuBindGroupLayoutRelease(layout);
 }
 int sirin_desktop_frame_present(void*raw,void*packet){
-  Desktop*d=raw;DesktopFrame*f=packet;if(!owner(d)||d->device!=f->owner->device)return -1;
+  Desktop*d=raw;DesktopFrame*f=packet;if(!owner(d))return -1;
+  if(d->device!=f->owner->device||bgpu_lost(f->owner))return -2;
   WGPUSurfaceTexture st=WGPU_SURFACE_TEXTURE_INIT;int status=acquire(d,&st);if(status!=1)return status;
   if(d->width!=(uint32_t)f->w||d->height!=(uint32_t)f->h){wgpuTextureRelease(st.texture);return 0;}
   if(tile_pipeline(d)){wgpuTextureRelease(st.texture);return -1;}
@@ -138,7 +148,7 @@ int sirin_desktop_frame_present(void*raw,void*packet){
 }
 // Explicit verification readback of the same presentation pipeline, never a frame path.
 int sirin_desktop_frame_blit_read(void*raw,unsigned char*out){
-  DesktopFrame*f=raw;Desktop d={0};d.device=f->owner->device;d.queue=f->owner->queue;d.format=WGPUTextureFormat_BGRA8UnormSrgb;
+  DesktopFrame*f=raw;if(bgpu_lost(f->owner))return 8;Desktop d={0};d.device=f->owner->device;d.queue=f->owner->queue;d.format=WGPUTextureFormat_BGRA8UnormSrgb;
   if(tile_pipeline(&d))return 5;
   WGPUTexture target=desktop_batch_texture(f->owner,f->w,f->h,d.format,WGPUTextureUsage_RenderAttachment|WGPUTextureUsage_CopySrc);
   if(!target){wgpuRenderPipelineRelease(d.blit);return 5;}
@@ -153,12 +163,13 @@ int sirin_desktop_batch_defer(void*raw){Bgpu*s=raw;if(s->programs)return 4;s->de
 int sirin_desktop_batch_submit(void**raw,int count){
   if(count<1||count>16)return 4;
   BgpuProgram**programs=(BgpuProgram**)raw;Bgpu*s=programs[0]->owner;
-  if(atomic_load(&s->error))return 5;
+  if(bgpu_error_state(s))return 5;
   for(int i=0;i<count;i++)if(programs[i]->owner!=s)return 4;
   WGPUCommandEncoder encoder=wgpuDeviceCreateCommandEncoder(s->device,NULL);
+  if(bgpu_error_state(s)){if(encoder)wgpuCommandEncoderRelease(encoder);return 5;}
   for(int i=0;i<count;i++)bgpu_encode(programs[i],encoder);
   WGPUCommandBuffer command=wgpuCommandEncoderFinish(encoder,NULL);wgpuQueueSubmit(s->queue,1,&command);
   wgpuDevicePoll(s->device,1,NULL);wgpuCommandBufferRelease(command);wgpuCommandEncoderRelease(encoder);
-  if(atomic_load(&s->error))return 5;
+  if(bgpu_error_state(s))return 5;
   s->submissions++;for(int i=0;i<count;i++)bgpu_touch(programs[i]);return 0;
 }

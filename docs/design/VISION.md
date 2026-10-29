@@ -680,7 +680,7 @@ qualifies a headless driver, not a rendered frame or full Stage 1 exit.
     metadata/live-owner getters are bounded plain externs,
   - the isolated batched-render probe's `bgpu_open`, `bgpu_close`,
     `bgpu_mesh_acquire`, `bgpu_asset_acquire`, `bgpu_retain`, `bgpu_replay`,
-    and `bgpu_program_close`: pipeline/resource creation, uploads, submission,
+    `bgpu_program_close`, and the explicit destruction control `bgpu_destroy_device`: pipeline/resource creation, uploads, submission,
     readback and synchronized retirement can block. Callbacks write native-owned
     state only; bounded metadata getters and reference releases are plain externs,
   - font enumeration,
@@ -1400,6 +1400,50 @@ transactions, identity, scheduling or command/focus policy.
 The integration contract and unchanged performance gates are recorded in
 `docs/plans/2026-10-28-gpu-host.md`. Pixel evidence and a successful diagnostic do
 not qualify the fixed 50ms action p95 gate without its quiet-run preflight.
+
+**Retained canvas and recovery (2026-10-28).** A worker-confined preparation
+cache retains at most256 entries/4MiB declared source and flattened point payload.
+Immutable path identity, stroke style, affine linear part, tolerance and curve
+depth identify reusable geometry. Translation rebases completed relative points
+under explicit precision checks; scale/shear changes rebuild. Cache hits retain
+the original flattened-point and temporary-outline admission charges. CPU entries
+contain no GPU handle or device generation and may survive device replacement.
+
+PreparationControl counts at most64million work units per request by default
+and checks cancellation through inspection, subdivision, stroke expansion,
+intersection/scanbeam work and native resource admission. Refusal/cancellation
+cannot publish a partial drawing or frame. Completed cache entries remain valid.
+An interval sweep skips disjoint edge pairs and inactive scan rows while retaining
+the existing conservative16million pair admission bound. This is cooperative
+worker cancellation, with checks between synchronous native calls, not real-time
+preemption of those calls or a new application scheduling policy.
+
+The existing replaceable render mailbox also supports a main-owner retirement
+barrier: obsolete requests cancel, pending results retire, and the same worker
+closes its GPU backend before acknowledging quiescence. Main may then replace the
+window's lost device/instance/surface and request the latest immutable frame.
+The canvas keeps its CPU preparation cache on that persistent worker. A complete
+new presentation resets the consecutive-loss count; at most three replacements
+are allowed without one. Replacement/retirement failure fails closed. UI input
+cannot activate controls while recovery awaits a complete presented frame;
+application identity, focus ownership, transactions and Work policies are unchanged.
+
+Native callbacks write a resource-owner-held health record and wake SDL using
+copied event IDs, with no Scala upcall. The pinned wgpu-native29.0.1.1 reports
+parent-device loss as a creation error and delivers the dedicated loss callback
+on encoder creation. Explicit destruction probes that encoder path, checks health
+before submission, and retains the real callback reason. The pinned native
+parent-lost error text is also recognized before retry. Health records retire
+after all owned GPU resources/device references; they do not assume a one-shot
+callback. Lost GPU owners reject new targets, compilation, replay and readback;
+foreign or lost generations cannot present. Pure CPU geometry is generation-free.
+An actual destroyed-queue submission abort was preserved as an upstream limit;
+controlled recovery does not qualify all spontaneous hardware-loss races.
+
+The standalone interactive canvas uses ordinary Drawing recordings and the same
+worker, tile and presentation machinery. Its bounded contract and evidence live
+in `docs/plans/2026-10-28-canvas-recovery.md`. Existing quiet-run and broader
+graphics capability gates remain separate.
 
 ## 10. Developer iteration (new section)
 

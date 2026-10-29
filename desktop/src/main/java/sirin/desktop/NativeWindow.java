@@ -23,6 +23,8 @@ public final class NativeWindow implements AutoCloseable {
     private static final MethodHandle RESIZE = bind("sirin_desktop_resize", JAVA_INT, ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle CLEAR = bind("sirin_desktop_clear", JAVA_INT, ADDRESS, JAVA_DOUBLE, JAVA_DOUBLE, JAVA_DOUBLE);
     private static final MethodHandle PIXELS = bind("sirin_desktop_pixels", JAVA_INT, ADDRESS, ADDRESS, JAVA_INT, JAVA_INT);
+    private static final MethodHandle LOST = bind("sirin_desktop_renderer_lost",JAVA_INT,ADDRESS);
+    private static final MethodHandle DESTROY_DEVICE = bind("sirin_desktop_renderer_destroy",JAVA_INT,ADDRESS);
     private static final MethodHandle BATCH = bind("sirin_desktop_batch_start",JAVA_INT,ADDRESS,ADDRESS,ADDRESS,ADDRESS);
     private static final MethodHandle GPU = bind("sirin_desktop_frame_present",JAVA_INT,ADDRESS,ADDRESS);
     private static final MethodHandle LIVE = bind("sirin_desktop_live", JAVA_INT);
@@ -154,10 +156,18 @@ public final class NativeWindow implements AutoCloseable {
             return out.get(ADDRESS,0);
         } catch(Throwable e){throw failure(e);}
     }
+    public boolean rendererLost() {
+        checkOwner();try{return (int)LOST.invokeExact(handle)!=0;}catch(Throwable e){throw failure(e);}
+    }
+    /** Explicit development failure control invokes actual wgpuDeviceDestroy. */
+    public void destroyRenderer() {
+        checkOwner();try{if((int)DESTROY_DEVICE.invokeExact(handle)!=0)throw new IllegalStateException("device destruction rejected");}catch(Throwable e){throw failure(e);}
+    }
     public boolean presentGpu(MemorySegment packet) {
         checkOwner();
         try {
             int result=(int)GPU.invokeExact(handle,packet);
+            if(result==-2)return false;
             if(result<0)throw new IllegalStateException("GPU frame presentation failed");
             return result!=0;
         } catch(Throwable e){throw failure(e);}

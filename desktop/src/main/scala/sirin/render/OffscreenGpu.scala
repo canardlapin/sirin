@@ -13,6 +13,7 @@ final class OffscreenGpu private(private var handle: Ptr[Byte],val generation: D
   def target(width: Int,height: Int,scale: Double): RenderTarget =
     check();require(scale.isFinite && scale>0,"invalid device scale")
     RenderTarget(generation,width,height,Affine.scale(scale,scale))
+  def compile(drawing: PreparedDrawing): PixelProgram={check();require(drawing.target.device eq generation,"reference device mismatch");PixelProgram.compile(drawing)}
   def render(program: PixelProgram,thorvg: Boolean = false): ImageSnapshot =
     check();require(program.drawing.target.device eq generation,"prepared drawing device generation mismatch")
     require(program.assets.isEmpty,"desktop bridge admits inline programs only")

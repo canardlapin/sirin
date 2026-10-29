@@ -21,7 +21,7 @@ private[render] object BatchIdentity:
   * inside each slab all edge orders are fixed and the result is trapezoids.
   * No triangulation of each overlapping stroke ribbon separately. */
 private[render] object WindingMesh:
-  final class Budget:
+  final class Budget(val control: PreparationControl=new PreparationControl):
     var pairs=0L
     var triangles=0
   private case class Edge(a: Point,b: Point,group: Int,weight: Int=1):
@@ -37,6 +37,7 @@ private[render] object WindingMesh:
     var inputEdges=0
     groups.zipWithIndex.foreach { case ((p,_),g) => p.contours.filter(_.size>1).foreach { ps =>
       ps.zip(ps.drop(1):+ps.head).foreach { (a,b) =>
+        budget.control.checkpoint()
         inputEdges+=1;require(inputEdges<=4096,"mesh edge budget")
         Vector(a.x,a.y,b.x,b.y).foreach(v => require(v.isFinite && math.abs(v)<=1048576,"mesh coordinate range"))
         ys+=a.y;ys+=b.y
@@ -56,11 +57,18 @@ private[render] object WindingMesh:
     net.foreach { case ((a,b,g),weight) => if weight!=0 then edges+=Edge(a,b,g,weight) }
     budget.pairs+=edges.size.toLong*(edges.size-1)/2
     require(budget.pairs<=16000000,"mesh intersection work budget")
+    // Interval sweep visits only pairs with overlapping Y ranges. Keep original
+    // pair orientation so intersection arithmetic stays identical. The existing
+    // conservative all-pairs admission limit above is unchanged.
+    val order=edges.indices.toVector.sortBy(i => (edges(i).low,i))
     var i=0
-    while i<edges.size do
-      val a=edges(i);var j=i+1
-      while j<edges.size do
-        val b=edges(j)
+    while i<order.size do
+      budget.control.checkpoint()
+      val first=order(i);var j=i+1
+      while j<order.size && edges(order(j)).low<edges(first).high do
+        budget.control.checkpoint()
+        val second=order(j)
+        val a=edges(math.min(first,second));val b=edges(math.max(first,second))
         val lo=math.max(a.low,b.low);val hi=math.min(a.high,b.high)
         if lo<hi then
           val ax=a.b.x-a.a.x;val ay=a.b.y-a.a.y
@@ -72,7 +80,9 @@ private[render] object WindingMesh:
             if y>lo && y<hi then ys+=y
         j+=1
       i+=1
-    val levels=ys.filter(y => y>=0 && y<=target.height).distinct.sorted
+    val unique=mutable.HashSet.empty[Double]
+    ys.foreach { y => budget.control.checkpoint();if y>=0 && y<=target.height then unique+=y }
+    val levels=unique.toVector.sortWith { (a,b) => budget.control.checkpoint();a<b }
     val vertices=ArrayBuffer.empty[Float]
     def tri(a: Point,b: Point,c: Point): Unit =
       val area=(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x)
@@ -89,10 +99,18 @@ private[render] object WindingMesh:
       val a=Point(left.x(bottom),bottom);val b=Point(right.x(bottom),bottom)
       val c=Point(right.x(top),top);val d=Point(left.x(top),top)
       tri(a,b,c);tri(a,c,d)
+    val live=mutable.HashSet.empty[Int]
+    var nextLow=0
     levels.zip(levels.drop(1)).foreach { (bottom,top) =>
+      budget.control.checkpoint()
       val present=mutable.HashSet.empty[(Edge,Edge)]
       val mid=bottom/2+top/2
-      val active=edges.filter(e => e.low<mid && e.high>mid).sortBy(_.x(mid))
+      while nextLow<order.size && edges(order(nextLow)).low<mid do
+        budget.control.checkpoint();live+=order(nextLow);nextLow+=1
+      budget.control.checkpoint(live.size)
+      live.filterInPlace(i => edges(i).high>mid)
+      val active=live.toVector.sortBy(i => (edges(i).x(mid),i)).map(edges(_))
+      budget.control.checkpoint(active.size.toLong*groups.size)
       val winding=Array.fill(groups.size)(0)
       var k=0;var admitted=false;var left: Option[Edge]=None
       while k<active.size do
@@ -188,10 +206,10 @@ private[render] final class BatchCompiler extends AutoCloseable:
     (entry._2.get,entry._1)
   def hasGlyphInk(font: ResolvedFont,id: Int,scale: Double): Boolean =
     check();val (mask,_)=glyph(font,id,scale);mask.width>0 && mask.height>0
-  def compile(drawing: PreparedDrawing): BatchProgram =
+  def compile(drawing: PreparedDrawing,control: PreparationControl=new PreparationControl): BatchProgram =
     check();val began=System.nanoTime();val t=drawing.target
     require(t.width<=640 && t.height<=360,"batch target budget")
-    val work=new WindingMesh.Budget
+    val work=new WindingMesh.Budget(control)
     val data=ArrayBuffer[Float](t.width.toFloat,t.height.toFloat,0,0)
     val meshes=ArrayBuffer.empty[BatchMesh];val assets=ArrayBuffer.empty[BatchAsset]
     val uses=ArrayBuffer.empty[MeshUse];val patches=ArrayBuffer.empty[(Int,Int)];val steps=ArrayBuffer.empty[BatchStep]
@@ -267,7 +285,9 @@ private[render] final class BatchCompiler extends AutoCloseable:
           paint.foreach((v,a) => brush(base,v,a))
         }
       }
-    drawing.commands.foreach {
+    drawing.commands.foreach { command =>
+      control.checkpoint()
+      command match
       case PreparedCommand.Fill(p,c,r,cs) => append(p,r,cs)(base => brush(base,c,p.contours.iterator.flatMap(_.headOption).nextOption().getOrElse(Point(0,0))))
       case PreparedCommand.Image(src,dest,sampling,alpha,m,cs) => quad(image(src.image),src.source,dest,sampling,alpha,m,cs,None)
       case PreparedCommand.Glyphs(run,origin,c,m,cs) =>

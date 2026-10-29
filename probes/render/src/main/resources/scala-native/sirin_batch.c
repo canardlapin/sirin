@@ -7,10 +7,24 @@
 #include <stdatomic.h>
 #include <time.h>
 
+typedef void (*BatchWake)(int,int);
+typedef struct {
+  _Atomic int refs,lost,done,reason,error,window,wake;
+  _Atomic(BatchWake) notify;
+  char message[512];
+} BatchHealth;
+static _Atomic int batch_health_live;
+static void health_release(BatchHealth*h){if(h&&atomic_fetch_sub(&h->refs,1)==1){atomic_fetch_sub(&batch_health_live,1);free(h);}}
+static void lost_cb(WGPUDevice const*device,WGPUDeviceLostReason reason,WGPUStringView text,void*raw,void*unused){
+  (void)device;(void)text;(void)unused;BatchHealth*h=raw;
+  atomic_store(&h->reason,reason);atomic_store(&h->lost,1);atomic_store(&h->done,1);
+  BatchWake wake=atomic_load(&h->notify);if(wake)wake(atomic_load(&h->window),atomic_load(&h->wake));
+  // The pinned native ABI may call this repeatedly; the resource owner holds health.
+}
 typedef struct { int id,offset,count,refs; unsigned long long used; } Mesh;
 typedef struct { int id,w,h,refs; unsigned long long used; } Asset;
 typedef struct {
-  _Atomic int refs,done,error;int status;
+  _Atomic int refs,done;int status;BatchHealth*health;
   WGPUInstance instance;WGPUAdapter adapter;WGPUDevice device;WGPUQueue queue;
   WGPURenderPipeline pipeline,layer;WGPUComputePipeline resolve;
   WGPUBuffer geometry;WGPUTexture masks,images;WGPUTextureView mask_view,image_view;
@@ -32,10 +46,14 @@ static void release(Bgpu*s){
   if(s->pipeline)wgpuRenderPipelineRelease(s->pipeline);
   if(s->layer)wgpuRenderPipelineRelease(s->layer);
   if(s->resolve)wgpuComputePipelineRelease(s->resolve);
+  if(s->device){
+    wgpuDeviceDestroy(s->device);wgpuDevicePoll(s->device,1,NULL);wgpuInstanceProcessEvents(s->instance);
+  }
   if(s->queue)wgpuQueueRelease(s->queue);
   if(s->device)wgpuDeviceRelease(s->device);
   if(s->adapter)wgpuAdapterRelease(s->adapter);
   if(s->instance)wgpuInstanceRelease(s->instance);
+  health_release(s->health);
   atomic_fetch_sub(&batch_live,1);free(s);
 }
 static void message(char *out,WGPUStringView m) {
@@ -49,9 +67,19 @@ static void device_cb(WGPURequestDeviceStatus status,WGPUDevice d,WGPUStringView
   (void)unused;Bgpu*s=p;s->status=status;s->device=d;message(s->message,m);atomic_store(&s->done,1);release(s);
 }
 static void error_cb(WGPUDevice const*d,WGPUErrorType type,WGPUStringView m,void*p,void*unused) {
-  (void)d;(void)type;(void)unused;Bgpu*s=p;int zero=0;
-  if(atomic_compare_exchange_strong(&s->error,&zero,-1)){message(s->message,m);atomic_store(&s->error,1);}
+  (void)d;(void)type;(void)unused;BatchHealth*h=p;int zero=0;
+  if(atomic_compare_exchange_strong(&h->error,&zero,-1)){
+    message(h->message,m);
+    // Pinned v29 reports a lost parent as an uncaptured validation error on
+    // resource creation, before its dedicated loss callback on encoder creation.
+    if(strstr(h->message,"\n    Parent device is lost")){
+      atomic_store(&h->lost,1);
+      BatchWake wake=atomic_load(&h->notify);if(wake)wake(atomic_load(&h->window),atomic_load(&h->wake));
+    }
+    atomic_store(&h->error,1);
+  }
 }
+static int bgpu_error_state(Bgpu*s){return s->health&&(atomic_load(&s->health->lost)||atomic_load(&s->health->error));}
 static int await(Bgpu*s) {
   struct timespec delay={0,1000000};
   for(int i=0;i<10000&&!atomic_load(&s->done);i++){wgpuInstanceProcessEvents(s->instance);nanosleep(&delay,NULL);}
@@ -157,8 +185,12 @@ int bgpu_open(const char*shader,int vertices,int meshes,int masks,int images,voi
   wgpuAdapterInfoFreeMembers(ai);if(!s->adapter_name[0])goto fail;
   if(!wgpuAdapterHasFeature(s->adapter,WGPUFeatureName_Float32Blendable)){snprintf(s->message,512,"Float32Blendable is required for strict color precision");goto fail;}
   WGPUFeatureName features[]={WGPUFeatureName_Float32Blendable};
+  s->health=calloc(1,sizeof(*s->health));if(!s->health)goto fail;
+  atomic_init(&s->health->refs,1);atomic_fetch_add(&batch_health_live,1);
   WGPUDeviceDescriptor dd=WGPU_DEVICE_DESCRIPTOR_INIT;dd.requiredFeatureCount=1;dd.requiredFeatures=features;
-  dd.uncapturedErrorCallbackInfo.callback=error_cb;dd.uncapturedErrorCallbackInfo.userdata1=s;
+  dd.deviceLostCallbackInfo.mode=WGPUCallbackMode_AllowSpontaneous;
+  dd.deviceLostCallbackInfo.callback=lost_cb;dd.deviceLostCallbackInfo.userdata1=s->health;
+  dd.uncapturedErrorCallbackInfo.callback=error_cb;dd.uncapturedErrorCallbackInfo.userdata1=s->health;
   WGPURequestDeviceCallbackInfo dc=WGPU_REQUEST_DEVICE_CALLBACK_INFO_INIT;
   dc.mode=WGPUCallbackMode_AllowProcessEvents;dc.callback=device_cb;dc.userdata1=s;
   atomic_store(&s->done,0);atomic_fetch_add(&s->refs,1);wgpuAdapterRequestDevice(s->adapter,&dd,dc);
@@ -167,7 +199,7 @@ int bgpu_open(const char*shader,int vertices,int meshes,int masks,int images,voi
   WGPUShaderSourceWGSL wgsl=WGPU_SHADER_SOURCE_WGSL_INIT;wgsl.code=(WGPUStringView){shader,WGPU_STRLEN};
   WGPUShaderModuleDescriptor sd=WGPU_SHADER_MODULE_DESCRIPTOR_INIT;sd.nextInChain=&wgsl.chain;
   WGPUShaderModule module=wgpuDeviceCreateShaderModule(s->device,&sd);
-  if(!module||atomic_load(&s->error)){if(module)wgpuShaderModuleRelease(module);goto fail;}
+  if(!module||bgpu_error_state(s)){if(module)wgpuShaderModuleRelease(module);goto fail;}
   s->pipeline=pipeline(s,module,"vertex","fragment");s->layer=pipeline(s,module,"layer_vertex","layer_fragment");
   WGPUComputePipelineDescriptor pd=WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;pd.compute.module=module;
   pd.compute.entryPoint=(WGPUStringView){"resolve",7};
@@ -190,13 +222,25 @@ int bgpu_open(const char*shader,int vertices,int meshes,int masks,int images,voi
   if(s->masks)s->mask_view=wgpuTextureCreateView(s->masks,NULL);
   if(s->images)s->image_view=wgpuTextureCreateView(s->images,NULL);
   wgpuDevicePoll(s->device,1,NULL);
-  if(!s->pipeline||!s->layer||!s->resolve||!s->geometry||!s->mask_view||!s->image_view||atomic_load(&s->error))goto fail;
+  if(!s->pipeline||!s->layer||!s->resolve||!s->geometry||!s->mask_view||!s->image_view||bgpu_error_state(s))goto fail;
   s->bytes=(long long)vertices*8+1024*1024*17LL;*out=s;return 0;
 fail:
   snprintf(error,512,"%s",s->message[0]?s->message:"batch GPU initialization failed");release(s);return 2;
 }
 const char*bgpu_adapter(void*raw){return ((Bgpu*)raw)->adapter_name;}
-const char*bgpu_error(void*raw){return ((Bgpu*)raw)->message;}
+const char*bgpu_error(void*raw){Bgpu*s=raw;return s->health&&atomic_load(&s->health->error)==1?s->health->message:s->message;}
+int bgpu_lost(void*raw){Bgpu*s=raw;return s->health&&atomic_load(&s->health->lost);}
+int bgpu_lost_reason(void*raw){Bgpu*s=raw;return s->health?atomic_load(&s->health->reason):0;}
+int bgpu_health_live(void){return atomic_load(&batch_health_live);}
+void bgpu_destroy_device(void*raw){
+  Bgpu*s=raw;wgpuDeviceDestroy(s->device);
+  // v29.0.1.1 dispatches loss from its native error sink on the next operation.
+  // This is actual failed resource creation on a destroyed device, not a shim callback.
+  WGPUCommandEncoder probe=wgpuDeviceCreateCommandEncoder(s->device,NULL);
+  if(probe)wgpuCommandEncoderRelease(probe);
+  wgpuDevicePoll(s->device,1,NULL);wgpuInstanceProcessEvents(s->instance);
+}
+
 int bgpu_live(void){return atomic_load(&batch_live);}
 void bgpu_close(void*raw){release(raw);}
 static Mesh*find_mesh(Bgpu*s,int id){for(int i=0;i<s->mesh_limit;i++)if(s->mesh[i].id==id)return &s->mesh[i];return NULL;}
@@ -219,7 +263,7 @@ int bgpu_mesh_acquire(void*raw,int id,const float*data,int count,int*out){
   Bgpu*s=raw;*out=-1;if(id<1||count<3||count%3||count>s->mesh_capacity)return 4;
   Mesh*m=find_mesh(s,id);
   if(m){if(m->count!=count)return 4;m->refs++;m->used=++s->clock;*out=m->offset;return 0;}
-  if(!data)return 7;if(atomic_load(&s->error))return 5;
+  if(!data)return 7;if(bgpu_error_state(s))return 5;
   int start;
   for(;;){
     m=NULL;Mesh*old=NULL;
@@ -230,7 +274,7 @@ int bgpu_mesh_acquire(void*raw,int id,const float*data,int count,int*out){
     if(!old)return 6;memset(old,0,sizeof(*old));s->evictions++;
   }
   wgpuQueueWriteBuffer(s->queue,s->geometry,(uint64_t)start*8,data,(uint64_t)count*8);
-  if(!s->deferred)wgpuDevicePoll(s->device,1,NULL);if(atomic_load(&s->error))return 5;
+  if(!s->deferred)wgpuDevicePoll(s->device,1,NULL);if(bgpu_error_state(s))return 5;
   *m=(Mesh){id,start,count,1,++s->clock};s->mesh_upload+=(long long)count*8;*out=start;return 0;
 }
 void bgpu_mesh_release(void*raw,int id){Mesh*m=find_mesh(raw,id);if(m&&m->refs>0)m->refs--;}
@@ -244,7 +288,7 @@ int bgpu_asset_acquire(void*raw,int kind,int id,const void*data,int w,int h,int*
   for(int i=0;i<limit;i++)if(a[i].id==id){
     if(a[i].w!=w||a[i].h!=h)return 4;a[i].refs++;a[i].used=++s->clock;*out=i;return 0;
   }
-  if(!data)return 7;if(atomic_load(&s->error))return 5;
+  if(!data)return 7;if(bgpu_error_state(s))return 5;
   int slot=-1;
   for(int i=0;i<limit;i++)if(!a[i].id){slot=i;break;}
   if(slot<0)for(int i=0;i<limit;i++)if(!a[i].refs&&(slot<0||a[i].used<a[slot].used))slot=i;
@@ -257,7 +301,7 @@ int bgpu_asset_acquire(void*raw,int kind,int id,const void*data,int w,int h,int*
   WGPUExtent3D extent={(uint32_t)w,(uint32_t)h,1};
   uint64_t bytes=(uint64_t)layout.bytesPerRow*h;
   wgpuQueueWriteTexture(s->queue,&dst,data,bytes,&layout,&extent);
-  if(!s->deferred)wgpuDevicePoll(s->device,1,NULL);if(atomic_load(&s->error))return 5;
+  if(!s->deferred)wgpuDevicePoll(s->device,1,NULL);if(bgpu_error_state(s))return 5;
   a[slot]=(Asset){id,w,h,1,++s->clock};s->texture_upload+=(long long)bytes;*out=slot;return 0;
 }
 void bgpu_asset_release(void*raw,int kind,int id){
@@ -306,7 +350,7 @@ int bgpu_retain(void*raw,const float*data,int ndata,const uint32_t*indices,int n
     for(int j=0;j<limit;j++)if(a[j].id==asset_ids[i]&&a[j].refs)found=1;
     if(!found)return 4;
   }
-  if(atomic_load(&s->error))return 5;
+  if(bgpu_error_state(s))return 5;
   BgpuProgram*p=calloc(1,sizeof(*p));if(!p)return 1;
   p->owner=s;p->w=w;p->h=h;p->layers=layers;p->bytes=bytes;p->nsteps=nsteps;
   if(nsteps){p->steps=malloc((size_t)nsteps*sizeof(Step));if(!p->steps)goto fail;memcpy(p->steps,steps,(size_t)nsteps*sizeof(Step));}
@@ -346,12 +390,12 @@ int bgpu_retain(void*raw,const float*data,int ndata,const uint32_t*indices,int n
   for(int i=0;i<4;i++){re[3].offset=(uint64_t)i*256;p->resolve[i]=wgpuDeviceCreateBindGroup(s->device,&gd);}
   wgpuBindGroupLayoutRelease(layout);
   for(int i=0;i<4;i++)if(!p->group[i]||!p->resolve[i])goto fail;
-  if(atomic_load(&s->error))goto fail;
+  if(bgpu_error_state(s))goto fail;
   uint32_t phases[256]={0};for(int i=0;i<4;i++)phases[i*64]=i;
   wgpuQueueWriteBuffer(s->queue,p->phases,0,phases,sizeof(phases));
   wgpuQueueWriteBuffer(s->queue,p->data,0,data,(uint64_t)ndata*4);
   if(nindices)wgpuQueueWriteBuffer(s->queue,p->indices,0,indices,(uint64_t)nindices*8);
-  if(!s->deferred)wgpuDevicePoll(s->device,1,NULL);if(atomic_load(&s->error))goto fail;
+  if(!s->deferred)wgpuDevicePoll(s->device,1,NULL);if(bgpu_error_state(s))goto fail;
   p->nmeshes=nmeshes;p->nassets=nassets;
   if(nmeshes)memcpy(p->mesh_ids,mesh_ids,(size_t)nmeshes*sizeof(int));
   if(nassets){memcpy(p->asset_ids,asset_ids,(size_t)nassets*sizeof(int));memcpy(p->asset_kinds,asset_kinds,(size_t)nassets*sizeof(int));}
@@ -403,12 +447,13 @@ static void bgpu_touch(BgpuProgram*p){
   }
 }
 int bgpu_replay(void*raw,unsigned char*out){
-  BgpuProgram*p=raw;Bgpu*s=p->owner;if(atomic_load(&s->error))return 5;
+  BgpuProgram*p=raw;Bgpu*s=p->owner;if(bgpu_error_state(s))return 5;
   WGPUCommandEncoder encoder=wgpuDeviceCreateCommandEncoder(s->device,NULL);
+  if(bgpu_error_state(s)){if(encoder)wgpuCommandEncoderRelease(encoder);return 5;}
   bgpu_encode(p,encoder);
   WGPUCommandBuffer cmd=wgpuCommandEncoderFinish(encoder,NULL);wgpuQueueSubmit(s->queue,1,&cmd);
   wgpuDevicePoll(s->device,1,NULL);wgpuCommandBufferRelease(cmd);wgpuCommandEncoderRelease(encoder);
-  if(atomic_load(&s->error))return 5;s->submissions++;bgpu_touch(p);
+  if(bgpu_error_state(s))return 5;s->submissions++;bgpu_touch(p);
   return out?readback(s,p->output,p->w,p->h,out):0;
 }
 void bgpu_program_close(void*raw){

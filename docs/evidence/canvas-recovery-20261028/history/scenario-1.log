@@ -1,0 +1,29 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+canvasFrame=4 camera=CanvasCamera(0.0,0.0,1.0) prepared=true compiled=15 upload=2924041 work=60096390 ms=1312.680625 cache=PreparationCacheStats(101,1210336,1,102)
+renderSession GPU=BatchGpuStats(1,28794592,3363696,2633,2266880,0,11,227,6) preparation=PreparationCacheStats(101,1210336,102,102) tiles=entries=9 pixels=147456 hits=0 misses=25
+Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: preparation work budget
+	at scala.Predef$.require(Predef.scala:337)
+	at sirin.graphics.PreparationControl.checkpoint(PreparationControl.scala:13)
+	at sirin.render.WindingMesh$.tessellate(BatchProgram.scala:64)
+	at sirin.render.BatchCompiler.mesh$2(BatchProgram.scala:217)
+	at sirin.render.BatchCompiler.append$1(BatchProgram.scala:242)
+	at sirin.render.BatchCompiler.compile$$anonfun$2(BatchProgram.scala:276)
+	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+	at sirin.render.BatchCompiler.compile(BatchProgram.scala:273)
+	at sirin.render.BatchGpu.compile(BatchGpu.scala:30)
+	at sirin.graphics.desktop.GpuTileCache.render$$anonfun$5$$anonfun$1(GpuTileCache.scala:61)
+	at sirin.graphics.desktop.GpuTileCache.render$$anonfun$5$$anonfun$adapted$1(GpuTileCache.scala:46)
+	at scala.collection.immutable.Range.foreach(Range.scala:192)
+	at sirin.graphics.desktop.GpuTileCache.render$$anonfun$5(GpuTileCache.scala:46)
+	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+	at scala.collection.immutable.Range.foreach(Range.scala:192)
+	at sirin.graphics.desktop.GpuTileCache.render(GpuTileCache.scala:46)
+	at sirin.desktop.RetainedCanvas.render(RetainedCanvas.scala:36)
+	at sirin.desktop.RetainedCanvas.render(RetainedCanvas.scala:26)
+	at sirin.desktop.OwnedRenderService.loop(FrameWorker.scala:250)
+	at sirin.desktop.OwnedRenderService.$init$$$anonfun$2(FrameWorker.scala:229)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+Failed to launch JVM

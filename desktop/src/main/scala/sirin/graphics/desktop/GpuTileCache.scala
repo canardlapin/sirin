@@ -27,7 +27,7 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
   def stats: String=s"entries=${entries.size} pixels=$pixels hits=$hits misses=$misses"
   def close(): Unit={check();entries.toVector.foreach(remove);target=None;current=Vector.empty}
   def frame(width: Int,height: Int): GpuFrame={check();GpuFrame(current,width,height)}
-  def render(drawing: PreparedDrawing,cancelled: () => Boolean): GpuFrame =
+  def render(drawing: PreparedDrawing,cancelled: () => Boolean,control: PreparationControl=new PreparationControl): GpuFrame =
     check();current=Vector.empty;lastCompiled=0;lastPrepared=0
     require(drawing.target.width.toLong*drawing.target.height<=1048576,"GPU frame pixel budget")
     if !target.contains(drawing.target) then {close();target=Some(drawing.target)}
@@ -36,6 +36,7 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
     val output=Vector.newBuilder[Entry]
     val pending=scala.collection.mutable.ArrayBuffer.empty[Entry]
     def flush(): Unit=if pending.nonEmpty then
+      control.checkpoint()
       gpu.submitBatch(pending.map(_.program.get).toVector)
       pending.foreach { e =>
         e.tile=Some(e.program.get.exportTile());e.program.get.close();e.program=None
@@ -58,8 +59,8 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
           if pending.size>=4 then flush()
           while entries.size>=256 || pixels+size>1048576 do
             remove(entries.find(e => !active(e)).getOrElse(throw new IllegalStateException("active GPU frame budget")))
-          val program=gpu.compile(prepared);lastCompiled+=1
-          val retained=gpu.retain(program)
+          val program=gpu.compile(prepared,control);lastCompiled+=1
+          val retained=gpu.retain(program,control)
           val e=new Entry(position,signature,prepared.target.width,prepared.target.height,None,Some(retained))
           entries.add(e);pixels+=size;pending+=e;e
       active+=entry;output+=entry

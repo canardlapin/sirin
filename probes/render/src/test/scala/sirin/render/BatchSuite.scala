@@ -11,6 +11,16 @@ class BatchSuite extends munit.FunSuite:
   private val output=FilePath.of("/private/tmp/sirin-batch-pixels")
   private val red=Paint.Solid(Color(1,0,0))
   private val blue=Paint.Solid(Color(0,0,1,0.5))
+  test("real device destruction reports loss before submission and retires native health") {
+    val gpu=BatchGpu.open()
+    val r=gpu.retain(gpu.compile(prepared(gpu,Drawing.record(_.fill(Path.rectangle(Rect(0,0,8,8)),red)))))
+    try
+      r.submit();gpu.destroyDevice()
+      assert(gpu.isLost);assert(gpu.lossReason!=0,"native loss callback was not invoked")
+      intercept[GraphicsDeviceLost](r.submit())
+    finally {r.close();gpu.close()}
+    assertEquals(BatchGpu.liveOwners,0);assertEquals(BatchGpu.liveHealthRecords,0)
+  }
   private val gradient=Paint.LinearGradient(Point(0,0),Point(64,32),Vector(ColorStop(0,Color(1,0,0,0.8)),ColorStop(0.4,Color(0,1,0)),ColorStop(1,Color(0,0,1))),extend=Extend.Reflect)
   private def prepared(gpu: BatchGpu,d: Drawing,s: Double=1,w: Int=64,h: Int=48): PreparedDrawing =
     DrawingPreparation.prepare(d,gpu.target((w*s).toInt,(h*s).toInt,s)).fold(e => fail(e.toString),identity)

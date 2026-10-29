@@ -1,0 +1,14 @@
+status=complete
+samplesComplete=true
+targetsMet=true
+expectedGeometry=600x360logical/1200x720physical
+observedGeometry=600x360logical/1200x720physical
+geometryStable=true
+geometryChecks=1212
+steps=240
+warmups=40
+measured=200
+mainToFirstPresentationNs=862867417
+windowSetupNs=167189375
+renderSessionSetupNs=20853250
+failure=

@@ -1,0 +1,102 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+preparationCancellation checks=251 work=250 elapsedNs=518959 completedEntries=0
+Test run sirin.graphics.PreparationCacheSuite started
+sirin.graphics.PreparationCacheSuite: finished 0.411s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 0.421s
+[info] Passed: Total 4, Failed 0, Errors 0, Passed 4
+[success] Total time: 3 s, completed Oct 28, 2026, 9:53:35 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1999 ms)
+[info] Discovered 3346 classes and 21149 methods after classloading
+[info] Checking intermediate code (quick) (116 ms)
+[info] Discovered 3317 classes and 16347 methods after optimization
+[info] Optimizing (debug mode) (2206 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6997 ms)
+[info] Compiling to native code (5682 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (170 ms)
+[info] Postprocessing (0 ms)
+[info] Total (12285 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '52183'.
+Test run sirin.graphics.PreparationCacheSuite started
+preparationCancellation checks=251 work=250 elapsedNs=619333 completedEntries=0
+sirin.graphics.PreparationCacheSuite: finished 2.051s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 2.051s
+[info] Passed: Total 4, Failed 0, Errors 0, Passed 4
+[success] Total time: 16 s, completed Oct 28, 2026, 9:53:51 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+canvasComparison sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=2 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=3 scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=4 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(6144,0,0,0,None)
+canvasComparison sample=5 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=6 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=7 scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=8 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(9548,52,0,0,None)
+canvasComparison sample=9 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=10 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(13817,7,0,0,None)
+canvasComparison sample=11 scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=12 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(13818,6,0,0,None)
+canvasComparison sample=13 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=14 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=15 scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(24561,15,0,0,None)
+canvasComparison sample=16 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(24576,0,0,0,None)
+workerCancellation retireNs=1050417
+renderSession retire control
+workerCancellation retireNs=98208
+renderSession retire control
+workerCancellation retireNs=31250
+renderSession retire control
+workerCancellation retireNs=28209
+renderSession retire control
+workerCancellation retireNs=35167
+renderSession retire control
+workerCancellation retireNs=44375
+renderSession retire control
+workerCancellation retireNs=48875
+renderSession retire control
+workerCancellation retireNs=29791
+renderSession retire control
+workerCancellation retireNs=18750
+renderSession retire control
+workerCancellation retireNs=44375
+renderSession retire control
+workerCancellation retireNs=17708
+renderSession retire control
+workerCancellation retireNs=17250
+renderSession retire control
+workerCancellation retireNs=43833
+renderSession retire control
+workerCancellation retireNs=35542
+renderSession retire control
+workerCancellation retireNs=31458
+renderSession retire control
+workerCancellation retireNs=40542
+renderSession retire control
+workerCancellation retireNs=22000
+renderSession retire control
+workerCancellation retireNs=44125
+renderSession retire control
+workerCancellation retireNs=35125
+renderSession retire control
+workerCancellation retireNs=19292
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+sirin.desktop.RetainedCanvasSuite: finished 6.631s
+Test run sirin.desktop.RetainedCanvasSuite finished: 0 failed, 0 ignored, 5 total 6.638s
+[info] Passed: Total 5, Failed 0, Errors 0, Passed 5
+[success] Total time: 9 s, completed Oct 28, 2026, 9:53:59 p.m.

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "canvas-scenario",
+    "exit": 0,
+    "command": [
+      "/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/MacOS/Sirin",
+      "canvas",
+      "scenario"
+    ]
+  },
+  {
+    "name": "workbench-recovery",
+    "exit": 0,
+    "command": [
+      "/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/MacOS/Sirin",
+      "recovery"
+    ]
+  },
+  {
+    "name": "native-failures",
+    "exit": 0,
+    "command": [
+      "/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+      "-XstartOnFirstThread",
+      "--enable-native-access=ALL-UNNAMED",
+      "-Dsirin.repo=/private/tmp/sirin-gpu-host-20261028",
+      "-Dsirin.desktop.library=/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+      "-cp",
+      "/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/app/*",
+      "sirin.desktop.WindowSpike",
+      "failures"
+    ]
+  }
+]

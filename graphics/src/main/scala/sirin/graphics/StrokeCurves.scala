@@ -18,12 +18,13 @@ private[graphics] object StrokeCurves:
   private def sub(a: Point,b: Point)=Point(a.x-b.x,a.y-b.y)
   private def midpoint(a: Point,b: Point)=Point(a.x/2+b.x/2,a.y/2+b.y/2)
 
-  def flatten(path: Path,style: StrokeStyle,density: Double,tolerance: Double,maxPoints: Int,maxDepth: Int): Vector[Contour] =
+  def flatten(path: Path,style: StrokeStyle,density: Double,tolerance: Double,maxPoints: Int,maxDepth: Int,control: PreparationControl=new PreparationControl): Vector[Contour] =
     val contours=ArrayBuffer.empty[Contour]
     val pieces=ArrayBuffer.empty[Piece]
     var current=Point(0,0);var start=current
     var work=0
     def append(p: Piece): Unit =
+      control.checkpoint()
       work+=1;require(work<=maxPoints,"stroke curve point budget")
       require(p.length.isFinite,"stroke curve extent overflow")
       pieces+=p
@@ -52,6 +53,7 @@ private[graphics] object StrokeCurves:
         def value(v: Vector[Double],t: Double)=(v(0)*t+v(1))*t+v(2)
         require(!candidates.exists(t => t>0 && t<1 && math.hypot(value(xs,t),value(ys,t))<=1e-12),"stroke cusp unsupported")
     def curve(a: Point,b: Point,c: Point,d: Point,arcBudget: Double,depth: Int): Unit =
+      control.checkpoint()
       work+=1;require(work<=maxPoints*8L,"stroke curve work budget")
       val chord=sub(d,a);val length=math.hypot(chord.x,chord.y)
       val vectors=Vector(sub(b,a),sub(c,b),sub(d,c))
@@ -95,7 +97,9 @@ private[graphics] object StrokeCurves:
         val shared=unit(Point(before.v.x+after.u.x,before.v.y+after.u.y),before.v)
         pieces(i)=before.copy(v=shared);pieces(i+1)=after.copy(u=shared)
     val arcBudget=if density==0 then Double.MaxValue else tolerance/(16*density*math.max(1,path.segments.size))
-    path.segments.foreach {
+    path.segments.foreach { segment =>
+      control.checkpoint()
+      segment match
       case PathSegment.MoveTo(p) => finish(false);current=p;start=p
       case PathSegment.LineTo(p) => line(current,p);current=p
       case PathSegment.QuadraticTo(b,d) =>

@@ -77,3 +77,27 @@ combine base and overlay before sample resolution. Resizing or changing scale
 invalidates target-dependent variants. Cache variants, exported texture bytes and
 outstanding frame packets have separate enforced bounds, including references
 surviving eviction. See `docs/plans/2026-10-28-gpu-host.md` for scope and gates.
+
+## Retained canvas and recovery
+
+The successor `codex/canvas-recovery-20261028` adds a Drawing-based canvas:
+
+```sh
+desktop/target/package/Sirin.app/Contents/MacOS/Sirin canvas
+desktop/target/package/Sirin.app/Contents/MacOS/Sirin canvas scenario
+desktop/target/package/Sirin.app/Contents/MacOS/Sirin recovery
+```
+
+Up/Down pan, +/- or the wheel zoom, E edits a path, R destroys the actual GPU
+device, and Escape closes. Preparation retains bounded source geometry across
+translations; images and shaped glyph masks reuse their existing caches. Zoom
+rebuilds geometry where scale changes. Cancellation is cooperative, with a fixed
+work budget. Recovery retires the worker backend before replacing the window's
+device and requesting a complete new frame.
+
+The canvas diagnostic is `sirin.desktop.CanvasBenchmark` on the packaged class
+path. It measures worker completion, excluding native input and presentation.
+Dense fractional pan and zoom still rerasterize tiles and remain performance
+work. Controlled destruction/recovery passes; spontaneous hardware-loss races
+are not qualified. See the [receipt](../docs/evidence/canvas-recovery-20261028/README.md)
+for pixels, counters, timing, failures and the unchanged quiet-run gate.

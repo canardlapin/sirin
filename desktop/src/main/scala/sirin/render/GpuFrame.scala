@@ -24,7 +24,9 @@ final class GpuFrame private(private var handle: Ptr[Byte],val width: Int,val he
     require(handle!=null,"GPU frame closed")
     Zone.acquire { implicit zone =>
       val out=alloc[Byte](width*height*4)
-      require(Calls.int(operation,handle,out)==0,"GPU frame readback failed")
+      val code=Calls.int(operation,handle,out)
+      if code==8 then throw new sirin.graphics.GraphicsDeviceLost
+      require(code==0,"GPU frame readback failed")
       ImageSnapshot.copyRgba8(width,height,out.raw.toArray(java.lang.foreign.ValueLayout.JAVA_BYTE))
     }
   }

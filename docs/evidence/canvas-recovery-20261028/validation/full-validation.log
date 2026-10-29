@@ -1,0 +1,571 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.063s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.089s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.117s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.131s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.12s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.134s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.156s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.171s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.015s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.015s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.189s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.203s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.12s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.12s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.35s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.365s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.402s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.416s
+Test run sirin.graphics.PreparationCacheSuite started
+sirin.graphics.PreparationCacheSuite: finished 0.864s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 0.864s
+Test run sirin.graphics.StrokeBoundarySuite started
+sirin.graphics.StrokeBoundarySuite: finished 1.099s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 1.113s
+Test run sirin.graphics.CurvedStrokeSuite started
+sirin.graphics.CurvedStrokeSuite: finished 1.301s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 1.316s
+[info] Passed: Total 69, Failed 0, Errors 0, Passed 69
+[success] Total time: 5 s, completed Oct 28, 2026, 9:29:27 p.m.
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.013s
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.013s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.015s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.015s
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.014s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.016s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.017s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.018s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 0 s, completed Oct 28, 2026, 9:29:27 p.m.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.008s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.009s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 0 s, completed Oct 28, 2026, 9:29:28 p.m.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.019s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.02s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 28, 2026, 9:29:28 p.m.
+Test run sirin.engine.HostBoundarySuite started
+sirin.engine.HostBoundarySuite: finished 0.091s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.094s
+Test run sirin.engine.FocusSuite started
+sirin.engine.FocusSuite: finished 0.109s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.111s
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.144s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.146s
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TopologyLifetimeSuite: finished 0.233s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.236s
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.241s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.245s
+Test run sirin.engine.WorkCommandSuite started
+sirin.engine.WorkCommandSuite: finished 0.281s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.284s
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.ReconciliationSuite: finished 0.315s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.317s
+Test run sirin.engine.RetainedVirtualSuite started
+sirin.engine.RetainedVirtualSuite: finished 0.334s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.336s
+Test run sirin.engine.EventDeadlineSuite started
+sirin.engine.EventDeadlineSuite: finished 0.341s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.345s
+[info] Passed: Total 175, Failed 0, Errors 0, Passed 175
+[success] Total time: 0 s, completed Oct 28, 2026, 9:29:28 p.m.
+Test run sirin.testkit.LatestAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 2.056s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 2.059s
+Test run sirin.testkit.ReferenceAgreementSuite started
+sirin.testkit.ReferenceAgreementSuite: finished 2.834s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.836s
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.EventDeadlineAgreementSuite: finished 2.869s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.871s
+Test run sirin.testkit.WorkAgreementSuite started
+sirin.testkit.WorkAgreementSuite: finished 3.681s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 3.683s
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+sirin.testkit.VirtualCollectionAgreementSuite: finished 3.846s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 3.848s
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 4.624s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 4.626s
+Test run sirin.testkit.ProgressAgreementSuite started
+sirin.testkit.ProgressAgreementSuite: finished 4.641s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 4.644s
+Test run sirin.testkit.LifetimeAgreementSuite started
+sirin.testkit.LifetimeAgreementSuite: finished 4.873s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 4.875s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 5 s, completed Oct 28, 2026, 9:29:33 p.m.
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.12s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.123s
+Test run sirin.specimen.WorkbenchSuite started
+sirin.specimen.WorkbenchSuite: finished 0.267s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.269s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 0 s, completed Oct 28, 2026, 9:29:34 p.m.
+Test run sirin.host.HostSuite started
+sirin.host.HostSuite: finished 0.09s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.093s
+Test run sirin.host.InteractionSuite started
+sirin.host.InteractionSuite: finished 0.093s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 9 total 0.096s
+[info] Passed: Total 15, Failed 0, Errors 0, Passed 15
+[success] Total time: 0 s, completed Oct 28, 2026, 9:29:34 p.m.
+[info] compiling 5 Scala sources to /private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 7 Scala sources to /private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1710 ms)
+[info] Discovered 3346 classes and 21148 methods after classloading
+[info] Checking intermediate code (quick) (98 ms)
+[info] Discovered 3317 classes and 16345 methods after optimization
+[info] Optimizing (debug mode) (2177 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6675 ms)
+[info] Compiling to native code (4832 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (163 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11504 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50219'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50222'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50224'.
+Test run sirin.graphics.StrokePreparationSuite started
+Test run sirin.graphics.PreparationCacheSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50225'.
+Test run sirin.graphics.CurvedStrokeSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50227'.
+Test run sirin.graphics.StrokeBoundarySuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50229'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50231'.
+Test run sirin.graphics.ImageSuite started
+Test run sirin.graphics.TextDataSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50233'.
+sirin.graphics.ImageSuite: finished 0.019s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.019s
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50235'.
+Test run sirin.graphics.PreparationSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50236'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '50239'.
+Test run sirin.graphics.GeometrySuite started
+Test run sirin.graphics.RoundedRectangleSuite started
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.009s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.009s
+sirin.graphics.GeometrySuite: finished 0.021s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.021s
+sirin.graphics.ValuesSuite: finished 0.009s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.009s
+Test run sirin.graphics.DrawingResourcesSuite started
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.012s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.012s
+sirin.graphics.StrokePreparationSuite: finished 0.135s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.135s
+sirin.graphics.DrawingResourcesSuite: finished 0.022s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.022s
+sirin.graphics.TextDataSuite: finished 0.109s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.109s
+sirin.graphics.PreparationSuite: finished 0.165s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.165s
+sirin.graphics.PreparationCacheSuite: finished 1.976s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 1.976s
+sirin.graphics.StrokeBoundarySuite: finished 2.374s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 2.374s
+sirin.graphics.CurvedStrokeSuite: finished 3.328s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 3.328s
+[info] Passed: Total 69, Failed 0, Errors 0, Passed 69
+[success] Total time: 19 s, completed Oct 28, 2026, 9:29:53 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/core/.native/target/scala-3.7.4/sirin-core-test' on port '50249'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/core/.native/target/scala-3.7.4/sirin-core-test' on port '50251'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/core/.native/target/scala-3.7.4/sirin-core-test' on port '50254'.
+Test run sirin.AuthoringValuesSuite started
+Test run sirin.TextApiSuite started
+sirin.AuthoringValuesSuite: finished 0.003s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.003s
+sirin.TextApiSuite: finished 0.003s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/core/.native/target/scala-3.7.4/sirin-core-test' on port '50255'.
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.000s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.000s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.001s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.001s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 0 s, completed Oct 28, 2026, 9:29:54 p.m.
+[info] Linking (multithreadingEnabled=detect) (1024 ms)
+[info] Discovered 2282 classes and 16017 methods after classloading
+[info] Checking intermediate code (quick) (18 ms)
+[info] Discovered 2252 classes and 12383 methods after optimization
+[info] Optimizing (debug mode) (668 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (4694 ms)
+[info] Compiling to native code (4255 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (120 ms)
+[info] Postprocessing (0 ms)
+[info] Total (7053 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '50266'.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.002s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.002s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 8 s, completed Oct 28, 2026, 9:30:02 p.m.
+[info] Linking (multithreadingEnabled=detect) (606 ms)
+[info] Discovered 2436 classes and 16874 methods after classloading
+[info] Checking intermediate code (quick) (18 ms)
+[info] Discovered 2406 classes and 13042 methods after optimization
+[info] Optimizing (debug mode) (845 ms)
+[info] Produced 96 LLVM IR files
+[info] Generating intermediate code (4708 ms)
+[info] Compiling to native code (4482 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (113 ms)
+[info] Postprocessing (0 ms)
+[info] Total (6788 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '50277'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '50279'.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.009s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.009s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 7 s, completed Oct 28, 2026, 9:30:09 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50281'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50283'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50285'.
+Test run sirin.engine.ReconciliationSuite started
+Test run sirin.engine.EventDeadlineSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50286'.
+Test run sirin.engine.WorkCommandSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50288'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50291'.
+Test run sirin.engine.TopologyLifetimeSuite started
+Test run sirin.engine.HostBoundarySuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50293'.
+sirin.engine.HostBoundarySuite: finished 0.010s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.010s
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50295'.
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.WorkCommandSuite: finished 0.048s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.048s
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '50296'.
+Test run sirin.engine.TransactionSuite started
+sirin.engine.ReconciliationSuite: finished 0.079s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.079s
+sirin.engine.TopologyLifetimeSuite: finished 0.049s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.049s
+Test run sirin.engine.FocusSuite started
+sirin.engine.FocusSuite: finished 0.004s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.004s
+sirin.engine.TransactionSuite: finished 0.016s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.016s
+Test run sirin.engine.RetainedVirtualSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.036s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.036s
+sirin.engine.EventDeadlineSuite: finished 0.130s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.130s
+sirin.engine.RetainedVirtualSuite: finished 0.088s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.088s
+[info] Passed: Total 175, Failed 0, Errors 0, Passed 175
+[success] Total time: 1 s, completed Oct 28, 2026, 9:30:10 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50300'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50303'.
+Test run sirin.testkit.WorkAgreementSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50304'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50306'.
+Test run sirin.testkit.ReferenceAgreementSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50308'.
+Test run sirin.testkit.LatestAgreementSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50310'.
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50311'.
+Test run sirin.testkit.ProgressAgreementSuite started
+Test run sirin.testkit.LifetimeAgreementSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '50314'.
+Test run sirin.testkit.ReconciliationAgreementSuite started
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 1.901s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 1.901s
+sirin.testkit.EventDeadlineAgreementSuite: finished 5.037s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 5.037s
+sirin.testkit.ReferenceAgreementSuite: finished 5.513s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 5.513s
+sirin.testkit.WorkAgreementSuite: finished 5.533s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 5.533s
+sirin.testkit.VirtualCollectionAgreementSuite: finished 9.298s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 9.298s
+sirin.testkit.ProgressAgreementSuite: finished 9.817s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 9.817s
+sirin.testkit.ReconciliationAgreementSuite: finished 12.805s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 12.805s
+sirin.testkit.LifetimeAgreementSuite: finished 27.538s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 27.538s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 28 s, completed Oct 28, 2026, 9:30:38 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '50368'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '50370'.
+Test run sirin.specimen.WorkbenchSuite started
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.046s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.046s
+sirin.specimen.WorkbenchSuite: finished 0.180s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.180s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 1 s, completed Oct 28, 2026, 9:30:39 p.m.
+[info] Linking (multithreadingEnabled=detect) (1444 ms)
+[info] Discovered 3443 classes and 22102 methods after classloading
+[info] Checking intermediate code (quick) (78 ms)
+[info] Discovered 3337 classes and 16951 methods after optimization
+[info] Optimizing (debug mode) (923 ms)
+[info] Produced 98 LLVM IR files
+[info] Generating intermediate code (5067 ms)
+[info] Compiling to native code (4627 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (156 ms)
+[info] Postprocessing (0 ms)
+[info] Total (8229 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/host/.native/target/scala-3.7.4/sirin-host-test' on port '50379'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/host/.native/target/scala-3.7.4/sirin-host-test' on port '50381'.
+Test run sirin.host.HostSuite started
+sirin.host.HostSuite: finished 0.011s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.011s
+Test run sirin.host.InteractionSuite started
+sirin.host.InteractionSuite: finished 0.006s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 9 total 0.006s
+[info] Passed: Total 15, Failed 0, Errors 0, Passed 15
+[success] Total time: 9 s, completed Oct 28, 2026, 9:30:48 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-gpu-host-20261028/text-native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (861 ms)
+[info] Discovered 2525 classes and 17294 methods after classloading
+[info] Checking intermediate code (quick) (56 ms)
+[info] Discovered 2485 classes and 13408 methods after optimization
+[info] Optimizing (debug mode) (1686 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (5443 ms)
+[info] Compiling to native code (4809 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (159 ms)
+[info] Postprocessing (0 ms)
+[info] Total (8800 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/text-native/target/scala-3.7.4/sirin-text-native-test' on port '50397'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/text-native/target/scala-3.7.4/sirin-text-native-test' on port '50400'.
+Test run sirin.graphics.text.NativeFontSuite started
+sirin.graphics.text.NativeFontSuite: finished 0.170s
+Test run sirin.graphics.text.NativeFontSuite finished: 0 failed, 0 ignored, 7 total 0.170s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 13 s, completed Oct 28, 2026, 9:31:00 p.m.
+[info] Linking (multithreadingEnabled=detect) (891 ms)
+[info] Discovered 2489 classes and 16816 methods after classloading
+[info] Checking intermediate code (quick) (12 ms)
+[info] Discovered 2459 classes and 13016 methods after optimization
+[info] Optimizing (debug mode) (573 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (4782 ms)
+[info] Compiling to native code (4659 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (197 ms)
+[info] Postprocessing (0 ms)
+[info] Total (7059 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/unicode/target/scala-3.7.4/sirin-probe-unicode-test' on port '50420'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/unicode/target/scala-3.7.4/sirin-probe-unicode-test' on port '50423'.
+Test run sirin.graphics.unicode.BidiLineSuite started
+Test run sirin.graphics.unicode.UnicodeSuite started
+sirin.graphics.unicode.UnicodeSuite: finished 2.774s
+Test run sirin.graphics.unicode.UnicodeSuite finished: 0 failed, 0 ignored, 8 total 2.774s
+sirin.graphics.unicode.BidiLineSuite: finished 25.445s
+Test run sirin.graphics.unicode.BidiLineSuite finished: 0 failed, 0 ignored, 4 total 25.445s
+[info] Passed: Total 12, Failed 0, Errors 0, Passed 12
+[success] Total time: 34 s, completed Oct 28, 2026, 9:31:34 p.m.
+[info] compiling 5 Scala sources to /private/tmp/sirin-gpu-host-20261028/probes/paragraph/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1310 ms)
+[info] Discovered 3616 classes and 22013 methods after classloading
+[info] Checking intermediate code (quick) (181 ms)
+[info] Discovered 3579 classes and 16905 methods after optimization
+[info] Optimizing (debug mode) (2620 ms)
+[info] Produced 98 LLVM IR files
+[info] Generating intermediate code (6813 ms)
+[info] Compiling to native code (5789 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (170 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11730 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '50474'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '50477'.
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '50479'.
+Test run sirin.graphics.text.WrappingSuite started
+Test run sirin.graphics.text.CanvasBridgeSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '50480'.
+Test run sirin.graphics.text.ParagraphSuite started
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '50482'.
+Test run sirin.graphics.text.TextUiSuite started
+Test run sirin.graphics.text.EditingGeometrySuite started
+sirin.graphics.text.CanvasBridgeSuite: finished 0.216s
+Test run sirin.graphics.text.CanvasBridgeSuite finished: 0 failed, 0 ignored, 5 total 0.216s
+sirin.graphics.text.ParagraphSuite: finished 0.377s
+Test run sirin.graphics.text.ParagraphSuite finished: 0 failed, 0 ignored, 8 total 0.377s
+sirin.graphics.text.TextUiSuite: finished 0.394s
+Test run sirin.graphics.text.TextUiSuite finished: 0 failed, 0 ignored, 8 total 0.394s
+sirin.graphics.text.WrappingSuite: finished 0.461s
+Test run sirin.graphics.text.WrappingSuite finished: 0 failed, 0 ignored, 9 total 0.461s
+sirin.graphics.text.EditingGeometrySuite: finished 0.465s
+Test run sirin.graphics.text.EditingGeometrySuite finished: 0 failed, 0 ignored, 10 total 0.465s
+[info] Passed: Total 40, Failed 0, Errors 0, Passed 40
+[success] Total time: 17 s, completed Oct 28, 2026, 9:31:51 p.m.
+[info] compiling 3 Scala sources to /private/tmp/sirin-gpu-host-20261028/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 5 Scala sources to /private/tmp/sirin-gpu-host-20261028/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1468 ms)
+[info] Discovered 3525 classes and 21915 methods after classloading
+[info] Checking intermediate code (quick) (111 ms)
+[info] Discovered 3492 classes and 17188 methods after optimization
+[info] Optimizing (debug mode) (1863 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6545 ms)
+[info] Compiling to native code (4782 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (160 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10441 ms)
+[info] Starting process '/private/tmp/sirin-gpu-host-20261028/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50508'.
+Test run sirin.render.StrokeGradientSuite started
+sirin.render.StrokeGradientSuite: finished 2.728s
+Test run sirin.render.StrokeGradientSuite finished: 0 failed, 0 ignored, 5 total 2.728s
+Test run sirin.render.CurvesReuseSuite started
+sirin.render.CurvesReuseSuite: finished 8.396s
+Test run sirin.render.CurvesReuseSuite finished: 0 failed, 0 ignored, 6 total 8.396s
+Test run sirin.graphics.RebasedGradientSuite started
+sirin.graphics.RebasedGradientSuite: finished 0.205s
+Test run sirin.graphics.RebasedGradientSuite finished: 0 failed, 0 ignored, 1 total 0.205s
+Test run sirin.render.BatchSuite started
+batch-adapter=Apple M2 Pro
+comparison=curves-layers-1.0 checked=3072 excluded=0 worstByteError=0
+comparison=curves-layers-1.25 checked=4800 excluded=0 worstByteError=0
+comparison=curves-layers-1.5 checked=6910 excluded=2 worstByteError=0
+comparison=curves-layers-2.0 checked=12288 excluded=0 worstByteError=0
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=0
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=0
+comparison=textures-text-1.5 checked=6775 excluded=137 worstByteError=0
+comparison=textures-text-2.0 checked=12253 excluded=35 worstByteError=0
+sirin.render.BatchSuite: finished 4.542s
+Test run sirin.render.BatchSuite finished: 0 failed, 0 ignored, 14 total 4.542s
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=292875,274334,276625,276208,275125,275000,275334,278667,274750,274625
+synchronized-render-readback-ns=7137291,7144083,7158833,7196791,7501500,8311917,8393750,8401541,9519542,9734291
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 1.988s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 8 total 1.988s
+[info] Passed: Total 34, Failed 0, Errors 0, Passed 34
+[success] Total time: 35 s, completed Oct 28, 2026, 9:32:26 p.m.
+[info] compiling 4 Scala sources to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.BenchmarkFixtureSuite started
+sirin.desktop.BenchmarkFixtureSuite: finished 0.031s
+Test run sirin.desktop.BenchmarkFixtureSuite finished: 0 failed, 0 ignored, 3 total 0.04s
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 1.448s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 8 total 1.448s
+renderSession GPU frame retirement test
+Test run sirin.desktop.GpuFrameSuite started
+sirin.desktop.GpuFrameSuite: finished 1.272s
+Test run sirin.desktop.GpuFrameSuite finished: 0 failed, 0 ignored, 6 total 1.272s
+canvasComparison scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(6144,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(9600,0,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(13824,0,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(13817,7,0,0,None)
+canvasComparison scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(13824,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(24576,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) result=Comparison(24576,0,0,0,None)
+canvasComparison scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) result=Comparison(24561,15,0,0,None)
+renderSession retire control
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+==> X sirin.desktop.RetainedCanvasSuite.retirement quiesces an in-flight request before replacement on the same worker 5.04s munit.FailException: desktop/src/test/scala/sirin/desktop/RetainedCanvasSuite.scala:114 assertion failed
+113:        assertEquals(service.poll(),None)
+114:        service.submit(2);assert(ready.tryAcquire(5,java.util.concurrent.TimeUnit.SECONDS))
+115:        service.poll().get._2.toOption.get.close()
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.RetainedCanvasSuite.$init$$$anonfun$4$$anonfun$1(RetainedCanvasSuite.scala:114)
+    at scala.collection.immutable.Range.foreach(Range.scala:192)
+    at sirin.desktop.RetainedCanvasSuite.$init$$$anonfun$4(RetainedCanvasSuite.scala:90)
+sirin.desktop.RetainedCanvasSuite: finished 10.895s
+Test run sirin.desktop.RetainedCanvasSuite finished: 1 failed, 0 ignored, 4 total 10.896s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.788s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.788s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.028s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.029s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.008s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.008s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 0.005s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 4 total 0.005s
+[error] Failed: Total 29, Failed 1, Errors 0, Passed 28
+[error] Failed tests:
+[error] 	sirin.desktop.RetainedCanvasSuite
+[error] (desktopJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 19 s, completed Oct 28, 2026, 9:32:45 p.m.
