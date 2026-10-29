@@ -1694,3 +1694,18 @@ material now belongs to the downstream adapters.
   linked.
 
 These stay as probe questions.
+
+### Editable text implementation slice (owner-authorized2026-10-29)
+
+`TextField.bind` uses existing Cell/UiTxn and mounted control identity. The host
+owns bounded selection, provisional composition and undo state; render requests
+contain immutable snapshots only. Existing retained text layouts drive hit, caret,
+selection, visual navigation, IME placement and accessibility geometry. Native
+text input and AX transport queue copied facts/actions without managed upcalls.
+Value/selection/geometry snapshots publish together after successful presentation;
+stale actions revalidate identity and revision. Editor events preserve order while
+geometry is stale. External replacement cancels composition/history, and removal
+retires editor/native state. See `docs/plans/2026-10-29-text-editor.md` for bounded
+commands, composition lifecycle, native transport and concrete acceptance. This
+adds control behavior through the existing transaction/mount contracts; it does
+not change kernel scheduling, identity or lifetime semantics.

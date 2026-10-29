@@ -15,6 +15,7 @@ enum Hint:
 
 enum Content:
   case Empty
+  case Editable(instance: Long,value: String,label: String,placeholder: String,multiline: Boolean,error: Option[String])
   case Button(instance: Long,label: String,enabled: Boolean,busy: Boolean,primary: Boolean)
   case Reference(reference: Long,child: Node)
   case Label(text: String, style: TextStyle, color: ColorRole)
@@ -26,13 +27,15 @@ enum Content:
 final case class Node(id: NodeId, content: Content)
 
 final case class Activation(enabled: Boolean,run: UiTxn => Unit)
-final case class CapturedTree(tree: Node,bindings: Map[Long,Activation])
+final case class TextBinding(description: TextField.Description)
+final case class CapturedTree(tree: Node,bindings: Map[Long,Activation],editors: Map[Long,TextBinding]=Map.empty)
 
 /** Capture reads only declared settled inputs; no Signal or native pointer survives. */
 object CommittedTree:
   def capture(snapshot: MountedSnapshot,reader: CommittedRead,maxNodes: Int=10000): Node = captureWithBindings(snapshot,reader,maxNodes).tree
   def captureWithBindings(snapshot: MountedSnapshot,reader: CommittedRead,maxNodes: Int=10000): CapturedTree =
     val bindings=scala.collection.mutable.Map.empty[Long,Activation]
+    val editors=scala.collection.mutable.Map.empty[Long,TextBinding]
     var visited = 0
     var textUnits=0L
     def value[A](signal: Signal[A]): A = reader(signal) match
@@ -51,6 +54,11 @@ object CommittedTree:
             val label=value(b.label);textUnits+=label.length;require(textUnits<=100000,"host text budget exceeded")
             bindings(instance)=Activation(enabled,txn => b.binding.invoke()(using txn))
             Node(NodeId(Vector("control",instance)),Content.Button(instance,label,enabled,value(b.binding.running)>0,b.isPrimary))
+          case f: TextField.Description =>
+            val text=value(f.value);TextEditing.validate(text);textUnits+=text.length
+            require(textUnits<=100000,"host text budget exceeded")
+            editors(instance)=TextBinding(f)
+            Node(NodeId(Vector("editor",instance)),Content.Editable(instance,text,f.fieldLabel,f.hint,f.multiple,value(f.problem)))
           case _ => throw new UnsupportedOperationException("unsupported mounted control")
         case MountedSnapshot.Empty => Node(id, Content.Empty)
         case MountedSnapshot.Leaf(view) => view match
@@ -91,4 +99,4 @@ object CommittedTree:
           Node(id,Content.Virtual(instance,first,total,height.toDouble,children))
         case MountedSnapshot.Unavailable(error) => throw error
     val tree=loop(snapshot,NodeId(Vector("root")),0)
-    CapturedTree(tree,bindings.toMap)
+    CapturedTree(tree,bindings.toMap,editors.toMap)

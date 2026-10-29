@@ -81,10 +81,13 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     case View.StackDecoration(inner, _) => plain(inner)
     case View.TextDecoration(inner, _) => plain(inner)
     case View.ButtonDecoration(inner, _) => plain(inner)
+    case View.FieldDecoration(inner, _) => plain(inner)
     case other => other
   private def keyOf(view: View, default: Any): Any = view match
     case View.Decorated(_, Decoration.Keyed(key)) => key
     case View.Decorated(inner, _) => keyOf(inner, default)
+    case View.FieldDecoration(_, Decoration.Keyed(key)) => key
+    case View.FieldDecoration(inner, _) => keyOf(inner, default)
     case View.ButtonDecoration(_, Decoration.Keyed(key)) => key
     case View.ButtonDecoration(inner, _) => keyOf(inner, default)
     case View.TextDecoration(_, Decoration.Keyed(key)) => key
@@ -97,12 +100,14 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     case View.StackDecoration(inner, decoration) => styles(inner) :+ decoration
     case View.TextDecoration(inner, decoration) => styles(inner) :+ decoration
     case View.ButtonDecoration(inner, decoration) => styles(inner) :+ decoration
+    case View.FieldDecoration(inner, decoration) => styles(inner) :+ decoration
     case _ => Vector.empty
   private def directDependencies(view: View): Vector[Signal[?]] =
     styles(view).collect { case Decoration.Visible(signal) => signal } ++ leafDependencies(view)
   private def leafDependencies(view: View): Vector[Signal[?]] = plain(view) match
     case p: Button.Description => Vector(p.label,p.binding.enabled,p.binding.running)
     case p: Text.Description => Vector(p.content)
+    case p: TextField.Description => Vector(p.value,p.problem)
     case p: View.ScrollContent => directDependencies(p.content)
     case p: Component.Placement[?] => Vector(p.props)
     case p: ForEach.Description[?, ?] => Vector(p.items)
@@ -132,6 +137,8 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
   private def references(view: View): Vector[NodeRef] = view match
     case View.Decorated(inner, Decoration.Ref(ref)) => references(inner) :+ ref
     case View.Decorated(inner, _) => references(inner)
+    case View.FieldDecoration(inner, Decoration.Ref(ref)) => references(inner) :+ ref
+    case View.FieldDecoration(inner, _) => references(inner)
     case View.ButtonDecoration(inner, Decoration.Ref(ref)) => references(inner) :+ ref
     case View.ButtonDecoration(inner, _) => references(inner)
     case View.TextDecoration(inner, Decoration.Ref(ref)) => references(inner) :+ ref
@@ -211,7 +218,11 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     val scope = parent.child("leaf")
     private var view = initial
     def accepts(next: View): Boolean =
-      if view.isInstanceOf[Button.Description] != next.isInstanceOf[Button.Description] then false
+      if view.isInstanceOf[Button.Description] != next.isInstanceOf[Button.Description] ||
+          view.isInstanceOf[TextField.Description] != next.isInstanceOf[TextField.Description] then false
+      else if ((view,next) match
+        case (a: TextField.Description,b: TextField.Description) => !(a.value eq b.value)
+        case _ => false) then false
       else next match
         case _: View.ScrollContent => false
         case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] => false
@@ -221,7 +232,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
       else { change(view)(v => view = v)(next); true }
     def dependencies: Vector[Signal[?]] = Vector.empty
     def snapshot: MountedSnapshot = view match
-      case _: Button.Description => MountedSnapshot.Control(scope.id,view)
+      case _: Button.Description | _: TextField.Description => MountedSnapshot.Control(scope.id,view)
       case _ => if view eq View.Empty then MountedSnapshot.Empty else MountedSnapshot.Leaf(view)
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = false
 

@@ -14,7 +14,7 @@ trait ViewRebuild[V <: View]:
 object ViewRebuild:
   given ViewRebuild[View] = (view, decoration) => View.Decorated(view, decoration)
   given ViewRebuild[TextView] = (view, decoration) => View.TextDecoration(view, decoration)
-  given ViewRebuild[TextFieldView] = ???
+  given ViewRebuild[TextFieldView] = (view, decoration) => View.FieldDecoration(view, decoration)
   given ViewRebuild[ButtonView] = (view, decoration) => View.ButtonDecoration(view, decoration)
   given ViewRebuild[StackView] = (view, decoration) => View.StackDecoration(view, decoration)
 
@@ -69,6 +69,13 @@ object View:
     def command(c: Command[Unit, ?]): ButtonView = copy(view = view.command(c))
     def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(view = view.command(c,arg))
     def onPress(run: Action): ButtonView = copy(view = view.onPress(run))
+  private[sirin] final case class FieldDecoration(view: TextFieldView, decoration: Decoration) extends TextFieldView:
+    def label(text: String): TextFieldView = copy(view=view.label(text))
+    def placeholder(text: String): TextFieldView = copy(view=view.placeholder(text))
+    def error(message: Signal[Option[String]]): TextFieldView = copy(view=view.error(message))
+    def multiline: TextFieldView = copy(view=view.multiline)
+    def onCommit(run: Action): TextFieldView = copy(view=view.onCommit(run))
+    def onBlur(run: Action): TextFieldView = copy(view=view.onBlur(run))
   private[sirin] final case class Space(size: Option[Lp]) extends View
   private[sirin] final case class ScrollContent(content: View) extends View
   def empty: View = Empty
@@ -97,7 +104,16 @@ trait TextFieldView extends View:
 
 object TextField:
   /** Edits `value`. IME composition stays inside the field until committed. */
-  def bind(value: Cell[String]): TextFieldView = ???
+  private[sirin] final case class Description(value: Cell[String],fieldLabel: String="",hint: String="",
+      problem: Signal[Option[String]]=Signal.const(None),multiple: Boolean=false,
+      commit: UiTxn => Unit = _ => (),blur: UiTxn => Unit = _ => ()) extends TextFieldView:
+    def label(text: String): TextFieldView = copy(fieldLabel=text)
+    def placeholder(text: String): TextFieldView = copy(hint=text)
+    def error(message: Signal[Option[String]]): TextFieldView = copy(problem=message)
+    def multiline: TextFieldView = copy(multiple=true)
+    def onCommit(run: Action): TextFieldView = copy(commit=txn => run(using txn))
+    def onBlur(run: Action): TextFieldView = copy(blur=txn => run(using txn))
+  def bind(value: Cell[String]): TextFieldView = Description(value)
 
 trait ButtonView extends View:
   def primary: ButtonView

@@ -15,6 +15,8 @@ final class ResolvedTextLayout private (
   private def geometry: g.TextGeometry = resolved match
     case p: g.ParagraphLayout => p.geometry
     case p: g.WrappedParagraphLayout => p.geometry
+  override def graphemeBoundaries: Vector[Int] = analysis.graphemeBoundaries.map(o => analysis.source.utf16Offset(o).get.value)
+  def wordBoundaries: Vector[Int] = analysis.wordBoundaries.map(o => analysis.source.utf16Offset(o).get.value)
   override val text: String = analysis.source.text
   override val size: ui.Size = resolved match
     case p: g.ParagraphLayout => ui.Size(ui.Lp(p.width), ui.Lp(p.height))

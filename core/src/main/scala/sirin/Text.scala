@@ -34,6 +34,8 @@ trait TextLayout:
   final def caret(utf16Offset: Int, affinity: TextAffinity): Option[TextCaret] =
     if utf16Offset < 0 then None else caret(TextPosition(utf16Offset, affinity))
   def caretsAt(utf16Offset: Int): Vector[TextCaret]
+  /** Enumerates original UTF-16 grapheme stops; retained implementations override efficiently. */
+  def graphemeBoundaries: Vector[Int]=(0 to text.length).iterator.filter(o => caretsAt(o).nonEmpty).toVector
   def hit(at: Point): TextHit
   def selection(fromUtf16: Int, untilUtf16: Int): Vector[TextSelectionRegion]
 
