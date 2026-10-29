@@ -1,0 +1,25 @@
+{
+  "gc_issue": "bd-01M5Z3K47RQTRDXEY7Y2P8TMJ3",
+  "gc_issue_closed": false,
+  "production_runtime_changed": false,
+  "causal_control_accepted": false,
+  "conditional_bounded_survivor_check": "pass",
+  "event_600s_50ms_gate": {
+    "status": "not-run",
+    "reason": "all six unchanged idle-preflight samples fail",
+    "candidate_binary_sha256": "87d7a7a94d48f21646053915415e31702517cf984a78b5b4f8c79287d2c2e5d9",
+    "qualification": false
+  },
+  "editor_accepted_commit": "9372ca5",
+  "editor_independent_scenario": "pass",
+  "editor_independent_interactive_repetition": "inconclusive",
+  "editor_remaining_issue": "bd-01M64NKHTDEJ7WZGQBTA6SMF23",
+  "fresh_integration_tests": {
+    "JVM": 323,
+    "Native": 323,
+    "desktop": 50,
+    "examples_compile": "pass"
+  },
+  "shared_checkout_source_changed": false,
+  "upstream_report_posted": false
+}

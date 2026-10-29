@@ -1,0 +1,8 @@
+{
+  "app": "/private/tmp/sirin-editor-20261029/desktop/target/package-editor/SirinEdit.app",
+  "cfg": "/private/tmp/sirin-editor-20261029/desktop/target/package-editor/SirinEdit.app/Contents/app/SirinEdit.cfg",
+  "original_sha256": "86f088c25b51bc9a0b9ad76c389d0e260596a0b7dfb4d97c22d5a11f65854a3e",
+  "traced_sha256": "6545111c24e6b1238585cbac185da04ae6a2813cdc73d696be683931b799b66b",
+  "trace": "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/editor-repeat/editor.trace",
+  "change": "existing bounded opt-in trace property only"
+}

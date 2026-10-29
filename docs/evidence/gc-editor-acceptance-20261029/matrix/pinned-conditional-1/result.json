@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/bin/pinned-conditional",
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-29T20:09:50.370238+00:00",
+  "load_start": [
+    5.0771484375,
+    4.728515625,
+    3.85302734375
+  ],
+  "timeout_seconds": 75.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "3e2e71e9eb0593f3d67ce8e739bdbb6fcd01beeec1f0b619fd4874fd44a568e5",
+  "pid": 31323,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 60.505077292,
+  "load_end": [
+    4.17626953125,
+    4.5478515625,
+    3.84765625
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "case": "original-trap-before",
+    "runner_exit": 0
+  },
+  {
+    "case": "nodefer-1",
+    "runner_exit": 134
+  },
+  {
+    "case": "nodefer-2",
+    "runner_exit": 134
+  },
+  {
+    "case": "nodefer-3",
+    "runner_exit": 134
+  },
+  {
+    "case": "original-trap-after",
+    "runner_exit": 0
+  }
+]

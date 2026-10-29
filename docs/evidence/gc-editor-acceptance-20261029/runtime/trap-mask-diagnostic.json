@@ -1,0 +1,11 @@
+{
+  "source": "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/runtime/trap-diagnostic.jar",
+  "source_sha256": "60d62a04937e38c8538d9fb938ffc4545608487d0201ed5290fa485dc1dcadd2",
+  "output_sha256": "e73c396c789988b48d8e49744c7ad1d02291dcd65fca3bbd2c3d211b3d7a10dc",
+  "changed_resources": [
+    "scala-native/gc/immix/MutatorThread.h",
+    "scala-native/gc/immix/MutatorThread.c",
+    "scala-native/gc/immix/Synchronizer.c"
+  ],
+  "scope": "Successor diagnostic: query current signal masks; no signal-mask changes, fix, or handler allocations"
+}

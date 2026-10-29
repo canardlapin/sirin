@@ -1,0 +1,20 @@
+{
+  "reason": "SIGBUS blocked at yield/admission in captured failures",
+  "order": [
+    "original-trap-before",
+    "nodefer-1",
+    "nodefer-2",
+    "nodefer-3",
+    "original-trap-after"
+  ],
+  "arguments": [
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "heap_cap": "128M",
+  "gc_sync_timeout_ms": 15000,
+  "external_timeout_seconds": 75,
+  "candidate_qualification": false
+}

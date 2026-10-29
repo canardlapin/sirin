@@ -1,0 +1,12 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "-Dsbt.ivy.home=/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy",
+    "-Drepro.runtimeJar=/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/runtime/trap-nodefer-control.jar",
+    "nativeLink"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 14.767759084,
+  "binary_sha256": "34db8eb33c4567c3c8fa770ab37013b391752ed25a08e9b64709b0ac70a943bc"
+}

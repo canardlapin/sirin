@@ -1,0 +1,11 @@
+--- a/scala-native/gc/immix/Synchronizer.c
++++ b/scala-native/gc/immix/Synchronizer.c
+@@ -275,6 +275,8 @@
+         exit(errno);
+     }
+ #ifdef __APPLE__
++    /* Experimental causal control: repeated GC traps must remain deliverable. */
++    sa.sa_flags |= SA_NODEFER;
+     if (sigaction(SIGBUS, &sa, &previousSigbusHandler) == -1) {
+         GC_LOG_ERROR("Cannot setup safepoint synchronization handler for "
+                      "SIGBUS: %s",

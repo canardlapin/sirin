@@ -1,0 +1,414 @@
+{
+  "accepted": {
+    "path": "/private/tmp/sirin-editor-20261029/desktop/target/native/libsirin_desktop.dylib",
+    "sha256": "115ef748d38f91281d7fb29e23cd1b8c4ea3249932982662b2e240cfb443c3d3",
+    "load_paths": [
+      {
+        "cmd": "0xd",
+        "path": "/private/tmp/sirin-editor-20261029/desktop/target/native/libsirin_desktop.dylib"
+      },
+      {
+        "cmd": "0xc",
+        "path": "@rpath/SDL3.framework/Versions/A/SDL3"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Metal.framework/Versions/A/Metal"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Security.framework/Versions/A/Security"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/usr/lib/libc++.1.dylib"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/usr/lib/libSystem.B.dylib"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/usr/lib/libobjc.A.dylib"
+      },
+      {
+        "cmd": "0x8000001c",
+        "path": "/private/tmp/sirin-editor-20261029/native/vendor/SDL3.xcframework/macos-arm64_x86_64"
+      }
+    ],
+    "sections": {
+      "__TEXT/__text": {
+        "size": 5084596,
+        "sha256": "b7166d319a9bc693592bf1f923618dae0b1031190ae07467ba1f514bde653577"
+      },
+      "__TEXT/__stubs": {
+        "size": 2832,
+        "sha256": "57f3169eb47d12e92aea9513872a8e74b6f1de4c632cc0b2fe251fd7b01ddd79"
+      },
+      "__TEXT/__objc_stubs": {
+        "size": 2240,
+        "sha256": "5f11717346226ea52208ca472acd3bc64a082b1c3111a66049962d67c28c24df"
+      },
+      "__TEXT/__init_offsets": {
+        "size": 12,
+        "sha256": "841f6aef5a1adabcec3e9a62ed1357f9c760aa36fda5b116a35398ddf07de31a"
+      },
+      "__TEXT/__objc_methlist": {
+        "size": 284,
+        "sha256": "2e2d1c655d8a16c0be38d113f51f6f12f0b1953b239cd68e7e1135c2733cd0d6"
+      },
+      "__TEXT/__const": {
+        "size": 4698498,
+        "sha256": "c6bc3ea7fec06d26127e46a234162d4c3802cd97b78bccefef0af74ee18efa8b"
+      },
+      "__TEXT/__cstring": {
+        "size": 191740,
+        "sha256": "b7f0a0667ec5fccbcabaa2e505d4bf1202c42cc08317c0141eda3b1f3a599a7e"
+      },
+      "__TEXT/__gcc_except_tab": {
+        "size": 15300,
+        "sha256": "eb76c5a097baf8646bc00e52c45eff79963e8dd23aa1ba825d54f4f11deea4f9"
+      },
+      "__TEXT/__objc_classname": {
+        "size": 37,
+        "sha256": "80d3f0583dda2c90960b1da119fae8a1f7ba530be6ebb5614651c7ac7f9847de"
+      },
+      "__TEXT/__objc_methname": {
+        "size": 2060,
+        "sha256": "24a1e45366819ee1607e14048943a602d7b65572379de2661349bb832a517031"
+      },
+      "__TEXT/__objc_methtype": {
+        "size": 772,
+        "sha256": "6cf13557ff5157cb47131149da4adbb6ae8b37f7b0ef8aa79649b1b07ab1188e"
+      },
+      "__TEXT/__unwind_info": {
+        "size": 36856,
+        "sha256": "793d75f608e33a59ce56e7d5eaee351fc47e26e0af456cc0cbd88af0f7766a23"
+      },
+      "__TEXT/__eh_frame": {
+        "size": 57880,
+        "sha256": "68679b781ab1a449d3c82b7e08534fee5bf077eea97c2a21869877778f3e574a"
+      },
+      "__DATA_CONST/__got": {
+        "size": 2536,
+        "sha256": "2edf17d36bf0c1da75141a1c1081a811b59914c71122e7ffb3bf1457d4bcac67"
+      },
+      "__DATA_CONST/__const": {
+        "size": 235416,
+        "sha256": "14631c7fd1e9ea7761e1d1a408841bcb7e67f508d2adf8b63001dd9502b7dfba"
+      },
+      "__DATA_CONST/__cfstring": {
+        "size": 704,
+        "sha256": "d51cfedb0f040a5bd979ea4602fd18cb152b89381108faac48774fe09dd725cd"
+      },
+      "__DATA_CONST/__objc_classlist": {
+        "size": 8,
+        "sha256": "c15fb68bab13910fe370f9531888bb8ca3153ee045fd11e509bf4af3116952d0"
+      },
+      "__DATA_CONST/__objc_protolist": {
+        "size": 8,
+        "sha256": "d639b10a9e159d66db19f65b25860ce1bca3fe3bde06e282799c90b8e877322d"
+      },
+      "__DATA_CONST/__objc_imageinfo": {
+        "size": 8,
+        "sha256": "94039884329d3732c577860f40d0dfdf883ff89dac332f87216e692c08892fa2"
+      },
+      "__DATA_CONST/__objc_protorefs": {
+        "size": 8,
+        "sha256": "0e2c86bbe9949b7760d583de057505d564f3114d81fab62dbefd94ed8b25ec4f"
+      },
+      "__DATA_CONST/__objc_intobj": {
+        "size": 24,
+        "sha256": "779b8fc968f78820870c2b6b21173e6b13cc429ba10fe96b376ac2cfce5dde0e"
+      },
+      "__DATA/__objc_const": {
+        "size": 1432,
+        "sha256": "d572c0ab9908cfe5da4539c63f63a460c8aa681ef9becf97b7b1e4566daf218f"
+      },
+      "__DATA/__objc_selrefs": {
+        "size": 576,
+        "sha256": "0d9303d151055f58a0ea43c3f88d540aaa63dcdae1119c5c96b14129328aadb7"
+      },
+      "__DATA/__objc_ivar": {
+        "size": 44,
+        "sha256": "9f301ba814b05aa49b194c3bd04341f3750034767666b8db757ffbb2c9a66192"
+      },
+      "__DATA/__objc_data": {
+        "size": 80,
+        "sha256": "ed5fdaf45f359b7a793ef86c3aec988931aaeb066a795e098a1fcd88c145022a"
+      },
+      "__DATA/__data": {
+        "size": 5296,
+        "sha256": "020c24b36b5ac0bd57eb6f08e5e9ed503cd28c1308ea0c0000c2185ae7adf9da"
+      },
+      "__DATA/__thread_vars": {
+        "size": 264,
+        "sha256": "b5389de2b881481ff1aadac3e4685a8fd94a0fb439a6ff49b64fa8be18153000"
+      },
+      "__DATA/__thread_data": {
+        "size": 32,
+        "sha256": "59e7addb5e068640de3f8fb015017e7aa7495430d2533f87d4ece9f7ee548fa3"
+      },
+      "__DATA/__thread_bss": {
+        "size": 473,
+        "sha256": "51b767265681f8ed3c3425a2725525e7706e63068e797bef8ad934fc810ad556"
+      },
+      "__DATA/__bss": {
+        "size": 1752,
+        "sha256": "f38fac594207683f63bae0eaa5501cb71f5c8821d1ad647278d3bcf6ae3093b7"
+      },
+      "__DATA/__common": {
+        "size": 4256,
+        "sha256": "ab3f0584316bac4829db031381466d6d4ba44a276085ff8d875294e4a539eb72"
+      }
+    }
+  },
+  "rebuilt": {
+    "path": "/private/tmp/sirin-tranche-20261029/desktop/target/native/libsirin_desktop.dylib",
+    "sha256": "7290c45b3d7315664094be8778edce1a2bb885add43db41210ce7bbad117eb57",
+    "load_paths": [
+      {
+        "cmd": "0xd",
+        "path": "/private/tmp/sirin-tranche-20261029/desktop/target/native/libsirin_desktop.dylib"
+      },
+      {
+        "cmd": "0xc",
+        "path": "@rpath/SDL3.framework/Versions/A/SDL3"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Metal.framework/Versions/A/Metal"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Security.framework/Versions/A/Security"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/usr/lib/libc++.1.dylib"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/usr/lib/libSystem.B.dylib"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation"
+      },
+      {
+        "cmd": "0xc",
+        "path": "/usr/lib/libobjc.A.dylib"
+      },
+      {
+        "cmd": "0x8000001c",
+        "path": "/private/tmp/sirin-tranche-20261029/native/vendor/SDL3.xcframework/macos-arm64_x86_64"
+      }
+    ],
+    "sections": {
+      "__TEXT/__text": {
+        "size": 5084596,
+        "sha256": "b7166d319a9bc693592bf1f923618dae0b1031190ae07467ba1f514bde653577"
+      },
+      "__TEXT/__stubs": {
+        "size": 2832,
+        "sha256": "57f3169eb47d12e92aea9513872a8e74b6f1de4c632cc0b2fe251fd7b01ddd79"
+      },
+      "__TEXT/__objc_stubs": {
+        "size": 2240,
+        "sha256": "5f11717346226ea52208ca472acd3bc64a082b1c3111a66049962d67c28c24df"
+      },
+      "__TEXT/__init_offsets": {
+        "size": 12,
+        "sha256": "841f6aef5a1adabcec3e9a62ed1357f9c760aa36fda5b116a35398ddf07de31a"
+      },
+      "__TEXT/__objc_methlist": {
+        "size": 284,
+        "sha256": "2e2d1c655d8a16c0be38d113f51f6f12f0b1953b239cd68e7e1135c2733cd0d6"
+      },
+      "__TEXT/__const": {
+        "size": 4698498,
+        "sha256": "c6bc3ea7fec06d26127e46a234162d4c3802cd97b78bccefef0af74ee18efa8b"
+      },
+      "__TEXT/__cstring": {
+        "size": 191740,
+        "sha256": "b7f0a0667ec5fccbcabaa2e505d4bf1202c42cc08317c0141eda3b1f3a599a7e"
+      },
+      "__TEXT/__gcc_except_tab": {
+        "size": 15300,
+        "sha256": "eb76c5a097baf8646bc00e52c45eff79963e8dd23aa1ba825d54f4f11deea4f9"
+      },
+      "__TEXT/__objc_classname": {
+        "size": 37,
+        "sha256": "80d3f0583dda2c90960b1da119fae8a1f7ba530be6ebb5614651c7ac7f9847de"
+      },
+      "__TEXT/__objc_methname": {
+        "size": 2060,
+        "sha256": "24a1e45366819ee1607e14048943a602d7b65572379de2661349bb832a517031"
+      },
+      "__TEXT/__objc_methtype": {
+        "size": 772,
+        "sha256": "6cf13557ff5157cb47131149da4adbb6ae8b37f7b0ef8aa79649b1b07ab1188e"
+      },
+      "__TEXT/__unwind_info": {
+        "size": 36856,
+        "sha256": "793d75f608e33a59ce56e7d5eaee351fc47e26e0af456cc0cbd88af0f7766a23"
+      },
+      "__TEXT/__eh_frame": {
+        "size": 57880,
+        "sha256": "68679b781ab1a449d3c82b7e08534fee5bf077eea97c2a21869877778f3e574a"
+      },
+      "__DATA_CONST/__got": {
+        "size": 2536,
+        "sha256": "2edf17d36bf0c1da75141a1c1081a811b59914c71122e7ffb3bf1457d4bcac67"
+      },
+      "__DATA_CONST/__const": {
+        "size": 235416,
+        "sha256": "14631c7fd1e9ea7761e1d1a408841bcb7e67f508d2adf8b63001dd9502b7dfba"
+      },
+      "__DATA_CONST/__cfstring": {
+        "size": 704,
+        "sha256": "d51cfedb0f040a5bd979ea4602fd18cb152b89381108faac48774fe09dd725cd"
+      },
+      "__DATA_CONST/__objc_classlist": {
+        "size": 8,
+        "sha256": "c15fb68bab13910fe370f9531888bb8ca3153ee045fd11e509bf4af3116952d0"
+      },
+      "__DATA_CONST/__objc_protolist": {
+        "size": 8,
+        "sha256": "d639b10a9e159d66db19f65b25860ce1bca3fe3bde06e282799c90b8e877322d"
+      },
+      "__DATA_CONST/__objc_imageinfo": {
+        "size": 8,
+        "sha256": "94039884329d3732c577860f40d0dfdf883ff89dac332f87216e692c08892fa2"
+      },
+      "__DATA_CONST/__objc_protorefs": {
+        "size": 8,
+        "sha256": "0e2c86bbe9949b7760d583de057505d564f3114d81fab62dbefd94ed8b25ec4f"
+      },
+      "__DATA_CONST/__objc_intobj": {
+        "size": 24,
+        "sha256": "779b8fc968f78820870c2b6b21173e6b13cc429ba10fe96b376ac2cfce5dde0e"
+      },
+      "__DATA/__objc_const": {
+        "size": 1432,
+        "sha256": "d572c0ab9908cfe5da4539c63f63a460c8aa681ef9becf97b7b1e4566daf218f"
+      },
+      "__DATA/__objc_selrefs": {
+        "size": 576,
+        "sha256": "0d9303d151055f58a0ea43c3f88d540aaa63dcdae1119c5c96b14129328aadb7"
+      },
+      "__DATA/__objc_ivar": {
+        "size": 44,
+        "sha256": "9f301ba814b05aa49b194c3bd04341f3750034767666b8db757ffbb2c9a66192"
+      },
+      "__DATA/__objc_data": {
+        "size": 80,
+        "sha256": "ed5fdaf45f359b7a793ef86c3aec988931aaeb066a795e098a1fcd88c145022a"
+      },
+      "__DATA/__data": {
+        "size": 5296,
+        "sha256": "020c24b36b5ac0bd57eb6f08e5e9ed503cd28c1308ea0c0000c2185ae7adf9da"
+      },
+      "__DATA/__thread_vars": {
+        "size": 264,
+        "sha256": "b5389de2b881481ff1aadac3e4685a8fd94a0fb439a6ff49b64fa8be18153000"
+      },
+      "__DATA/__thread_data": {
+        "size": 32,
+        "sha256": "59e7addb5e068640de3f8fb015017e7aa7495430d2533f87d4ece9f7ee548fa3"
+      },
+      "__DATA/__thread_bss": {
+        "size": 473,
+        "sha256": "22b057f8fc25d5dc35c03be4f1814c7b5ce6dccb82cf2df82a6d2382ee096a49"
+      },
+      "__DATA/__bss": {
+        "size": 1752,
+        "sha256": "d479d0b0663b488b76a1035d124623c433011a08f846bb111219a309cd5f9aca"
+      },
+      "__DATA/__common": {
+        "size": 4256,
+        "sha256": "95bc13c34c2a1432be0fbef77bcbc7021da82499261b06b8cfc8cbd49a306453"
+      }
+    }
+  },
+  "matching_sections": [
+    "__TEXT/__text",
+    "__TEXT/__stubs",
+    "__TEXT/__objc_stubs",
+    "__TEXT/__init_offsets",
+    "__TEXT/__objc_methlist",
+    "__TEXT/__const",
+    "__TEXT/__cstring",
+    "__TEXT/__gcc_except_tab",
+    "__TEXT/__objc_classname",
+    "__TEXT/__objc_methname",
+    "__TEXT/__objc_methtype",
+    "__TEXT/__unwind_info",
+    "__TEXT/__eh_frame",
+    "__DATA_CONST/__got",
+    "__DATA_CONST/__const",
+    "__DATA_CONST/__cfstring",
+    "__DATA_CONST/__objc_classlist",
+    "__DATA_CONST/__objc_protolist",
+    "__DATA_CONST/__objc_imageinfo",
+    "__DATA_CONST/__objc_protorefs",
+    "__DATA_CONST/__objc_intobj",
+    "__DATA/__objc_const",
+    "__DATA/__objc_selrefs",
+    "__DATA/__objc_ivar",
+    "__DATA/__objc_data",
+    "__DATA/__data",
+    "__DATA/__thread_vars",
+    "__DATA/__thread_data"
+  ],
+  "different_sections": [
+    "__DATA/__thread_bss",
+    "__DATA/__bss",
+    "__DATA/__common"
+  ],
+  "scope": "Metadata/section comparison only; does not replace original package hash or extend native acceptance to a new package."
+}

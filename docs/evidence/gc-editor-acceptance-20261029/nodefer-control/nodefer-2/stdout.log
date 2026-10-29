@@ -1,0 +1,6 @@
+START elapsed_ms=0 workers=1 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5095 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=2385 iterations=13796608
+SAMPLE elapsed_ms=10075 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=5745 iterations=33220864
+SAMPLE elapsed_ms=15075 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=8263 iterations=47784448
+SAMPLE elapsed_ms=20068 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=9910 iterations=57307136
+SAMPLE elapsed_ms=25040 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=12330 iterations=71299584

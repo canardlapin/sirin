@@ -1,0 +1,15 @@
+[17:53:20.607] [pinned-nodefer-control:69979] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[17:53:20.609] [pinned-nodefer-control:69979] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[17:53:20.609] [pinned-nodefer-control:69979] [ScalaNative GC|Warning]   Thread id=6096744448, stackBottom=0x16b64f000, state=Managed, alive=yes
+[17:53:20.609] [pinned-nodefer-control:69979] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[17:53:25.607] [pinned-nodefer-control:69979] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms

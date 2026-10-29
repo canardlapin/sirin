@@ -1,0 +1,17 @@
+{
+  "runtime_version": "0.5.13-20261026-fa4a9e6-SNAPSHOT",
+  "runtime_commit": "fa4a9e6ac9dab73ab4d476d6cc8c0cdc422c25f7",
+  "runtime_jar_sha256": "819a43ed28cf90e09822e5695a079b53f7fbb4db7aa9677f1ba4871fc144df35",
+  "runtime_input_receipt": "docs/evidence/stage0/gc-upstream-pinned-20261027/artifact-manifest.json in shared checkout",
+  "candidate_source_commit": "9372ca5",
+  "event_probe_source_commit": "1fc105eeefa14dfc77f651e1a605c7efbe025e34",
+  "source_checkout": "/Users/bbuchsbaum/code/scala/sirin",
+  "binary_sha256": {
+    "pinned-conditional": "3e2e71e9eb0593f3d67ce8e739bdbb6fcd01beeec1f0b619fd4874fd44a568e5",
+    "pinned-diagnostic": "79980a5ecc9276a1e8da2bd3c92b2d2bffe3c37266bc9591a473077f6c71bee5",
+    "pinned-mask-diagnostic": "ca7283edc19fde008a30d74839b029dd7d2b98e4b9032f2ff35b624aad780c4f",
+    "pinned-nodefer-control": "34db8eb33c4567c3c8fa770ab37013b391752ed25a08e9b64709b0ac70a943bc",
+    "threads-pinned-conditional": "87d7a7a94d48f21646053915415e31702517cf984a78b5b4f8c79287d2c2e5d9"
+  },
+  "policy": "Private runtime resources only; original dependencies and runtime defaults unchanged; no upstream posting."
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "case": "stock-trap-1",
+    "runner_exit": 134
+  },
+  {
+    "case": "pinned-trap-1",
+    "runner_exit": 134
+  },
+  {
+    "case": "stock-conditional-1",
+    "runner_exit": 0
+  },
+  {
+    "case": "pinned-conditional-1",
+    "runner_exit": 0
+  },
+  {
+    "case": "stock-trap-2",
+    "runner_exit": 134
+  },
+  {
+    "case": "pinned-trap-2",
+    "runner_exit": 134
+  },
+  {
+    "case": "stock-conditional-2",
+    "runner_exit": 0
+  },
+  {
+    "case": "pinned-conditional-2",
+    "runner_exit": 0
+  },
+  {
+    "case": "stock-trap-3",
+    "runner_exit": 134
+  },
+  {
+    "case": "pinned-trap-3",
+    "runner_exit": 134
+  },
+  {
+    "case": "stock-conditional-3",
+    "runner_exit": 0
+  },
+  {
+    "case": "pinned-conditional-3",
+    "runner_exit": 0
+  }
+]

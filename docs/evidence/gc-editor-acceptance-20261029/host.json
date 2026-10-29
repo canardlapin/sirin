@@ -1,0 +1,7 @@
+{
+  "platform": "macOS-15.1.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "logical_cpus": 10,
+  "macOS": "ProductName:\t\tmacOS\nProductVersion:\t\t15.1.1\nBuildVersion:\t\t24B91\n",
+  "host_conditions": "Shared host; matrix and correctness tests are not latency qualification."
+}

@@ -1,0 +1,8 @@
+{
+  "source_sha256": "819a43ed28cf90e09822e5695a079b53f7fbb4db7aa9677f1ba4871fc144df35",
+  "output_sha256": "1ebe9724f46800701288f8d04f12682b9a29471134141d1cf92a1c935d75cbee",
+  "changed_resource": "scala-native/gc/immix/Synchronizer.c",
+  "scope": "Causal control: SA_NODEFER only for Apple SIGBUS installation; no runtime adoption",
+  "evidence": "Mask diagnostics observed admitBus=1 and yieldBus=1 on stalled mutators",
+  "reference": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sigaction.2.html"
+}

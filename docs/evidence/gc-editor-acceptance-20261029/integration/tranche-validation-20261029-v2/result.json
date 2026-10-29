@@ -1,0 +1,18 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "testJVM",
+    "testNative",
+    "desktopJVM/test",
+    "examples/compile"
+  ],
+  "start_utc": "2026-10-29T21:51:35.881580+00:00",
+  "source_commit": "9372ca5",
+  "qualification": false,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 259.39045050000004
+}

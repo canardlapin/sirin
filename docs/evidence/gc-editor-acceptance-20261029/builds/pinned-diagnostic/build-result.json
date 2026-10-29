@@ -1,0 +1,20 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "-Dsbt.ivy.home=/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy",
+    "-Drepro.runtimeJar=/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/runtime/trap-diagnostic.jar",
+    "nativeLink",
+    "show Compile/fullClasspath",
+    "show nativeConfig"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-diagnostic",
+  "runtime_jar_sha256": "60d62a04937e38c8538d9fb938ffc4545608487d0201ed5290fa485dc1dcadd2",
+  "start_utc": "2026-10-29T20:11:15.719720+00:00",
+  "build_environment": {
+    "SCALANATIVE_GC_TRAP_BASED_YIELDPOINTS": "unset"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 19.663324250000002,
+  "binary_sha256": "79980a5ecc9276a1e8da2bd3c92b2d2bffe3c37266bc9591a473077f6c71bee5"
+}

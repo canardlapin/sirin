@@ -1,0 +1,78 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project pinned-diagnostic-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-diagnostic/project
+[info] loading settings for project pinned-diagnostic from build.sbt...
+[info] set current project to gc-repro (in build file:/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-diagnostic/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-diagnostic/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (825 ms)
+[info] Discovered 1006 classes and 6193 methods after classloading
+[info] Checking intermediate code (quick) (56 ms)
+[info] Discovered 804 classes and 2856 methods after optimization
+[info] Optimizing (release-fast mode) (2276 ms)
+[info] Produced 48 LLVM IR files
+[info] Generating intermediate code (8576 ms)
+[info] Compiling to native code (7951 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (137 ms)
+[info] Postprocessing (0 ms)
+[info] Total (12643 ms)
+[success] Total time: 15 s, completed Oct 29, 2026, 4:11:35 p.m.
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-diagnostic/target/scala-3.7.4/classes)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scala3lib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/runtime/trap-diagnostic.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/clib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/posixlib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/windowslib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/javalib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/auxlib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4-sources.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scalalib_native0.5_2.13.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18-sources.jar)
+[success] Total time: 0 s, completed Oct 29, 2026, 4:11:35 p.m.
+[info] NativeConfig(
+[info]  - baseName:                
+[info]  - clang:                   /usr/bin/clang
+[info]  - clangPP:                 /usr/bin/clang++
+[info]  - linkingOptions:          [-L/opt/homebrew/lib]
+[info]  - compileOptions:          [-I/opt/homebrew/include, -Qunused-arguments]
+[info]  - cOptions:                []
+[info]  - cppOptions:              []
+[info]  - targetTriple:            None
+[info]  - GC:                      immix
+[info]  - LTO:                     none
+[info]  - mode:                    release-fast
+[info]  - buildTarget              Application
+[info]  - check:                   false
+[info]  - checkFatalWarnings:      false
+[info]  - checkFeatures            true
+[info]  - dump:                    false
+[info]  - sanitizer:               none
+[info]  - linkStubs:               false
+[info]  - optimize                 true
+[info]  - incrementalCompilation:  true
+[info]  - multithreading           true
+[info]  - linktimeProperties:      []
+[info]  - embedResources:          false
+[info]  - resourceIncludePatterns: [**]
+[info]  - resourceExcludePatterns: []
+[info]  - serviceProviders:        []
+[info]  - optimizerConfig:         
+[info]     - maxInlineDepth:    32 functions
+[info]     - smallFunctionSize: 12 instructions
+[info]     - maxCallerSize:     2048 instructions
+[info]     - maxCalleeSize:     256 instructions
+[info] 
+[info]  - semanticsConfig:         SemanticsConfig(
+[info]     - finalFields: Relaxed
+[info]     - strictExternCallSemantics: false
+[info]     )
+[info]  - sourceLevelDebuggingConfig: SourceLevelDebuggingConfig[Disabled]
+[info]     - customSourceRoots:       []
+[info]     - generateFunctionSourcePositions: false
+[info]     - generateLocalVariables:  false
+[info]     )
+[info] )
+[success] Total time: 0 s, completed Oct 29, 2026, 4:11:35 p.m.

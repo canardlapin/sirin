@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/bin/pinned-nodefer-control",
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-29T21:54:09.426045+00:00",
+  "load_start": [
+    11.79638671875,
+    8.6826171875,
+    7.2177734375
+  ],
+  "timeout_seconds": 75.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "34db8eb33c4567c3c8fa770ab37013b391752ed25a08e9b64709b0ac70a943bc",
+  "pid": 78632,
+  "timed_out": false,
+  "returncode": -6,
+  "elapsed_seconds": 22.758489875,
+  "load_end": [
+    11.751953125,
+    8.9169921875,
+    7.34423828125
+  ]
+}

@@ -1,0 +1,16 @@
+[17:34:43.347] [pinned-diagnostic:12364] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning]   Thread id=6130577408, stackBottom=0x16d693000, state=Managed, alive=yes
+[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning] SIRIN_DIAG thread=6130577408 trap=0x10b4f4000 stackTop=0x0 waiting=0 signals=762 recognized=762 redirects=762 yields=762 phase=5 signal=10 fault=0x10b4f4000 resume=0x1029ffa94
+[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[17:34:48.347] [pinned-diagnostic:12364] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms

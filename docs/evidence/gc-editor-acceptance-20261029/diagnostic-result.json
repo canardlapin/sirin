@@ -1,0 +1,17 @@
+[
+  {
+    "trial": 1,
+    "runner_exit": 0,
+    "profiled_after_warning": false
+  },
+  {
+    "trial": 2,
+    "runner_exit": 134,
+    "profiled_after_warning": true
+  },
+  {
+    "trial": 3,
+    "runner_exit": 0,
+    "profiled_after_warning": false
+  }
+]

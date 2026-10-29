@@ -1,0 +1,25 @@
+{
+  "source_commit": "1fc105eeefa14dfc77f651e1a605c7efbe025e34",
+  "archive_sha256": "5d6687944c86ce4cdcd2b3d2aaea72b80207c7e36542ffb0bdaddc91b3bdcb8b",
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "-Dsbt.ivy.home=/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy",
+    "-Dsirin.mode=release-fast",
+    "testJVM",
+    "testNative",
+    "examples/compile",
+    "probeWindow/test",
+    "probeThreads/test",
+    "probeThreads/nativeLink",
+    "show probeThreads/nativeConfig"
+  ],
+  "build_environment": {
+    "SCALANATIVE_GC_TRAP_BASED_YIELDPOINTS": "0"
+  },
+  "start_utc": "2026-10-29T21:44:01.468846+00:00",
+  "returncode": 0,
+  "elapsed_seconds": 85.467508584,
+  "binary_sha256": "87d7a7a94d48f21646053915415e31702517cf984a78b5b4f8c79287d2c2e5d9",
+  "qualification": false
+}

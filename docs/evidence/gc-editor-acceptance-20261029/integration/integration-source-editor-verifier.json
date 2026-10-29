@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "docs/evidence/text-editor-20261029/verify.py"
+  ],
+  "cwd": "/private/tmp/sirin-tranche-20261029",
+  "returncode": 1
+}

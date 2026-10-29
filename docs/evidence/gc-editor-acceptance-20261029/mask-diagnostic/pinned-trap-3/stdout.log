@@ -1,0 +1,15 @@
+START elapsed_ms=0 workers=1 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5079 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=3541 iterations=20593408
+SAMPLE elapsed_ms=10057 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=7012 iterations=40770816
+SAMPLE elapsed_ms=15018 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=10464 iterations=60845056
+SAMPLE elapsed_ms=20089 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=14002 iterations=81418496
+SAMPLE elapsed_ms=25061 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=17467 iterations=101565440
+SAMPLE elapsed_ms=30024 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=20898 iterations=121514496
+SAMPLE elapsed_ms=35098 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=24412 iterations=141950464
+SAMPLE elapsed_ms=40074 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=27857 iterations=161982720
+SAMPLE elapsed_ms=45041 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=31296 iterations=181974016
+SAMPLE elapsed_ms=50013 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=34732 iterations=201953024
+SAMPLE elapsed_ms=55080 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=38244 iterations=222375424
+SAMPLE elapsed_ms=60050 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=41656 iterations=242213888
+DONE elapsed_ms=60051 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=41656 iterations=242214206
+RESULT live_payload_bytes=1077472 checksum=88001584693346114

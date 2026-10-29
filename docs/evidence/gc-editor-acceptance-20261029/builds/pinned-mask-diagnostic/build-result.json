@@ -1,0 +1,14 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "-Dsbt.ivy.home=/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy",
+    "-Drepro.runtimeJar=/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/runtime/trap-mask-diagnostic.jar",
+    "nativeLink"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 14.786529459,
+  "runtime_jar_sha256": "e73c396c789988b48d8e49744c7ad1d02291dcd65fca3bbd2c3d211b3d7a10dc",
+  "scope": "signal-mask query only",
+  "binary_sha256": "ca7283edc19fde008a30d74839b029dd7d2b98e4b9032f2ff35b624aad780c4f"
+}

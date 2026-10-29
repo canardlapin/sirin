@@ -1,0 +1,15 @@
+[16:11:23.706] [repro-immix-trap:34490] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[16:11:23.743] [repro-immix-trap:34490] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[16:11:23.743] [repro-immix-trap:34490] [ScalaNative GC|Warning]   Thread id=6099808256, stackBottom=0x16b93b000, state=Managed, alive=yes
+[16:11:23.743] [repro-immix-trap:34490] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[16:11:28.706] [repro-immix-trap:34490] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms

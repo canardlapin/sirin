@@ -1,0 +1,9 @@
+{
+  "exact_replay": true,
+  "variants": {
+    "trap-diagnostic": "60d62a04937e38c8538d9fb938ffc4545608487d0201ed5290fa485dc1dcadd2",
+    "trap-mask-diagnostic": "e73c396c789988b48d8e49744c7ad1d02291dcd65fca3bbd2c3d211b3d7a10dc",
+    "trap-nodefer-control": "1ebe9724f46800701288f8d04f12682b9a29471134141d1cf92a1c935d75cbee"
+  },
+  "method": "replay-runtime.py from pinned original JAR; mask consumes diagnostic; all three replay JAR hashes matched frozen outputs."
+}

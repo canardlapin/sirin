@@ -1,0 +1,5 @@
+{
+  "phase": "before sbt launch",
+  "error": "fresh worktree target parent missing",
+  "tests_executed": false
+}

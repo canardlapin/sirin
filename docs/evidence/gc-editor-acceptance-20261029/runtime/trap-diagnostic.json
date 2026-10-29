@@ -1,0 +1,10 @@
+{
+  "source": "/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/nativelib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/nativelib_native0.5_3.jar",
+  "source_sha256": "819a43ed28cf90e09822e5695a079b53f7fbb4db7aa9677f1ba4871fc144df35",
+  "output_sha256": "60d62a04937e38c8538d9fb938ffc4545608487d0201ed5290fa485dc1dcadd2",
+  "changed_resources": [
+    "scala-native/gc/immix/MutatorThread.h",
+    "scala-native/gc/immix/Synchronizer.c"
+  ],
+  "mode": "diagnostic counters only; no causal fix"
+}

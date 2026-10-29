@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/usr/bin/sample",
+    "12364",
+    "1",
+    "1",
+    "-file",
+    "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/diagnostic/pinned-trap-2/native-stall.sample.txt"
+  ],
+  "utc": "2026-10-29T21:34:43.366966+00:00",
+  "pre_attach_stderr": "[17:34:43.347] [pinned-diagnostic:12364] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)\n[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:\n[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning]   Thread id=6130577408, stackBottom=0x16d693000, state=Managed, alive=yes\n[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning] SIRIN_DIAG thread=6130577408 trap=0x10b4f4000 stackTop=0x0 waiting=0 signals=762 recognized=762 redirects=762 yields=762 phase=5 signal=10 fault=0x10b4f4000 resume=0x1029ffa94\n[17:34:43.348] [pinned-diagnostic:12364] [ScalaNative GC|Warning] Possible causes:\n  - Thread blocked in native code without @blocking annotation\n  - Thread crashed without cleanup\n  - Infinite loop in native code\n  - Deadlock with resource held by waiting thread\n",
+  "trigger": "warning already recorded",
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Sampling process 12364 for 1 second with 1 millisecond of run time between samples\nSampling completed, processing symbols...\nSample analysis of process 12364 written to file /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/diagnostic/pinned-trap-2/native-stall.sample.txt\n"
+}

@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/bin/pinned-mask-diagnostic",
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-29T21:48:10.369782+00:00",
+  "load_start": [
+    6.6689453125,
+    7.81103515625,
+    6.67822265625
+  ],
+  "timeout_seconds": 75.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "ca7283edc19fde008a30d74839b029dd7d2b98e4b9032f2ff35b624aad780c4f",
+  "pid": 56707,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 60.082020459,
+  "load_end": [
+    4.7822265625,
+    7.078125,
+    6.48046875
+  ]
+}

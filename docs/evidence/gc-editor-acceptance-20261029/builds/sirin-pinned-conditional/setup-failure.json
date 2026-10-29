@@ -1,0 +1,6 @@
+{
+  "error": "Python tarfile.extractall does not support filter keyword",
+  "python": "3.9.6 (default, Oct  4 2024, 08:01:31) \n[Clang 16.0.0 (clang-1600.0.26.4)]",
+  "phase": "archive extraction before build",
+  "qualification": false
+}

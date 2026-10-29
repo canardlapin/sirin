@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/private/tmp/sirin-editor-20261029/desktop/target/package-editor/SirinEdit.app/Contents/MacOS/SirinEdit",
+    "editor",
+    "scenario"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-29T21:42:38.681086+00:00",
+  "load_start": [
+    3.50732421875,
+    5.10791015625,
+    5.4306640625
+  ],
+  "timeout_seconds": 140.0,
+  "environment": {},
+  "binary_sha256": "6147382541c389e04ed065194fb82b8b5007a361ec34686ce0abfb9a58bd6793",
+  "pid": 35553,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 1.794192625,
+  "load_end": [
+    4.02685546875,
+    5.18896484375,
+    5.45703125
+  ]
+}

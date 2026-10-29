@@ -1,0 +1,170 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-pinned-conditional-v2-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/)
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/core/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.027s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.033s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 4 s, completed Oct 29, 2026, 5:44:10 p.m.
+[success] Total time: 0 s, completed Oct 29, 2026, 5:44:10 p.m.
+[success] Total time: 0 s, completed Oct 29, 2026, 5:44:10 p.m.
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/core/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/core/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1343 ms)
+[info] Discovered 2340 classes and 16602 methods after classloading
+[info] Checking intermediate code (quick) (110 ms)
+[info] Discovered 2314 classes and 12842 methods after optimization
+[info] Optimizing (debug mode) (2492 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (6883 ms)
+[info] Compiling to native code (5485 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (118 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11517 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/core/.native/target/scala-3.7.4/sirin-core-test' on port '49175'.
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.003s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 14 s, completed Oct 29, 2026, 5:44:25 p.m.
+[info] Linking (multithreadingEnabled=detect) (858 ms)
+[info] Discovered 2082 classes and 14728 methods after classloading
+[info] Checking intermediate code (quick) (20 ms)
+[info] Discovered 2020 classes and 11159 methods after optimization
+[info] Optimizing (debug mode) (915 ms)
+[info] Produced 89 LLVM IR files
+[info] Generating intermediate code (5865 ms)
+[info] Compiling to native code (5325 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (132 ms)
+[info] Postprocessing (0 ms)
+[info] Total (8190 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '49184'.
+[success] Total time: 9 s, completed Oct 29, 2026, 5:44:34 p.m.
+[info] Linking (multithreadingEnabled=detect) (540 ms)
+[info] Discovered 2082 classes and 14728 methods after classloading
+[info] Checking intermediate code (quick) (17 ms)
+[info] Discovered 2020 classes and 11159 methods after optimization
+[info] Optimizing (debug mode) (920 ms)
+[info] Produced 89 LLVM IR files
+[info] Generating intermediate code (5676 ms)
+[info] Compiling to native code (5265 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (126 ms)
+[info] Postprocessing (0 ms)
+[info] Total (7682 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '49191'.
+[success] Total time: 8 s, completed Oct 29, 2026, 5:44:42 p.m.
+[info] compiling 7 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/examples/target/scala-3.7.4/classes ...
+[info] done compiling
+[success] Total time: 3 s, completed Oct 29, 2026, 5:44:45 p.m.
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/probes/window/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/probes/window/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1244 ms)
+[info] Discovered 2293 classes and 16241 methods after classloading
+[info] Checking intermediate code (quick) (25 ms)
+[info] Discovered 2261 classes and 12388 methods after optimization
+[info] Optimizing (debug mode) (2036 ms)
+[info] Produced 93 LLVM IR files
+[info] Generating intermediate code (7236 ms)
+[info] Compiling to native code (6360 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (150 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11254 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/probes/window/target/scala-3.7.4/sirin-probe-window-test' on port '49211'.
+Test run sirin.probe.AbiSuite started
+sirin.probe.AbiSuite: finished 0.008s
+Test run sirin.probe.AbiSuite finished: 0 failed, 0 ignored, 14 total 0.008s
+[info] Passed: Total 14, Failed 0, Errors 0, Passed 14
+[success] Total time: 15 s, completed Oct 29, 2026, 5:44:59 p.m.
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/probes/threads/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/probes/threads/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (1069 ms)
+[info] Discovered 2386 classes and 16433 methods after classloading
+[info] Checking intermediate code (quick) (49 ms)
+[info] Discovered 2036 classes and 7687 methods after optimization
+[info] Optimizing (release-fast mode) (2962 ms)
+[info] Produced 91 LLVM IR files
+[info] Generating intermediate code (8400 ms)
+[info] Compiling to native code (8715 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (140 ms)
+[info] Postprocessing (0 ms)
+[info] Total (14096 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/probes/threads/target/scala-3.7.4/sirin-probe-threads-test' on port '49227'.
+Test run sirin.probe.threads.MailboxSuite started
+sirin.probe.threads.MailboxSuite: finished 0.106s
+Test run sirin.probe.threads.MailboxSuite finished: 0 failed, 0 ignored, 13 total 0.106s
+[info] Passed: Total 13, Failed 0, Errors 0, Passed 13
+[success] Total time: 20 s, completed Oct 29, 2026, 5:45:19 p.m.
+[info] Linking (multithreadingEnabled=true) (317 ms)
+[info] Discovered 1095 classes and 6697 methods after classloading
+[info] Checking intermediate code (quick) (5 ms)
+[info] Discovered 874 classes and 3031 methods after optimization
+[info] Optimizing (release-fast mode) (931 ms)
+[info] Produced 49 LLVM IR files
+[info] Generating intermediate code (5284 ms)
+[info] Compiling to native code (5499 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (115 ms)
+[info] Postprocessing (0 ms)
+[info] Total (7151 ms)
+[success] Total time: 7 s, completed Oct 29, 2026, 5:45:26 p.m.
+[info] NativeConfig(
+[info]  - baseName:                
+[info]  - clang:                   /usr/bin/clang
+[info]  - clangPP:                 /usr/bin/clang++
+[info]  - linkingOptions:          [-L/opt/homebrew/lib, -F/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/native/vendor/SDL3.xcframework/macos-arm64_x86_64, -framework, SDL3, -Wl,-rpath,/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/native/vendor/SDL3.xcframework/macos-arm64_x86_64]
+[info]  - compileOptions:          [-I/opt/homebrew/include, -Qunused-arguments, -F/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/sirin-pinned-conditional-v2/native/vendor/SDL3.xcframework/macos-arm64_x86_64]
+[info]  - cOptions:                []
+[info]  - cppOptions:              []
+[info]  - targetTriple:            None
+[info]  - GC:                      immix
+[info]  - LTO:                     none
+[info]  - mode:                    release-fast
+[info]  - buildTarget              Application
+[info]  - check:                   false
+[info]  - checkFatalWarnings:      false
+[info]  - checkFeatures            true
+[info]  - dump:                    false
+[info]  - sanitizer:               none
+[info]  - linkStubs:               false
+[info]  - optimize                 true
+[info]  - incrementalCompilation:  true
+[info]  - multithreading           true
+[info]  - linktimeProperties:      []
+[info]  - embedResources:          false
+[info]  - resourceIncludePatterns: [**]
+[info]  - resourceExcludePatterns: []
+[info]  - serviceProviders:        []
+[info]  - optimizerConfig:         
+[info]     - maxInlineDepth:    32 functions
+[info]     - smallFunctionSize: 12 instructions
+[info]     - maxCallerSize:     2048 instructions
+[info]     - maxCalleeSize:     256 instructions
+[info] 
+[info]  - semanticsConfig:         SemanticsConfig(
+[info]     - finalFields: Relaxed
+[info]     - strictExternCallSemantics: false
+[info]     )
+[info]  - sourceLevelDebuggingConfig: SourceLevelDebuggingConfig[Disabled]
+[info]     - customSourceRoots:       []
+[info]     - generateFunctionSourcePositions: false
+[info]     - generateLocalVariables:  false
+[info]     )
+[info] )
+[success] Total time: 0 s, completed Oct 29, 2026, 5:45:26 p.m.

@@ -1,0 +1,20 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project pinned-nodefer-control-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-nodefer-control/project
+[info] loading settings for project pinned-nodefer-control from build.sbt...
+[info] set current project to gc-repro (in build file:/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-nodefer-control/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-nodefer-control/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (693 ms)
+[info] Discovered 1006 classes and 6193 methods after classloading
+[info] Checking intermediate code (quick) (48 ms)
+[info] Discovered 804 classes and 2856 methods after optimization
+[info] Optimizing (release-fast mode) (1637 ms)
+[info] Produced 48 LLVM IR files
+[info] Generating intermediate code (5758 ms)
+[info] Compiling to native code (5291 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (132 ms)
+[info] Postprocessing (0 ms)
+[info] Total (8878 ms)
+[success] Total time: 11 s, completed Oct 29, 2026, 5:50:36 p.m.

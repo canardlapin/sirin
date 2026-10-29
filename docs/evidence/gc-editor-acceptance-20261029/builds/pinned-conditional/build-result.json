@@ -1,0 +1,17 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "-Dsbt.ivy.home=/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy",
+    "nativeLink",
+    "show Compile/fullClasspath",
+    "show nativeConfig"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/pinned-conditional",
+  "build_environment": {
+    "SCALANATIVE_GC_TRAP_BASED_YIELDPOINTS": "0"
+  },
+  "start_utc": "2026-10-29T20:06:42.612921+00:00",
+  "returncode": 0,
+  "elapsed_seconds": 16.42718275
+}
