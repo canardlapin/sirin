@@ -1,0 +1,9 @@
+editorStage=0 generation=1
+editorStage=1 generation=2
+editorStage=2 generation=3
+editorStage=4 generation=4
+editorStage=5 generation=6
+editorStage=6 generation=7
+editorStage=7 generation=7
+editorScenario=8 presentations=7 recoveries=1 rejected=0
+renderSession shaped=12 GPU=BatchGpuStats(0,26214400,15456,14891,109152,66,0,318,15) CPU=BatchCacheStats(256,12192,65,29782,0,1365,65,0) tiles=entries=60 pixels=864000 hits=0 misses=60

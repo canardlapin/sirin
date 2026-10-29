@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app/Contents/MacOS/SirinEditor",
+    "editor",
+    "scenario"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-29T16:10:52.751828+00:00",
+  "load_start": [
+    10.638671875,
+    8.14501953125,
+    6.45849609375
+  ],
+  "timeout_seconds": 140.0,
+  "environment": {},
+  "binary_sha256": "33f03e19b9b7ee648be63c5014f945cf9e0de61e43382f808a066e8ac55df82d",
+  "pid": 61850,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 1.933982125,
+  "load_end": [
+    10.638671875,
+    8.14501953125,
+    6.45849609375
+  ]
+}

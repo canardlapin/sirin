@@ -1,0 +1,14 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-gpu-host-20261028/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+editorStage=0 generation=1
+editorStage=1 generation=2
+editorStage=2 generation=3
+renderSession shaped=16 GPU=BatchGpuStats(0,26214400,21072,16666,155792,183,0,326,22) CPU=BatchCacheStats(256,12096,73,33332,51,5893,73,0) tiles=entries=71 pixels=1040384 hits=129 misses=81
+Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: editor scenario deadline stage=2
+	at scala.Predef$.require(Predef.scala:337)
+	at sirin.desktop.EditorWorkbench$.main(EditorWorkbench.scala:173)
+	at sirin.desktop.DesktopWorkbench$.main(DesktopWorkbench.scala:16)
+	at sirin.desktop.DesktopWorkbench.main(DesktopWorkbench.scala)
+Failed to launch JVM

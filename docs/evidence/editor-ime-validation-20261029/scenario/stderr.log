@@ -1,0 +1,10 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+2026-10-29 12:10:53.742 SirinEditor[61850:266537553] +[IMKClient subclass]: chose IMKClient_Modern
+2026-10-29 12:10:53.742 SirinEditor[61850:266537553] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+nativeIME focus=1 active=1
+nativeIME client=SDL3TranslatorResponder keyWindow=1
+nativeIME focus=1 active=1
+nativeIME client=SDL3TranslatorResponder keyWindow=1

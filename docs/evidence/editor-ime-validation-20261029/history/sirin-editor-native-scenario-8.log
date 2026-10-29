@@ -1,0 +1,33 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-gpu-host-20261028-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-gpu-host-20261028/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-gpu-host-20261028/)
+[info] compiling 3 Scala sources and 1 Java source to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources and 1 Java source to /private/tmp/sirin-gpu-host-20261028/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] running (fork) sirin.desktop.DesktopWorkbench editor scenario
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-gpu-host-20261028/target/bg-jobs/sbt_874612a/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] editorStage=0 generation=1
+[info] editorStage=1 generation=2
+[info] editorStage=2 generation=3
+[error] nativeIME focus=0 active=1
+[info] renderSession shaped=16 GPU=BatchGpuStats(0,26214400,21072,16666,155792,183,0,326,22) CPU=BatchCacheStats(256,12096,73,33332,51,5893,73,0) tiles=entries=71 pixels=1040384 hits=129 misses=81
+[error] Exception in thread "main" java.lang.IllegalStateException: native editor transport refused: 3
+[error] 	at sirin.desktop.NativeWindow.accepted(NativeWindow.java:192)
+[error] 	at sirin.desktop.NativeWindow.imeControl(NativeWindow.java:228)
+[error] 	at sirin.desktop.EditorWorkbench$.main$$anonfun$9(EditorWorkbench.scala:161)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.Option.foreach(Option.scala:437)
+[error] 	at sirin.desktop.EditorWorkbench$.main(EditorWorkbench.scala:139)
+[error] 	at sirin.desktop.DesktopWorkbench$.main(DesktopWorkbench.scala:16)
+[error] 	at sirin.desktop.DesktopWorkbench.main(DesktopWorkbench.scala)
+[error] nonzero exit code returned from runner: 1
+[error] (desktopJVM / Compile / runMain) nonzero exit code returned from runner: 1
+[error] Total time: 8 s, completed Oct 29, 2026, 12:03:09 a.m.

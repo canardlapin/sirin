@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/bin/threads-fa4a9e6",
+    "soak",
+    "40",
+    "1",
+    "0"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-29T16:13:01.040955+00:00",
+  "load_start": [
+    4.6572265625,
+    6.708984375,
+    6.115234375
+  ],
+  "timeout_seconds": 55.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "0df4e42482b3eec593cb0c4856440903de9a7b07db1ae2534935dea8f867f10d",
+  "pid": 62106,
+  "timed_out": false,
+  "returncode": -6,
+  "elapsed_seconds": 47.22942975,
+  "load_end": [
+    4.3388671875,
+    6.2919921875,
+    5.9921875
+  ]
+}

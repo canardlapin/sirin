@@ -1,0 +1,130 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.041s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.063s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.058s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.065s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.092s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.099s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.026s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.026s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.083s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.083s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.234s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.241s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.064s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.064s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.006s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.006s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.06s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.06s
+Test run sirin.graphics.StrokeBoundarySuite started
+sirin.graphics.StrokeBoundarySuite: finished 0.614s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 0.614s
+Test run sirin.graphics.CurvedStrokeSuite started
+sirin.graphics.CurvedStrokeSuite: finished 0.72s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 0.72s
+[info] Passed: Total 65, Failed 0, Errors 0, Passed 65
+[success] Total time: 1 s, completed Oct 29, 2026, 12:19:11 p.m.
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.01s
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.01s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.011s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.011s
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.013s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.014s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.016s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.016s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 0 s, completed Oct 29, 2026, 12:19:11 p.m.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.008s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.009s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 0 s, completed Oct 29, 2026, 12:19:11 p.m.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.018s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.019s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 29, 2026, 12:19:11 p.m.
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.2s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.202s
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TopologyLifetimeSuite: finished 0.217s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.219s
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.027s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.027s
+Test run sirin.engine.HostBoundarySuite started
+sirin.engine.HostBoundarySuite: finished 0.012s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.012s
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.ReconciliationSuite: finished 0.305s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.306s
+Test run sirin.engine.RetainedVirtualSuite started
+sirin.engine.RetainedVirtualSuite: finished 0.332s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.333s
+Test run sirin.engine.WorkCommandSuite started
+sirin.engine.WorkCommandSuite: finished 0.1s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.1s
+Test run sirin.engine.EventDeadlineSuite started
+sirin.engine.EventDeadlineSuite: finished 0.199s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.199s
+[info] Passed: Total 174, Failed 0, Errors 0, Passed 174
+[success] Total time: 1 s, completed Oct 29, 2026, 12:19:12 p.m.
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.EventDeadlineAgreementSuite: finished 2.194s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.195s
+Test run sirin.testkit.ReferenceAgreementSuite started
+sirin.testkit.ReferenceAgreementSuite: finished 1.026s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 1.027s
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+sirin.testkit.VirtualCollectionAgreementSuite: finished 3.383s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 3.384s
+Test run sirin.testkit.LatestAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 0.484s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 0.484s
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 3.862s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 3.863s
+Test run sirin.testkit.WorkAgreementSuite started
+sirin.testkit.WorkAgreementSuite: finished 1.162s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 1.163s
+Test run sirin.testkit.LifetimeAgreementSuite started
+sirin.testkit.LifetimeAgreementSuite: finished 6.243s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 6.244s
+Test run sirin.testkit.ProgressAgreementSuite started
+sirin.testkit.ProgressAgreementSuite: finished 2.514s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 2.514s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 6 s, completed Oct 29, 2026, 12:19:18 p.m.
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.088s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.089s
+Test run sirin.specimen.WorkbenchSuite started
+sirin.specimen.WorkbenchSuite: finished 0.224s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.225s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 0 s, completed Oct 29, 2026, 12:19:19 p.m.
+Test run sirin.host.HostSuite started
+sirin.host.HostSuite: finished 0.084s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.085s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 29, 2026, 12:19:19 p.m.

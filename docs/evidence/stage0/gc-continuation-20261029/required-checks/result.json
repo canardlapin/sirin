@@ -1,0 +1,24 @@
+[
+  {
+    "command": [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM"
+    ],
+    "start_utc": "2026-10-29T16:19:06.497834+00:00",
+    "returncode": 0,
+    "timed_out": false,
+    "elapsed_seconds": 12.982312666
+  },
+  {
+    "command": [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testNative"
+    ],
+    "start_utc": "2026-10-29T16:19:19.480276+00:00",
+    "returncode": 0,
+    "timed_out": false,
+    "elapsed_seconds": 84.33430408400001
+  }
+]

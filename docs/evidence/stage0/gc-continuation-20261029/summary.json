@@ -1,0 +1,252 @@
+{
+  "date_utc": "2026-10-29T16:20:07.255105+00:00",
+  "os": "macOS-15.1.1-arm64-arm-64bit",
+  "logical_cpus": 10,
+  "qualification": false,
+  "idle_preflight_ready": false,
+  "cases": [
+    {
+      "case": "stall-stock-w1-1",
+      "suite": "stall",
+      "runtime": "stock",
+      "trial": 1,
+      "returncode": -6,
+      "timed_out": false,
+      "elapsed_seconds": 48.947295083,
+      "binary_sha256": "070bae673e7d87ca1914054c29cf25c79a82f7cd1e56f9a88522c99425d1d16f",
+      "safepoint_warning": true,
+      "watchdog_abort": true,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": false
+    },
+    {
+      "case": "stall-stock-w1-2",
+      "suite": "stall",
+      "runtime": "stock",
+      "trial": 2,
+      "returncode": -6,
+      "timed_out": false,
+      "elapsed_seconds": 43.224202292,
+      "binary_sha256": "070bae673e7d87ca1914054c29cf25c79a82f7cd1e56f9a88522c99425d1d16f",
+      "safepoint_warning": true,
+      "watchdog_abort": true,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": false
+    },
+    {
+      "case": "stall-stock-w1-3",
+      "suite": "stall",
+      "runtime": "stock",
+      "trial": 3,
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 40.587039958,
+      "binary_sha256": "070bae673e7d87ca1914054c29cf25c79a82f7cd1e56f9a88522c99425d1d16f",
+      "safepoint_warning": false,
+      "watchdog_abort": false,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": true
+    },
+    {
+      "case": "stall-pinned-w1-1",
+      "suite": "stall",
+      "runtime": "pinned",
+      "trial": 1,
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 40.738405375,
+      "binary_sha256": "0df4e42482b3eec593cb0c4856440903de9a7b07db1ae2534935dea8f867f10d",
+      "safepoint_warning": false,
+      "watchdog_abort": false,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": true
+    },
+    {
+      "case": "stall-pinned-w1-2",
+      "suite": "stall",
+      "runtime": "pinned",
+      "trial": 2,
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 40.574450334000005,
+      "binary_sha256": "0df4e42482b3eec593cb0c4856440903de9a7b07db1ae2534935dea8f867f10d",
+      "safepoint_warning": false,
+      "watchdog_abort": false,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": true
+    },
+    {
+      "case": "stall-pinned-w1-3",
+      "suite": "stall",
+      "runtime": "pinned",
+      "trial": 3,
+      "returncode": -6,
+      "timed_out": false,
+      "elapsed_seconds": 47.22942975,
+      "binary_sha256": "0df4e42482b3eec593cb0c4856440903de9a7b07db1ae2534935dea8f867f10d",
+      "safepoint_warning": true,
+      "watchdog_abort": true,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": false
+    },
+    {
+      "case": "standalone-stock-w1-1",
+      "suite": "standalone",
+      "runtime": "stock",
+      "trial": 1,
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 40.304877167,
+      "binary_sha256": "5d9f1bb14a5065fbe82cfd07d3807ad37dd4fba6649634fa00ba8b82e66eddea",
+      "safepoint_warning": false,
+      "watchdog_abort": false,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": true
+    },
+    {
+      "case": "standalone-stock-w1-2",
+      "suite": "standalone",
+      "runtime": "stock",
+      "trial": 2,
+      "returncode": -6,
+      "timed_out": false,
+      "elapsed_seconds": 29.949827125,
+      "binary_sha256": "5d9f1bb14a5065fbe82cfd07d3807ad37dd4fba6649634fa00ba8b82e66eddea",
+      "safepoint_warning": true,
+      "watchdog_abort": false,
+      "gc_sync_abort": true,
+      "profiled_after_stall": false,
+      "result_complete": false
+    },
+    {
+      "case": "standalone-stock-w1-3",
+      "suite": "standalone",
+      "runtime": "stock",
+      "trial": 3,
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 40.068334666999995,
+      "binary_sha256": "5d9f1bb14a5065fbe82cfd07d3807ad37dd4fba6649634fa00ba8b82e66eddea",
+      "safepoint_warning": false,
+      "watchdog_abort": false,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": true
+    },
+    {
+      "case": "standalone-pinned-w1-1",
+      "suite": "standalone",
+      "runtime": "pinned",
+      "trial": 1,
+      "returncode": -6,
+      "timed_out": false,
+      "elapsed_seconds": 45.276622290999995,
+      "binary_sha256": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90",
+      "safepoint_warning": true,
+      "watchdog_abort": false,
+      "gc_sync_abort": true,
+      "profiled_after_stall": false,
+      "result_complete": false
+    },
+    {
+      "case": "standalone-pinned-w1-2",
+      "suite": "standalone",
+      "runtime": "pinned",
+      "trial": 2,
+      "returncode": -6,
+      "timed_out": false,
+      "elapsed_seconds": 29.853341042,
+      "binary_sha256": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90",
+      "safepoint_warning": true,
+      "watchdog_abort": false,
+      "gc_sync_abort": true,
+      "profiled_after_stall": true,
+      "result_complete": false
+    },
+    {
+      "case": "standalone-pinned-w1-3",
+      "suite": "standalone",
+      "runtime": "pinned",
+      "trial": 3,
+      "returncode": 0,
+      "timed_out": false,
+      "elapsed_seconds": 40.054013749999996,
+      "binary_sha256": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90",
+      "safepoint_warning": false,
+      "watchdog_abort": false,
+      "gc_sync_abort": false,
+      "profiled_after_stall": false,
+      "result_complete": true
+    }
+  ],
+  "totals": {
+    "stall-stock": {
+      "runs": 3,
+      "completed": 1,
+      "safepoint_aborts": 2
+    },
+    "stall-pinned": {
+      "runs": 3,
+      "completed": 2,
+      "safepoint_aborts": 1
+    },
+    "standalone-stock": {
+      "runs": 3,
+      "completed": 2,
+      "safepoint_aborts": 1
+    },
+    "standalone-pinned": {
+      "runs": 3,
+      "completed": 1,
+      "safepoint_aborts": 2
+    }
+  },
+  "conditional_control": {
+    "runs": 3,
+    "completed": 3,
+    "safepoint_aborts": 0,
+    "runtime": "stock 0.5.12",
+    "yieldpoints": "conditional, selected at original link time",
+    "cases": [
+      {
+        "case": "conditional-stock-w1-1",
+        "returncode": 0,
+        "timed_out": false,
+        "elapsed_seconds": 40.35932875,
+        "binary_sha256": "6f5f70726310c2e2e23502c4a1a6c94f2bcb37645e74583d0740c21a457e4c56"
+      },
+      {
+        "case": "conditional-stock-w1-2",
+        "returncode": 0,
+        "timed_out": false,
+        "elapsed_seconds": 40.064891458,
+        "binary_sha256": "6f5f70726310c2e2e23502c4a1a6c94f2bcb37645e74583d0740c21a457e4c56"
+      },
+      {
+        "case": "conditional-stock-w1-3",
+        "returncode": 0,
+        "timed_out": false,
+        "elapsed_seconds": 40.153108917,
+        "binary_sha256": "6f5f70726310c2e2e23502c4a1a6c94f2bcb37645e74583d0740c21a457e4c56"
+      }
+    ],
+    "qualification": false
+  },
+  "required_checks": {
+    "testJVM": {
+      "returncode": 0,
+      "cases": 299
+    },
+    "testNative": {
+      "returncode": 0,
+      "cases": 299
+    }
+  }
+}
