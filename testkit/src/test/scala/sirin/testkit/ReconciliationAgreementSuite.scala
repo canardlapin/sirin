@@ -26,7 +26,7 @@ class ReconciliationAgreementSuite extends ScalaCheckSuite:
   private def componentRows(snapshot: MountedSnapshot): Vector[(MountedIdentity, Item)] = snapshot match
     case MountedSnapshot.Component(identity, props, child) => Vector(identity -> props.asInstanceOf[Item]) ++ componentRows(child)
     case MountedSnapshot.Rows(entries) => entries.flatMap((_, child) => componentRows(child))
-    case MountedSnapshot.Group(children) => children.flatMap(componentRows)
+    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(componentRows)
     case MountedSnapshot.Branch(_, _, child) => componentRows(child)
     case _ => Vector.empty
 

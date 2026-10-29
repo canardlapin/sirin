@@ -1,0 +1,54 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2029 ms)
+[info] Discovered 3429 classes and 21573 methods after classloading
+[info] Checking intermediate code (quick) (169 ms)
+[info] Discovered 3397 classes and 16928 methods after optimization
+[info] Optimizing (debug mode) (4028 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (7847 ms)
+[info] Compiling to native code (5432 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (156 ms)
+[info] Postprocessing (0 ms)
+[info] Total (15015 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '57658'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '57660'.
+Test run sirin.render.BatchSuite started
+batch-float32-blendable=1
+batch-adapter=Apple M2 Pro
+batch-float32-blendable=1
+comparison=curves-layers-1.0 checked=3068 excluded=4 worstByteError=1
+comparison=curves-layers-1.25 checked=4793 excluded=7 worstByteError=1
+==> X sirin.render.BatchSuite.four-scale batched fills, curved strokes, holes, nested clips, gradients and isolated layers match reference 3.681s munit.FailException: probes/render/src/test/scala/sirin/render/BatchSuite.scala:84 curves-layers-1.5 (31,15) channel=2 actual=99 reference=104 delta=5 actualRGBA=Color(0.4,0.8784313725490196,0.38823529411764707,0.9803921568627451) referenceRGBA=Color(0.396078431372549,0.8705882352941177,0.40784313725490196,0.9803921568627451)
+83:          val i=(y*actual.width+x)*4+c;val delta=math.abs((a(i)&255)-(b(i)&255));worst=math.max(worst,delta)
+84:          assert(delta<=2,s"$name ($x,$y) channel=$c actual=${a(i)&255} reference=${b(i)&255} delta=$delta actualRGBA=${actual.pixel(x,y)} referenceRGBA=${reference.pixel(x,y)}")
+85:        checked+=1
+batch-float32-blendable=1
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=1
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=1
+==> X sirin.render.BatchSuite.four-scale compact mask and RGBA textures preserve transformed crops, filtering, paint and text 0.587s munit.FailException: probes/render/src/test/scala/sirin/render/BatchSuite.scala:84 textures-text-1.5 (9,39) channel=0 actual=0 reference=155 delta=155 actualRGBA=Color(0.0,0.0,0.0,0.0) referenceRGBA=Color(0.6078431372549019,0.8392156862745098,0.0,0.0)
+83:          val i=(y*actual.width+x)*4+c;val delta=math.abs((a(i)&255)-(b(i)&255));worst=math.max(worst,delta)
+84:          assert(delta<=2,s"$name ($x,$y) channel=$c actual=${a(i)&255} reference=${b(i)&255} delta=$delta actualRGBA=${actual.pixel(x,y)} referenceRGBA=${reference.pixel(x,y)}")
+85:        checked+=1
+batch-float32-blendable=1
+batch-float32-blendable=1
+batch-float32-blendable=1
+batch-float32-blendable=1
+batch-float32-blendable=1
+batch-float32-blendable=1
+batch-float32-blendable=1
+batch-float32-blendable=1
+sirin.render.BatchSuite: finished 5.417s
+Test run sirin.render.BatchSuite finished: 2 failed, 0 ignored, 11 total 5.417s
+[error] Failed: Total 11, Failed 2, Errors 0, Passed 9
+[error] Failed tests:
+[error] 	sirin.render.BatchSuite
+[error] (probeRender / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 25 s, completed Oct 28, 2026, 2:55:58 p.m.

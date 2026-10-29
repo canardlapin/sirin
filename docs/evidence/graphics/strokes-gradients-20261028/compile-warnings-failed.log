@@ -1,0 +1,20 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 15 Scala sources to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/classes ...
+[warn] -- [E198] Unused Symbol Warning: /Users/bbuchsbaum/code/scala/sirin/graphics/src/main/scala/sirin/graphics/StrokePreparation.scala:95:12 
+[warn] 95 |        var current=ArrayBuffer.empty[Point]
+[warn]    |            ^^^^^^^
+[warn]    |           unset local variable, consider using an immutable val instead
+[warn] -- [E198] Unused Symbol Warning: /Users/bbuchsbaum/code/scala/sirin/graphics/src/main/scala/sirin/graphics/StrokePreparation.scala:131:8 
+[warn] 131 |    var line=ArrayBuffer.empty[Point]
+[warn]     |        ^^^^
+[warn]     |        unset local variable, consider using an immutable val instead
+[error] No warnings can be incurred under -Werror (or -Xfatal-warnings)
+[warn] two warnings found
+[error] one error found
+[error] (graphicsJVM / Compile / compileIncremental) Compilation failed
+[error] Total time: 5 s, completed Oct 28, 2026, 10:47:48 a.m.

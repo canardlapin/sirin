@@ -1,0 +1,72 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.036s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.042s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.049s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.058s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.057s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.058s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.054s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.063s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.092s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.101s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.132s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.141s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.082s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.082s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.196s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.204s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.211s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.221s
+curve-debug m=Affine(1.5,0.44999999999999996,0.75,1.5,0.0,0.0) sign=1 probe=Point(127.33128244256494,101.6625648851299)
+candidate=Vector(Point(127.32903278974888,101.94944971336284), Point(96.73617458779411,41.7740939946574), Point(127.33231299679679,101.9504055885869), Point(127.32903278974888,101.94944971336284))
+candidate=Vector(Point(127.33231299679679,101.9504055885869), Point(96.73617458779411,41.7740939946574), Point(96.75111433865354,41.77845004743802), Point(127.33231299679679,101.9504055885869))
+candidate=Vector(Point(127.33231299679679,101.9504055885869), Point(96.75111433865354,41.77845004743802), Point(127.33559349177554,101.95136209779511), Point(127.33231299679679,101.9504055885869))
+candidate=Vector(Point(127.33559349177554,101.95136209779511), Point(96.75111433865354,41.77845004743802), Point(96.76605558900917,41.782809042316785), Point(127.33559349177554,101.95136209779511))
+candidate=Vector(Point(127.33559349177554,101.95136209779511), Point(96.76605558900917,41.782809042316785), Point(127.33887427539742,101.95231924118387), Point(127.33559349177554,101.95136209779511))
+candidate=Vector(Point(127.33887427539742,101.95231924118387), Point(96.76605558900917,41.782809042316785), Point(96.78099833830493,41.787170979142516), Point(127.33887427539742,101.95231924118387))
+candidate=Vector(Point(127.33887427539742,101.95231924118387), Point(96.78099833830493,41.787170979142516), Point(127.34215534821851,101.95327701890434), Point(127.33887427539742,101.95231924118387))
+candidate=Vector(Point(127.34215534821851,101.95327701890434), Point(96.78099833830493,41.787170979142516), Point(96.7959425858281,41.79153585771804), Point(127.34215534821851,101.95327701890434))
+candidate=Vector(Point(127.34215534821851,101.95327701890434), Point(96.7959425858281,41.79153585771804), Point(127.34543671095153,101.95423543115372), Point(127.34215534821851,101.95327701890434))
+candidate=Vector(Point(127.34543671095153,101.95423543115372), Point(96.7959425858281,41.79153585771804), Point(96.81088833086575,41.79590367784572), Point(127.34543671095153,101.95423543115372))
+candidate=Vector(Point(127.34543671095153,101.95423543115372), Point(96.81088833086575,41.79590367784572), Point(127.3487183643094,101.95519447812961), Point(127.34543671095153,101.95423543115372))
+candidate=Vector(Point(127.3487183643094,101.95519447812961), Point(96.81088833086575,41.79590367784572), Point(96.82583557286115,41.800274439373275), Point(127.3487183643094,101.95519447812961))
+Test run sirin.graphics.CurvedStrokeSuite started
+==> X sirin.graphics.CurvedStrokeSuite.quadratic normal ribbons preserve narrow/wide boundaries at four scales under shear and reflection 2.249s munit.FailException: graphics/src/test/scala/sirin/graphics/CurvedStrokeSuite.scala:38 missing inner boundary t=0.5 width=40.0 scale=1.5
+37:          outline.contours.filter(c => c.size>2 && c.map(_.x).min<=probe.x && c.map(_.x).max>=probe.x && c.map(_.y).min<=probe.y && c.map(_.y).max>=probe.y).take(12).foreach(c => println(s"candidate=$c"))
+38:        assert(contains(outline,point(width/2-delta)),s"missing inner boundary t=$t width=$width scale=$scale")
+39:        assert(!contains(outline,point(width/2+delta)),s"extra outer boundary t=$t width=$width scale=$scale")
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.graphics.CurvedStrokeSuite.$init$$$anonfun$1$$anonfun$1$$anonfun$1$$anonfun$1$$anonfun$1$$anonfun$1(CurvedStrokeSuite.scala:38)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.graphics.CurvedStrokeSuite.$init$$$anonfun$1$$anonfun$1$$anonfun$1$$anonfun$1$$anonfun$1(CurvedStrokeSuite.scala:31)
+    at scala.collection.immutable.Range.foreach(Range.scala:192)
+    at sirin.graphics.CurvedStrokeSuite.$init$$$anonfun$1$$anonfun$1$$anonfun$1$$anonfun$1(CurvedStrokeSuite.scala:31)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.graphics.CurvedStrokeSuite.$init$$$anonfun$1$$anonfun$1$$anonfun$1(CurvedStrokeSuite.scala:26)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.graphics.CurvedStrokeSuite.$init$$$anonfun$1$$anonfun$1(CurvedStrokeSuite.scala:25)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.graphics.CurvedStrokeSuite.$init$$$anonfun$1(CurvedStrokeSuite.scala:25)
+sirin.graphics.CurvedStrokeSuite: finished 2.273s
+Test run sirin.graphics.CurvedStrokeSuite finished: 1 failed, 0 ignored, 4 total 2.282s
+[error] Failed: Total 63, Failed 1, Errors 0, Passed 62
+[error] Failed tests:
+[error] 	sirin.graphics.CurvedStrokeSuite
+[error] (graphicsJVM / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 5 s, completed Oct 28, 2026, 1:16:50 p.m.

@@ -1,0 +1,46 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (19991 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.038s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.042s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.053s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.053s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.052s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.06s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.057s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.066s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.09s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.099s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.105s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.113s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.072s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.072s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.144s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.152s
+[info] Passed: Total 52, Failed 0, Errors 0, Passed 52
+[success] Total time: 4 s, completed Oct 28, 2026, 10:07:02 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[warn] -- [E198] Unused Symbol Warning: /Users/bbuchsbaum/code/scala/sirin/probes/render/src/test/scala/sirin/render/OffscreenSuite.scala:175:8 
+[warn] 175 |    for i <- 0 until 5 do
+[warn]     |        ^
+[warn]     |        unused pattern variable
+[error] No warnings can be incurred under -Werror (or -Xfatal-warnings)
+[warn] one warning found
+[error] one error found
+[error] (probeRender / Test / compileIncremental) Compilation failed
+[error] Total time: 1 s, completed Oct 28, 2026, 10:07:03 a.m.

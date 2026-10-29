@@ -1,0 +1,40 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2190 ms)
+[info] Discovered 3481 classes and 21756 methods after classloading
+[info] Checking intermediate code (quick) (160 ms)
+[info] Discovered 3449 classes and 17071 methods after optimization
+[info] Optimizing (debug mode) (3684 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (8478 ms)
+[info] Compiling to native code (6739 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (238 ms)
+[info] Postprocessing (0 ms)
+[info] Total (15921 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '59009'.
+Test run sirin.render.BatchSuite started
+batch-adapter=Apple M2 Pro
+comparison=curves-layers-1.0 checked=3068 excluded=4 worstByteError=0
+comparison=curves-layers-1.25 checked=4793 excluded=7 worstByteError=0
+comparison=curves-layers-1.5 checked=6905 excluded=7 worstByteError=0
+==> X sirin.render.BatchSuite.four-scale batched fills, curved strokes, holes, nested clips, gradients and isolated layers match reference 1.671s java.lang.IllegalArgumentException: requirement failed: per-sample work budget
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=1
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=0
+comparison=textures-text-1.5 checked=6775 excluded=137 worstByteError=0
+comparison=textures-text-2.0 checked=12253 excluded=35 worstByteError=0
+sirin.render.BatchSuite: finished 6.995s
+Test run sirin.render.BatchSuite finished: 1 failed, 0 ignored, 13 total 6.995s
+[error] Failed: Total 13, Failed 1, Errors 0, Passed 12
+[error] Failed tests:
+[error] 	sirin.render.BatchSuite
+[error] (probeRender / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 32 s, completed Oct 28, 2026, 3:06:50 p.m.

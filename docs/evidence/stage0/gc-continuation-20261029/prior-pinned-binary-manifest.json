@@ -1,0 +1,10 @@
+{
+  "gc-repro-fa4a9e6": {
+    "sha256": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90",
+    "linked_libraries": "target/upstream-evaluation/bin/gc-repro-fa4a9e6:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n"
+  },
+  "threads-fa4a9e6": {
+    "sha256": "0df4e42482b3eec593cb0c4856440903de9a7b07db1ae2534935dea8f867f10d",
+    "linked_libraries": "target/upstream-evaluation/bin/threads-fa4a9e6:\n\t@rpath/SDL3.framework/Versions/A/SDL3 (compatibility version 401.0.0, current version 401.18.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n"
+  }
+}

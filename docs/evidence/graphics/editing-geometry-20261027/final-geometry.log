@@ -1,0 +1,26 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (15114 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2001 ms)
+[info] Discovered 3287 classes and 20658 methods after classloading
+[info] Checking intermediate code (quick) (137 ms)
+[info] Discovered 3248 classes and 15920 methods after optimization
+[info] Optimizing (debug mode) (3138 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (8741 ms)
+[info] Compiling to native code (6102 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (206 ms)
+[info] Postprocessing (0 ms)
+[info] Total (15303 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '55111'.
+Test run sirin.graphics.text.EditingGeometrySuite started
+sirin.graphics.text.EditingGeometrySuite: finished 2.466s
+Test run sirin.graphics.text.EditingGeometrySuite finished: 0 failed, 0 ignored, 10 total 2.466s
+[info] Passed: Total 10, Failed 0, Errors 0, Passed 10
+[success] Total time: 24 s, completed Oct 27, 2026, 10:47:47 p.m.

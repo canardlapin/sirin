@@ -1,0 +1,9 @@
+{
+ "scope": "bounded qualification backend; no production or browser-parity claim",
+ "scales": [1, 1.25, 1.5, 2],
+ "curves": "adaptive quadratic/cubic normal ribbons; device center/normal error <= tolerance/8 per piece and aggregate dash length error <= tolerance/16 device units; original joins/caps use endpoint tangents; stationary interior cusps explicitly refuse",
+ "glyphs": "paint-independent exact FreeType grayscale coverage; linear-premultiplied gradient evaluated at each device sample; no reshaping",
+ "sharing": "device-local fixed-capacity vec4 arena for immutable image and glyph coverage assets, default 4 MiB / 128 entries; pinned resources cannot evict; bounded CPU decode/raster LRU; no new source upload or rasterization for cached identical inputs across distinct drawings",
+ "acceptance": "independent sampled curve boundaries and arc-length reference; four-scale scalar glyph-gradient oracle; one-byte RGBA8 pixel tolerance; upload/raster counters, pinned eviction pressure, replacement, resize/scale, disposal and real device-generation replacement; full testJVM/testNative plus native services/GPU",
+ "limits": "existing operation, storage, sample-work, recursion and source-pixel budgets remain enforced; failed geometry/admission never yields a successful partial drawing"
+}

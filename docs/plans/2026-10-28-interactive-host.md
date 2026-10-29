@@ -1,6 +1,7 @@
 # First interactive Sirin host and JVM usability experiment
 
-Status: implementation contract, not interactive qualification. 2026-10-28.
+Status: bounded development-shell slice implemented; operable-workbench and
+usability qualification remain open. 2026-10-28.
 Authority: [VISION](../design/VISION.md). Builds on the headless workbench,
 retained outlets and fixed-height virtualization. Graphics/text changes are a
 concurrent track: their own receipts and ownership rules remain authoritative.
@@ -13,13 +14,14 @@ the editor between two outlets, save a document while continuing to type,
 import rows with bounded progress, and cancel import while its producer is
 blocked. Show loading, validation, stale-result, conflict, cancellation and
 failure feedback in the window. Keyboard operation is required for every step.
-The same source model must run on JVM and Native. Recommend a bounded JDK 25
-Panama FFM development-host spike as the next implementation gate: the existing
-SDL/wgpu pointer-only shim is currently exercised by Scala Native, not JVM FFM.
-Prove library loading, ABI, owner-thread event polling, clear/resize and clean
-close before committing to that development path. This does not change VISION
-§12's Native-first shipping order or qualify JVM shipping. A visible JVM
-development launch and Native launch of the same app each need their own receipt.
+The same source model must run on JVM and Native. The bounded JDK 25 FFM development shell now loads the existing pointer-only
+services, validates the process main thread and ABI, parks/wakes, resizes and
+cleans up. A committed tree/layout/text/recording path presents the static
+workbench and scripted model changes through an owned offscreen/readback/upload
+bridge. See the [host receipt](../evidence/jvm-host-20261028/README.md).
+This does not change VISION §12's Native-first shipping order or qualify JVM
+shipping. The complete interaction workflow above remains unimplemented; Native
+launch and OS-level visual/interaction acceptance each need their own receipt.
 
 Retained editor placement keeps its owner, draft and work. Virtual row-local
 state retires outside the realized range; persistent editing/selection belongs
@@ -37,7 +39,7 @@ deletion in a filtered-source changes handler.
 | Owner driver | `HeadlessRuntime.drive`, activity wakeups, monotonic deadlines, event/work/progress capacities | One serialized UI owner drains bounded work and shell facts; park until activity/deadline. A shell wakeup must wake a parked owner. Display invalidation requests one frame; no idle frame loop. Measure quiet-window active turns, frames and CPU. |
 | Structural identity | `MountedSnapshot`, `RefAttachment`, stable component/retained IDs, per-node `MountedView.setViewport` | Build a committed host tree with epoch-tagged geometry and attachment identities. Ref focus methods are currently deferred. Add focus ownership, contains-focus and keyboard/pointer focus-ring laws before wiring them. Reject stale targets after disposal; do not deliver coordinates from one epoch to a different tree. |
 | Layout and scrolling | `Constraints`, `LayoutPolicy`, fixed-height `CollectionWindow` and virtual spacers | Start with Row/Column/padding/text/scroll constraints. Validate against full relayout. Feed actual local offset and viewport height to each virtual node ID; retain layout feedback until a new committed pass, then render the settled result. Clamp host scroll offset on list shrink. Reject stale revision windows. |
-| Text preparation | `TextServices.layout`, `TextLayout`, `ResolvedTextLayout`, explicit Native styles/fonts | Prepare exact text/style/width results outside paint, through a bounded owner-safe path. Cache by request plus font/scale generation. Use the identical resolved result for measure, paint, hit, caret and selection. Never shape as a fallback during paint. Native services retain their creating-thread requirement. The pure bridge cross-builds; JVM FFM shaping/font access is still a new adapter to implement and qualify. |
+| Text preparation | `TextServices.layout`, `TextLayout`, `ResolvedTextLayout`, explicit Native styles/fonts | Prepare exact text/style/width results outside paint, through a bounded owner-safe path. Cache by request plus font/scale generation. Use the identical resolved result for measure, paint, hit, caret and selection. Never shape as a fallback during paint. Native services retain their creating-thread requirement. The pure host/bridge cross-builds. The bounded JVM FFM adapter now uses the same C shaping/font/Unicode services and shared paragraph implementation; production service caching/font discovery remains open. |
 | Painting | `Canvas`, `RecordingCanvas`, `PreparedText`, graphics recordings/scenes and backend receipts | Lower committed layout to recordings with painter order and clips. Resolve prepared text before recording. Present using the graphics track's supported scene/device bridge; do not create a competing drawing vocabulary. Recording replay alone does not qualify displayed pixels, GPU resource retirement or resize. |
 | Editing and IME | UTF-16 `TextPosition`, affinity, `TextHit`, `TextSelectionRegion`, existing input/semantics shapes | Implement selection and editor commands, grapheme-safe edits, undo, composition/preedit/cancel, clipboard and visual navigation. Preserve hit alternatives at bidi/wrap boundaries. Text geometry supplies no editing policy. Pass real macOS IME and marked-text tests before claiming a usable field. |
 | Accessibility and commands | `Semantics`, semantic parts and command metadata | One committed geometry/semantics tree drives hit tests and accessibility frames. Expose role/name/value/selection/enablement and actions. Keyboard and semantic activation share command validation. Check focus announcements, list selection and edits with VoiceOver. |
@@ -54,7 +56,7 @@ APIs are implementation choices after the phase/lifetime design review.
    above, then owner wakeup/parking, committed tree, minimum layout,
    prepared text and ordered recording presentation. Paint static workbench
    content, resize correctly, capture displayed output and verify clean close.
-   Frame/power counters must agree with actual presentation. This establishes
+   The bounded implementation and receipt now cover the ABI, main-thread lifecycle, scripted resize/empty/scroll behavior and independent tile/full GPU equivalence. OS screenshot/visual acceptance and quiet-window CPU/power measurements remain open. Frame/power counters must agree with actual presentation. This establishes
    a development window, not editable controls or JVM shipping support. If the
    FFM spike fails, preserve its receipt and continue Native host integration
    while the binding blocker is resolved; do not substitute headless JVM tests.

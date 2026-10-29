@@ -1,0 +1,47 @@
+{
+  "base_commit": "1fc105eeefa14dfc77f651e1a605c7efbe025e34",
+  "platform": "ProductName:\t\tmacOS\nProductVersion:\t\t15.1.1\nBuildVersion:\t\t24B91\n",
+  "arch": "arm64",
+  "cpus": 10,
+  "ram_bytes": 34359738368,
+  "scala": "3.7.4",
+  "scala_native": "0.5.12",
+  "sbt": "1.12.14",
+  "builds": {
+    "original-immix-trap": {
+      "cwd": ".",
+      "command": "sbt -Dsirin.mode=release-fast probeThreads/nativeLink"
+    },
+    "repro-immix-trap": {
+      "cwd": "probes/gc-repro",
+      "command": "sbt nativeLink"
+    },
+    "repro-immix-conditional": {
+      "cwd": "probes/gc-repro",
+      "command": "SCALANATIVE_GC_TRAP_BASED_YIELDPOINTS=0 sbt clean nativeLink"
+    }
+  },
+  "sources": {
+    "probes/gc-repro/.gitignore": "ef49a3ac40b3d3484f6fce4c3b948f89ec345ba651f951a2f5a3b143b201bcc8",
+    "probes/gc-repro/README.md": "0aba970d8dc6b280cb516b9e523acdf540473db4b1acd2f7f80c240e9d4f1d6e",
+    "probes/gc-repro/build.sbt": "972ff697239db5d0678d3939e53ed847623ead1e45a2f9581797fc01027b5514",
+    "probes/gc-repro/project/build.properties": "d24588794d56b7bda7e561d899310803eba64264d1cfa5570f7d63f33641e4a7",
+    "probes/gc-repro/project/plugins.sbt": "5721bb1471bdcc773b235b729793bd63eec047185cdacfdb10a5854f14d9c49c",
+    "probes/gc-repro/run.py": "775854e7945ef5d5008cde08116df690a04c3f56a617474073f346ab47637e0f",
+    "probes/gc-repro/src/main/scala/GcRepro.scala": "45433526a329be0ed229d6cd5932e4dd20c383ad1a70c7f205299ee90f4ae5cf"
+  },
+  "binaries": {
+    "original-immix-trap": {
+      "sha256": "070bae673e7d87ca1914054c29cf25c79a82f7cd1e56f9a88522c99425d1d16f",
+      "libraries": "target/gc-investigation/bin/original-immix-trap:\n\t@rpath/SDL3.framework/Versions/A/SDL3 (compatibility version 401.0.0, current version 401.18.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n"
+    },
+    "repro-immix-conditional": {
+      "sha256": "6f5f70726310c2e2e23502c4a1a6c94f2bcb37645e74583d0740c21a457e4c56",
+      "libraries": "target/gc-investigation/bin/repro-immix-conditional:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n"
+    },
+    "repro-immix-trap": {
+      "sha256": "5d9f1bb14a5065fbe82cfd07d3807ad37dd4fba6649634fa00ba8b82e66eddea",
+      "libraries": "target/gc-investigation/bin/repro-immix-trap:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n"
+    }
+  }
+}

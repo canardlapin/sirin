@@ -1,0 +1,7 @@
+adapter=Apple M2 Pro
+prepare-ns=293542,275250,303625,289625,274750,280750,289750,291875,295500,298125
+synchronized-render-readback-ns=6834709,7065459,7119833,7235958,8303417,8357584,8360625,8374041,8377792,8435667
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput

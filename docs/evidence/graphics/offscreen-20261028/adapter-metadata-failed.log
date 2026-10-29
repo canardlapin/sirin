@@ -1,0 +1,31 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (19194 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1507 ms)
+[info] Discovered 2516 classes and 17177 methods after classloading
+[info] Checking intermediate code (quick) (117 ms)
+[info] Discovered 2437 classes and 13115 methods after optimization
+[info] Optimizing (debug mode) (2115 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6696 ms)
+[info] Compiling to native code (5493 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (149 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11348 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50669'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50671'.
+Test run sirin.render.OffscreenSuite started
+==> X sirin.render.OffscreenSuite.actual Metal device and shared ThorVG texture draw an opaque rectangle 0.187s java.lang.IllegalArgumentException: requirement failed: device description must be explicit
+sirin.render.OffscreenSuite: finished 0.188s
+Test run sirin.render.OffscreenSuite finished: 1 failed, 0 ignored, 1 total 0.188s
+[error] Failed: Total 1, Failed 1, Errors 0, Passed 0
+[error] Failed tests:
+[error] 	sirin.render.OffscreenSuite
+[error] (probeRender / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 16 s, completed Oct 28, 2026, 10:00:29 a.m.

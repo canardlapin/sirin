@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/Users/bbuchsbaum/code/scala/sirin/target/gc-investigation/bin/repro-immix-trap",
+    "40",
+    "1",
+    "2048",
+    "true"
+  ],
+  "cwd": "/Users/bbuchsbaum/code/scala/sirin",
+  "start_utc": "2026-10-29T16:17:17.363237+00:00",
+  "load_start": [
+    5.439453125,
+    5.85693359375,
+    5.85400390625
+  ],
+  "timeout_seconds": 55.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "5d9f1bb14a5065fbe82cfd07d3807ad37dd4fba6649634fa00ba8b82e66eddea",
+  "pid": 63141,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 40.068334666999995,
+  "load_end": [
+    6.5322265625,
+    6.01416015625,
+    5.90673828125
+  ]
+}

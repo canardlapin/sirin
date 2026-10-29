@@ -1,0 +1,54 @@
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LC_ALL = "C.UTF-8",
+	LC_CTYPE = "C.UTF-8",
+	LANG = "en_CA.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to a fallback locale ("en_CA.UTF-8").
+/Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/thorvg-1.1.3.tar.xz: OK
+ninja: Entering directory `/Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/build'
+[1/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgAccessor.cpp.o
+[2/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgAnimation.cpp.o
+[3/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgCanvas.cpp.o
+[4/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgFill.cpp.o
+[5/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgInitializer.cpp.o
+[6/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgLoaderMgr.cpp.o
+[7/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgPicture.cpp.o
+[8/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgPaint.cpp.o
+[9/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgSaver.cpp.o
+[10/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgScene.cpp.o
+[11/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgShape.cpp.o
+[12/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgRender.cpp.o
+[13/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgBindGroups.cpp.o
+[14/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgTaskScheduler.cpp.o
+[15/36] Compiling C++ object src/libthorvg-1.a.p/renderer_tvgText.cpp.o
+[16/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgCommon.cpp.o
+[17/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_tvgGpuCommon.cpp.o
+[18/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgMesh.cpp.o
+[19/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgCompositor.cpp.o
+[20/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgRenderData.cpp.o
+[21/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgPipelines.cpp.o
+[22/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgRenderTarget.cpp.o
+[23/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgRenderer.cpp.o
+[24/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgShaderSrc.cpp.o
+[25/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgRenderTask.cpp.o
+[26/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgShaderTypes.cpp.o
+[27/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgSolidBatch.cpp.o
+[28/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgStencilBatch.cpp.o
+[29/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgTextureMgr.cpp.o
+[30/36] Compiling C++ object src/libthorvg-1.a.p/common_tvgCompressor.cpp.o
+[31/36] Compiling C++ object src/libthorvg-1.a.p/renderer_gpu_engine_wg_tvgWgTessellator.cpp.o
+[32/36] Compiling C++ object src/libthorvg-1.a.p/common_tvgMath.cpp.o
+[33/36] Compiling C++ object src/libthorvg-1.a.p/common_tvgStr.cpp.o
+[34/36] Compiling C++ object src/libthorvg-1.a.p/loaders_raw_tvgRawLoader.cpp.o
+[35/36] Compiling C++ object src/libthorvg-1.a.p/bindings_capi_tvgCapi.cpp.o
+[36/36] Linking static target src/libthorvg-1.a
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: /Users/bbuchsbaum/homebrew/bin/ninja -C /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/build -j 4
+ninja: Entering directory `/Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/build'
+ninja: no work to do.
+Installing src/libthorvg-1.a to /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/install/lib
+Installing /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/thorvg-1.1.3/inc/thorvg.h to /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/install/include/thorvg-1
+Installing /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/thorvg-1.1.3/src/bindings/capi/thorvg_capi.h to /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/install/include/thorvg-1
+Installing /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/build/meson-private/thorvg-1.pc to /Users/bbuchsbaum/code/scala/sirin/native/vendor/thorvg/install/lib/pkgconfig
+ThorVG 1.1.3 installed for the isolated comparison probe

@@ -1,0 +1,118 @@
+__SM26java.lang.impl.PosixThreadD18sleepInterruptiblejuEPT26java.lang.impl.PosixThread:
+0000000100067838	stp	x28, x27, [sp, #-0x60]!
+000000010006783c	stp	x26, x25, [sp, #0x10]
+0000000100067840	stp	x24, x23, [sp, #0x20]
+0000000100067844	stp	x22, x21, [sp, #0x30]
+0000000100067848	stp	x20, x19, [sp, #0x40]
+000000010006784c	stp	x29, x30, [sp, #0x50]
+0000000100067850	add	x29, sp, #0x50
+0000000100067854	sub	sp, sp, #0x10
+0000000100067858	mov	x22, x1
+000000010006785c	mov	x20, x0
+0000000100067860	bl	_scalanative_StackOverflowGuards_check
+0000000100067864	cmp	x22, #0x0
+0000000100067868	b.le	0x100067d74
+000000010006786c	adrp	x0, 251 ; 0x100162000
+0000000100067870	add	x0, x0, #0xcd8
+0000000100067874	bl	__SM17java.lang.System$D17currentTimeMillisjEO
+0000000100067878	mov	x23, x0
+000000010006787c	mov	x8, sp
+0000000100067880	sub	x1, x8, #0x10
+0000000100067884	mov	sp, x1
+0000000100067888	stur	xzr, [x8, #-0x10]
+000000010006788c	adrp	x0, 255 ; 0x100166000
+0000000100067890	add	x0, x0, #0x8f8
+0000000100067894	bl	__SM34scala.scalanative.runtime.package$D10fromRawPtrR_L28scala.scalanative.unsafe.PtrEO
+0000000100067898	mov	x26, x0
+000000010006789c	adrp	x8, 244 ; 0x10015b000
+00000001000678a0	add	x8, x8, #0xb00
+00000001000678a4	add	x21, x8, #0x268
+00000001000678a8	adrp	x24, 263 ; 0x10016e000
+00000001000678ac	add	x24, x24, #0x490
+00000001000678b0	adrp	x25, 3 ; 0x10006a000
+00000001000678b4	add	x25, x25, #0x774
+00000001000678b8	mov	x0, x21
+00000001000678bc	mov	x1, x24
+00000001000678c0	mov	w2, #0x30
+00000001000678c4	mov	x3, x25
+00000001000678c8	bl	___scalanative_loadModule
+00000001000678cc	adrp	x0, 263 ; 0x10016e000
+00000001000678d0	add	x0, x0, #0x810
+00000001000678d4	mov	w1, #0x10
+00000001000678d8	bl	_scalanative_GC_alloc_small
+00000001000678dc	mov	x19, x0
+00000001000678e0	mov	x0, x21
+00000001000678e4	mov	x1, x24
+00000001000678e8	mov	w2, #0x30
+00000001000678ec	mov	x3, x25
+00000001000678f0	bl	___scalanative_loadModule
+00000001000678f4	adrp	x24, 256 ; 0x100167000
+00000001000678f8	add	x24, x24, #0x8d8
+00000001000678fc	mov	x0, x24
+0000000100067900	bl	__SM29scala.scalanative.unsafe.Tag$D17materializeIntTagL28scala.scalanative.unsafe.TagEO
+0000000100067904	mov	x21, x0
+0000000100067908	mov	x0, x24
+000000010006790c	bl	__SM29scala.scalanative.unsafe.Tag$D18materializeNat2TagL28scala.scalanative.unsafe.TagEO
+0000000100067910	mov	x2, x0
+0000000100067914	mov	x0, x24
+0000000100067918	mov	x1, x21
+000000010006791c	bl	__SM29scala.scalanative.unsafe.Tag$D20materializeCArrayTagL28scala.scalanative.unsafe.TagL28scala.scalanative.unsafe.TagL35scala.scalanative.unsafe.Tag$CArrayEO
+0000000100067920	mov	x2, x0
+0000000100067924	adrp	x0, 256 ; 0x100167000
+0000000100067928	add	x0, x0, #0x6c8
+000000010006792c	stur	x26, [x29, #-0x58]
+0000000100067930	mov	x1, x26
+0000000100067934	bl	__SM29scala.scalanative.unsafe.Ptr$D11ptrToCArrayL28scala.scalanative.unsafe.PtrL28scala.scalanative.unsafe.TagL31scala.scalanative.unsafe.CArrayEO
+0000000100067938	mov	x21, x0
+000000010006793c	mov	x0, x24
+0000000100067940	bl	__SM29scala.scalanative.unsafe.Tag$D17materializeIntTagL28scala.scalanative.unsafe.TagEO
+0000000100067944	cbz	x21, 0x100068004
+0000000100067948	mov	x2, x0
+000000010006794c	mov	x0, x21
+0000000100067950	mov	w1, #0x0
+0000000100067954	bl	__SM31scala.scalanative.unsafe.CArrayD2atiL28scala.scalanative.unsafe.TagL28scala.scalanative.unsafe.PtrEO
+0000000100067958	mov	x1, x0
+000000010006795c	mov	x0, #0x0
+0000000100067960	bl	__SM32scala.scalanative.runtime.Boxes$D10unboxToPtrL16java.lang.ObjectR_EO
+0000000100067964	bl	0x1000a140c ; symbol stub for: _pipe
+0000000100067968	mov	x21, x0
+000000010006796c	bl	_scalanative_StackOverflowGuards_check
+0000000100067970	cbnz	w21, 0x100067dc8
+0000000100067974	adrp	x0, 268 ; 0x100173000
+0000000100067978	add	x0, x0, #0xe88
+000000010006797c	ldr	x26, [x0]
+0000000100067980	blr	x26
+0000000100067984	ldr	x8, [x0]
+0000000100067988	ldr	xzr, [x8]
+000000010006798c	adrp	x21, 256 ; 0x100167000
+0000000100067990	add	x21, x21, #0x8d8
+0000000100067994	mov	x0, x21
+0000000100067998	bl	__SM29scala.scalanative.unsafe.Tag$D17materializeIntTagL28scala.scalanative.unsafe.TagEO
+000000010006799c	mov	x19, x0
+00000001000679a0	mov	x0, x21
+00000001000679a4	bl	__SM29scala.scalanative.unsafe.Tag$D18materializeNat2TagL28scala.scalanative.unsafe.TagEO
+00000001000679a8	mov	x2, x0
+00000001000679ac	mov	x0, x21
+00000001000679b0	mov	x1, x19
+00000001000679b4	bl	__SM29scala.scalanative.unsafe.Tag$D20materializeCArrayTagL28scala.scalanative.unsafe.TagL28scala.scalanative.unsafe.TagL35scala.scalanative.unsafe.Tag$CArrayEO
+00000001000679b8	mov	x2, x0
+00000001000679bc	adrp	x0, 256 ; 0x100167000
+00000001000679c0	add	x0, x0, #0x6c8
+00000001000679c4	ldur	x1, [x29, #-0x58]
+00000001000679c8	bl	__SM29scala.scalanative.unsafe.Ptr$D11ptrToCArrayL28scala.scalanative.unsafe.PtrL28scala.scalanative.unsafe.TagL31scala.scalanative.unsafe.CArrayEO
+00000001000679cc	mov	x19, x0
+00000001000679d0	mov	x0, x21
+00000001000679d4	bl	__SM29scala.scalanative.unsafe.Tag$D17materializeIntTagL28scala.scalanative.unsafe.TagEO
+00000001000679d8	cbz	x19, 0x100068004
+00000001000679dc	mov	x2, x0
+00000001000679e0	mov	x0, x19
+00000001000679e4	mov	w1, #0x1
+00000001000679e8	bl	__SM31scala.scalanative.unsafe.CArrayD2atiL28scala.scalanative.unsafe.TagL28scala.scalanative.unsafe.PtrEO
+00000001000679ec	mov	x19, x0
+00000001000679f0	adrp	x0, 256 ; 0x100167000
+00000001000679f4	add	x0, x0, #0x8d8
+00000001000679f8	bl	__SM29scala.scalanative.unsafe.Tag$D17materializeIntTagL28scala.scalanative.unsafe.TagEO
+00000001000679fc	mov	x1, x0
+0000000100067a00	mov	x0, x19
+0000000100067a04	bl	__SM28scala.scalanative.unsafe.PtrD11unary_$bangL28scala.scalanative.unsafe.TagL16java.lang.ObjectEO
+0000000100067a08	mov	x1, x0

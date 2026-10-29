@@ -1,0 +1,3 @@
+START elapsed_ms=0 workers=1 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5071 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=3538 iterations=20571392
+SAMPLE elapsed_ms=10035 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=6976 iterations=40557056

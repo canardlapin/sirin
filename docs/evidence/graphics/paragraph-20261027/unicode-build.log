@@ -1,0 +1,6 @@
+Unicode build: 211341092 KiB free before source build
+   Compiling sirin-unicode-probe v0.0.0 (/Users/bbuchsbaum/code/scala/sirin/native/unicode-probe)
+    Finished `release` profile [optimized] target(s) in 4.35s
+ 34164512 vendor/unicode/libicu4x_full.a
+ 9879864 vendor/unicode/libicu4x_probe.a
+ 44044376 total

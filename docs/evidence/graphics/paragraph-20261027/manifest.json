@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-27",
+  "head": "a821946d4419c6ce2d318a0a36f75a17d462dac4",
+  "command": "sbt testJVM testNative textNative/test probeUnicode/test probeParagraph/test",
+  "sha256": {
+    "graphics/src/main/scala/sirin/graphics/Text.scala": "d8bd0c0f7b7d0bf00dbb9f090eb923cf91526a776038717dc202f08167c74c5f",
+    "graphics/src/main/scala/sirin/graphics/ScriptItemization.scala": "250b1f82ccd39d95d0c9c8f26f8c3f267b6ba6de779a91bc35f005647a1d4010",
+    "graphics/src/main/scala/sirin/graphics/ParagraphLayout.scala": "a4248e5f7157bda2cc03b55b53d26c10f9096ba9ff1eb326262963033ea54bda",
+    "text-native/src/main/scala/sirin/graphics/text/NativeFont.scala": "f0b298545ed8c690942296a826df313ed2fc43b22801f2337a8dfe5f06454c43",
+    "text-native/src/main/resources/scala-native/sirin_text.c": "f08375b4673b0ddc11f096b4ab52b44d4e6c183747102aa88d916e9468b6eac1",
+    "probes/unicode/src/main/scala/sirin/graphics/unicode/NativeUnicode.scala": "d708a354f4c6f559a09f4ace5ffb5188bd15189c6b83f1e871c352ac60e7a2e6",
+    "probes/unicode/src/main/resources/scala-native/sirin_unicode.c": "ab36d1d67bd7474556666c6601bcb79d2aba759225a49628072c35f846db97a7",
+    "native/unicode-probe/src/lib.rs": "fccccc1a1037891f0ce4eddc58e1a87f5d913ec5f241f27c93da2410021631ec",
+    "native/unicode-probe/Cargo.lock": "24596c897f204bac4225488f79a96ccb2f731839faa8fde1055bc20d0dda5202",
+    "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala": "c15d0edd0a74373ce75a350f13a1285fc0581a1d98d880b7f5485f2e82211961",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/ParagraphSuite.scala": "b08c0fa8fa390b1252bb6194935bd4a787df48b225cabef3cb88c41b6b8b95cd",
+    "graphics/src/test/resources/fonts/SHA256SUMS": "e2e5bb4dcd3c23f87470523c36ed3507b98832ef0ce8fe1ff01cb9c2222bf146",
+    "build.sbt": "912c28628cc820d831a3704a9f819cd9f67e623841b1381981bd557ad890528f"
+  }
+}

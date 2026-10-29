@@ -1,0 +1,238 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.038s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.049s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.074s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.079s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.083s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.099s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.089s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.103s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.151s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.165s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.19s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.206s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.105s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.105s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.242s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.257s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.265s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.28s
+[info] Passed: Total 59, Failed 0, Errors 0, Passed 59
+[success] Total time: 1 s, completed Oct 28, 2026, 1:08:57 p.m.
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1774 ms)
+[info] Discovered 3001 classes and 19775 methods after classloading
+[info] Checking intermediate code (quick) (101 ms)
+[info] Discovered 2968 classes and 15433 methods after optimization
+[info] Optimizing (debug mode) (2762 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (7950 ms)
+[info] Compiling to native code (6048 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (155 ms)
+[info] Postprocessing (0 ms)
+[info] Total (13540 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '49499'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '49501'.
+Test run sirin.render.StrokeGradientSuite started
+==> X sirin.render.StrokeGradientSuite.four-scale caps and dashes match independent analytic sample coverage without alpha overdraw 0.034s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.StrokeGradientSuite.four-scale transformed gradients interpolate linear premultiplied colors with hard stops and extensions 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.StrokeGradientSuite.gradient stroke, nested clipping, isolation and instance transforms share the same paint 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.StrokeGradientSuite.retained replay uploads once, reproduces pixels, bounds inventory and retires with its owner 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.StrokeGradientSuite.retained exact glyph masks and snapshot replacement remain immutable at all scales 0.027s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+sirin.render.StrokeGradientSuite: finished 0.080s
+Test run sirin.render.StrokeGradientSuite finished: 5 failed, 0 ignored, 5 total 0.080s
+Test run sirin.graphics.RebasedGradientSuite started
+==> X sirin.graphics.RebasedGradientSuite.four-scale translated prepared paths preserve clipped gradient pixels 0.006s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+sirin.graphics.RebasedGradientSuite: finished 0.007s
+Test run sirin.graphics.RebasedGradientSuite finished: 1 failed, 0 ignored, 1 total 0.007s
+Test run sirin.render.OffscreenSuite started
+==> X sirin.render.OffscreenSuite.actual Metal device and shared ThorVG texture draw an opaque rectangle 0.003s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.OffscreenSuite.four-scale pixels obey holes, nested clips, isolated linear opacity, sampling and coverage 0.004s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.OffscreenSuite.ThorVG shares clips and texture ownership; color differences remain recorded findings 0.003s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.OffscreenSuite.numeric and expanded-work admission refuses unsafe GPU programs before submission 0.003s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.OffscreenSuite.closed static faces supply exact positioned Latin and Arabic masks through both engines 0.043s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.OffscreenSuite.program budgets, device generations, thread ownership, resize and disposal are enforced 0.002s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+==> X sirin.render.OffscreenSuite.bounded timing reports preparation, uploads and synchronized readback separately 0.003s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `shared` is a reserved keyword
+   ┌─ wgsl:20:10
+   │
+20 │ fn pixel(shared: bool, base: u32, width: i32, height: i32, x: i32, y: i32) -> vec4f {
+   │          ^^^^^^ definition of `shared`
+
+
+
+sirin.render.OffscreenSuite: finished 0.065s
+Test run sirin.render.OffscreenSuite finished: 7 failed, 0 ignored, 8 total 0.065s
+[error] Failed: Total 14, Failed 13, Errors 0, Passed 1
+[error] Failed tests:
+[error] 	sirin.render.OffscreenSuite
+[error] 	sirin.graphics.RebasedGradientSuite
+[error] 	sirin.render.StrokeGradientSuite
+[error] (probeRender / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 22 s, completed Oct 28, 2026, 1:09:19 p.m.

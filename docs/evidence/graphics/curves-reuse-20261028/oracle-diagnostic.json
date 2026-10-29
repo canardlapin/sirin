@@ -1,0 +1,8 @@
+{
+  "arithmetic": "80 decimal digits, reconstructed exact binary Double inputs",
+  "exact_winding": 1,
+  "division_float_winding": 0,
+  "relative_orientation_float_winding": 1,
+  "action": "use relative orientation in the new containment oracle; all analytic boundary probes and tolerances unchanged; original failed logs preserved",
+  "geometry_file": "wide-curve-oracle-geometry.txt.gz"
+}

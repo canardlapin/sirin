@@ -31,7 +31,18 @@ private[engine] final class Activity:
   private val lock = new Object
   private var sequence = 0L
   def stamp: Long = lock.synchronized(sequence)
-  def signal(): Unit = lock.synchronized { sequence += 1L; lock.notifyAll() }
+  private var wakes = Vector.empty[() => Unit]
+  private val failures = new java.util.concurrent.atomic.AtomicLong(0)
+  def wakeFailures: Long = failures.get()
+  def onWake(wake: () => Unit): () => Unit =
+    lock.synchronized { wakes :+= wake }
+    () => lock.synchronized { wakes = wakes.filterNot(_ eq wake) }
+  def clearWakes(): Unit = lock.synchronized { wakes = Vector.empty }
+  def signal(): Unit =
+    val callbacks = lock.synchronized { sequence += 1L; lock.notifyAll(); wakes }
+    callbacks.foreach { wake =>
+      try wake() catch case NonFatal(_) => failures.incrementAndGet()
+    }
   def awaitAfter(before: Long, timeoutMillis: Long): Boolean = lock.synchronized {
     val deadline = System.nanoTime() + timeoutMillis * 1000000L
     var remaining = timeoutMillis

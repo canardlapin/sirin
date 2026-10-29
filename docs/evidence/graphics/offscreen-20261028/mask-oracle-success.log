@@ -1,0 +1,41 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (19991 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1333 ms)
+[info] Discovered 2725 classes and 18519 methods after classloading
+[info] Checking intermediate code (quick) (109 ms)
+[info] Discovered 2684 classes and 14426 methods after optimization
+[info] Optimizing (debug mode) (2171 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6325 ms)
+[info] Compiling to native code (4503 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (124 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10674 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '51325'.
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=317416,316667,307250,300208,302750,299167,298458,300583,297334,303667
+synchronized-render-readback-ns=8206875,8310000,8313917,8340417,8340625,8345208,8365459,8475791,8480458,8481208
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 1.741s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 6 total 1.741s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 18 s, completed Oct 28, 2026, 10:09:58 a.m.

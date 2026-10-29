@@ -1,0 +1,59 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.059s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.075s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.068s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.081s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.07s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.083s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.08s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.092s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.127s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.138s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.083s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.084s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.156s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.167s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.321s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.334s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.342s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.353s
+[info] Passed: Total 59, Failed 0, Errors 0, Passed 59
+[success] Total time: 5 s, completed Oct 28, 2026, 1:06:54 p.m.
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[error] -- [E007] Type Mismatch Error: /Users/bbuchsbaum/code/scala/sirin/probes/render/src/main/scala/sirin/render/PixelProgram.scala:145:26 
+[error] 145 |                patches+=((base+6)*4,slot)
+[error]     |                          ^^^^^^^^^^
+[error]     |                          Found:    Int
+[error]     |                          Required: (Int, Int)
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E007] Type Mismatch Error: /Users/bbuchsbaum/code/scala/sirin/probes/render/src/main/scala/sirin/render/PixelProgram.scala:145:37 
+[error] 145 |                patches+=((base+6)*4,slot)
+[error]     |                                     ^^^^
+[error]     |                                     Found:    (slot : Int)
+[error]     |                                     Required: (Int, Int)
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] two errors found
+[error] (probeRender / Compile / compileIncremental) Compilation failed
+[error] Total time: 2 s, completed Oct 28, 2026, 1:06:56 p.m.

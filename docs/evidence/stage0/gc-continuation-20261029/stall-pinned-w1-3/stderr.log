@@ -1,0 +1,9 @@
+[12:13:48.024] [threads-fa4a9e6:62106] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[12:13:48.024] [threads-fa4a9e6:62106] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[12:13:48.024] [threads-fa4a9e6:62106] [ScalaNative GC|Warning]   Thread id=6131331072, stackBottom=0x16d74b000, state=Managed, alive=yes
+[12:13:48.024] [threads-fa4a9e6:62106] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+sirin watchdog: FATAL: slot 0 made no progress for 10000 ms; aborting

@@ -1,0 +1,57 @@
+{
+  "recorded_utc": "2026-10-29T16:14:19.237557+00:00",
+  "package": "/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app",
+  "files": {
+    "/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app/Contents/MacOS/SirinEditor": "33f03e19b9b7ee648be63c5014f945cf9e0de61e43382f808a066e8ac55df82d",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app/Contents/app/sirin.jar": "4e695ccbfb7910579ec79f2f647242d60270f6a614ab0fdc1167d079795a2df8",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app/Contents/app/libsirin_desktop.dylib": "b95a14c59300f4c6c1e32d565f5d8573c322c2c5d792709cff44ae694e4e9993",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app/Contents/app/SirinEditor.cfg": "79df3e3492f2221bc3aaa8249e8450e179bdbbf66229aad485e6f35478ed7f24",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/target/package-editor/SirinEditor.app/Contents/Info.plist": "8f51caecebb0cdab0cf4150b853a8a3321b5cdfb8faa24c66876253cf2036725",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/src/main/scala/sirin/desktop/EditorWorkbench.scala": "9a2b1b66b6ddb5c6af954579163de97e075c4274b0bb2c7aeaab482045a8c934",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/src/main/java/sirin/desktop/NativeWindow.java": "bf198559345d11dfc63b3bc591719ad55dafd6a6d35ed62db5e0c7a668004ac6",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/native/editor_ax.m": "18413a1da40ced301f076cfbb9e49c7d39c8acd9dbf34f3008ef76c0bba2f35d",
+    "/private/tmp/sirin-gpu-host-20261028/desktop/native/sirin_desktop.c": "bd44ed03344a83decd4f27f6255e0ae469d4a8e6d840c3426ac6da326345b8c6",
+    "/private/tmp/sirin-gpu-host-20261028/docs/plans/2026-10-29-text-editor.md": "4ed9a6cdd2f79e3e6b9c324b09c6dbe81530daff7b0f46ee7c7f2a484f3cb40a"
+  },
+  "scope": "Preserved direct Cocoa package only; not current AccessKit integration",
+  "ui_observations": [
+    {
+      "action": "AX field click, select all, type IME focus probe",
+      "observed": "No tree change; focused element remained window",
+      "outcome": "initial focus attempt ineffective"
+    },
+    {
+      "action": "Raise window, pointer click title, select all, type IME focus probe",
+      "observed": "Title value IME focus probe; Undo enabled",
+      "outcome": "pass"
+    },
+    {
+      "action": "Cmd-Z, then Shift-Cmd-Z",
+      "observed": "Title Untitled, then IME focus probe; Undo/Redo enablement updated",
+      "outcome": "pass"
+    },
+    {
+      "action": "Undo title; pointer focus Document; select all; paste café שלום مرحبا newline 日本語",
+      "observed": "Document equals pasted multilingual multiline text",
+      "outcome": "pass"
+    },
+    {
+      "action": "Cmd-Z",
+      "observed": "Original three-line Document restored in one edit",
+      "outcome": "pass"
+    },
+    {
+      "action": "Read focused AX element after edits",
+      "observed": "Window reported as focused throughout",
+      "outcome": "limitation"
+    }
+  ],
+  "ui_observation_source": "CUA tool results in current conversation; transcribed observations, no screenshot artifact claimed",
+  "scripted_scenario_ui_intervention": false,
+  "qualification": {
+    "preserved_platform_client_path": true,
+    "real_input_method_candidate_ui": false,
+    "accesskit_replacement": false,
+    "all_screen_readers": false
+  }
+}

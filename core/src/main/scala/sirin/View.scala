@@ -13,7 +13,7 @@ trait ViewRebuild[V <: View]:
 
 object ViewRebuild:
   given ViewRebuild[View] = (view, decoration) => View.Decorated(view, decoration)
-  given ViewRebuild[TextView] = ???
+  given ViewRebuild[TextView] = (view, decoration) => View.TextDecoration(view, decoration)
   given ViewRebuild[TextFieldView] = ???
   given ViewRebuild[ButtonView] = ???
   given ViewRebuild[StackView] = (view, decoration) => View.StackDecoration(view, decoration)
@@ -61,6 +61,11 @@ object View:
   private[sirin] final case class StackDecoration(view: StackView, decoration: Decoration) extends StackView:
     def spacing(value: Lp): StackView = copy(view = view.spacing(value))
     def align(value: Alignment): StackView = copy(view = view.align(value))
+  private[sirin] final case class TextDecoration(view: TextView, decoration: Decoration) extends TextView:
+    def style(value: TextStyle): TextView = copy(view = view.style(value))
+    def color(value: ColorRole): TextView = copy(view = view.color(value))
+  private[sirin] final case class Space(size: Option[Lp]) extends View
+  private[sirin] final case class ScrollContent(content: View) extends View
   def empty: View = Empty
 
 trait TextView extends View:
@@ -68,8 +73,12 @@ trait TextView extends View:
   def color(role: ColorRole): TextView
 
 object Text:
-  def apply(content: String): TextView         = ???
-  def apply(content: Signal[String]): TextView = ???
+  private[sirin] final case class Description(content: Signal[String], textStyle: TextStyle = TextStyle.Body,
+      colorRole: ColorRole = ColorRole.OnSurface) extends TextView:
+    def style(value: TextStyle): TextView = copy(textStyle = value)
+    def color(value: ColorRole): TextView = copy(colorRole = value)
+  def apply(content: String): TextView = Description(Signal.const(content))
+  def apply(content: Signal[String]): TextView = Description(content)
 
 trait TextFieldView extends View:
   def label(text: String): TextFieldView
@@ -122,11 +131,13 @@ object Row:
   def apply(children: View*): StackView = View.Stack(children.toVector, horizontal = true)
 
 object Spacer:
-  def apply(): View         = ???
-  def apply(size: Lp): View = ???
+  def apply(): View = View.Space(None)
+  def apply(size: Lp): View =
+    require(size.toDouble.isFinite && size.toDouble >= 0, "spacer size must be finite and nonnegative")
+    View.Space(Some(size))
 
 object Scroll:
-  def apply(content: View): View = ???
+  def apply(content: View): View = View.ScrollContent(content)
 
 /** Layers drawn over `base`, each sized to it. */
 object Overlay:

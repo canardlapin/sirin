@@ -1,0 +1,57 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Defining probeRender / Compile / mainClass
+[info] The new value will be used by probeRender / Compile / bspBuildTargetRun, probeRender / Compile / packageBin / packageOptions, probeRender / Compile / selectMainClass
+[info] Reapplying settings...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] Linking (multithreadingEnabled=detect) (2266 ms)
+[info] Discovered 1885 classes and 12248 methods after classloading
+[info] Checking intermediate code (quick) (102 ms)
+[info] Multithreading was not explicitly enabled - initial class loading has not detected any usage of system threads. Multithreading support will be disabled to improve performance.
+[info] Linking (multithreadingEnabled=false) (1158 ms)
+[info] Discovered 1787 classes and 11547 methods after classloading
+[info] Checking intermediate code (quick) (84 ms)
+[info] Discovered 1763 classes and 9157 methods after optimization
+[info] Optimizing (debug mode) (3807 ms)
+[info] Produced 59 LLVM IR files
+[info] Generating intermediate code (15029 ms)
+[info] Compiling to native code (12651 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (256 ms)
+[info] Postprocessing (0 ms)
+[info] Total (23661 ms)
+benchmark-adapter=Apple M2 Pro
+corpus-comparison scale=1.0 Comparison(57404,196,0,0,None)
+{"scale":1.0,"coldMs":{"p50":860.293583,"p95":981.811291,"p99":981.811291},"submitCompleteMs":{"p50":8.735625,"p95":9.603709,"p99":11.888459},"readbackMs":{"p50":17.459958,"p95":54.049708,"p99":54.049708},"replacementMs":{"p50":5.725208,"p95":10.005458,"p99":10.716625},"oracleChecked":57404,"oracleExcluded":196,"oracleWorstByteError":0,"triangles":149632,"drawBatches":3,"meshResources":29,"textureResources":22,"grayCpuBytes":804,"overlayMeshUploadBytes":48,"warmUploadBytes":0,"warmRasterizations":0,"statsBeforeUpdates":{"payloadBytes":39737872,"meshUploadBytes":357696,"textureUploadBytes":66340,"programUploadBytes":1312272,"entries":51,"evictions":0},"timingBudgetPassed":true}
+corpus-comparison scale=1.25 Comparison(89932,68,1,0,None)
+{"scale":1.25,"coldMs":{"p50":1966.906125,"p95":2289.412959,"p99":2289.412959},"submitCompleteMs":{"p50":6.85725,"p95":10.604333,"p99":11.314375},"readbackMs":{"p50":23.652292,"p95":39.486042,"p99":39.486042},"replacementMs":{"p50":4.747375,"p95":7.287542,"p99":8.869166},"oracleChecked":89932,"oracleExcluded":68,"oracleWorstByteError":1,"triangles":180032,"drawBatches":3,"meshResources":65,"textureResources":22,"grayCpuBytes":1174,"overlayMeshUploadBytes":48,"warmUploadBytes":0,"warmRasterizations":0,"statsBeforeUpdates":{"payloadBytes":46849872,"meshUploadBytes":2290416,"textureUploadBytes":2164666,"programUploadBytes":4218048,"entries":154,"evictions":17},"timingBudgetPassed":true}
+Exception in thread "main" java.lang.IllegalStateException: Budget(requirement failed: stroke curve point budget)
+	at sirin.render.BatchBenchmark$.$anonfun$3(Unknown Source)
+	at sirin.render.BatchBenchmark$$$Lambda$15.apply(Unknown Source)
+	at scala.util.Either.fold(Unknown Source)
+	at sirin.render.BatchBenchmark$.$anonfun$2(Unknown Source)
+	at sirin.render.BatchBenchmark$$$Lambda$18.apply(Unknown Source)
+	at scala.collection.StrictOptimizedSeqFactory.fill(Unknown Source)
+	at scala.collection.immutable.Vector$.fill(Unknown Source)
+	at sirin.render.BatchBenchmark$.main$$anonfun$1(Unknown Source)
+	at sirin.render.BatchBenchmark$$$Lambda$5.apply$mcVD$sp(Unknown Source)
+	at scala.runtime.java8.JFunction1$mcVD$sp.apply(Unknown Source)
+	at scala.collection.immutable.VectorStatics$.foreachRec(Unknown Source)
+	at scala.collection.immutable.Vector.foreach(Unknown Source)
+	at sirin.render.BatchBenchmark$.main(Unknown Source)
+	at sirin.render.BatchBenchmark.main(Unknown Source)
+	at <none>.main(Unknown Source)
+[error] java.lang.RuntimeException: Nonzero exit code: 1
+[error] 	at scala.sys.package$.error(package.scala:30)
+[error] 	at scala.scalanative.sbtplugin.ScalaNativePluginInternal$.$anonfun$scalaNativeConfigSettings$19(ScalaNativePluginInternal.scala:307)
+[error] 	at scala.Option.foreach(Option.scala:407)
+[error] 	at scala.scalanative.sbtplugin.ScalaNativePluginInternal$.$anonfun$scalaNativeConfigSettings$16(ScalaNativePluginInternal.scala:307)
+[error] 	at scala.scalanative.sbtplugin.ScalaNativePluginInternal$.$anonfun$scalaNativeConfigSettings$16$adapted(ScalaNativePluginInternal.scala:259)
+[error] 	at scala.Function1.$anonfun$compose$1(Function1.scala:49)
+[error] stack trace is suppressed; run 'last probeRender / Compile / run' for the full output
+[error] (probeRender / Compile / run) Nonzero exit code: 1
+[error] Total time: 93 s (0:01:33.0), completed Oct 28, 2026, 3:10:56 p.m.

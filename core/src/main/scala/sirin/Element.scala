@@ -22,11 +22,13 @@ enum PointerResponse:
 /** A recording paint target. Paint is pure: it may not write application state. */
 trait Canvas:
   def theme: Theme
+  /** Recording implementations expose prepared-result lookup, not shaping. */
   def textServices: TextServices
   def text(layout: TextLayout, at: Point, color: Color): Unit
   def fill(rect: Rect, color: Color, radius: Lp = Lp.zero): Unit
   def stroke(rect: Rect, color: Color, width: Lp, radius: Lp = Lp.zero): Unit
   def line(from: Point, to: Point, color: Color, width: Lp): Unit
+  /** Uses an already prepared unbounded-width request for this content/style. */
   def text(content: String, at: Point, style: TextStyle, color: Color): Unit
 
   /** Isolated group opacity (VISION §7). */
@@ -80,16 +82,3 @@ object Layout:
   def apply[S](name: String, state: Signal[S], policy: LayoutPolicy[S])(children: View*): View = ???
   def named[S](name: String, state: Signal[S], policy: LayoutPolicy[S])(children: (Slot, View)*): View = ???
   def presented[S](name: String, state: LayoutPresentation[S], policy: LayoutPolicy[S])(children: View*): View = ???
-
-/** Shared layout result for paint, caret, hit testing and accessible geometry.
-  * Public text/IME editing services and hover/cursor remain Stage 2 obligations;
-  * this provisional shape does not assert that TextField is implemented.
-  */
-trait TextLayout:
-  def size: Size
-  def caret(utf16Offset: Int): Rect
-  def hit(at: Point): Int
-  def selection(fromUtf16: Int, untilUtf16: Int): Seq[Rect]
-
-trait TextServices:
-  def layout(text: String, style: TextStyle, maxWidth: Lp)(using Committed): TextLayout

@@ -1,0 +1,44 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2441 ms)
+[info] Discovered 3401 classes and 21487 methods after classloading
+[info] Checking intermediate code (quick) (173 ms)
+[info] Discovered 3369 classes and 16847 methods after optimization
+[info] Optimizing (debug mode) (5137 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (17089 ms)
+[info] Compiling to native code (13364 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (383 ms)
+[info] Postprocessing (0 ms)
+[info] Total (26397 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '56772'.
+Test run sirin.render.BatchSuite started
+batch-adapter=Apple M2 Pro
+comparison=curves-layers-1.0 checked=3068 excluded=4 worstByteError=1
+comparison=curves-layers-1.25 checked=4793 excluded=7 worstByteError=1
+==> X sirin.render.BatchSuite.four-scale batched fills, curved strokes, holes, nested clips, gradients and isolated layers match reference 166.735s munit.FailException: probes/render/src/test/scala/sirin/render/BatchSuite.scala:62 curves-layers-1.5 (31,15) channel=2 actual=99 reference=104 delta=5
+61:            val (u,v)=es(e)
+62:            if px>=math.min(u.x,v.x)-0.0001 && px<=math.max(u.x,v.x)+0.0001 &&
+63:                py>=math.min(u.y,v.y)-0.0001 && py<=math.max(u.y,v.y)+0.0001 then
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=1
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=1
+==> X sirin.render.BatchSuite.four-scale compact mask and RGBA textures preserve transformed crops, filtering, paint and text 6.203s munit.FailException: probes/render/src/test/scala/sirin/render/BatchSuite.scala:62 textures-text-1.5 (9,39) channel=0 actual=0 reference=155 delta=155
+61:            val (u,v)=es(e)
+62:            if px>=math.min(u.x,v.x)-0.0001 && px<=math.max(u.x,v.x)+0.0001 &&
+63:                py>=math.min(u.y,v.y)-0.0001 && py<=math.max(u.y,v.y)+0.0001 then
+sirin.render.BatchSuite: finished 176.003s
+Test run sirin.render.BatchSuite finished: 2 failed, 0 ignored, 9 total 176.003s
+[error] Failed: Total 9, Failed 2, Errors 0, Passed 7
+[error] Failed tests:
+[error] 	sirin.render.BatchSuite
+[error] (probeRender / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 211 s (0:03:31.0), completed Oct 28, 2026, 2:49:57 p.m.

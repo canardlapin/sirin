@@ -1,0 +1,49 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (16742 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/core/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.016s
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.017s
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.018s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.028s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.028s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.028s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.021s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.021s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 2 s, completed Oct 28, 2026, 7:48:52 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/text-ui/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.008s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.009s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 1 s, completed Oct 28, 2026, 7:48:53 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1885 ms)
+[info] Discovered 3460 classes and 21315 methods after classloading
+[info] Checking intermediate code (quick) (132 ms)
+[info] Discovered 3421 classes and 16393 methods after optimization
+[info] Optimizing (debug mode) (2508 ms)
+[info] Produced 97 LLVM IR files
+[info] Generating intermediate code (6978 ms)
+[info] Compiling to native code (5549 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (408 ms)
+[info] Postprocessing (0 ms)
+[info] Total (12644 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '56957'.
+Test run sirin.graphics.text.TextUiSuite started
+sirin.graphics.text.TextUiSuite: finished 0.291s
+Test run sirin.graphics.text.TextUiSuite finished: 0 failed, 0 ignored, 8 total 0.291s
+[info] Passed: Total 8, Failed 0, Errors 0, Passed 8
+[success] Total time: 16 s, completed Oct 28, 2026, 7:49:09 a.m.

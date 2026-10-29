@@ -1,0 +1,200 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21621 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (2522 ms)
+[info] Discovered 3429 classes and 21574 methods after classloading
+[info] Checking intermediate code (quick) (136 ms)
+[info] Discovered 3397 classes and 16928 methods after optimization
+[info] Optimizing (debug mode) (3409 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (10704 ms)
+[info] Compiling to native code (7992 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (210 ms)
+[info] Postprocessing (0 ms)
+[info] Total (17982 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '58188'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '58190'.
+Test run sirin.render.BatchSuite started
+==> X sirin.render.BatchSuite.actual batched Metal triangles render an opaque rectangle and deterministic teardown 0.030s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.four-scale batched fills, curved strokes, holes, nested clips, gradients and isolated layers match reference 0.006s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.four-scale compact mask and RGBA textures preserve transformed crops, filtering, paint and text 0.027s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.distinct drawings share GPU geometry and compact assets with new paint and overlay 0.023s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.pinned texture pressure rejects with rollback; idle cells evict and old snapshots remain unchanged 0.003s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.pinned mesh pressure rejects without moving live spans; idle meshes evict 0.003s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.resource budgets refuse whole programs, oversized cells and excessive layer depth 0.004s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.ownership, actual device generation replacement and 100 disposal cycles 0.003s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.pinned R8 mask pressure, exact face reuse and paint-independent replacement 0.003s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+==> X sirin.render.BatchSuite.triangle work and GPU program inventory limits cannot produce partial success 0.002s java.lang.IllegalStateException: batch GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader validation error: Entry point resolve at Compute is invalid
+   ┌─ :97:54
+   │
+97 │   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(id.x*4u+x,id.y),0); }
+   │                                                      ^^^^^^^^^^^^^^^^^^^^^ naga::ir::Expression [43]
+   │
+   = Expression [43] is invalid
+   = Composing 0's component type is not expected
+
+
+      Expression [43] is invalid
+        Composing 0's component 
+sirin.render.BatchSuite: finished 0.438s
+Test run sirin.render.BatchSuite finished: 10 failed, 0 ignored, 11 total 0.438s
+[error] Failed: Total 11, Failed 10, Errors 0, Passed 1
+[error] Failed tests:
+[error] 	sirin.render.BatchSuite
+[error] (probeRender / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 26 s, completed Oct 28, 2026, 3:00:55 p.m.

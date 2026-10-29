@@ -1,0 +1,3 @@
+thorvg=false synchronized-render-readback-ns=5603292,5620916,5685458,5691667,5707667,5712834,5726334,5747000,5756459,5805958
+thorvg=true synchronized-render-readback-ns=18396791,18429333,18623625,18641458,18704084,18830916,18843750,20601916,21963125,24844500
+identical opaque two-fill path/clip seam; not production throughput

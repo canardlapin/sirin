@@ -1,0 +1,9 @@
+{
+  "scope": "bounded reference continuation; no production or browser qualification",
+  "scales": [1, 1.25, 1.5, 2],
+  "stroke": "path-space polylines: butt/round/square caps, bevel/round/miter joins and miter fallback, odd/zero dashes and phase, closed seam; curved strokes explicitly unsupported",
+  "paint": "linear-light premultiplied linear gradients, ordered coincident stops, clamp/repeat/reflect, affine paint coordinates; glyph gradients explicitly unsupported",
+  "pixels": "analytic interiors and 4x4 scalar samples within 1 RGBA8 byte; geometric round error <= target tolerance/2 before float packing",
+  "retention": "one immutable packed-program GPU storage buffer per explicit retained owner; 64 programs and 64 MiB per device maximum; replay uploads zero source bytes; no cross-program image/glyph atlas reuse",
+  "verification": "full testJVM/testNative plus real GPU all-scale checks; preserve failures"
+}

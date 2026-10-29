@@ -1,0 +1,44 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (19194 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/graphics/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1447 ms)
+[info] Discovered 2513 classes and 17166 methods after classloading
+[info] Checking intermediate code (quick) (91 ms)
+[info] Discovered 2435 classes and 13110 methods after optimization
+[info] Optimizing (debug mode) (2115 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (7059 ms)
+[info] Compiling to native code (5669 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (151 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11584 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '50564'.
+Test run sirin.render.OffscreenSuite started
+==> X sirin.render.OffscreenSuite.actual Metal device and shared ThorVG texture draw an opaque rectangle 0.375s java.lang.IllegalStateException: GPU open: Validation Error
+
+Caused by:
+  In wgpuDeviceCreateShaderModule
+    
+Shader '' parsing error: name `meta` is a reserved keyword
+   ┌─ wgsl:30:9
+   │
+30 │     let meta=data[base+6]; let extra=data[base+7];
+   │         ^^^^ definition of `meta`
+
+
+
+sirin.render.OffscreenSuite: finished 0.376s
+Test run sirin.render.OffscreenSuite finished: 1 failed, 0 ignored, 1 total 0.376s
+[error] Failed: Total 1, Failed 1, Errors 0, Passed 0
+[error] Failed tests:
+[error] 	sirin.render.OffscreenSuite
+[error] (probeRender / Test / test) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 17 s, completed Oct 28, 2026, 9:58:46 a.m.

@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-28",
+  "recorded_utc": "2026-10-28T11:59:54.518004+00:00",
+  "start_head": "606f45d",
+  "final_head": "606f45dc541b498689a903e37e2fd353bd162f9a",
+  "mote_child": "bd-01M6157EM07J2KBV1B0TYZQC4E",
+  "scope": "core text contract, pure text-ui bridge and isolated native text services; no kernel implementation changes",
+  "working_tree_note": "Concurrent uncommitted kernel/workbench work continued during verification. Their transient failures were corrected independently. This is not a frozen repository snapshot.",
+  "verification": [
+    {
+      "command": "sbt testJVM testNative examples/compile",
+      "exit_code": 0,
+      "log": "final-root.log",
+      "passed": 456,
+      "ignored": 0
+    },
+    {
+      "command": "sbt textNative/test probeUnicode/test probeParagraph/test examples/compile",
+      "exit_code": 0,
+      "log": "artifact-tests.log",
+      "passed": 54,
+      "ignored": 0
+    },
+    {
+      "command": "sbt 'coreJVM/test' 'textUIJVM/test' 'probeParagraph/testOnly *TextUiSuite'",
+      "exit_code": 0,
+      "log": "focused.log",
+      "passed": 19,
+      "ignored": 0
+    }
+  ],
+  "tests_in_final_runs": 510,
+  "negative_evidence": [
+    {
+      "log": "concurrent-compile-failure.log",
+      "exit_code": 1,
+      "reason": "Concurrent EventDeadlineSuite equality type mismatch"
+    },
+    {
+      "log": "concurrent-workbench-failure.log",
+      "exit_code": 1,
+      "reason": "Concurrent workbench search query expectation"
+    }
+  ],
+  "sha256": {
+    "build.sbt": "341e505f34be194aac168701cd91a8c4539c46607d109a54e39a8e83969b65d9",
+    ".github/workflows/ci.yml": "2c63c1c07a43fbaf97453c2c3fd7153b12cf7599ba2704d15326daf00090919f",
+    "core/src/main/scala/sirin/Element.scala": "bc00f90aa347aaf20a436f8c1842cc1449a020f153626cc83a746c212d6f7c81",
+    "core/src/main/scala/sirin/Text.scala": "e14c95b54c3a91c735162037c68929376c3ade87856fd982e2fc1528a1a50f34",
+    "core/src/test/scala/sirin/TextApiSuite.scala": "a0f60543787a1f5fcab9b6b24fd3403726cb360d455691440f3466c91d5e6f5c",
+    "text-ui/src/main/scala/sirin/text/LayoutUnits.scala": "03c7fa8d560a6a23167b73e3b923bb722c39cd64bc6ac5020b7ca55bcd888c43",
+    "text-ui/src/main/scala/sirin/text/ResolvedTextLayout.scala": "6cb893c2bc3875c2117410f79c413a6dd07cca1b8bccf6c7c1f57a5d7542b8c9",
+    "text-ui/src/test/scala/sirin/text/LayoutUnitsSuite.scala": "fc1b1cf67f8aa1999b53ee94977eafe5e1d8f547f48f92721fd1d40d25453c66",
+    "probes/paragraph/src/main/scala/sirin/graphics/text/NativeTextServices.scala": "ef65f73cfbf5b9f62ceb84822290050c17dea5d89fbb3ae30f34393ad44eaadf",
+    "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala": "20f5046b40e22b10b486f8ed4cd335373b6117e8d9e0deb06db7c9ff40ec5a83",
+    "probes/paragraph/src/test/scala/sirin/graphics/text/TextUiSuite.scala": "ec922e91d1bb3ffebe1fd88e4200b5c667cc22536fd47daf9beeac61c2b990c1",
+    "graphics/src/main/scala/sirin/graphics/TextGeometry.scala": "9f52d55c601a1b3a7f3d25a648201fb379e0f00d69cbb10696ad5426bfc2c63d",
+    "graphics/src/main/scala/sirin/graphics/Text.scala": "3f164e551e9367e7a4fc1292888cd71b764db99b2742c28966633490fff5774e",
+    "graphics/src/main/scala/sirin/graphics/ParagraphLayout.scala": "4410e8d76ff0c26562b3803441945d34ed2b4953d493d50a3e39029b14b30b3d",
+    "graphics/src/main/scala/sirin/graphics/WrappedParagraphLayout.scala": "d4ee045e27688a9a1e323db5e8b920f9ba7a468bac5d03fe4c1a80d0b609fd5f",
+    "graphics/src/test/resources/fonts/SHA256SUMS": "e2e5bb4dcd3c23f87470523c36ed3507b98832ef0ce8fe1ff01cb9c2222bf146",
+    "probes/unicode/src/test/resources/unicode/SHA256SUMS": "48c23cdf1d6054f0d2030a8309a5d64122cf45a9dfc0dfb096f792638fd3c995",
+    "README.md": "8eea197459cd70ce2c6412b4f2ff23f4b261ac10c8b448935d4586cc97a6684b",
+    "text-ui/README.md": "bb271dcdc581f0733807213c80d04849ac37905e61776f5d1099d9c40bfdc08b",
+    "graphics/README.md": "9dbed433734d03cc831517e5310cf347f662f77b89fb1b2ba568d8c4355cfb77",
+    "text-native/README.md": "4b469e115b139bf212dacdafc2d374206b6d95d52bc01a1f38c26f0b0623d991",
+    "probes/paragraph/README.md": "62987e712e16cc17733e9a70e527066a3c00e69246895dc62f4b0775042700ce",
+    "docs/design/VISION.md": "a694985b89fe2d581d7c2db5cc7c5b43799d6b3d4c62196f6a6df26d2e7a0fbc",
+    "docs/plans/2026-10-27-roadmap.md": "30a4d878109382acd17b2ce9fd49af4c532b3b66012111cdff2141a0beef1ef5",
+    "docs/plans/2026-10-27-graphics-api.md": "084dda52b377a7150dd53d6aafc2799641a32678ea58da1b2adee33e1492823f",
+    "docs/plans/2026-10-27-graphics-resources.md": "49d7191a64f958ccaf84f0f18fcac53c2ba537c937a21c0b5618ac1e5c464ae2",
+    "docs/evidence/graphics/2026-10-28-text-ui.md": "bb45de15d47b26492d15d8b1792c1de3c8135dafc1a1486d660cb3468dfe64f6"
+  },
+  "receipt_sha256": {
+    "concurrent-workbench-failure.log": "9351d0f34ac86bce944ff2b6c52a2d575e45234834182b174791e853eecc3464",
+    "compile.log": "a49e376fc163406dcacf64134137215f62da2af295f74784c872a4194c8e0155",
+    "artifact-tests.log": "028723b87dc189df4252235e61ee601ffd1bad641702e0c10aa3c8ac9d8b02f0",
+    "dynamic-libraries.txt": "052a6ee4ead3db366236a95442ef2e2fce9737d30821e026a44f51358c047264",
+    "final-root.log": "5047b040ffd620d1e3fd7931b8b487a5c81f2ca6196494cf34f5f38f6a06624f",
+    "focused.log": "5c8db47dd45d18594fb1fa698d8f6067f84c7c97cb51f00657409754011fe532",
+    "concurrent-compile-failure.log": "c53b95740baef0dada1c1ec205ecc29792f271a4f297f4eb094b561ee50903df"
+  }
+}

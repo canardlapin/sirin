@@ -1,0 +1,30 @@
+{
+  "full_platform_case_count": 690,
+  "module_totals": [
+    65,
+    9,
+    2,
+    6,
+    174,
+    30,
+    7,
+    6,
+    65,
+    9,
+    2,
+    6,
+    174,
+    30,
+    7,
+    6,
+    7,
+    12,
+    40,
+    33
+  ],
+  "final_gpu_cases": 33,
+  "final_benchmark_scales": 4,
+  "ignored_cases": 0,
+  "strict_c11_status": 0,
+  "original_budget_unchanged": true
+}

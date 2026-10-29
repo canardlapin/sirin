@@ -1,0 +1,47 @@
+{
+  "frozen_at": "2026-10-28T18:34:56Z",
+  "scope": "bounded direct-wgpu raster pipeline; separate device owner, no mounted-host or full G-1/G-2 acceptance",
+  "scales": [1, 1.25, 1.5, 2],
+  "quality": {
+    "sampling": "4x4 fixed subpixel grid, linear-premultiplied RGBA16Float render targets; straight sRGB RGBA8 resolve",
+    "pixel_tolerance_bytes": 2,
+    "boundary_policy": "Reference ray-winding and GPU top-left triangle rules differ at exact sample/edge ties. Exclude only independently identified samples within 0.0001 device units of source/clip boundaries from strict pixel comparison; report exclusions and worst errors. No blanket image threshold.",
+    "geometry": "CPU scanbeam winding tessellation with all segment crossing events, intersected path clips, explicit work and float precision checks; independent winding and sampled interior triangle-union checks"
+  },
+  "resources": {
+    "cpu_mesh_bytes": 8388608,
+    "cpu_asset_bytes": 4194304,
+    "cpu_cache_entries": 256,
+    "gpu_mesh_arena_bytes": 8388608,
+    "glyph_atlas": "1024x1024 R8Unorm, 64x64 fixed cells, at most 256 exact glyph/raster keys",
+    "image_atlas": "1024x1024 RGBA32Float linear-premultiplied, 256x256 fixed cells, at most 16 immutable image identities; manual nearest/bilinear textureLoad with per-source clamp",
+    "gpu_payload_bytes": 201326592,
+    "max_programs": 16,
+    "max_target": [640, 360],
+    "max_layer_depth": 2,
+    "max_edges_per_tessellation": 4096,
+    "max_intersection_pairs_per_compile": 16000000,
+    "max_triangles_per_compile": 262144,
+    "eviction": "only unpinned mesh spans and atlas cells; exact device/thread ownership, deterministic retirement, failed-admission reference rollback"
+  },
+  "corpus": {
+    "logical_viewport": [320, 180],
+    "ordered_marks": 512,
+    "curved_paths": 100,
+    "multilingual_labels": 16,
+    "image": "64x64 RGBA source; 32 independent immutable replacement snapshots",
+    "composition": "nonzero/evenodd holes/self-intersections, 2 nested clips, 2 nested isolated groups, gradients, cropped transformed nearest/linear images, gradient glyphs",
+    "lifecycle": "20 scale/resize transitions, 100 retain/dispose cycles, forced real device-generation replacement and pinned cache pressure"
+  },
+  "measurement": {
+    "cold_preparations": 10,
+    "warmup_frames": 120,
+    "measured_frames": 600,
+    "cpu_prepare_p95_ms": 5000,
+    "warm_submit_complete_p95_ms": 33.34,
+    "warm_upload_bytes": 0,
+    "warm_rasterizations": 0,
+    "clock": "CPU wall time; submit-complete uses synchronous queue completion without readback; separate synchronous readback timing; no GPU timestamp or input/display latency claim",
+    "acceptance": "Budgets stay fixed even if failed. Correctness, resource lifetime and full platform suites required; report timing failures as unqualified performance, not completion of the performance gate."
+  }
+}

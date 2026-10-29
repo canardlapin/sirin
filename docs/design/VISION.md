@@ -1,6 +1,7 @@
 # Sirin: design direction
 
-**Status:** draft design direction, 2026-10-27. Nothing here is implemented.
+**Status:** draft design direction, 2026-10-27. Implementation and qualification
+status are tracked in the plans and evidence notes; this document defines targets.
 Lifecycle stage once a build exists: `prototype`.
 
 > This is pre-release development software. APIs, semantics, and package
@@ -671,7 +672,30 @@ qualifies a headless driver, not a rendered frame or full Stage 1 exit.
     happen at acquire,
   - `wgpuSurfacePresent`,
   - file dialogs,
-  - font enumeration.
+  - the isolated offscreen probe's `sgpu_open`, `sgpu_render`, `sgpu_close`,
+    `sgpu_retain`, `sgpu_retain_assets`, `sgpu_asset_acquire`, `sgpu_replay`,
+    and `sgpu_program_close`:
+    device/pipeline creation, uploads, shader dispatch, readback and synchronized
+    retirement can block. All callbacks record native-owned state only. Native
+    metadata/live-owner getters are bounded plain externs,
+  - the isolated batched-render probe's `bgpu_open`, `bgpu_close`,
+    `bgpu_mesh_acquire`, `bgpu_asset_acquire`, `bgpu_retain`, `bgpu_replay`,
+    and `bgpu_program_close`: pipeline/resource creation, uploads, submission,
+    readback and synchronized retirement can block. Callbacks write native-owned
+    state only; bounded metadata getters and reference releases are plain externs,
+  - font enumeration,
+  - the font-service shim's `sg_text_open`, `sg_text_close`, `sg_text_metrics`,
+    `sg_text_shape`, `sg_text_glyph`, `sg_text_carets`, `sg_text_run_free`, `sg_text_raster`, and
+    `sg_text_raster_free`: parsing, shaping, outline/raster work and native
+    allocation/retirement can delay collection. These calls never call Scala;
+    callers keep slow font work off the UI owner. Count/version/pixel-pointer
+    accessors are bounded, plain externs,
+  - the isolated Unicode probe's `su_open`, `su_close`, `su_analyze`,
+    `su_result_free`, `su_line`, `su_line_free`, and `su_order`: Unicode
+    analysis, object-level ordering and native allocation/retirement can delay
+    collection. These calls never call Scala. Result-count/array-pointer and
+    bounded allocation-free `su_script_info` table accessors are plain externs;
+    slow analysis belongs off the UI owner.
 
   Re-entry into Scala from inside a `@blocking` call is not assumed safe.
   wgpu callbacks fire inside `ProcessEvents` and `WaitAny`, so they are
@@ -814,6 +838,7 @@ a separate pointer-only shim integration; they never enter these Scala endpoints
 |---|---|---|
 | Windows, events, clipboard | SDL3 behind `PlatformShell` | IME quality: SDL's composition events compared with native `NSTextInputClient` and TSF. There is no native menu bar. Each gap gets a small per-OS adapter. |
 | GPU | `wgpu-native`, with a pinned release and pinned `webgpu.h` | Header and ABI churn (the `webgpu.h` standardization changed many signatures). Struct-by-value and callback ABI from Scala Native. |
+| General 2D graphics | Sirin's public Scala graphics API and prepared scene lower directly to `wgpu-native` | Path/stroke quality, text, effects, compositing correctness, batching, and measured costs. A bounded ThorVG comparison tests delegation; Skia remains a conditional alternative. External adoption requires a responsibility update. |
 | Shaping | HarfBuzz | Low risk. |
 | Font loading, rasterization | FreeType for rasterization. Fallback discovery through CoreText, DirectWrite, or fontconfig. | Fallback lists differ per OS. Color emoji (COLR/CBDT/sbix). |
 | Bidi, segmentation, line breaking | **ICU4X through its C FFI** is the lead candidate. ICU4C remains an option. | Compare equivalent capabilities in **trimmed** deployments: ICU4X custom data against ICU4C filtered through its data build tool. Neither untrimmed size is a fair comparison. ICU4X C API coverage of segmenters and bidi is confirmed. |
@@ -876,20 +901,212 @@ a separate pointer-only shim integration; they never enter these Scala endpoints
   `target/`, one rpath, and one copy of std. Until then, Stage 0 uses the
   pinned wgpu-native prebuilt dylib.
 
+  The standalone P0.8 qualification process may link ICU4X alone, without
+  wgpu-native or AccessKit. It still contains one Rust library. This isolated
+  probe is not a host integration exception: co-linking ICU4X with the GPU or
+  accessibility stack requires the combined `sirin-native` crate first.
+
+  P0.8 also checks the algorithms selected by the generated C API, rather
+  than inferring rule versions from compiled-data versions. Where that API
+  selects older algorithms, the probe may expose pinned upstream Unicode
+  algorithms through a small pointer-only C ABI in the same library. The
+  unstable upstream dependency and reference-test evidence must be explicit;
+  Sirin does not implement its own Unicode rules to fill the gap.
+
+  The same pinned adapter may expose upstream line-adjusted bidi levels and
+  source index maps absent from the generated API's reordered-string result.
+  It keeps codepoint ranges, paragraph base levels and X9 omissions explicit;
+  it does not choose wrap points or replace Scala's shared layout/shaping model.
+
+  The isolated paragraph probe may combine this one ICU4X Rust library with
+  the C/C++ HarfBuzz/FreeType components. It adds no wgpu/AccessKit library and
+  is not production host integration. Scala itemizes grapheme-aligned script/
+  bidi runs using pinned Script/Script_Extensions and bracket properties,
+  resolves an explicit supplied-face list, and owns paragraph placement. Every
+  font attempt receives logical source ranges with the full containing-line
+  shaping context (the entire paragraph when unwrapped). Paragraph bidi/script
+  analysis still uses the complete source. Wrapping chooses grapheme-aligned
+  Unicode opportunities by exact candidate-line shaping, adjusts bidi per line,
+  preserves source-global mappings and reports unbreakable overflow. Candidate
+  and shaping budgets cover the complete layout attempt.
+  The immutable result retains resolved runs, exact fonts, positions and source
+  mappings for measurement and recording. Grapheme caret, hit-testing and
+  selection geometry derive from those same runs. Logical upstream/downstream
+  affinity preserves distinct bidi/wrap edges. Usable font GDEF ligature carets
+  are positioned with the shaped glyph origin; otherwise interiors explicitly
+  interpolate the actual cluster advance. This is a geometry policy, not a
+  second shaping engine or a claim that inferred interiors are font metrics.
+  OS discovery and editing behavior/IME remain subsequent work;
+  unsupported/missing text stays explicit.
+
 What Scala owns: line layout, the editing model, selection, caret, the
 compositor policy, batching, the glyph atlas, shaders, and resource tracking.
 
 The text pipeline produces **one layout result**. Drawing, caret placement,
 hit testing, selection, and accessibility geometry all read from it.
+The provisional core `TextLayout` contract uses explicit UTF-16 positions with
+logical upstream/downstream affinity, optional grapheme-safe carets, hit results
+retaining alternatives, and selection regions retaining line and interpolation
+metadata. No single-offset convenience operation silently discards affinity or
+hit ambiguity. Invalid caret queries return None; invalid selection endpoints
+reject without snapping. Geometry is local to the layout, in logical pixels.
+
+The pure `text-ui` bridge depends on core and standalone graphics; neither core
+nor graphics depends on the other. Its `ResolvedTextLayout` retains one exact
+wrapped or unwrapped paragraph result and converts original UTF-8 mappings to
+core UTF-16 values and Double coordinates to `Lp` without scale/snapping.
+Recording uses the retained glyph runs, with explicit core color/position
+conversion. Adapting or querying it adds no native owner or layout engine.
+The isolated paragraph component may implement core `TextServices` with an
+explicit supplied-font/style map using its existing wrapping pipeline, keeping
+the `Committed` call-site requirement and caller-owned native lifetimes. This
+does not establish mounted phase dispatch, font discovery, IME, or production
+host integration; slow layout still belongs under the existing worker policy.
 Committed text and IME composition are kept as separate state. Physical keys,
 logical keys, and text input are three separate input channels.
 
 ## 7. Renderer
 
+### 7.1 Public graphics API and quality bar
+
+**Owner direction (2026-10-27):** Sirin's public graphics API must be every bit
+as good as browser graphics in capability, visual quality, and authoring
+experience. Custom graphics are a first-class product, with the same quality
+bar as the standard toolkit. A handful of widget-painting primitives does not
+meet this requirement.
+
+The reference is the drawing capability of Canvas 2D and SVG, expressed through
+typed Scala APIs. This extends the graphics ambition without requiring a browser
+engine or CSS compatibility. Programmable GPU work is served through the public
+surface integration. Backend-specific escape hatches cannot be the only way to
+draw ordinary 2D graphics.
+
+**A general graphics subsystem.** `sirin-graphics` owns a public drawing model
+usable without mounting a widget tree. Controls, custom components, diagrams,
+editors, charts, image viewers and animated content are peer consumers. Public
+drawing operations produce reusable, inspectable recordings with logical resource
+references; backend preparation derives device-specific resources. The graphics
+plan defines recording ownership, invalidation and preparation boundaries under
+§5. GPU surfaces remain an advanced public extension path.
+
+**Direct lowering to wgpu is the strategic baseline, subject to evidence.** Sirin
+lowers prepared drawings into GPU buffers, textures, pipelines, render passes,
+and draw calls through the pointer-only native boundary. Geometry preparation,
+glyph atlases, batching, and graphics shaders implement the drawing contract;
+wgpu supplies GPU access. Focused libraries can supply individual algorithms.
+A bounded comparison with ThorVG is the first external-engine investigation,
+using the same general-purpose corpus and text/composition contract. Record its
+outcome and the backend decision by the Stage 2 graphics exit before expanding
+the full renderer. This does not commit to shipping two backends. Skia remains
+an alternative if quality, coverage, integration or engineering-cost findings
+warrant further evaluation. Any external adoption explicitly revises §6 and
+§7.2 responsibilities; Scala ownership of the public model, application semantics,
+composition policy, lifecycle integration and diagnostics remains invariant.
+
+The public contract must cover:
+
+- Reusable paths: lines, quadratic and cubic curves, arcs, compound paths,
+  both fill rules, complete stroke styles, dashes, and geometry queries.
+- Solid, gradient, and repeating-pattern paints; arbitrary affine transforms;
+  nested path clips and masks; defined compositing and blend modes; isolated
+  layers, shadows, and composable filter effects.
+- High-quality international text, explicit font selection and fallback,
+  measured layout, glyph placement, and text geometry shared by drawing,
+  interaction, and accessibility.
+- Images with source cropping, controlled sampling, pixel upload and readback,
+  explicit color conversion and alpha semantics, and fractional display scales.
+- Reusable recordings, offscreen targets, batched marks, and custom GPU surfaces,
+  with inspectable costs, bounded resources, and export through public APIs.
+
+The Scala interface should make scoped drawing state and reusable immutable
+geometry easy to compose. Invalid geometry, unavailable capabilities, resource
+failures, and costly transfers must be observable. Standard widgets and external
+renderers use the same supported drawing facilities. This section introduces no
+new transaction, scheduling, or lifetime semantics: those remain governed by §5.
+
+`Canvas` in the authoring corpus is a provisional, deliberately partial shape,
+not the finished graphics contract. Stage 2 implements the nucleus; full graphics
+qualification is a Stage 4 exit requirement. The capability matrix, browser
+references, public API authoring cases, visual comparisons, and performance
+gates are in [the graphics API plan](../plans/2026-10-27-graphics-api.md).
+Every capability needs evidence before it is claimed; passing the nucleus does
+not establish browser-level completeness or quality.
+
+The pure `graphics-ui` bridge depends on core, graphics and `text-ui`. Its
+`RecordingCanvas` lowers core rectangles, centered strokes, butt-capped lines,
+clips, offsets and isolated opacity to public graphics operations. Rounded
+rectangles clamp a finite nonnegative radius to half the shorter side and use
+four cubic corner approximations; that representation is explicit, not exact
+circular-arc or rendered-pixel qualification. Logical units and straight-alpha
+colors convert through the same boundary as text, without device scaling.
+
+Painting reads already resolved text. `PreparedText` explicitly prepares a
+bounded request inventory through `TextServices` before recording, or accepts
+caller-supplied resolved layouts with matching source and width. The canvas's
+`textServices` performs immutable lookup only. Its string convenience uses an
+unbounded-width request; missing requests reject without calling a native
+service or inventing metrics. Explicit `Canvas.text(layout, ...)` accepts the
+bridge's actual resolved layout and records its retained glyphs. Preparation
+keeps the existing `Committed` requirement and slow-work policy. This introduces
+no new scheduler, cache or font-resolution epoch.
+
+The recording canvas is a synchronous lexical capability confined to its
+creating Scala thread. Its by-name scopes restore the active graphics target
+in finally blocks and inherit graphics rollback semantics. Closing releases
+the canvas's theme/prepared-text references; recordings retain only their actual
+command dependencies. This is recording/authoring integration, not mounted phase
+dispatch, state-write enforcement, a GPU renderer or a complete Canvas 2D API.
+
+General graphics conformance spans controls, diagrams/editors, text, images,
+animation, offscreen work and dense scenes. Intaglio is one required independent
+consumer, not the source of the graphics API, module boundaries or roadmap.
+Its optional adapter uses only public drawing, text, input and semantics APIs,
+preserves ordered batches, uses consistent text metrics/painting, and reuses its
+resolved scene for picking. Intaglio never becomes a core dependency. Native
+portability is a separate consumer prerequisite and does not block general
+recording/API or nucleus work. General capability qualification and downstream
+acceptance have separate evidence; full Stage 4 acceptance requires both.
+
+### 7.2 Rendering and compositing foundations
+
 **Primitives.** The initial set is rectangles, rounded rectangles with
 borders, analytic SDF shadows, images, glyphs, clipping, transforms, and
 group opacity. Paths are tessellated on the CPU at first. A compute-based path
 renderer is a later option, adopted only if measurements justify it.
+
+An isolated offscreen qualification backend may use a deliberately bounded
+GPU per-sample interpreter over device-space flattened paths, image pixels and
+FreeType masks for already-shaped glyphs. It is a reference/probe implementation,
+not adoption of a production compute-path architecture or throughput claim.
+Scala owns preparation, numeric admission, program packing and shader semantics;
+the direct renderer's pointer-only C shim owns wgpu calls and native-only callback
+results. The comparison adapter additionally translates that prepared program to
+ThorVG's C API, with its delegated responsibilities and conversion costs recorded.
+It links wgpu with C/C++ font services, without ICU4X/AccessKit. Full paragraph
+co-linking still requires the combined Rust library. Preparation preserves
+clip/group/order semantics, validates backend capabilities and explicit budgets,
+and binds results to an actual backend device-generation/target description.
+The bounded continuation expands path-space polyline strokes to a single union
+fill and evaluates transformed linear-premultiplied gradients. The next bounded
+slice admits adaptive quadratic/cubic normal ribbons with explicit device-space
+normal/centerline and dash arc-length error limits. Stationary interior cusps
+reject explicitly. Positioned glyph coverage stays independent of paint, so
+solid and linear-gradient glyph draws share masks without reshaping. A confined
+bounded CPU LRU and device-local shared storage arena reuse immutable image/mask
+payloads across programs. Retained programs pin fixed arena spans; only idle
+entries may evict. Upload/raster counters distinguish cold work from reuse.
+These are qualification resources; production atlasing/text contrast and
+subpixel-bin policy remain separate gates. Explicit
+probe owners may retain an immutable uploaded program, output texture and bind
+group under finite count/payload budgets; replay reuses those objects, while
+readback remains separately allocated. Disposal immediately forbids replay and
+retires children through the existing owner/thread contract. This does not add
+an independent host cache, scheduler or lifetime policy.
+Unsupported operations reject the whole attempt. The ThorVG comparison uses a
+pinned engine against textures allocated by that same actual device and the same
+positioned glyph masks. Required texture formats, font/text and color limitations
+are recorded explicitly. This changes
+no kernel semantics and does not clear native host/pause gates.
 
 **Color and pixels.** These need early decisions because they are
 user-visible and hard to change later. *(new)*
@@ -1047,6 +1264,46 @@ There are three API surfaces with separate stability levels:
 - the component-author API,
 - the backend-author API, which may evolve faster than the other two.
 
+**Bounded JVM development host (2026-10-28).** A separate desktop JVM module
+uses JDK 25 FFM downcalls into an owned pointer-only C transport. C owns SDL and
+wgpu handles; native callbacks write native request records only, with no JVM or
+Scala upcalls. The macOS launcher uses `-XstartOnFirstThread`; both C and JVM
+validate the owner before window operations. The transport is single-window in
+this slice. Partial-open failure and close release resources in reverse order;
+late asynchronous request results retain their native records until completion.
+An event wait returns plain facts and never invokes application code. Worker
+wakeups enqueue a scoped event; they do not render or mutate the graph. Quiet
+windows park without periodic repaint. Clear/resize/shutdown qualification is a
+development-host gate, separate from rendering, controls and JVM shipping. The
+host tree and graphics recording layer remain cross-built and backend independent.
+JVM font/Unicode adapters use the same pointer-only C services and shared paragraph
+and PixelProgram source as the graphics track. The development display bridge may
+render offscreen, read back owned RGBA, then upload to the window surface; every
+copy is charged and this is explicitly not the production zero-copy renderer.
+No alternate shaping, geometry or raster algorithm is introduced by this bridge.
+The first host implements immutable Text, Spacer and Scroll descriptions and
+preserves layout decorations in structural snapshots. Committed tree capture uses
+an expiring read-only backend reader over declared graph nodes, never permanent
+per-frame Signal pins. It captures values before worker layout/preparation; worker
+jobs own native services and return owned immutable pixels, layouts and viewport
+feedback tagged with the request generation. Stale jobs cannot present or change
+viewports. Virtual row snapshots carry explicit row height. Viewport feedback
+settles before presentation; a changed layout is never paired with old row ranges.
+Transport activity can register a detachable wake-only callback, invoked outside
+transport locks under a read-only guard; failures are counted. Closing the runtime
+clears wake registrations before retiring work; a callback already in flight
+may complete, so a backend also serializes wake delivery with its resource close. It schedules no
+application handler or frame itself. The development window constrains its
+framebuffer to 1280x800 physical pixels across scale transitions. Reference GPU
+rendering is tiled with conservative glyph/command culling; per-tile programs
+retain the graphics track's work and memory budgets. This is a bounded integration
+adapter, with independent tiled/full-image equivalence checks, not a budget bypass
+or new rasterizer. Layout Start/Center/End use actual allocated extents; Stretch
+allocates its finite cross extent. Baseline alignment remains explicitly deferred.
+Empty structural placeholders do not consume stack spacing. Viewport stabilization
+is budgeted consecutively and resets after successful presentation. The owner
+combines native facts with bounded driver work and parks until activity or a real deadline.
+
 ## 10. Developer iteration (new section)
 
 Scala Native link times are the biggest risk to developer experience, and the
@@ -1069,7 +1326,7 @@ below is an **escalation threshold, not a target**.
 about 20 seconds, evaluate a **JVM development host**. It would bind the
 same native libraries through Panama FFM on JDK 25 as an initial development
 milestone toward the JVM desktop target (§1.1). This binding approach is a
-proposal requiring qualification. A development host alone does not establish
+bounded implementation with the qualification limits above. A development host alone does not establish
 shipping support or satisfy the usability/elegance gate. The intended JVM product
 target stands independently of the Native iteration-time threshold. On macOS it
 needs `-XstartOnFirstThread`. The

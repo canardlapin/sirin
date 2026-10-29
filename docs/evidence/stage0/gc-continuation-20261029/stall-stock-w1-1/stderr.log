@@ -1,0 +1,9 @@
+[12:10:15.375] [original-immix-trap:60657] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[12:10:15.375] [original-immix-trap:60657] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[12:10:15.375] [original-immix-trap:60657] [ScalaNative GC|Warning]   Thread id=6136475648, stackBottom=0x16dc33000, state=Managed, alive=yes
+[12:10:15.375] [original-immix-trap:60657] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+sirin watchdog: FATAL: slot 0 made no progress for 10000 ms; aborting

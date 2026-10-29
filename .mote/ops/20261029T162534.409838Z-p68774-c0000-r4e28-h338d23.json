@@ -1,0 +1,1 @@
+{"actor":"sirin-gc-ime-validation-20261029","entity":"bd-01M5Z3K47RQTRDXEY7Y2P8TMJ3","expect":{"title":"20261027T191457.826330Z-p79184-c0000-rabd7-h922dad"},"kind":"patch","op":"20261029T162534.409838Z-p68774-c0000-r4e28-h338d23","set":{"title":"P0.6: standalone trap safepoint stalls on stock and pinned runtimes; pause gate open"},"ts":"2026-10-29T16:25:34.409838Z","v":1}

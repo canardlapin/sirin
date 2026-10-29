@@ -1,0 +1,7 @@
+{
+  "reason": "The original RGBA16Float/fixed-function coverage implementation failed the frozen pixel oracle. test-benchmark-5.log and test-6.log retain both failures; test-7-float32.log demonstrates that Float32Blendable fixes the faint glyph case while the curve edge discrepancy remains.",
+  "unchanged": "Original contract.json remains byte-identical. Pixel tolerance, edge-tie epsilon, sample grid, scene counts, timing budgets and all CPU/GPU resource bounds remain in force.",
+  "precision_revision": "Require actual Float32Blendable device capability and RGBA32Float attachments. No silent half-float fallback. Process the four sample rows serially in 4x-width/1x-height attachments and accumulate f32 samples before the final resolve, retaining all 16 original sample positions under the original 192 MiB GPU payload bound.",
+  "coverage_revision": "Draw padded conservative bounding quads for tessellated triangles and evaluate canonical half-open triangle edges in the fragment shader. This avoids hardware fixed subpixel edge snapping. Shared edges use identical canonical arithmetic; primitive/instance painter order remains unchanged.",
+  "qualification": "This is an implementation correction, not a relaxed acceptance threshold or full browser/performance qualification. Measure the revised path with the same frozen corpus and report any failed budget."
+}
