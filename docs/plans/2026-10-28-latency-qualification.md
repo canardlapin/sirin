@@ -44,3 +44,18 @@ geometry, class counts, raw samples and unchanged percentile targets before it
 can mark qualification. Preserve failed partial receipts. An explicit
 `benchmark-resize-control` launch changes the native window after its first
 presentation to prove refusal before lower-cost samples can be collected.
+
+## Owner direction: proceed with the available host
+
+On2026-10-29 the owner stated: “well, not gonna get much quieter. please
+proceed”. This waives the numerical quiet precondition for continued development
+and this tranche's available-host latency acceptance. Do not wait for85% idle
+or ask for that permission again. Keep the same fixture, sample counts and
+p95/p99 latency targets. Record host conditions and preserve every run.
+
+Use the existing diagnostic runner so its `qualified=false` continues to mean
+that formal quiet qualification was not established. A complete, independently
+validated target pass may satisfy the owner-authorized available-host gate;
+record that decision separately from quiet qualification. Prior failures and
+quiet refusals remain unchanged. If targets miss, use the phase/profile evidence
+to make a concrete bounded improvement before another measurement.

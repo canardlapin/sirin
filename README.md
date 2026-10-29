@@ -20,7 +20,7 @@ strategy. Native libraries supply the lower-level services:
 |---|---|
 | Lifecycle | `prototype` |
 | Publication | Not published. Source only. |
-| Implemented | Build, handles, standalone graphics recording/resources/preparation, a bounded real offscreen wgpu pixel probe, native static-font shaping/coverage, Unicode analysis, shared text geometry, core text and Canvas recording bridges with prepared text. A bounded packaged macOS/JDK25 host supports keyboard/pointer commands, focus, retained moves and virtual scrolling. Its action-latency gate remains open. Headless kernel progress and qualification are tracked in the roadmap and evidence notes. |
+| Implemented | Build, handles, standalone graphics recording/resources/preparation, a bounded real offscreen wgpu pixel probe, native static-font shaping/coverage, Unicode analysis, shared text geometry, core text and Canvas recording bridges with prepared text. A bounded packaged macOS/JDK25 host supports keyboard/pointer commands, focus, retained moves and virtual scrolling. Its fixed workbench latency targets pass under the owner-authorized available-host conditions; formal quiet-run qualification is separate. Headless kernel progress and qualification are tracked in the roadmap and evidence notes. |
 | Platforms | macOS arm64, verified locally. Windows x64 and Linux x64 are planned and CI-only. No interactive Windows verification is possible yet. |
 
 ## Smallest example

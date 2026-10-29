@@ -1,0 +1,3 @@
+Before documentation amendments: python3 -B docs/evidence/canvas-recovery-20261028/verify.py exited0.
+Source/artifact hashes, all16 saved pixel pairs, canvas counters and host diagnostic verified.
+The749 Scala and6 receipt-control passes are prior verified evidence at ada4e2b, not fresh executions in this acceptance turn.

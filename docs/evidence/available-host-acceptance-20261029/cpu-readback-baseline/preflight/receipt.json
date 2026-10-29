@@ -1,0 +1,23 @@
+{
+  "protocol": "three_interval_samples_idle85_load_half_cpus_v1",
+  "logical_cpus": 10,
+  "samples": [
+    {
+      "at_utc": "2026-10-29T02:39:51.891270+00:00",
+      "cpu_idle_percent": 74.37,
+      "load_1m": 2.96
+    },
+    {
+      "at_utc": "2026-10-29T02:39:59.089570+00:00",
+      "cpu_idle_percent": 67.79,
+      "load_1m": 2.89
+    },
+    {
+      "at_utc": "2026-10-29T02:40:06.256002+00:00",
+      "cpu_idle_percent": 72.58,
+      "load_1m": 3.06
+    }
+  ],
+  "accepted": false,
+  "output": "/private/tmp/sirin-responsive-20261028/desktop/target/latency-runs/20261029T023949.710319Z/preflight"
+}

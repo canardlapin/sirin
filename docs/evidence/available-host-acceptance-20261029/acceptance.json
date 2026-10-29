@@ -1,0 +1,117 @@
+{
+  "owner_direction": "well, not gonna get much quieter. please proceed",
+  "decision": "Accept responsive-workbench latency on available host; quiet precondition waived by owner; numerical latency limits unchanged.",
+  "scope": "100-record development workbench at600x360 logical/1200x720 physical;20 warmups and100 measured inputs per class",
+  "available_host_accepted": true,
+  "formal_quiet_qualification": false,
+  "selected_source_commit": "ada4e2b",
+  "selected_worktree": "/private/tmp/sirin-gpu-host-20261028",
+  "runs": [
+    {
+      "label": "cpu-readback-baseline",
+      "source_commit": "f4acc6c",
+      "run": "20261029T023949.710319Z",
+      "metrics": {
+        "action": {
+          "n": 100,
+          "p50_ms": 23.560042,
+          "p95_ms": 44.918958,
+          "p99_ms": 61.258084,
+          "max_ms": 138.246542,
+          "over_p95_limit": 4,
+          "p95_limit_ms": 50,
+          "p99_limit_ms": 100
+        },
+        "scroll": {
+          "n": 100,
+          "p50_ms": 16.551958,
+          "p95_ms": 17.0145,
+          "p99_ms": 17.197,
+          "max_ms": 100.730292,
+          "over_p95_limit": 1,
+          "p95_limit_ms": 100,
+          "p99_limit_ms": 200
+        }
+      },
+      "preflight": {
+        "protocol": "three_interval_samples_idle85_load_half_cpus_v1",
+        "logical_cpus": 10,
+        "samples": [
+          {
+            "at_utc": "2026-10-29T02:39:51.891270+00:00",
+            "cpu_idle_percent": 74.37,
+            "load_1m": 2.96
+          },
+          {
+            "at_utc": "2026-10-29T02:39:59.089570+00:00",
+            "cpu_idle_percent": 67.79,
+            "load_1m": 2.89
+          },
+          {
+            "at_utc": "2026-10-29T02:40:06.256002+00:00",
+            "cpu_idle_percent": 72.58,
+            "load_1m": 3.06
+          }
+        ],
+        "accepted": false,
+        "output": "/private/tmp/sirin-responsive-20261028/desktop/target/latency-runs/20261029T023949.710319Z/preflight"
+      },
+      "startup_ns": 991258042,
+      "formal_quiet_qualified": false,
+      "frozen_targets_met": true
+    },
+    {
+      "label": "retained-gpu",
+      "source_commit": "ada4e2b",
+      "run": "20261029T024214.590501Z",
+      "metrics": {
+        "action": {
+          "n": 100,
+          "p50_ms": 16.535792,
+          "p95_ms": 19.680959,
+          "p99_ms": 22.861917,
+          "max_ms": 36.41075,
+          "over_p95_limit": 0,
+          "p95_limit_ms": 50,
+          "p99_limit_ms": 100
+        },
+        "scroll": {
+          "n": 100,
+          "p50_ms": 16.573083,
+          "p95_ms": 17.154291,
+          "p99_ms": 17.822875,
+          "max_ms": 27.011709,
+          "over_p95_limit": 0,
+          "p95_limit_ms": 100,
+          "p99_limit_ms": 200
+        }
+      },
+      "preflight": {
+        "protocol": "three_interval_samples_idle85_load_half_cpus_v1",
+        "logical_cpus": 10,
+        "samples": [
+          {
+            "at_utc": "2026-10-29T02:42:16.749053+00:00",
+            "cpu_idle_percent": 66.2,
+            "load_1m": 3.17
+          },
+          {
+            "at_utc": "2026-10-29T02:42:23.948559+00:00",
+            "cpu_idle_percent": 73.9,
+            "load_1m": 3.08
+          },
+          {
+            "at_utc": "2026-10-29T02:42:31.128356+00:00",
+            "cpu_idle_percent": 75.53,
+            "load_1m": 3.15
+          }
+        ],
+        "accepted": false,
+        "output": "/private/tmp/sirin-gpu-host-20261028/desktop/target/latency-runs/20261029T024214.590501Z/preflight"
+      },
+      "startup_ns": 840200458,
+      "formal_quiet_qualified": false,
+      "frozen_targets_met": true
+    }
+  ]
+}

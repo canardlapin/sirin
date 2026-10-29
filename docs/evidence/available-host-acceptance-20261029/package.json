@@ -1,0 +1,8 @@
+{
+  "desktop/target/package/Sirin.app/Contents/MacOS/Sirin": "472eaa5e4687f87f2c3ae446a05369bdf84a8c862d19ca482e1d6c2a36bdc6cc",
+  "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "0e55f7b47d4b20ecc4620b77992d52a85855d035331ce323adb7e93f0d533475",
+  "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "c2a2380e655f40e2cafa410b1bd6461ec64e33637c4acca4e381b3d4b3ba0a95",
+  "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+  "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+  "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639"
+}

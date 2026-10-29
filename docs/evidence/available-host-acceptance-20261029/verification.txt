@@ -1,0 +1,3 @@
+Both frozen runs pass unchanged geometry, sample and percentile checks.
+Retained-GPU source/package identity and acceptance artifacts verified.
+Available-host gate accepted under owner waiver; no formal quiet-run claim.

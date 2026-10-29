@@ -100,4 +100,12 @@ path. It measures worker completion, excluding native input and presentation.
 Dense fractional pan and zoom still rerasterize tiles and remain performance
 work. Controlled destruction/recovery passes; spontaneous hardware-loss races
 are not qualified. See the [receipt](../docs/evidence/canvas-recovery-20261028/README.md)
-for pixels, counters, timing, failures and the unchanged quiet-run gate.
+for pixels, counters, timing and preserved failures.
+
+The owner waived the quiet precondition for responsive-workbench acceptance
+on2026-10-29. The unchanged action/scroll percentile targets pass on the retained
+GPU/canvas package at `ada4e2b`; this is available-host acceptance, recorded
+[separately](../docs/evidence/available-host-acceptance-20261029/README.md).
+Diagnostic invocation metadata still says `qualified=false` for formal quiet
+qualification. The waived precondition no longer blocks further development.
+Dense canvas pan/zoom performance and spontaneous-loss races remain separate.

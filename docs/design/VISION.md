@@ -1398,8 +1398,15 @@ This changes graphics ownership and transfer mechanics, not application Work,
 transactions, identity, scheduling or command/focus policy.
 
 The integration contract and unchanged performance gates are recorded in
-`docs/plans/2026-10-28-gpu-host.md`. Pixel evidence and a successful diagnostic do
-not qualify the fixed 50ms action p95 gate without its quiet-run preflight.
+`docs/plans/2026-10-28-gpu-host.md`. Formal quiet-run qualification retains its
+preflight requirement. On2026-10-29 the owner waived that precondition for the
+responsive-workbench tranche and directed proceeding on the available host.
+A complete run with independently verified frozen geometry, counts and unchanged
+50/100ms action and100/200ms scroll p95/p99 targets may satisfy that scoped
+available-host acceptance. The runner keeps `qualified=false` for quiet-run
+qualification; the owner-authorized decision is recorded separately. See
+`docs/evidence/available-host-acceptance-20261029/README.md`. This waiver does not
+qualify dense canvas performance, other platforms or product-level usability.
 
 **Retained canvas and recovery (2026-10-28).** A worker-confined preparation
 cache retains at most256 entries/4MiB declared source and flattened point payload.
