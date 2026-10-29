@@ -1,0 +1,169 @@
+request generation=1
+received generation=1
+attempt generation=1 success=false size=1280x800
+attempt generation=1 success=true size=1280x800
+present generation=1 ready=true sameTree=true sameEditors=true
+attempt generation=1 success=false size=1280x800
+input kind=3 key=0 x=0.0 y=0.0 ready=true focused=None pending=1
+input kind=4 key=0 x=0.0 y=0.0 ready=true focused=None pending=1
+input kind=3 key=0 x=130.0 y=98.0 ready=true focused=None pending=1
+request generation=2
+received generation=2
+attempt generation=2 success=false size=1280x800
+input kind=4 key=0 x=130.0 y=98.0 ready=false focused=Some(34) pending=1
+attempt generation=2 success=true size=1280x800
+present generation=2 ready=true sameTree=true sameEditors=true
+request generation=3
+received generation=3
+attempt generation=3 success=false size=1280x800
+input kind=1 key=1097 x=0.0 y=0.0 ready=true focused=Some(34) pending=1
+request generation=4
+input kind=2 key=1097 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1097 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=5
+input kind=2 key=1097 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1099 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=6
+input kind=2 key=1099 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1099 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=7
+input kind=2 key=1099 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1101 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=8
+input kind=2 key=1101 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1115 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=9
+input kind=2 key=1115 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1115 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=10
+input kind=2 key=1115 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1107 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=11
+input kind=2 key=1107 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1105 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=12
+input kind=2 key=1105 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1116 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=13
+input kind=2 key=1116 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=3 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=14
+input kind=2 key=3 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1116 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=15
+input kind=2 key=1116 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1105 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=16
+input kind=2 key=1105 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1116 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=17
+input kind=2 key=1116 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1108 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=18
+input kind=2 key=1108 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=1 key=1101 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+input kind=10 key=0 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+request generation=19
+input kind=2 key=1101 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+received generation=19
+attempt generation=19 success=false size=1280x800
+attempt generation=19 success=true size=1280x800
+present generation=19 ready=true sameTree=true sameEditors=true
+present generation=19 ready=true sameTree=true sameEditors=true
+input kind=1 key=1122 x=0.0 y=0.0 ready=true focused=Some(34) pending=1
+request generation=20
+input kind=2 key=1122 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+received generation=20
+attempt generation=20 success=false size=1280x800
+attempt generation=20 success=true size=1280x800
+present generation=20 ready=true sameTree=true sameEditors=true
+input kind=1 key=1122 x=0.0 y=0.0 ready=true focused=Some(34) pending=1
+request generation=21
+input kind=2 key=1122 x=0.0 y=0.0 ready=false focused=Some(34) pending=1
+received generation=21
+attempt generation=21 success=false size=1280x800
+attempt generation=21 success=true size=1280x800
+present generation=21 ready=true sameTree=true sameEditors=true
+ax kind=3 revision=21 shown=21 ready=false accepted=true
+request generation=22
+received generation=22
+attempt generation=22 success=false size=1280x800
+attempt generation=22 success=true size=1280x800
+present generation=22 ready=true sameTree=true sameEditors=true
+present generation=22 ready=true sameTree=true sameEditors=true
+ax kind=2 revision=22 shown=22 ready=false accepted=true
+request generation=23
+received generation=23
+attempt generation=23 success=false size=1280x800
+attempt generation=23 success=true size=1280x800
+present generation=23 ready=true sameTree=true sameEditors=true
+input kind=3 key=0 x=210.0 y=177.0 ready=true focused=Some(34) pending=1
+request generation=24
+input kind=4 key=0 x=210.0 y=177.0 ready=false focused=Some(35) pending=1
+received generation=24
+attempt generation=24 success=false size=1280x800
+attempt generation=24 success=true size=1280x800
+present generation=24 ready=true sameTree=true sameEditors=true
+request generation=25
+received generation=25
+attempt generation=25 success=false size=1280x800
+input kind=1 key=1097 x=0.0 y=0.0 ready=true focused=Some(35) pending=1
+request generation=26
+input kind=2 key=1097 x=0.0 y=0.0 ready=false focused=Some(35) pending=1
+input kind=1 key=1118 x=0.0 y=0.0 ready=false focused=Some(35) pending=1
+request generation=27
+input kind=2 key=1118 x=0.0 y=0.0 ready=false focused=Some(35) pending=1
+received generation=27
+attempt generation=27 success=false size=1280x800
+attempt generation=27 success=true size=1280x800
+present generation=27 ready=true sameTree=true sameEditors=true
+present generation=27 ready=true sameTree=true sameEditors=true
+ax kind=2 revision=27 shown=27 ready=false accepted=true
+request generation=28
+received generation=28
+attempt generation=28 success=false size=1280x800
+attempt generation=28 success=true size=1280x800
+present generation=28 ready=true sameTree=true sameEditors=true
+input kind=3 key=0 x=27.0 y=159.5 ready=true focused=Some(35) pending=1
+request generation=29
+input kind=4 key=0 x=27.0 y=159.5 ready=false focused=Some(35) pending=1
+received generation=29
+attempt generation=29 success=false size=1280x800
+attempt generation=29 success=true size=1280x800
+present generation=29 ready=true sameTree=true sameEditors=true
+request generation=30
+received generation=30
+attempt generation=30 success=true size=1280x800
+present generation=30 ready=true sameTree=true sameEditors=true
+input kind=3 key=0 x=154.0 y=159.5 ready=true focused=Some(35) pending=1
+request generation=31
+received generation=31
+attempt generation=31 success=false size=1280x800
+input kind=4 key=0 x=154.0 y=159.5 ready=false focused=Some(35) pending=1
+attempt generation=31 success=true size=1280x800
+present generation=31 ready=true sameTree=true sameEditors=true
+request generation=32
+received generation=32
+attempt generation=32 success=true size=1280x800
+present generation=32 ready=true sameTree=true sameEditors=true
+ax kind=4 revision=32 shown=32 ready=true accepted=true
+request generation=33
+received generation=33
+attempt generation=33 success=false size=1280x800
+attempt generation=33 success=true size=1280x800
+present generation=33 ready=true sameTree=true sameEditors=true
+present generation=33 ready=true sameTree=true sameEditors=true

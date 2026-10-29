@@ -20,7 +20,7 @@ object DesktopWorkbench:
     val windowStarted=System.nanoTime()
     val window=new NativeWindow("Sirin Workbench",600,360)
     val windowSetupNanos=System.nanoTime()-windowStarted
-    try run(window,root,args,mainEnteredAt,windowSetupNanos)
+    try {window.activate();run(window,root,args,mainEnteredAt,windowSetupNanos)}
     finally window.close()
     require(NativeWindow.liveWindows()==0 && NativeWindow.liveRequests()==0,"native window/request leaked")
     require(sirin.render.OffscreenGpu.liveOwners==0 && sirin.render.BatchGpu.liveOwners==0 && sirin.render.BatchGpu.liveHealthRecords==0 && sirin.render.GpuFrame.liveFrames==0 && sirin.render.GpuFrame.liveTiles==0,"render device/frame leaked")
@@ -280,7 +280,9 @@ object DesktopWorkbench:
           val smokeWait=if interactive then -1 else
             val end=if presented>0 && !benchmark && (!scenario || scenarioStage==10) then math.min(deadline,lastFrameAt+2000000000L) else deadline
             math.max(0L,(end-System.nanoTime()+999999)/1000000).min(Int.MaxValue).toInt
-          val timeout=if runtimeWait<0 then smokeWait else if smokeWait<0 then runtimeWait else math.min(runtimeWait,smokeWait)
+          val idleTimeout=if runtimeWait<0 then smokeWait else if smokeWait<0 then runtimeWait else math.min(runtimeWait,smokeWait)
+          val retry=repaint && current.exists(f => coordinator.accepts(f.request))
+          val timeout=if retry then (if idleTimeout<0 then 16 else math.min(idleTimeout,16)) else idleTimeout
           facts=window.waitEvent(timeout);repaint = repaint || facts.redraw()
       require(!args.contains("recovery") || (recoveries==1 && presented>=2),"device recovery incomplete")
       require(!scenario || scenarioStage==10,"interaction scenario incomplete")

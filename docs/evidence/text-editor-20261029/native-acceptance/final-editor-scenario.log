@@ -1,0 +1,20 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-editor-20261029/desktop/target/package-editor/SirinEdit.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+2026-10-29 16:31:45.253 SirinEdit[77533:267385174] +[IMKClient subclass]: chose IMKClient_Modern
+2026-10-29 16:31:45.253 SirinEdit[77533:267385174] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+editorStage=0 generation=1
+editorStage=1 generation=2
+editorStage=2 generation=3
+nativeIME focus=1 active=1
+nativeIME client=SDL3TranslatorResponder keyWindow=1
+editorStage=4 generation=4
+nativeIME focus=1 active=1
+nativeIME client=SDL3TranslatorResponder keyWindow=1
+editorStage=5 generation=6
+editorStage=6 generation=7
+editorStage=7 generation=7
+editorStage=8 generation=8
+editorScenario=9 presentations=8 recoveries=1 rejected=0
+renderSession shaped=16 GPU=BatchGpuStats(0,26214400,19248,16666,144336,145,0,326,18) CPU=BatchCacheStats(256,12144,73,33332,62,3257,73,0) tiles=entries=71 pixels=1044224 hits=48 misses=72

@@ -1,0 +1,152 @@
+24882:
+2026-10-29 16:08:16
+Full thread dump OpenJDK 64-Bit Server VM (25.0.4.1+1-LTS mixed mode, sharing):
+
+Threads class SMR info:
+_java_thread_list=0x00006000022fd020, length=14, elements={
+0x000000012e012800, 0x000000012e021e00, 0x000000012e026e00, 0x000000011a00b000,
+0x000000011a00b800, 0x000000011a00c000, 0x000000011a00c800, 0x000000011a00d200,
+0x000000011c0a5800, 0x000000011c0a8200, 0x000000011c2b1800, 0x000000012e26fc00,
+0x000000011cd72600, 0x00000001280e2e00
+}
+
+"main" #3 [259] prio=5 os_prio=31 cpu=486.93ms elapsed=28.05s tid=0x000000012e012800 nid=259 runnable  [0x000000016dbc2000]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.invoke.LambdaForm$MH/0x0000000301191400.invoke(java.base@25.0.4.1/LambdaForm$MH)
+	at java.lang.invoke.LambdaForm$MH/0x00000003011c1800.invokeExact_MT(java.base@25.0.4.1/LambdaForm$MH)
+	at jdk.internal.foreign.abi.DowncallStub/0x0000000301191800.invoke(java.base@25.0.4.1/Unknown Source)
+	at java.lang.invoke.LambdaForm$DMH/0x0000000301191c00.invokeStatic(java.base@25.0.4.1/LambdaForm$DMH)
+	at java.lang.invoke.LambdaForm$MH/0x0000000301193800.invoke(java.base@25.0.4.1/LambdaForm$MH)
+	at java.lang.invoke.LambdaForm$MH/0x00000003011c1000.invokeExact_MT(java.base@25.0.4.1/LambdaForm$MH)
+	at sirin.desktop.NativeWindow.waitEvent(NativeWindow.java:110)
+	at sirin.desktop.EditorWorkbench$.main(EditorWorkbench.scala:175)
+	at sirin.desktop.DesktopWorkbench$.main(DesktopWorkbench.scala:16)
+	at sirin.desktop.DesktopWorkbench.main(DesktopWorkbench.scala)
+
+"Reference Handler" #14 [29443] daemon prio=10 os_prio=31 cpu=0.35ms elapsed=28.04s tid=0x000000012e021e00 nid=29443 waiting on condition  [0x000000016edc6000]
+   java.lang.Thread.State: RUNNABLE
+	at java.lang.ref.Reference.waitForReferencePendingList(java.base@25.0.4.1/Native Method)
+	at java.lang.ref.Reference.processPendingReferences(java.base@25.0.4.1/Reference.java:246)
+	at java.lang.ref.Reference$ReferenceHandler.run(java.base@25.0.4.1/Reference.java:208)
+
+"Finalizer" #15 [29187] daemon prio=8 os_prio=31 cpu=0.03ms elapsed=28.04s tid=0x000000012e026e00 nid=29187 in Object.wait()  [0x000000016efd2000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait0(java.base@25.0.4.1/Native Method)
+	- waiting on <0x000000061cc10078> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.Object.wait(java.base@25.0.4.1/Object.java:389)
+	at java.lang.Object.wait(java.base@25.0.4.1/Object.java:351)
+	at java.lang.ref.ReferenceQueue.remove0(java.base@25.0.4.1/ReferenceQueue.java:137)
+	at java.lang.ref.ReferenceQueue.remove(java.base@25.0.4.1/ReferenceQueue.java:215)
+	- locked <0x000000061cc10078> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.Finalizer$FinalizerThread.run(java.base@25.0.4.1/Finalizer.java:165)
+
+"Signal Dispatcher" #16 [28675] daemon prio=9 os_prio=31 cpu=0.24ms elapsed=28.04s tid=0x000000011a00b000 nid=28675 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Service Thread" #17 [28163] daemon prio=9 os_prio=31 cpu=0.63ms elapsed=28.04s tid=0x000000011a00b800 nid=28163 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Monitor Deflation Thread" #18 [24579] daemon prio=9 os_prio=31 cpu=2.02ms elapsed=28.04s tid=0x000000011a00c000 nid=24579 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" #19 [27651] daemon prio=9 os_prio=31 cpu=680.26ms elapsed=28.04s tid=0x000000011a00c800 nid=27651 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+   No compile task
+
+"C1 CompilerThread0" #22 [27139] daemon prio=9 os_prio=31 cpu=538.18ms elapsed=28.04s tid=0x000000011a00d200 nid=27139 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+   No compile task
+
+"Notification Thread" #23 [26627] daemon prio=9 os_prio=31 cpu=0.03ms elapsed=28.04s tid=0x000000011c0a5800 nid=26627 runnable  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Common-Cleaner" #24 [26115] daemon prio=8 os_prio=31 cpu=0.09ms elapsed=28.04s tid=0x000000011c0a8200 nid=26115 in Object.wait()  [0x000000016fe26000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+	at java.lang.Object.wait0(java.base@25.0.4.1/Native Method)
+	- waiting on <0x000000061cc18078> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.Object.wait(java.base@25.0.4.1/Object.java:389)
+	at java.lang.ref.ReferenceQueue.remove0(java.base@25.0.4.1/ReferenceQueue.java:123)
+	at java.lang.ref.ReferenceQueue.remove(java.base@25.0.4.1/ReferenceQueue.java:201)
+	- locked <0x000000061cc18078> (a java.lang.ref.ReferenceQueue$Lock)
+	at jdk.internal.ref.CleanerImpl.run(java.base@25.0.4.1/CleanerImpl.java:146)
+	at java.lang.Thread.runWith(java.base@25.0.4.1/Thread.java:1487)
+	at java.lang.Thread.run(java.base@25.0.4.1/Thread.java:1474)
+	at jdk.internal.misc.InnocuousThread.run(java.base@25.0.4.1/InnocuousThread.java:148)
+
+"sirin-worker-0" #25 [58631] daemon prio=5 os_prio=31 cpu=0.07ms elapsed=27.26s tid=0x000000011c2b1800 nid=58631 in Object.wait()  [0x0000000170032000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait0(java.base@25.0.4.1/Native Method)
+	- waiting on <0x000000061cc08148> (a java.lang.Object)
+	at java.lang.Object.wait(java.base@25.0.4.1/Object.java:389)
+	at java.lang.Object.wait(java.base@25.0.4.1/Object.java:351)
+	at sirin.engine.WorkerTransport.loop(WorkTransport.scala:122)
+	- locked <0x000000061cc08148> (a java.lang.Object)
+	at sirin.engine.WorkerTransport.$anonfun$1(WorkTransport.scala:77)
+	at sirin.engine.WorkerTransport$$Lambda/0x00000003011d2970.run(Unknown Source)
+	at java.lang.Thread.runWith(java.base@25.0.4.1/Thread.java:1487)
+	at java.lang.Thread.run(java.base@25.0.4.1/Thread.java:1474)
+
+"sirin-worker-1" #26 [46359] daemon prio=5 os_prio=31 cpu=0.05ms elapsed=27.26s tid=0x000000012e26fc00 nid=46359 in Object.wait()  [0x0000000341206000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait0(java.base@25.0.4.1/Native Method)
+	- waiting on <0x000000061cc08148> (a java.lang.Object)
+	at java.lang.Object.wait(java.base@25.0.4.1/Object.java:389)
+	at java.lang.Object.wait(java.base@25.0.4.1/Object.java:351)
+	at sirin.engine.WorkerTransport.loop(WorkTransport.scala:122)
+	- locked <0x000000061cc08148> (a java.lang.Object)
+	at sirin.engine.WorkerTransport.$anonfun$1(WorkTransport.scala:77)
+	at sirin.engine.WorkerTransport$$Lambda/0x00000003011d2970.run(Unknown Source)
+	at java.lang.Thread.runWith(java.base@25.0.4.1/Thread.java:1487)
+	at java.lang.Thread.run(java.base@25.0.4.1/Thread.java:1474)
+
+"sirin-render-owner" #27 [52483] daemon prio=5 os_prio=31 cpu=535.94ms elapsed=27.26s tid=0x000000011cd72600 nid=52483 waiting on condition  [0x0000000341412000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@25.0.4.1/Native Method)
+	- parking to wait for  <0x000000061cc8a430> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+	at java.util.concurrent.locks.LockSupport.park(java.base@25.0.4.1/LockSupport.java:369)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode.block(java.base@25.0.4.1/AbstractQueuedSynchronizer.java:520)
+	at java.util.concurrent.ForkJoinPool.unmanagedBlock(java.base@25.0.4.1/ForkJoinPool.java:4364)
+	at java.util.concurrent.ForkJoinPool.managedBlock(java.base@25.0.4.1/ForkJoinPool.java:4310)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(java.base@25.0.4.1/AbstractQueuedSynchronizer.java:1752)
+	at java.util.concurrent.ArrayBlockingQueue.take(java.base@25.0.4.1/ArrayBlockingQueue.java:421)
+	at sirin.desktop.OwnedRenderService.loop(FrameWorker.scala:253)
+	at sirin.desktop.OwnedRenderService.$init$$$anonfun$2(FrameWorker.scala:243)
+	at sirin.desktop.OwnedRenderService$$Lambda/0x00000003011d8230.run(Unknown Source)
+	at java.lang.Thread.runWith(java.base@25.0.4.1/Thread.java:1487)
+	at java.lang.Thread.run(java.base@25.0.4.1/Thread.java:1474)
+
+"Attach Listener" #36 [75787] daemon prio=9 os_prio=31 cpu=1.00ms elapsed=0.11s tid=0x00000001280e2e00 nid=75787 waiting on condition  [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+"GC Thread#8" os_prio=31 cpu=1.78ms elapsed=27.23s tid=0x000000012e272e00 nid=86787 runnable  
+
+"GC Thread#7" os_prio=31 cpu=0.54ms elapsed=27.23s tid=0x000000012e274c00 nid=66051 runnable  
+
+"GC Thread#6" os_prio=31 cpu=0.60ms elapsed=27.23s tid=0x000000010f84bc00 nid=87043 runnable  
+
+"GC Thread#5" os_prio=31 cpu=1.82ms elapsed=27.23s tid=0x000000012e1fae00 nid=53763 runnable  
+
+"GC Thread#4" os_prio=31 cpu=1.03ms elapsed=27.23s tid=0x000000010f847400 nid=54275 runnable  
+
+"GC Thread#3" os_prio=31 cpu=1.98ms elapsed=27.23s tid=0x000000012e26ee00 nid=53507 runnable  
+
+"GC Thread#2" os_prio=31 cpu=0.65ms elapsed=27.23s tid=0x000000012e230a00 nid=53251 runnable  
+
+"GC Thread#1" os_prio=31 cpu=0.19ms elapsed=27.23s tid=0x000000011cd6ca00 nid=52995 runnable  
+
+"VM Thread" os_prio=31 cpu=1.64ms elapsed=28.05s tid=0x000000011c812600 nid=19715 runnable  
+
+"VM Periodic Task Thread" os_prio=31 cpu=2.16ms elapsed=28.05s tid=0x000000012d1073c0 nid=21255 waiting on condition  
+
+"G1 Service" os_prio=31 cpu=0.98ms elapsed=28.05s tid=0x000000011c08a600 nid=16643 runnable  
+
+"G1 Refine#0" os_prio=31 cpu=0.02ms elapsed=28.05s tid=0x000000011c08a000 nid=13827 runnable  
+
+"G1 Conc#0" os_prio=31 cpu=0.01ms elapsed=28.05s tid=0x000000011c053a00 nid=13315 runnable  
+
+"G1 Main Marker" os_prio=31 cpu=0.01ms elapsed=28.05s tid=0x000000011c053400 nid=14339 runnable  
+
+"GC Thread#0" os_prio=31 cpu=0.99ms elapsed=28.05s tid=0x000000011c03a600 nid=12547 runnable  
+
+JNI global refs: 9, weak refs: 0
+

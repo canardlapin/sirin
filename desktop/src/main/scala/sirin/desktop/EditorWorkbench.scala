@@ -53,6 +53,14 @@ object EditorWorkbench:
     var scenario=0;var presentations=0;var recoveries=0;var consecutiveLosses=0
     var running=true;var repaint=true;var facts=window.waitEvent(0)
     val scripted=args.contains("scenario")
+    val tracePath=Option(System.getProperty("sirin.editor.trace")).map(Path.of(_))
+    var traceCount=0
+    var lastAttempt=Option.empty[(Long,Boolean)]
+    def trace(detail: => String): Unit = tracePath.foreach { path =>
+      if traceCount<512 then
+        java.nio.file.Files.writeString(path,detail+"\n",java.nio.file.StandardOpenOption.CREATE,java.nio.file.StandardOpenOption.APPEND)
+        traceCount+=1
+    }
     val deadline=System.nanoTime()+120000000000L
     var clipboardBefore=Option.empty[String]
     def capture(): CapturedTree=runtime.withCommitted { reader => reader(mounted.snapshot) match
@@ -65,11 +73,15 @@ object EditorWorkbench:
     }
     def refresh(): CapturedTree =
       val turn=runtime.drive(16);require(turn.failures.isEmpty,"editor driver failure")
-      val tree=capture();controller.update(tree);tree
-    def flags(): Unit = lastEditor.foreach { id =>
-      if controller.snapshots.contains(id) then
-        val state=controller.state(id)
-        ok(runtime.transact {canUndo.set(state.canUndo);canRedo.set(state.canRedo)})
+      val tree=capture();controller.update(tree)
+      if flags() then
+        val indicators=runtime.drive(16);require(indicators.failures.isEmpty,"editor indicator driver failure")
+        val updated=capture();controller.update(updated);updated
+      else tree
+    def flags(): Boolean = lastEditor.filter(controller.snapshots.contains).exists { id =>
+      val state=controller.state(id)
+      if value(canUndo)==state.canUndo && value(canRedo)==state.canRedo then false
+      else {ok(runtime.transact {canUndo.set(state.canUndo);canRedo.set(state.canRedo)});true}
     }
     def input(event: HostInput,mods: Mods=Mods.none,clicks: Int=1): Unit =
       controller.focusedId.foreach(id => lastEditor=Some(id))
@@ -77,7 +89,6 @@ object EditorWorkbench:
       else controller.handle(event,mods,clicks)
       controller.focusedId.foreach(id => lastEditor=Some(id))
       controller.notice.foreach(n => ok(runtime.transact {message.set(n)}));controller.notice=None
-      flags()
     def makeRenderer(): RenderService=new RenderService(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/editor-frames"),() => {window.wake();()},
       Some(() => new RenderSession(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/editor-frames"),batch=Some(BatchGpu.shared(activeRenderer)),editorSystemFonts=true)))
     def recover(): Unit =
@@ -87,7 +98,7 @@ object EditorWorkbench:
       renderer.foreach(_.quiesce());activeRenderer=window.prepareRenderer(BatchGpu.shaderSource)
       latest.foreach(renderer.get.submit);repaint=true
     try
-      if scripted then window.activate()
+      window.activate()
       activeRenderer=window.prepareRenderer(BatchGpu.shaderSource)
       clipboardBefore=if scripted then Some(window.clipboard()) else None
       workers=Some(runtime.scheduler.startWorkers(2));subscription=Some(runtime.onActivity(() => {window.wake();()}));renderer=Some(makeRenderer())
@@ -105,6 +116,7 @@ object EditorWorkbench:
             require(pending.size<256,"editor essential-input queue overflow")
             val mods=(if (facts.mods()&2)!=0 then Mods.Shift else Mods.none)
             pending.enqueue((event,mods,math.max(1,facts.clicks())))
+            trace(s"input kind=${facts.kind()} key=${facts.key()} x=${facts.x()} y=${facts.y()} ready=${controller.ready} focused=${controller.focusedId} pending=${pending.size}")
         }
         tree=refresh()
         var continue=true
@@ -122,24 +134,27 @@ object EditorWorkbench:
           tree=refresh()
         var action=window.pollAccessibility()
         while action!=null do
-          controller.accessibility(action);flags();tree=refresh();action=window.pollAccessibility()
+          val accepted=controller.accessibility(action)
+          trace(s"ax kind=${action.kind()} revision=${action.revision()} shown=${controller.presentedRevision} readyAfter=${controller.ready} accepted=$accepted")
+          lastEditor=controller.focusedId.orElse(lastEditor);tree=refresh();action=window.pollAccessibility()
         focusRequests++=runtime.takeFocusRequests()
         if controller.ready then {focusRequests.foreach(controller.focusReference);focusRequests=Vector.empty}
         if facts.width()>0 && facts.height()>0 then
           val state=controller.interaction.state
           val payload=FramePayload(tree.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),state.scrolls,state.focused,state.keyboard,state.pressed.map(_.target),editors=controller.snapshots)
-          coordinator.request(payload).foreach { req => latest=Some(req);renderer.get.submit(req) }
+          coordinator.request(payload).foreach { req => latest=Some(req);trace(s"request generation=${req.generation}");renderer.get.submit(req) }
           renderer.get.poll().foreach {
-            case (_,Right(frame: RenderedFrame)) if coordinator.accepts(frame.request) => current.foreach(_.close());current=Some(frame);repaint=true
+            case (_,Right(frame: RenderedFrame)) if coordinator.accepts(frame.request) => trace(s"received generation=${frame.request.generation}");current.foreach(_.close());current=Some(frame);repaint=true
             case (_,Right(other)) => other.close()
             case (generation,Left(_: GraphicsDeviceLost)) if coordinator.acceptsGeneration(generation) => recover()
             case (generation,Left(error)) if coordinator.acceptsGeneration(generation) => throw error
             case _ => ()
           }
           current.filter(f => coordinator.accepts(f.request)).foreach { frame =>
-            if repaint && frame.present(window) then
+            if repaint && {val accepted=frame.present(window);if !lastAttempt.contains((frame.request.generation,accepted)) then {trace(s"attempt generation=${frame.request.generation} success=$accepted size=${frame.width}x${frame.height}");lastAttempt=Some((frame.request.generation,accepted))};accepted} then
               repaint=false;presentations+=1;recapture=true;consecutiveLosses=0
               controller.install(frame.request.generation,frame.layout)
+              trace(s"present generation=${frame.request.generation} ready=${controller.ready} sameTree=${frame.layout.root.node==tree.tree} sameEditors=${frame.layout.editors==controller.snapshots}")
               EditorAccessibility.publish(window,controller,frame)
               if scripted then
                 println(s"editorStage=$scenario generation=${frame.request.generation}")
@@ -167,14 +182,19 @@ object EditorWorkbench:
                     scenario=6;window.resize(600,360)
                   case 6 =>
                     window.destroyRenderer();scenario=7
-                  case 7 => require(recoveries==1,"editor recovery missing");scenario=8;window.inject(8,0,0,0,0,0)
+                  case 7 =>
+                    require(recoveries==1,"editor recovery missing")
+                    ok(runtime.transact {document.set(Draft)});scenario=8
+                  case 8 =>
+                    require(value(document)==Draft && !value(canUndo) && !value(canRedo) && !controller.state(docId).canUndo,"restored history indicators stale")
+                    scenario=9;window.inject(8,0,0,0,0,0)
                   case _ => ()
           }
         if scripted then require(System.nanoTime()<deadline,s"editor scenario deadline stage=$scenario")
         if running then
-          facts=window.waitEvent(if recapture || (pending.nonEmpty && controller.ready) then 0 else if scripted then 1000 else -1)
+          facts=window.waitEvent(if recapture || (pending.nonEmpty && controller.ready) then 0 else if repaint then 16 else if scripted then 1000 else -1)
           if facts.redraw() then repaint=true
-      require(!scripted || scenario==8,s"editor scenario incomplete:$scenario")
+      require(!scripted || scenario==9,s"editor scenario incomplete:$scenario")
       println(s"editorScenario=$scenario presentations=$presentations recoveries=$recoveries rejected=${controller.rejected}")
     finally
       clipboardBefore.foreach(window.clipboard(_))

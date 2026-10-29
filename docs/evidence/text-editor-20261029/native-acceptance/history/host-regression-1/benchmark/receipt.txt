@@ -1,0 +1,14 @@
+status=failed
+samplesComplete=false
+targetsMet=false
+expectedGeometry=600x360logical/1200x720physical
+observedGeometry=600x360logical/1200x720physical
+geometryStable=true
+geometryChecks=13
+steps=0
+warmups=0
+measured=0
+mainToFirstPresentationNs=0
+windowSetupNs=168280292
+renderSessionSetupNs=0
+failure=java.lang.IllegalStateException: host deadline exceeded stage=0 benchmark=0

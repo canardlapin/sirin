@@ -66,3 +66,21 @@ raise notifications after releasing snapshot locks. Combine wgpu, ICU4X and
 AccessKit in one pinned `sirin-native` static library per VISION6.1. Rich text
 ranges are omitted for fields containing a grapheme longer than255 UTF-8 bytes,
 while value/focus/set-value remain available; never split a grapheme silently.
+
+Native validation continuation: retain a complete frame after transient surface
+presentation refusal and retry at a bounded16ms wait while repaint is pending.
+Do not sleep indefinitely waiting for another OS event before first presentation
+or while queued editing awaits its new geometry. This is the development host
+loop only; kernel scheduling and transaction policies remain unchanged.
+
+The ordinary host regression initially hit its fixed120s deadline at step0,
+before any accepted presentation. Apply the same foreground activation and
+bounded retry for a complete pending frame to DesktopWorkbench, preserving its
+frozen fixture, input timestamp boundary and sample counts; keep action50/100ms
+and scroll100/200ms p95/p99 targets.
+Keep the failed receipt and measure the corrected package as a successor.
+
+Native validation completes the bounded implementation only. Actual Japanese/
+Chinese input methods, VoiceOver and true pointer drag remain open in Mote
+`bd-01M64NKHTDEJ7WZGQBTA6SMF23`. Native Shift-click selection and the direct
+NSTextInputClient preedit/commit seam are reported separately.

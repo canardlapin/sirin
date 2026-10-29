@@ -1,0 +1,27 @@
+{
+  "kind": "diagnostic",
+  "package_sha256": {
+    "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+    "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "3040cb263086c03d07f7660cd4ec53b36c5b46f568aea2bf9ac1f2e37443d815",
+    "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+    "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639",
+    "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "47cac8a4470b3fd2b74e4aad5fc2cb0106fcec27f67b612d1abac8860f6999ac"
+  },
+  "quiet_preflight_passed": false,
+  "status": "passed",
+  "qualified": false,
+  "command": [
+    "/private/tmp/sirin-editor-20261029/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+    "-XstartOnFirstThread",
+    "--enable-native-access=ALL-UNNAMED",
+    "-Dsirin.repo=/private/tmp/sirin-editor-20261029",
+    "-Dsirin.desktop.library=/private/tmp/sirin-editor-20261029/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+    "-cp",
+    "/private/tmp/sirin-editor-20261029/desktop/target/package/Sirin.app/Contents/app/*",
+    "sirin.desktop.DesktopWorkbench",
+    "benchmark"
+  ],
+  "exit_code": 0,
+  "receipt_validated": true,
+  "receipt_validation": "frozen geometry, samples and percentile targets verified"
+}

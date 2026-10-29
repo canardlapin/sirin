@@ -1,0 +1,466 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-editor-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-editor-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-editor-20261029/)
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.04s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.062s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.059s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.069s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.06s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.07s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.09s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.1s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.145s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.155s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.037s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.037s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.111s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.111s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.229s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.239s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.288s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.298s
+preparationCancellation checks=251 work=250 elapsedNs=499958 completedEntries=0
+Test run sirin.graphics.PreparationCacheSuite started
+sirin.graphics.PreparationCacheSuite: finished 0.81s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 0.82s
+Test run sirin.graphics.StrokeBoundarySuite started
+sirin.graphics.StrokeBoundarySuite: finished 0.774s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 0.774s
+Test run sirin.graphics.CurvedStrokeSuite started
+sirin.graphics.CurvedStrokeSuite: finished 1.07s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 1.08s
+[info] Passed: Total 69, Failed 0, Errors 0, Passed 69
+[success] Total time: 2 s, completed Oct 29, 2026, 4:28:16 p.m.
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.014s
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.014s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.016s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.016s
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.019s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.021s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.019s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.019s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:16 p.m.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.013s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.015s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:17 p.m.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.025s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.028s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:17 p.m.
+Test run sirin.engine.HostBoundarySuite started
+sirin.engine.HostBoundarySuite: finished 0.106s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.109s
+Test run sirin.engine.FocusSuite started
+sirin.engine.FocusSuite: finished 0.14s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.142s
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.175s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.177s
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.281s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.283s
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TopologyLifetimeSuite: finished 0.297s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.299s
+Test run sirin.engine.WorkCommandSuite started
+sirin.engine.WorkCommandSuite: finished 0.317s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.319s
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.ReconciliationSuite: finished 0.376s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.379s
+Test run sirin.engine.RetainedVirtualSuite started
+sirin.engine.RetainedVirtualSuite: finished 0.416s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.418s
+Test run sirin.engine.EventDeadlineSuite started
+sirin.engine.EventDeadlineSuite: finished 0.423s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.426s
+[info] Passed: Total 175, Failed 0, Errors 0, Passed 175
+[success] Total time: 1 s, completed Oct 29, 2026, 4:28:18 p.m.
+Test run sirin.testkit.LatestAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 2.769s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 2.772s
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.EventDeadlineAgreementSuite: finished 3.324s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 3.326s
+Test run sirin.testkit.ReferenceAgreementSuite started
+sirin.testkit.ReferenceAgreementSuite: finished 3.633s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 3.635s
+Test run sirin.testkit.WorkAgreementSuite started
+sirin.testkit.WorkAgreementSuite: finished 4.623s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 4.625s
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 5.389s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 5.391s
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+sirin.testkit.VirtualCollectionAgreementSuite: finished 5.544s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 5.546s
+Test run sirin.testkit.ProgressAgreementSuite started
+sirin.testkit.ProgressAgreementSuite: finished 6.428s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 6.431s
+Test run sirin.testkit.LifetimeAgreementSuite started
+sirin.testkit.LifetimeAgreementSuite: finished 8.768s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 8.77s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 9 s, completed Oct 29, 2026, 4:28:27 p.m.
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.093s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.094s
+Test run sirin.specimen.WorkbenchSuite started
+sirin.specimen.WorkbenchSuite: finished 0.226s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.228s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:27 p.m.
+Test run sirin.host.HostSuite started
+sirin.host.HostSuite: finished 0.089s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.09s
+Test run sirin.host.TextEditingSuite started
+sirin.host.TextEditingSuite: finished 0.092s
+Test run sirin.host.TextEditingSuite finished: 0 failed, 0 ignored, 10 total 0.093s
+Test run sirin.host.InteractionSuite started
+sirin.host.InteractionSuite: finished 0.093s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 9 total 0.094s
+[info] Passed: Total 25, Failed 0, Errors 0, Passed 25
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:27 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60606'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60608'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60610'.
+Test run sirin.graphics.ImageSuite started
+Test run sirin.graphics.CurvedStrokeSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60611'.
+sirin.graphics.ImageSuite: finished 0.006s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.006s
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60613'.
+Test run sirin.graphics.StrokeBoundarySuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60615'.
+Test run sirin.graphics.TextDataSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60616'.
+Test run sirin.graphics.PreparationSuite started
+Test run sirin.graphics.PreparationCacheSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60619'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60620'.
+Test run sirin.graphics.DrawingSuite started
+Test run sirin.graphics.ValuesSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60623'.
+sirin.graphics.DrawingSuite: finished 0.009s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.009s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.ValuesSuite: finished 0.014s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.014s
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '60625'.
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.008s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.008s
+Test run sirin.graphics.DrawingResourcesSuite started
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.TextDataSuite: finished 0.103s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.103s
+sirin.graphics.GeometrySuite: finished 0.008s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.008s
+sirin.graphics.DrawingResourcesSuite: finished 0.040s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.040s
+sirin.graphics.PreparationSuite: finished 0.200s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.200s
+sirin.graphics.StrokePreparationSuite: finished 0.154s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.154s
+preparationCancellation checks=251 work=250 elapsedNs=613042 completedEntries=0
+sirin.graphics.PreparationCacheSuite: finished 1.993s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 1.993s
+sirin.graphics.StrokeBoundarySuite: finished 2.366s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 2.366s
+sirin.graphics.CurvedStrokeSuite: finished 3.398s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 3.398s
+[info] Passed: Total 69, Failed 0, Errors 0, Passed 69
+[success] Total time: 4 s, completed Oct 29, 2026, 4:28:31 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '60631'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '60633'.
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.003s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.003s
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '60634'.
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.001s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.001s
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '60636'.
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.000s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.000s
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.001s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.001s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:32 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '60639'.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.003s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:32 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '60641'.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.008s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.008s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 29, 2026, 4:28:32 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60643'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60645'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60647'.
+Test run sirin.engine.ProgressWorkerSuite started
+Test run sirin.engine.ReconciliationSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60648'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60650'.
+Test run sirin.engine.RetainedVirtualSuite started
+Test run sirin.engine.WorkCommandSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60652'.
+sirin.engine.ProgressWorkerSuite: finished 0.034s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.034s
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60653'.
+Test run sirin.engine.EventDeadlineSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60655'.
+Test run sirin.engine.TopologyLifetimeSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '60657'.
+Test run sirin.engine.FocusSuite started
+sirin.engine.WorkCommandSuite: finished 0.051s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.051s
+Test run sirin.engine.HostBoundarySuite started
+sirin.engine.FocusSuite: finished 0.015s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.015s
+sirin.engine.ReconciliationSuite: finished 0.090s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.090s
+sirin.engine.HostBoundarySuite: finished 0.011s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.011s
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.011s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.011s
+sirin.engine.TopologyLifetimeSuite: finished 0.056s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.056s
+sirin.engine.RetainedVirtualSuite: finished 0.136s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.136s
+sirin.engine.EventDeadlineSuite: finished 0.138s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.138s
+[info] Passed: Total 175, Failed 0, Errors 0, Passed 175
+[success] Total time: 1 s, completed Oct 29, 2026, 4:28:33 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60661'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60663'.
+Test run sirin.testkit.LatestAgreementSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60664'.
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60666'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60668'.
+Test run sirin.testkit.WorkAgreementSuite started
+Test run sirin.testkit.ReferenceAgreementSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60670'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60672'.
+Test run sirin.testkit.ProgressAgreementSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '60673'.
+Test run sirin.testkit.LifetimeAgreementSuite started
+Test run sirin.testkit.ReconciliationAgreementSuite started
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 2.196s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 2.196s
+sirin.testkit.ReferenceAgreementSuite: finished 5.743s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 5.743s
+sirin.testkit.WorkAgreementSuite: finished 6.460s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 6.460s
+sirin.testkit.EventDeadlineAgreementSuite: finished 7.371s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 7.371s
+sirin.testkit.VirtualCollectionAgreementSuite: finished 10.629s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 10.629s
+sirin.testkit.ReconciliationAgreementSuite: finished 13.730s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 13.730s
+sirin.testkit.ProgressAgreementSuite: finished 13.804s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 13.804s
+sirin.testkit.LifetimeAgreementSuite: finished 28.807s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 28.807s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 29 s, completed Oct 29, 2026, 4:29:02 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '60701'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '60703'.
+Test run sirin.specimen.WorkbenchSuite started
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.045s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.045s
+sirin.specimen.WorkbenchSuite: finished 0.177s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.177s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 1 s, completed Oct 29, 2026, 4:29:03 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '60706'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '60708'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '60710'.
+Test run sirin.host.TextEditingSuite started
+Test run sirin.host.HostSuite started
+sirin.host.TextEditingSuite: finished 0.009s
+Test run sirin.host.TextEditingSuite finished: 0 failed, 0 ignored, 10 total 0.009s
+sirin.host.HostSuite: finished 0.014s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.014s
+Test run sirin.host.InteractionSuite started
+sirin.host.InteractionSuite: finished 0.006s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 9 total 0.006s
+[info] Passed: Total 25, Failed 0, Errors 0, Passed 25
+[success] Total time: 0 s, completed Oct 29, 2026, 4:29:03 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-editor-20261029/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.BenchmarkFixtureSuite started
+sirin.desktop.BenchmarkFixtureSuite: finished 0.032s
+Test run sirin.desktop.BenchmarkFixtureSuite finished: 0 failed, 0 ignored, 3 total 0.041s
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 1.393s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 8 total 1.393s
+Test run sirin.desktop.EditorControllerSuite started
+sirin.desktop.EditorControllerSuite: finished 0.63s
+Test run sirin.desktop.EditorControllerSuite finished: 0 failed, 0 ignored, 13 total 0.63s
+renderSession GPU frame retirement test
+Test run sirin.desktop.GpuFrameSuite started
+sirin.desktop.GpuFrameSuite: finished 1.126s
+Test run sirin.desktop.GpuFrameSuite finished: 0 failed, 0 ignored, 6 total 1.126s
+canvasComparison sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=2 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=3 scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=4 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(6144,0,0,0,None)
+canvasComparison sample=5 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=6 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=7 scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=8 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(9548,52,0,0,None)
+canvasComparison sample=9 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=10 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(13817,7,0,0,None)
+canvasComparison sample=11 scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=12 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(13818,6,0,0,None)
+canvasComparison sample=13 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=14 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=15 scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(24561,15,0,0,None)
+canvasComparison sample=16 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(24576,0,0,0,None)
+workerCancellation retireNs=644375
+renderSession retire control
+workerCancellation retireNs=54208
+renderSession retire control
+workerCancellation retireNs=47875
+renderSession retire control
+workerCancellation retireNs=18334
+renderSession retire control
+workerCancellation retireNs=21583
+renderSession retire control
+workerCancellation retireNs=23625
+renderSession retire control
+workerCancellation retireNs=20334
+renderSession retire control
+workerCancellation retireNs=14875
+renderSession retire control
+workerCancellation retireNs=14834
+renderSession retire control
+workerCancellation retireNs=19875
+renderSession retire control
+workerCancellation retireNs=17000
+renderSession retire control
+workerCancellation retireNs=19000
+renderSession retire control
+workerCancellation retireNs=20084
+renderSession retire control
+workerCancellation retireNs=22541
+renderSession retire control
+workerCancellation retireNs=17958
+renderSession retire control
+workerCancellation retireNs=15917
+renderSession retire control
+workerCancellation retireNs=20209
+renderSession retire control
+workerCancellation retireNs=36500
+renderSession retire control
+workerCancellation retireNs=21750
+renderSession retire control
+workerCancellation retireNs=18958
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+sirin.desktop.RetainedCanvasSuite: finished 4.871s
+Test run sirin.desktop.RetainedCanvasSuite finished: 0 failed, 0 ignored, 5 total 4.871s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.608s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.608s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.007s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.007s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.01s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.01s
+cameraPixels sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=2 scale=1.0 camera=CanvasCamera(4.0,-3.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=5612
+cameraPixels sample=3 scale=1.0 camera=CanvasCamera(-4.0,3.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=5104
+cameraPixels sample=4 scale=1.0 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=5 scale=1.0 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=6 scale=1.0 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(6139,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=7 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(9107,493,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=8 scale=1.25 camera=CanvasCamera(3.2,-2.4,1.0) result=Comparison(9103,497,0,0,None) allByteWorst=21 reuse=8932
+cameraPixels sample=9 scale=1.25 camera=CanvasCamera(-3.2,2.4,1.0) result=Comparison(9180,420,0,0,None) allByteWorst=21 reuse=8288
+cameraPixels sample=10 scale=1.25 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(9570,30,0,0,None) allByteWorst=19 reuse=0
+cameraPixels sample=11 scale=1.25 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(9574,26,0,0,None) allByteWorst=32 reuse=0
+cameraPixels sample=12 scale=1.25 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(9595,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=13 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=14 scale=1.5 camera=CanvasCamera(2.6666666666666665,-2.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=13020
+cameraPixels sample=15 scale=1.5 camera=CanvasCamera(-2.6666666666666665,2.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=12240
+cameraPixels sample=16 scale=1.5 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(13819,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=17 scale=1.5 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=18 scale=1.5 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=19 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=20 scale=2.0 camera=CanvasCamera(2.0,-1.5,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=23500
+cameraPixels sample=21 scale=2.0 camera=CanvasCamera(-2.0,1.5,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=22448
+cameraPixels sample=22 scale=2.0 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=23 scale=2.0 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(24572,4,1,0,None) allByteWorst=1 reuse=0
+cameraPixels sample=24 scale=2.0 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+editedPixels result=Comparison(6144,0,0,0,None) reused=5820
+densePixels sample=1 scale=1.0 zoom=1.0 result=Comparison(57600,0,0,0,None) allByteWorst=0 meshes=3
+densePixels sample=2 scale=1.0 zoom=1.25 result=Comparison(57600,0,0,0,None) allByteWorst=0 meshes=6
+densePixels sample=3 scale=1.25 zoom=1.0 result=Comparison(89938,62,0,0,None) allByteWorst=0 meshes=9
+densePixels sample=4 scale=1.25 zoom=1.25 result=Comparison(89980,20,0,0,None) allByteWorst=0 meshes=12
+densePixels sample=5 scale=1.5 zoom=1.0 result=Comparison(129500,100,0,0,None) allByteWorst=0 meshes=15
+densePixels sample=6 scale=1.5 zoom=1.25 result=Comparison(129600,0,0,0,None) allByteWorst=0 meshes=18
+densePixels sample=7 scale=2.0 zoom=1.0 result=Comparison(230400,0,0,0,None) allByteWorst=0 meshes=21
+densePixels sample=8 scale=2.0 zoom=1.25 result=Comparison(230315,85,0,0,None) allByteWorst=0 meshes=24
+Test run sirin.desktop.CameraRetentionSuite started
+sirin.desktop.CameraRetentionSuite: finished 37.93s
+Test run sirin.desktop.CameraRetentionSuite finished: 0 failed, 0 ignored, 7 total 37.93s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 0.005s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 4 total 0.005s
+[info] Passed: Total 50, Failed 0, Errors 0, Passed 50
+[success] Total time: 51 s, completed Oct 29, 2026, 4:29:54 p.m.
+[warn] multiple main classes detected: run 'show discoveredMainClasses' to see the list
+[success] Total time: 7 s, completed Oct 29, 2026, 4:30:01 p.m.
+[warn] multiple main classes detected: run 'show discoveredMainClasses' to see the list
+[success] Total time: 6 s, completed Oct 29, 2026, 4:30:07 p.m.

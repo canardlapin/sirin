@@ -1,0 +1,6 @@
+present generation=1 ready=true sameTree=true sameEditors=true
+present generation=1 ready=true sameTree=true sameEditors=true
+ax kind=1 revision=1 shown=1 ready=true accepted=true
+input kind=3 key=0 x=289.640625 y=137.828125 ready=true focused=Some(34) pending=1
+ax kind=3 revision=1 shown=1 ready=false accepted=false
+input kind=4 key=0 x=289.640625 y=137.828125 ready=false focused=Some(35) pending=1

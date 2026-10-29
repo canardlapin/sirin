@@ -1,0 +1,21 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-editor-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-editor-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-editor-20261029/)
+[info] compiling 1 Scala source to /private/tmp/sirin-editor-20261029/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.EditorControllerSuite started
+sirin.desktop.EditorControllerSuite: finished 1.276s
+Test run sirin.desktop.EditorControllerSuite finished: 0 failed, 0 ignored, 13 total 1.284s
+[info] Passed: Total 13, Failed 0, Errors 0, Passed 13
+[success] Total time: 6 s, completed Oct 29, 2026, 4:24:33 p.m.
+[warn] multiple main classes detected: run 'show discoveredMainClasses' to see the list
+[success] Total time: 6 s, completed Oct 29, 2026, 4:24:40 p.m.
+[warn] multiple main classes detected: run 'show discoveredMainClasses' to see the list
+[success] Total time: 6 s, completed Oct 29, 2026, 4:24:46 p.m.

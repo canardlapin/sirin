@@ -5,7 +5,9 @@ checkpoint `13030fe`, at `/private/tmp/sirin-editor-20261029`. The unfinished
 editor in `/private/tmp/sirin-gpu-host-20261028` and the shared checkout remain
 untouched. This implements the bounded [editor contract](../../plans/2026-10-29-text-editor.md)
 and the owner's explicit choice to replace its inherited Cocoa AX bridge with
-AccessKit. Native UI acceptance remains pending the launch approval below.
+AccessKit. The initial62d3519 receipt below predates native acceptance; the
+[approved native continuation](native-acceptance/README.md) records the subsequent
+fixes, passing native checks and available-host regression.
 
 ## Implementation
 
@@ -97,7 +99,7 @@ python3 -B -m unittest discover -s desktop/tools -p 'test_*.py'
 python3 -B docs/evidence/text-editor-20261029/verify.py
 ```
 
-## Preserved failures and open native acceptance
+## Initial implementation receipt and preserved failures
 
 The first final Native run reports an error for ReconciliationAgreementSuite
 without assertion/stack detail; it never printed that suite's start. Its
@@ -115,9 +117,8 @@ The final distinct local image is
 `io.github.canardlapin.sirin.edit.integration`. It uses public TextField APIs.
 Launching that locally built app through computer use was rejected by automatic
 approval review: locally built executable code requires action-time confirmation.
-Explicit launch approval was requested and remains pending. No alternative UI
-launch route was used. Therefore the following are **not run on this AccessKit
-candidate**: native AX queries/actions, actual OS typing/selection/clipboard,
+At62d3519, explicit launch approval had been requested and was pending. No
+alternative UI launch route was used. At that checkpoint these were **not run**: native AX queries/actions, actual OS typing/selection/clipboard,
 the packaged IME/control/resize/device-recovery/close scenario, actual Japanese
 or Chinese input methods, VoiceOver and the ordinary host latency regression.
 The user's available-host waiver persists; no formal quiet-host or performance
@@ -128,7 +129,10 @@ the *older direct Cocoa* editor package. Those are not AccessKit results and are
 not promoted into this receipt. A direct NSTextInputClient control is also not
 an actual Japanese/Chinese input-method or VoiceOver session.
 
-Keep the Mote editor task open until the candidate's native acceptance is run.
+The owner subsequently approved launch; see the native continuation for current
+results and explicit remaining qualification gates. The original manifest is
+retained and verified against62d3519; the continuation has its own source/package
+manifest.
 The complete asynchronous search/save/reorder/import workbench, other platforms,
 full screen-reader qualification, arbitrary uncached zoom and browser parity
 remain later gates.

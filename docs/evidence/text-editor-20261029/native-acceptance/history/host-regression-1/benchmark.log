@@ -1,0 +1,10 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-editor-20261029/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+benchmarkReceipt=/private/tmp/sirin-editor-20261029/desktop/target/benchmarks/run-1793305531842-4862726470011875 status=failed targetsMet=false
+renderSession shaped=19 GPU=BatchGpuStats(0,26214400,18480,28158,127312,129,0,352,15) CPU=BatchCacheStats(256,10272,100,56316,0,3088,100,0) tiles=entries=60 pixels=864000 hits=0 misses=60
+Exception in thread "main" java.lang.IllegalStateException: host deadline exceeded stage=0 benchmark=0
+	at sirin.desktop.DesktopWorkbench$.run(DesktopWorkbench.scala:276)
+	at sirin.desktop.DesktopWorkbench$.main(DesktopWorkbench.scala:23)
+	at sirin.desktop.DesktopWorkbench.main(DesktopWorkbench.scala)
