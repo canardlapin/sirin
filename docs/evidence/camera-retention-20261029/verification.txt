@@ -1,0 +1,2 @@
+Final sources/artifacts, 49 raw statistics, frozen warm counters/latencies and host regression verified.
+Original boundary policy retained; novel-scale rebuilds and spontaneous-loss limits remain explicit.

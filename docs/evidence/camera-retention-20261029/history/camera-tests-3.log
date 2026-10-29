@@ -1,0 +1,20 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-camera-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-camera-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-camera-20261029/)
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/test-classes ...
+[error] -- [E008] Not Found Error: /private/tmp/sirin-camera-20261029/desktop/src/test/scala/sirin/desktop/CameraRetentionSuite.scala:5:52 
+[error] 5 |import sirin.render.{BatchGpu,GpuFrame,OffscreenGpu,BatchOracle}
+[error]   |                                                    ^^^^^^^^^^^
+[error]   |                         value BatchOracle is not a member of sirin.render
+[error] -- [E008] Not Found Error: /private/tmp/sirin-camera-20261029/desktop/src/test/scala/sirin/desktop/CameraRetentionSuite.scala:14:8 
+[error] 14 |      c.clip(Path.rectangle(Rect(2.3,3.7,83.4,53.6))) { c =>
+[error]    |      ^^^^^^
+[error]    |      value clip is not a member of sirin.graphics.Canvas2D
+[error] two errors found
+[error] (desktopJVM / Test / compileIncremental) Compilation failed
+[error] Total time: 4 s, completed Oct 28, 2026, 11:22:40 p.m.

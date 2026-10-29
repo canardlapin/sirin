@@ -1,0 +1,9 @@
+{
+  "platform": "macOS-15.1.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "jdk": "Temurin25.0.4.1+1",
+  "adapter": "Apple M2 Pro; printed in validation/final-validation.log",
+  "native_artifacts": "Previously fetched pinned vendor tree reused by symlink; no native dependency source build",
+  "baseline": "08d9837",
+  "quiet_claim": false
+}

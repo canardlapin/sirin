@@ -1,0 +1,71 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-camera-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-camera-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-camera-20261029/)
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+canvasComparison sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=2 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=3 scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=4 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(6144,0,0,0,None)
+canvasComparison sample=5 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=6 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=7 scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=8 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(9548,52,0,0,None)
+canvasComparison sample=9 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=10 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(13817,7,0,0,None)
+canvasComparison sample=11 scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=12 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(13818,6,0,0,None)
+canvasComparison sample=13 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=14 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=15 scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(24561,15,0,0,None)
+canvasComparison sample=16 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(24576,0,0,0,None)
+workerCancellation retireNs=589417
+renderSession retire control
+workerCancellation retireNs=74250
+renderSession retire control
+workerCancellation retireNs=23584
+renderSession retire control
+workerCancellation retireNs=19667
+renderSession retire control
+workerCancellation retireNs=21584
+renderSession retire control
+workerCancellation retireNs=50750
+renderSession retire control
+workerCancellation retireNs=29666
+renderSession retire control
+workerCancellation retireNs=63750
+renderSession retire control
+workerCancellation retireNs=16791
+renderSession retire control
+workerCancellation retireNs=40750
+renderSession retire control
+workerCancellation retireNs=17291
+renderSession retire control
+workerCancellation retireNs=20083
+renderSession retire control
+workerCancellation retireNs=17750
+renderSession retire control
+workerCancellation retireNs=136042
+renderSession retire control
+workerCancellation retireNs=70292
+renderSession retire control
+workerCancellation retireNs=17166
+renderSession retire control
+workerCancellation retireNs=17583
+renderSession retire control
+workerCancellation retireNs=25542
+renderSession retire control
+workerCancellation retireNs=23166
+renderSession retire control
+workerCancellation retireNs=23916
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+sirin.desktop.RetainedCanvasSuite: finished 6.643s
+Test run sirin.desktop.RetainedCanvasSuite finished: 0 failed, 0 ignored, 5 total 6.651s
+[info] Passed: Total 5, Failed 0, Errors 0, Passed 5
+[success] Total time: 8 s, completed Oct 28, 2026, 11:21:01 p.m.

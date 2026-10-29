@@ -1,0 +1,20 @@
+{
+  "distinct_scala_cases": 756,
+  "by_scope": {
+    "JVM_alias": 313,
+    "Native_alias": 313,
+    "font": 7,
+    "unicode": 12,
+    "paragraph": 40,
+    "Native_GPU": 34,
+    "desktop": 37
+  },
+  "python_receipt_tests": 6,
+  "new_receipt_negative_controls": 3,
+  "examples_compiled": 13,
+  "full_matrix": "validation/full-1.log",
+  "final_Native_and_desktop": "validation/final-validation.log",
+  "final_desktop_after_guards": "validation/desktop-final-2.log",
+  "selective_edit_proof": "validation/edit-proof.log",
+  "repeated_cases_not_added": true
+}

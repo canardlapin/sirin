@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
+#include <math.h>
 
 static _Atomic int live_requests;
 static int fault_stage;

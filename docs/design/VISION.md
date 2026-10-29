@@ -1452,6 +1452,31 @@ worker, tile and presentation machinery. Its bounded contract and evidence live
 in `docs/plans/2026-10-28-canvas-recovery.md`. Existing quiet-run and broader
 graphics capability gates remain separate.
 
+**Retained camera variants (2026-10-29).** The canvas may retain at most two
+exact-scale scene programs under the existing GPU inventories. Geometry and
+clips are tessellated before viewport clipping; a bounded camera translation
+record locates them at the requested device sample grid. New scales rebuild
+curves and glyph masks at their exact density. Resolved pixels are never scaled
+to approximate zoom. Immutable output copies keep previously published frames
+unchanged through further submissions and eviction. Integer-device-pixel pans
+reuse overlap; bounded same-camera fill edits reuse pixels outside conservative
+dirty bounds. Fractional motion and unprovable dirty bounds shade the full target.
+The existing clipped tiled path handles larger targets and camera precision
+fallbacks. The JVM-only `sirin_desktop_camera` FFM call owns synchronous GPU
+submission/completion on the render worker and never invokes Scala callbacks.
+This is a renderer strategy,
+with no change to scheduling, identity, focus or command policies. Frozen budgets,
+correctness controls and measurement scope are in
+`docs/plans/2026-10-29-camera-retention.md`.
+
+Camera meshes rebase offscreen paths where the original coordinate range permits
+it. Before tessellation, relative points use canonical f32 inputs only when their
+error is at most tolerance/64. This makes translated copies share mesh builds
+and GPU storage without raising the conservative16million pair admission cap.
+Clipped/reference compilation keeps its original input arithmetic. Both routes
+retain the original output precision checks; camera arithmetic and paint mapping
+also validate their actual inverse-camera viewport before submission.
+
 ## 10. Developer iteration (new section)
 
 Scala Native link times are the biggest risk to developer experience, and the

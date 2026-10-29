@@ -1,0 +1,33 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-camera-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-camera-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-camera-20261029/)
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] running (fork) sirin.desktop.CanvasBenchmark 
+[error] Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: mesh intersection work budget pairs=16278279 edges=926
+[error] 	at scala.Predef$.require(Predef.scala:337)
+[error] 	at sirin.render.WindingMesh$.tessellate(BatchProgram.scala:59)
+[error] 	at sirin.render.BatchCompiler.mesh$2(BatchProgram.scala:237)
+[error] 	at sirin.render.BatchCompiler.append$1(BatchProgram.scala:262)
+[error] 	at sirin.render.BatchCompiler.compile$$anonfun$2(BatchProgram.scala:296)
+[error] 	at scala.collection.immutable.VectorStatics$.foreachRec(Vector.scala:2125)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2131)
+[error] 	at sirin.render.BatchCompiler.compile(BatchProgram.scala:293)
+[error] 	at sirin.render.BatchGpu.compileCamera(BatchGpu.scala:33)
+[error] 	at sirin.desktop.CameraCache.render(CameraCache.scala:28)
+[error] 	at sirin.desktop.RetainedCanvas.render(RetainedCanvas.scala:43)
+[error] 	at sirin.desktop.CanvasBenchmark$.render$1(CanvasBenchmark.scala:21)
+[error] 	at sirin.desktop.CanvasBenchmark$.main$$anonfun$2$$anonfun$6(CanvasBenchmark.scala:38)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Range.foreach(Range.scala:192)
+[error] 	at sirin.desktop.CanvasBenchmark$.main$$anonfun$2(CanvasBenchmark.scala:36)
+[error] 	at scala.runtime.java8.JFunction1$mcVD$sp.apply(JFunction1$mcVD$sp.scala:18)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.desktop.CanvasBenchmark$.main(CanvasBenchmark.scala:15)
+[error] 	at sirin.desktop.CanvasBenchmark.main(CanvasBenchmark.scala)
+[error] nonzero exit code returned from runner: 1
+[error] (desktopJVM / Compile / runMain) nonzero exit code returned from runner: 1
+[error] Total time: 7 s, completed Oct 28, 2026, 11:35:38 p.m.

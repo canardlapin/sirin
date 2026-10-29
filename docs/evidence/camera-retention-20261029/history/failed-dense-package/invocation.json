@@ -1,0 +1,115 @@
+{
+  "platform": "macOS-15.1.1-arm64-arm-64bit",
+  "kind": "available-host camera diagnostic",
+  "quiet_qualified": false,
+  "package_sha256": {
+    "desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java": "c227ea90130ec46ddb48edbb7f3e46a6ffaa2e80dd02dc1e8be62847bdabe0d0",
+    "desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib": "db8e284ba92b4ed4568cef3635542f90603aa4b6cdeb27b562483deba6927bd0",
+    "desktop/target/package/Sirin.app/Contents/MacOS/Sirin": "67bb0e05dd0a03e357cdd93c948e913d1d1c6f6afb2b795596564d9750aa69df",
+    "desktop/target/package/Sirin.app/Contents/app/scala-library-2.13.16.jar": "1ebb2b6f9e4eb4022497c19b1e1e825019c08514f962aaac197145f88ed730f1",
+    "desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar": "73089d33f763b94758170e0a66be978f9397c14b7795e343898aa89b3d7b6639",
+    "desktop/target/package/Sirin.app/Contents/app/sirin.jar": "b33ebf542d3362557ebe7900a397abe39f14929ce13ad068bf8645ba36c0450b"
+  },
+  "runs": [
+    {
+      "name": "baseline-workload",
+      "command": [
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+        "-XstartOnFirstThread",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dsirin.repo=/private/tmp/sirin-camera-20261029",
+        "-Dsirin.desktop.library=/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+        "-cp",
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/*",
+        "sirin.desktop.CanvasBenchmark"
+      ],
+      "status": "failed",
+      "exit_code": 1
+    },
+    {
+      "name": "worker",
+      "command": [
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+        "-XstartOnFirstThread",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dsirin.repo=/private/tmp/sirin-camera-20261029",
+        "-Dsirin.desktop.library=/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+        "-cp",
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/*",
+        "sirin.desktop.CameraMotionBenchmark"
+      ],
+      "status": "failed",
+      "exit_code": 1,
+      "targets_passed": false,
+      "validation_error": ""
+    },
+    {
+      "name": "input",
+      "command": [
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+        "-XstartOnFirstThread",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dsirin.repo=/private/tmp/sirin-camera-20261029",
+        "-Dsirin.desktop.library=/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+        "-cp",
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/*",
+        "sirin.desktop.DesktopWorkbench",
+        "canvas",
+        "benchmark"
+      ],
+      "status": "failed",
+      "exit_code": 1,
+      "targets_passed": false,
+      "validation_error": ""
+    },
+    {
+      "name": "canvas-controls",
+      "command": [
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+        "-XstartOnFirstThread",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dsirin.repo=/private/tmp/sirin-camera-20261029",
+        "-Dsirin.desktop.library=/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+        "-cp",
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/*",
+        "sirin.desktop.DesktopWorkbench",
+        "canvas",
+        "scenario"
+      ],
+      "status": "failed",
+      "exit_code": 1
+    },
+    {
+      "name": "workbench-recovery",
+      "command": [
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+        "-XstartOnFirstThread",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dsirin.repo=/private/tmp/sirin-camera-20261029",
+        "-Dsirin.desktop.library=/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+        "-cp",
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/*",
+        "sirin.desktop.DesktopWorkbench",
+        "recovery"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "name": "native-failures",
+      "command": [
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/runtime/Contents/Home/bin/java",
+        "-XstartOnFirstThread",
+        "--enable-native-access=ALL-UNNAMED",
+        "-Dsirin.repo=/private/tmp/sirin-camera-20261029",
+        "-Dsirin.desktop.library=/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/libsirin_desktop.dylib",
+        "-cp",
+        "/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/*",
+        "sirin.desktop.WindowSpike",
+        "failures"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    }
+  ]
+}

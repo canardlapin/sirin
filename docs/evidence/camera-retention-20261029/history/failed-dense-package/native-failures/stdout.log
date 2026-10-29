@@ -1,0 +1,12 @@
+partialInitStage=1 liveWindows=0 liveRequests=0
+partialInitStage=2 liveWindows=0 liveRequests=0
+partialInitStage=3 liveWindows=0 liveRequests=0
+partialInitStage=4 liveWindows=0 liveRequests=0
+partialInitStage=5 liveWindows=0 liveRequests=0
+partialInitStage=6 liveWindows=0 liveRequests=0
+partialInitStage=7 liveWindows=0 liveRequests=0
+partialInitStage=8 liveWindows=0 liveRequests=0
+timedOutRequest=9 lateCallback=true lateObjectReleased=true
+partialInitStage=9 liveWindows=0 liveRequests=0
+timedOutRequest=10 lateCallback=true lateObjectReleased=true
+partialInitStage=10 liveWindows=0 liveRequests=0

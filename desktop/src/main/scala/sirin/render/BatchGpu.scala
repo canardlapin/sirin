@@ -28,6 +28,9 @@ final class BatchGpu private(private[render] var handle: Ptr[Byte],val generatio
     RenderTarget(generation,width,height,Affine.scale(scale,scale))
   def compile(drawing: PreparedDrawing,control: PreparationControl=new PreparationControl): BatchProgram =
     check();require(drawing.target.device eq generation,"batch device generation mismatch");compiler.compile(drawing,control)
+  private[sirin] def compileCamera(drawing: PreparedDrawing,control: PreparationControl): BatchProgram =
+    check();require(drawing.target.device eq generation,"camera generation mismatch")
+    compiler.compile(drawing,control,viewportClip=false)
   private[sirin] def hasGlyphInk(font: ResolvedFont,id: Int,scale: Double): Boolean={check();compiler.hasGlyphInk(font,id,scale)}
   def cacheStats: BatchCacheStats = {check();compiler.stats}
   def stats: BatchGpuStats =
@@ -126,6 +129,23 @@ final class BatchGpu private(private[render] var handle: Ptr[Byte],val generatio
       require(Calls.int("sirin_desktop_tile_export",resource.handle,out)==0,"GPU output budget or export failure")
       new GpuTile(!out,resource.program.drawing.target.width,resource.program.drawing.target.height)
     }
+  private[render] def camera(resource: BatchRetained,prior: Option[GpuTile],parameters: Array[Float]): GpuTile =
+    check();require(children(resource),"camera program owner")
+    require(parameters.length==12 && parameters.forall(_.isFinite),"camera parameters")
+    Zone.acquire { implicit zone =>
+      val values=alloc[Float](12);parameters.indices.foreach(i => values(i)=parameters(i))
+      val out=alloc[Ptr[Byte]]()
+      val previous=prior.map(_.handle).getOrElse(pointer[Byte](java.lang.foreign.MemorySegment.NULL))
+      val status=Calls.int("sirin_desktop_camera",resource.handle,previous,values,out)
+      val native= !out
+      try
+        if isLost then throw new GraphicsDeviceLost
+        require(status==0,s"camera submission status=$status")
+        new GpuTile(native,resource.program.drawing.target.width,resource.program.drawing.target.height)
+      catch case e: Throwable =>
+        if native!=null then Calls.unit("sirin_desktop_tile_close",native)
+        throw e
+    }
   def close(): Unit =
     require(Thread.currentThread() eq owner,"batch GPU owner thread mismatch")
     if handle!=null then
@@ -137,6 +157,7 @@ final class BatchRetained private[render](private val owner: BatchGpu,private[re
   /** Synchronous queue completion and resolve, excluding readback. */
   def submit(): Unit={owner.replay(this,false);()}
   def exportTile(): GpuTile = owner.exportTile(this)
+  private[sirin] def camera(prior: Option[GpuTile],parameters: Array[Float]): GpuTile=owner.camera(this,prior,parameters)
   def close(): Unit=owner.retire(this)
   private[render] def clear(): Unit={handle=null;program=null}
 

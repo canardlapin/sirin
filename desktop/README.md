@@ -109,3 +109,21 @@ GPU/canvas package at `ada4e2b`; this is available-host acceptance, recorded
 Diagnostic invocation metadata still says `qualified=false` for formal quiet
 qualification. The waived precondition no longer blocks further development.
 Dense canvas pan/zoom performance and spontaneous-loss races remain separate.
+
+The camera-retention successor keeps two exact-scale GPU scene variants for
+canvas targets up to640x360 physical pixels. Translation updates a small GPU
+record; warmed scale changes select the matching variant. New scales rebuild
+curves and glyph masks. Integer-pixel overlap and conservative fill-edit regions
+reuse resolved coverage; fractional pan uses the exact new sample grid. Each
+published frame owns an immutable snapshot. Larger targets and precision cases
+use the existing tiled path.
+
+```sh
+desktop/target/package/Sirin.app/Contents/MacOS/Sirin canvas benchmark
+```
+
+This measures actual SDL input to matching successful presentation, with20
+warmups and100 measured samples each for pan and zoom. The separate packaged
+`sirin.desktop.CameraMotionBenchmark` measures renderer completion at all four
+scales. Both freeze50/100ms warm p95/p99 targets and preserve every sample.
+See the [camera contract](../docs/plans/2026-10-29-camera-retention.md).

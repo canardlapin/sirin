@@ -1,0 +1,18 @@
+renderSession GPU=BatchGpuStats(1,61482960,1099872,256,1173232,0,35,35,121) preparation=PreparationCacheStats(202,2734272,0,202) tiles=entries=0 pixels=0 hits=0 misses=0
+cameraInputReceipt=/private/tmp/sirin-camera-20261029/desktop/target/camera-runs/input-1793244754020 complete=false
+Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: mesh intersection work budget
+	at scala.Predef$.require(Predef.scala:337)
+	at sirin.render.WindingMesh$.tessellate(BatchProgram.scala:59)
+	at sirin.render.BatchCompiler.mesh$2(BatchProgram.scala:236)
+	at sirin.render.BatchCompiler.append$1(BatchProgram.scala:261)
+	at sirin.render.BatchCompiler.compile$$anonfun$2(BatchProgram.scala:295)
+	at scala.collection.immutable.VectorStatics$.foreachRec(Vector.scala:2125)
+	at scala.collection.immutable.Vector.foreach(Vector.scala:2131)
+	at sirin.render.BatchCompiler.compile(BatchProgram.scala:292)
+	at sirin.render.BatchGpu.compileCamera(BatchGpu.scala:33)
+	at sirin.desktop.CameraCache.render(CameraCache.scala:28)
+	at sirin.desktop.RetainedCanvas.render(RetainedCanvas.scala:43)
+	at sirin.desktop.RetainedCanvas.render(RetainedCanvas.scala:29)
+	at sirin.desktop.OwnedRenderService.loop(FrameWorker.scala:250)
+	at sirin.desktop.OwnedRenderService.$init$$$anonfun$2(FrameWorker.scala:229)
+	at java.base/java.lang.Thread.run(Thread.java:1474)

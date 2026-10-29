@@ -28,10 +28,13 @@ private[desktop] object CanvasFixture:
   * actual device, Escape/native close retires it. All recordings use Drawing. */
 object CanvasWorkbench:
   def main(args: Array[String]): Unit =
+    if args.headOption.contains("benchmark") then {CanvasInputBenchmark.main(args.drop(1));return}
     val root=FilePath.of(System.getProperty("sirin.repo",".")).toAbsolutePath.normalize()
     val face=NativeFont.open(FontData.copy(Files.readAllBytes(root.resolve("graphics/src/test/resources/fonts/NotoSans-Regular.ttf"))),12)
     val label=try face.shape("Pan / zoom / edit / recover",ShapingOptions(Script.Latin,TextDirection.LeftToRight,"en")) finally face.close()
     val window=new NativeWindow("Sirin retained canvas",320,180)
+    try run(window,label,args) finally window.close()
+  private def run(window: NativeWindow,label: ShapedRun,args: Array[String]): Unit =
     val handle=new java.util.concurrent.atomic.AtomicReference(window.prepareRenderer(BatchGpu.shaderSource))
     var preparation=Option.empty[PreparationCache] // only the persistent worker touches this
     val service=new OwnedRenderService[CanvasRequest,CanvasFrame](() => {window.wake();()},_.generation,() => {

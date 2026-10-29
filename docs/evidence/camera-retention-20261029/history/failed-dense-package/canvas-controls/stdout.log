@@ -1,0 +1,23 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/private/tmp/sirin-camera-20261029/desktop/target/package/Sirin.app/Contents/app/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+canvasFrame=4 camera=CanvasCamera(0.0,0.0,1.0) prepared=true compiled=1 upload=2275593 work=1551283 ms=682.408541 cache=PreparationCacheStats(101,1210336,0,101)
+canvasFrame=5 camera=CanvasCamera(8.0,0.37,1.0) prepared=false compiled=0 upload=32 work=4 ms=9.85875 cache=PreparationCacheStats(101,1210336,0,101)
+renderSession GPU=BatchGpuStats(1,61485984,1100544,2633,1172448,0,63,63,2) preparation=PreparationCacheStats(202,2734272,0,202) tiles=entries=0 pixels=0 hits=0 misses=0
+Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: mesh intersection work budget
+	at scala.Predef$.require(Predef.scala:337)
+	at sirin.render.WindingMesh$.tessellate(BatchProgram.scala:59)
+	at sirin.render.BatchCompiler.mesh$2(BatchProgram.scala:236)
+	at sirin.render.BatchCompiler.append$1(BatchProgram.scala:261)
+	at sirin.render.BatchCompiler.compile$$anonfun$2(BatchProgram.scala:295)
+	at scala.collection.immutable.VectorStatics$.foreachRec(Vector.scala:2125)
+	at scala.collection.immutable.Vector.foreach(Vector.scala:2131)
+	at sirin.render.BatchCompiler.compile(BatchProgram.scala:292)
+	at sirin.render.BatchGpu.compileCamera(BatchGpu.scala:33)
+	at sirin.desktop.CameraCache.render(CameraCache.scala:28)
+	at sirin.desktop.RetainedCanvas.render(RetainedCanvas.scala:43)
+	at sirin.desktop.RetainedCanvas.render(RetainedCanvas.scala:29)
+	at sirin.desktop.OwnedRenderService.loop(FrameWorker.scala:250)
+	at sirin.desktop.OwnedRenderService.$init$$$anonfun$2(FrameWorker.scala:229)
+	at java.base/java.lang.Thread.run(Thread.java:1474)

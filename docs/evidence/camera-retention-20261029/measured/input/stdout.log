@@ -1,0 +1,2 @@
+renderSession GPU=BatchGpuStats(2,97045920,77760,256,2640832,0,7,7,241) preparation=PreparationCacheStats(202,2734272,0,202) tiles=entries=0 pixels=0 hits=0 misses=0
+cameraInputReceipt=/private/tmp/sirin-camera-20261029/desktop/target/camera-runs/input-1793245318901 complete=true

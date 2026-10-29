@@ -1,0 +1,28 @@
+{
+  "mode": "input",
+  "samples": 240,
+  "passed": true,
+  "quiet_qualified": false,
+  "groups": [
+    {
+      "scope": "native",
+      "kind": "pan",
+      "n": 100,
+      "p50_ms": 16.585875,
+      "p95_ms": 17.480167,
+      "p99_ms": 18.392458,
+      "max_ms": 22.713333,
+      "passed": true
+    },
+    {
+      "scope": "native",
+      "kind": "zoom",
+      "n": 100,
+      "p50_ms": 16.609583,
+      "p95_ms": 17.085791,
+      "p99_ms": 17.420666,
+      "max_ms": 21.794917,
+      "passed": true
+    }
+  ]
+}

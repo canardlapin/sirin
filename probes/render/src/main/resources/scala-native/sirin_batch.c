@@ -139,7 +139,7 @@ static WGPURenderPipeline pipeline(Bgpu*s,WGPUShaderModule module,const char*vs,
   pd.primitive.topology=WGPUPrimitiveTopology_TriangleList;
   WGPUPipelineLayout pl=NULL;WGPUBindGroupLayout gl=NULL;
   if(strcmp(vs,"vertex")==0){
-    WGPUBindGroupLayoutEntry entries[6]={WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT};
+    WGPUBindGroupLayoutEntry entries[7]={WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT};
     for(int i=0;i<3;i++){
       entries[i].binding=i;entries[i].visibility=i==1?WGPUShaderStage_Vertex:(WGPUShaderStage_Vertex|WGPUShaderStage_Fragment);
       entries[i].buffer.type=WGPUBufferBindingType_ReadOnlyStorage;
@@ -150,7 +150,8 @@ static WGPURenderPipeline pipeline(Bgpu*s,WGPUShaderModule module,const char*vs,
       entries[i].texture.viewDimension=WGPUTextureViewDimension_2D;
     }
     entries[5].binding=8;entries[5].visibility=WGPUShaderStage_Vertex|WGPUShaderStage_Fragment;entries[5].buffer.type=WGPUBufferBindingType_Uniform;
-    WGPUBindGroupLayoutDescriptor gd=WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;gd.entryCount=6;gd.entries=entries;
+    entries[6].binding=9;entries[6].visibility=WGPUShaderStage_Vertex|WGPUShaderStage_Fragment;entries[6].buffer.type=WGPUBufferBindingType_Uniform;
+    WGPUBindGroupLayoutDescriptor gd=WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;gd.entryCount=7;gd.entries=entries;
     gl=wgpuDeviceCreateBindGroupLayout(s->device,&gd);
     WGPUPipelineLayoutDescriptor ld=WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;ld.bindGroupLayoutCount=1;ld.bindGroupLayouts=&gl;
     pl=wgpuDeviceCreatePipelineLayout(s->device,&ld);pd.layout=pl;
@@ -203,14 +204,15 @@ int bgpu_open(const char*shader,int vertices,int meshes,int masks,int images,voi
   s->pipeline=pipeline(s,module,"vertex","fragment");s->layer=pipeline(s,module,"layer_vertex","layer_fragment");
   WGPUComputePipelineDescriptor pd=WGPU_COMPUTE_PIPELINE_DESCRIPTOR_INIT;pd.compute.module=module;
   pd.compute.entryPoint=(WGPUStringView){"resolve",7};
-  WGPUBindGroupLayoutEntry entries[4]={WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT};
+  WGPUBindGroupLayoutEntry entries[5]={WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT,WGPU_BIND_GROUP_LAYOUT_ENTRY_INIT};
   entries[0].binding=5;entries[0].visibility=WGPUShaderStage_Compute;entries[0].texture.sampleType=WGPUTextureSampleType_UnfilterableFloat;
   entries[0].texture.viewDimension=WGPUTextureViewDimension_2D;
   entries[1].binding=6;entries[1].visibility=WGPUShaderStage_Compute;entries[1].storageTexture.access=WGPUStorageTextureAccess_WriteOnly;
   entries[1].storageTexture.format=WGPUTextureFormat_RGBA8Unorm;entries[1].storageTexture.viewDimension=WGPUTextureViewDimension_2D;
   entries[2].binding=7;entries[2].visibility=WGPUShaderStage_Compute;entries[2].buffer.type=WGPUBufferBindingType_Storage;
   entries[3].binding=8;entries[3].visibility=WGPUShaderStage_Compute;entries[3].buffer.type=WGPUBufferBindingType_Uniform;
-  WGPUBindGroupLayoutDescriptor gd=WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;gd.entryCount=4;gd.entries=entries;
+  entries[4].binding=9;entries[4].visibility=WGPUShaderStage_Compute;entries[4].buffer.type=WGPUBufferBindingType_Uniform;
+  WGPUBindGroupLayoutDescriptor gd=WGPU_BIND_GROUP_LAYOUT_DESCRIPTOR_INIT;gd.entryCount=5;gd.entries=entries;
   WGPUBindGroupLayout gl=wgpuDeviceCreateBindGroupLayout(s->device,&gd);
   WGPUPipelineLayoutDescriptor ld=WGPU_PIPELINE_LAYOUT_DESCRIPTOR_INIT;ld.bindGroupLayoutCount=1;ld.bindGroupLayouts=&gl;
   WGPUPipelineLayout pl=wgpuDeviceCreatePipelineLayout(s->device,&ld);pd.layout=pl;
@@ -321,7 +323,7 @@ long long bgpu_stat(void*raw,int field){
 typedef struct {int kind,first,count;float alpha;} Step;
 typedef struct {
   Bgpu*owner;int w,h,layers,nsteps,nmeshes,nassets;
-  WGPUBuffer data,indices,accumulation,phases;WGPUTexture target[3],output;WGPUTextureView view[3],out_view;
+  WGPUBuffer data,indices,accumulation,phases,camera;WGPUTexture target[3],output;WGPUTextureView view[3],out_view;
   WGPUBindGroup group[4],composite[3],resolve[4];long long bytes;
   Step*steps;int mesh_ids[1024],asset_ids[272],asset_kinds[272];
 } BgpuProgram;
@@ -333,6 +335,7 @@ static void program_free(BgpuProgram*p){
   }
   if(p->out_view)wgpuTextureViewRelease(p->out_view);if(p->output)wgpuTextureRelease(p->output);
   if(p->data)wgpuBufferRelease(p->data);if(p->indices)wgpuBufferRelease(p->indices);
+  if(p->camera)wgpuBufferRelease(p->camera);
   if(p->accumulation)wgpuBufferRelease(p->accumulation);if(p->phases)wgpuBufferRelease(p->phases);
   free(p->steps);free(p);
 }
@@ -342,7 +345,7 @@ int bgpu_retain(void*raw,const float*data,int ndata,const uint32_t*indices,int n
   Bgpu*s=raw;*out=NULL;
   if(w<1||h<1||w>640||h>360||layers<0||layers>2||ndata<4||ndata>1048576||nindices<0||nindices>262144||
     nsteps<0||nsteps>24576||nmeshes<0||nmeshes>1024||nassets<0||nassets>272)return 4;
-  long long bytes=(long long)ndata*4+(long long)(nindices?nindices:1)*8+(long long)w*h*4*16*(layers+1)+(long long)w*h*20+1024;
+  long long bytes=(long long)ndata*4+(long long)(nindices?nindices:1)*8+(long long)w*h*4*16*(layers+1)+(long long)w*h*20+1056;
   if(s->programs>=16||bytes>201326592-s->bytes)return 6;
   for(int i=0;i<nmeshes;i++){Mesh*m=find_mesh(s,mesh_ids[i]);if(!m||!m->refs)return 4;}
   for(int i=0;i<nassets;i++){
@@ -357,22 +360,24 @@ int bgpu_retain(void*raw,const float*data,int ndata,const uint32_t*indices,int n
   p->data=buffer(s,(uint64_t)ndata*4,WGPUBufferUsage_Storage|WGPUBufferUsage_CopyDst);
   p->indices=buffer(s,(uint64_t)(nindices?nindices:1)*8,WGPUBufferUsage_Storage|WGPUBufferUsage_CopyDst);
   p->accumulation=buffer(s,(uint64_t)w*h*16,WGPUBufferUsage_Storage);
+  p->camera=buffer(s,32,WGPUBufferUsage_Uniform|WGPUBufferUsage_CopyDst);
   p->phases=buffer(s,1024,WGPUBufferUsage_Uniform|WGPUBufferUsage_CopyDst);
   for(int i=0;i<=layers;i++){
     p->target[i]=texture(s,w*4,h,WGPUTextureFormat_RGBA32Float,WGPUTextureUsage_RenderAttachment|WGPUTextureUsage_TextureBinding);
     if(!p->target[i])goto fail;p->view[i]=wgpuTextureCreateView(p->target[i],NULL);if(!p->view[i])goto fail;
   }
-  p->output=texture(s,w,h,WGPUTextureFormat_RGBA8Unorm,WGPUTextureUsage_StorageBinding|WGPUTextureUsage_CopySrc|WGPUTextureUsage_TextureBinding);
-  if(!p->data||!p->indices||!p->output||!p->accumulation||!p->phases)goto fail;
+  p->output=texture(s,w,h,WGPUTextureFormat_RGBA8Unorm,WGPUTextureUsage_StorageBinding|WGPUTextureUsage_CopySrc|WGPUTextureUsage_CopyDst|WGPUTextureUsage_TextureBinding);
+  if(!p->data||!p->indices||!p->output||!p->accumulation||!p->phases||!p->camera)goto fail;
   p->out_view=wgpuTextureCreateView(p->output,NULL);
   WGPUBindGroupLayout layout=wgpuRenderPipelineGetBindGroupLayout(s->pipeline,0);
-  WGPUBindGroupEntry entries[6]={WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT};
+  WGPUBindGroupEntry entries[7]={WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT};
   entries[0].binding=0;entries[0].buffer=p->data;entries[0].size=(uint64_t)ndata*4;
   entries[1].binding=1;entries[1].buffer=p->indices;entries[1].size=(uint64_t)(nindices?nindices:1)*8;
   entries[2].binding=2;entries[2].buffer=s->geometry;entries[2].size=(uint64_t)s->mesh_capacity*8;
   entries[3].binding=3;entries[3].textureView=s->mask_view;entries[4].binding=4;entries[4].textureView=s->image_view;
   entries[5].binding=8;entries[5].buffer=p->phases;entries[5].size=16;
-  WGPUBindGroupDescriptor gd=WGPU_BIND_GROUP_DESCRIPTOR_INIT;gd.layout=layout;gd.entryCount=6;gd.entries=entries;
+  entries[6].binding=9;entries[6].buffer=p->camera;entries[6].size=32;
+  WGPUBindGroupDescriptor gd=WGPU_BIND_GROUP_DESCRIPTOR_INIT;gd.layout=layout;gd.entryCount=7;gd.entries=entries;
   for(int i=0;i<4;i++){entries[5].offset=(uint64_t)i*256;p->group[i]=wgpuDeviceCreateBindGroup(s->device,&gd);}
   wgpuBindGroupLayoutRelease(layout);
   layout=wgpuRenderPipelineGetBindGroupLayout(s->layer,0);
@@ -382,15 +387,17 @@ int bgpu_retain(void*raw,const float*data,int ndata,const uint32_t*indices,int n
   }
   wgpuBindGroupLayoutRelease(layout);
   layout=wgpuComputePipelineGetBindGroupLayout(s->resolve,0);
-  WGPUBindGroupEntry re[4]={WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT};
+  WGPUBindGroupEntry re[5]={WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT,WGPU_BIND_GROUP_ENTRY_INIT};
   re[0].binding=5;re[0].textureView=p->view[0];re[1].binding=6;re[1].textureView=p->out_view;
   re[2].binding=7;re[2].buffer=p->accumulation;re[2].size=(uint64_t)w*h*16;
   re[3].binding=8;re[3].buffer=p->phases;re[3].size=16;
-  gd.layout=layout;gd.entryCount=4;gd.entries=re;
+  re[4].binding=9;re[4].buffer=p->camera;re[4].size=32;
+  gd.layout=layout;gd.entryCount=5;gd.entries=re;
   for(int i=0;i<4;i++){re[3].offset=(uint64_t)i*256;p->resolve[i]=wgpuDeviceCreateBindGroup(s->device,&gd);}
   wgpuBindGroupLayoutRelease(layout);
   for(int i=0;i<4;i++)if(!p->group[i]||!p->resolve[i])goto fail;
   if(bgpu_error_state(s))goto fail;
+  float camera[8]={0};wgpuQueueWriteBuffer(s->queue,p->camera,0,camera,sizeof(camera));
   uint32_t phases[256]={0};for(int i=0;i<4;i++)phases[i*64]=i;
   wgpuQueueWriteBuffer(s->queue,p->phases,0,phases,sizeof(phases));
   wgpuQueueWriteBuffer(s->queue,p->data,0,data,(uint64_t)ndata*4);
@@ -399,7 +406,7 @@ int bgpu_retain(void*raw,const float*data,int ndata,const uint32_t*indices,int n
   p->nmeshes=nmeshes;p->nassets=nassets;
   if(nmeshes)memcpy(p->mesh_ids,mesh_ids,(size_t)nmeshes*sizeof(int));
   if(nassets){memcpy(p->asset_ids,asset_ids,(size_t)nassets*sizeof(int));memcpy(p->asset_kinds,asset_kinds,(size_t)nassets*sizeof(int));}
-  atomic_fetch_add(&s->refs,1);s->bytes+=bytes;s->programs++;s->program_upload+=(long long)ndata*4+(long long)nindices*8+1024;
+  atomic_fetch_add(&s->refs,1);s->bytes+=bytes;s->programs++;s->program_upload+=(long long)ndata*4+(long long)nindices*8+1056;
   *out=p;return 0;
 fail:program_free(p);return 5;
 }

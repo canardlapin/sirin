@@ -4,6 +4,12 @@
 @group(0) @binding(3) var masks: texture_2d<f32>;
 @group(0) @binding(4) var images: texture_2d<f32>;
 @group(0) @binding(8) var<uniform> phase: vec4u;
+struct Camera { motion: vec4f, region: vec4f }
+@group(0) @binding(9) var<uniform> camera: Camera;
+fn skipped(p: vec2f) -> bool {
+  let inside=all(p>=camera.region.xy) && all(p<camera.region.zw);
+  return (camera.motion.z==1.0 && inside) || (camera.motion.z==2.0 && !inside);
+}
 struct Vertex {
   @builtin(position) position: vec4f,
   @location(0) @interpolate(flat) record: u32,
@@ -11,7 +17,7 @@ struct Vertex {
 }
 @vertex fn vertex(@builtin(vertex_index) v: u32,@builtin(instance_index) i: u32) -> Vertex {
   let item=indices[i];let offset=data[item.y+6u].zw;
-  let a=geometry[item.x]+offset;let b=geometry[item.x+1u]+offset;let c=geometry[item.x+2u]+offset;
+  let a=geometry[item.x]+offset+camera.motion.xy;let b=geometry[item.x+1u]+offset+camera.motion.xy;let c=geometry[item.x+2u]+offset+camera.motion.xy;
   let lo=min(min(a,b),c)-vec2f(0.015625);let hi=max(max(a,b),c)+vec2f(0.015625);
   let corners=array<vec2f,6>(vec2f(0,0),vec2f(1,0),vec2f(1,1),vec2f(0,0),vec2f(1,1),vec2f(0,1));
   let p=mix(lo,hi,corners[v]);let shift=0.5-(f32(phase.x)+0.5)/4.0;var out: Vertex;
@@ -52,11 +58,13 @@ fn pixel(kind: u32,slot: u32,size: vec2i,xy: vec2i) -> vec4f {
 }
 @fragment fn fragment(in: Vertex) -> @location(0) vec4f {
   let shift=0.5-(f32(phase.x)+0.5)/4.0;
-  let p=vec2f(in.position.x/4.0,in.position.y-shift);let base=in.record;let info=data[base];
+  let device=vec2f(in.position.x/4.0,in.position.y-shift);
+  if (skipped(device)) { discard; }
+  let p=device-camera.motion.xy;let base=in.record;let info=data[base];
   let offset=data[base+6u].zw;
-  let a=geometry[in.triangle]+offset;let b=geometry[in.triangle+1u]+offset;let c=geometry[in.triangle+2u]+offset;
+  let a=geometry[in.triangle]+offset+camera.motion.xy;let b=geometry[in.triangle+1u]+offset+camera.motion.xy;let c=geometry[in.triangle+2u]+offset+camera.motion.xy;
   let area=(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
-  if (area==0.0 || !edge(p,a,b,area>0.0) || !edge(p,b,c,area>0.0) || !edge(p,c,a,area>0.0)) { discard; }
+  if (area==0.0 || !edge(device,a,b,area>0.0) || !edge(device,b,c,area>0.0) || !edge(device,c,a,area>0.0)) { discard; }
   var paint=data[base+1];let brush=u32(data[base+7].x);
   if (brush>0u) { paint=gradient(p,brush-1u); }
   if (info.x==0.0) { return paint; }
@@ -93,7 +101,7 @@ fn srgb(x: vec3f) -> vec3f {
 }
 @compute @workgroup_size(8,8) fn resolve(@builtin(global_invocation_id) id: vec3u) {
   let size=textureDimensions(resolved_output);
-  if (id.x>=size.x || id.y>=size.y) { return; }
+  if (id.x>=size.x || id.y>=size.y || skipped(vec2f(id.xy)+vec2f(0.5))) { return; }
   let index=id.y*size.x+id.x;var value=vec4f(0);
   if (phase.x>0u) { value=accumulation[index]; }
   for (var x=0u;x<4u;x++) { value+=textureLoad(layer,vec2i(vec2u(id.x*4u+x,id.y)),0); }

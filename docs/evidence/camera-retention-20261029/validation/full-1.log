@@ -1,0 +1,730 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-camera-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-camera-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-camera-20261029/)
+[info] compiling 14 Scala sources to /private/tmp/sirin-camera-20261029/graphics/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.045s
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.051s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.079s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.079s
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.097s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.113s
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.017s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.017s
+Test run sirin.graphics.DrawingResourcesSuite started
+sirin.graphics.DrawingResourcesSuite: finished 0.18s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.194s
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.TextDataSuite: finished 0.197s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.21s
+Test run sirin.graphics.GeometrySuite started
+sirin.graphics.GeometrySuite: finished 0.176s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.176s
+Test run sirin.graphics.PreparationSuite started
+sirin.graphics.PreparationSuite: finished 0.191s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.191s
+Test run sirin.graphics.StrokePreparationSuite started
+sirin.graphics.StrokePreparationSuite: finished 0.314s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.327s
+preparationCancellation checks=251 work=250 elapsedNs=1238292 completedEntries=0
+Test run sirin.graphics.StrokeBoundarySuite started
+sirin.graphics.StrokeBoundarySuite: finished 1.124s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 1.137s
+Test run sirin.graphics.PreparationCacheSuite started
+sirin.graphics.PreparationCacheSuite: finished 1.165s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 1.178s
+Test run sirin.graphics.CurvedStrokeSuite started
+sirin.graphics.CurvedStrokeSuite: finished 1.499s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 1.512s
+[info] Passed: Total 69, Failed 0, Errors 0, Passed 69
+[success] Total time: 7 s, completed Oct 28, 2026, 11:25:55 p.m.
+[info] compiling 4 Scala sources to /private/tmp/sirin-camera-20261029/core/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.012s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.016s
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.014s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.017s
+Test run sirin.AuthoringValuesSuite started
+sirin.AuthoringValuesSuite: finished 0.018s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.021s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.057s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.057s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 1 s, completed Oct 28, 2026, 11:25:56 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/text-ui/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.043s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.045s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 1 s, completed Oct 28, 2026, 11:25:57 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/graphics-ui/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.05s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.053s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 1 s, completed Oct 28, 2026, 11:25:57 p.m.
+[info] compiling 9 Scala sources to /private/tmp/sirin-camera-20261029/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.HostBoundarySuite started
+sirin.engine.HostBoundarySuite: finished 0.111s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.115s
+Test run sirin.engine.FocusSuite started
+sirin.engine.FocusSuite: finished 0.151s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.154s
+Test run sirin.engine.TransactionSuite started
+sirin.engine.TransactionSuite: finished 0.198s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.202s
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TopologyLifetimeSuite: finished 0.306s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.309s
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.ProgressWorkerSuite: finished 0.359s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.363s
+Test run sirin.engine.WorkCommandSuite started
+sirin.engine.WorkCommandSuite: finished 0.381s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.384s
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.ReconciliationSuite: finished 0.411s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.415s
+Test run sirin.engine.RetainedVirtualSuite started
+sirin.engine.RetainedVirtualSuite: finished 0.462s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.465s
+Test run sirin.engine.EventDeadlineSuite started
+sirin.engine.EventDeadlineSuite: finished 0.473s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.477s
+[info] Passed: Total 175, Failed 0, Errors 0, Passed 175
+[success] Total time: 5 s, completed Oct 28, 2026, 11:26:02 p.m.
+[info] compiling 8 Scala sources to /private/tmp/sirin-camera-20261029/testkit/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 8 Scala sources to /private/tmp/sirin-camera-20261029/testkit/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.testkit.LatestAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 2.072s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 2.073s
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.EventDeadlineAgreementSuite: finished 2.831s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.832s
+Test run sirin.testkit.ReferenceAgreementSuite started
+sirin.testkit.ReferenceAgreementSuite: finished 2.958s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 2.96s
+Test run sirin.testkit.WorkAgreementSuite started
+sirin.testkit.WorkAgreementSuite: finished 3.789s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 3.79s
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 4.539s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 4.541s
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+sirin.testkit.VirtualCollectionAgreementSuite: finished 4.85s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 4.851s
+Test run sirin.testkit.ProgressAgreementSuite started
+sirin.testkit.ProgressAgreementSuite: finished 5.623s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 5.624s
+Test run sirin.testkit.LifetimeAgreementSuite started
+sirin.testkit.LifetimeAgreementSuite: finished 6.136s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 6.137s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 9 s, completed Oct 28, 2026, 11:26:11 p.m.
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.105s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.107s
+Test run sirin.specimen.WorkbenchSuite started
+sirin.specimen.WorkbenchSuite: finished 0.289s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.291s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 1 s, completed Oct 28, 2026, 11:26:12 p.m.
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/host/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.host.HostSuite started
+sirin.host.HostSuite: finished 0.125s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.128s
+Test run sirin.host.InteractionSuite started
+sirin.host.InteractionSuite: finished 0.135s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 9 total 0.138s
+[info] Passed: Total 15, Failed 0, Errors 0, Passed 15
+[success] Total time: 1 s, completed Oct 28, 2026, 11:26:13 p.m.
+[info] compiling 17 Scala sources to /private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 14 Scala sources to /private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1764 ms)
+[info] Discovered 3346 classes and 21149 methods after classloading
+[info] Checking intermediate code (quick) (149 ms)
+[info] Discovered 3317 classes and 16347 methods after optimization
+[info] Optimizing (debug mode) (2794 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (7970 ms)
+[info] Compiling to native code (5770 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (140 ms)
+[info] Postprocessing (0 ms)
+[info] Total (13510 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64177'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64181'.
+Test run sirin.graphics.RoundedRectangleSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64182'.
+sirin.graphics.RoundedRectangleSuite: finished 0.005s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.005s
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64183'.
+Test run sirin.graphics.GeometrySuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64186'.
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.008s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.008s
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64188'.
+Test run sirin.graphics.PreparationCacheSuite started
+sirin.graphics.GeometrySuite: finished 0.015s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.015s
+Test run sirin.graphics.StrokeBoundarySuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64189'.
+Test run sirin.graphics.PreparationSuite started
+Test run sirin.graphics.StrokePreparationSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64194'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64195'.
+Test run sirin.graphics.DrawingResourcesSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64198'.
+Test run sirin.graphics.ValuesSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '64200'.
+sirin.graphics.ValuesSuite: finished 0.010s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.010s
+sirin.graphics.DrawingResourcesSuite: finished 0.038s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.038s
+Test run sirin.graphics.TextDataSuite started
+Test run sirin.graphics.CurvedStrokeSuite started
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.011s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.011s
+sirin.graphics.TextDataSuite: finished 0.084s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.084s
+sirin.graphics.StrokePreparationSuite: finished 0.169s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.169s
+sirin.graphics.PreparationSuite: finished 0.238s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.238s
+preparationCancellation checks=251 work=250 elapsedNs=612334 completedEntries=0
+sirin.graphics.PreparationCacheSuite: finished 2.732s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 2.732s
+sirin.graphics.StrokeBoundarySuite: finished 2.977s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 2.977s
+sirin.graphics.CurvedStrokeSuite: finished 3.976s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 3.976s
+[info] Passed: Total 69, Failed 0, Errors 0, Passed 69
+[success] Total time: 23 s, completed Oct 28, 2026, 11:26:36 p.m.
+[info] compiling 16 Scala sources to /private/tmp/sirin-camera-20261029/core/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 4 Scala sources to /private/tmp/sirin-camera-20261029/core/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1420 ms)
+[info] Discovered 2452 classes and 17068 methods after classloading
+[info] Checking intermediate code (quick) (50 ms)
+[info] Discovered 2427 classes and 13286 methods after optimization
+[info] Optimizing (debug mode) (1289 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (7912 ms)
+[info] Compiling to native code (6922 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (190 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11422 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '64238'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '64240'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '64242'.
+Test run sirin.AuthoringValuesSuite started
+Test run sirin.TextApiSuite started
+sirin.TextApiSuite: finished 0.002s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.002s
+sirin.AuthoringValuesSuite: finished 0.002s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.002s
+[info] Starting process '/private/tmp/sirin-camera-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '64243'.
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.002s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.002s
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.002s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.002s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 16 s, completed Oct 28, 2026, 11:26:52 p.m.
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/text-ui/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/text-ui/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (602 ms)
+[info] Discovered 2282 classes and 16017 methods after classloading
+[info] Checking intermediate code (quick) (12 ms)
+[info] Discovered 2252 classes and 12383 methods after optimization
+[info] Optimizing (debug mode) (664 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (5729 ms)
+[info] Compiling to native code (5375 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (126 ms)
+[info] Postprocessing (0 ms)
+[info] Total (7574 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '64266'.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.003s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 9 s, completed Oct 28, 2026, 11:27:01 p.m.
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/graphics-ui/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/graphics-ui/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (826 ms)
+[info] Discovered 2436 classes and 16874 methods after classloading
+[info] Checking intermediate code (quick) (18 ms)
+[info] Discovered 2406 classes and 13042 methods after optimization
+[info] Optimizing (debug mode) (537 ms)
+[info] Produced 96 LLVM IR files
+[info] Generating intermediate code (5569 ms)
+[info] Compiling to native code (5237 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (161 ms)
+[info] Postprocessing (0 ms)
+[info] Total (7581 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '64278'.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.007s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.007s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 9 s, completed Oct 28, 2026, 11:27:10 p.m.
+[info] compiling 14 Scala sources to /private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 9 Scala sources to /private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1619 ms)
+[info] Discovered 5781 classes and 29535 methods after classloading
+[info] Checking intermediate code (quick) (98 ms)
+[info] Discovered 5750 classes and 22742 methods after optimization
+[info] Optimizing (debug mode) (2428 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (10585 ms)
+[info] Compiling to native code (9738 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (224 ms)
+[info] Postprocessing (0 ms)
+[info] Total (16909 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64325'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64327'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64329'.
+Test run sirin.engine.HostBoundarySuite started
+Test run sirin.engine.FocusSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64330'.
+sirin.engine.FocusSuite: finished 0.010s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.010s
+sirin.engine.HostBoundarySuite: finished 0.021s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.021s
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64332'.
+Test run sirin.engine.ReconciliationSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64334'.
+Test run sirin.engine.WorkCommandSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64335'.
+Test run sirin.engine.RetainedVirtualSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64337'.
+Test run sirin.engine.ProgressWorkerSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '64339'.
+Test run sirin.engine.EventDeadlineSuite started
+Test run sirin.engine.TransactionSuite started
+Test run sirin.engine.TopologyLifetimeSuite started
+sirin.engine.TransactionSuite: finished 0.016s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.016s
+sirin.engine.WorkCommandSuite: finished 0.083s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.083s
+sirin.engine.ReconciliationSuite: finished 0.129s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.129s
+sirin.engine.TopologyLifetimeSuite: finished 0.060s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.060s
+sirin.engine.ProgressWorkerSuite: finished 0.102s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.102s
+sirin.engine.RetainedVirtualSuite: finished 0.159s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.159s
+sirin.engine.EventDeadlineSuite: finished 0.188s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.188s
+[info] Passed: Total 175, Failed 0, Errors 0, Passed 175
+[success] Total time: 30 s, completed Oct 28, 2026, 11:27:40 p.m.
+[info] compiling 8 Scala sources to /private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 8 Scala sources to /private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1728 ms)
+[info] Discovered 4231 classes and 25935 methods after classloading
+[info] Checking intermediate code (quick) (119 ms)
+[info] Discovered 4163 classes and 19918 methods after optimization
+[info] Optimizing (debug mode) (2098 ms)
+[info] Produced 96 LLVM IR files
+[info] Generating intermediate code (8474 ms)
+[info] Compiling to native code (7347 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (218 ms)
+[info] Postprocessing (0 ms)
+[info] Total (13465 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64398'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64400'.
+Test run sirin.testkit.LatestAgreementSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64401'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64403'.
+Test run sirin.testkit.ProgressAgreementSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64405'.
+Test run sirin.testkit.LifetimeAgreementSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64407'.
+Test run sirin.testkit.ReconciliationAgreementSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64408'.
+Test run sirin.testkit.WorkAgreementSuite started
+Test run sirin.testkit.ReferenceAgreementSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64411'.
+Test run sirin.testkit.VirtualCollectionAgreementSuite started
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 3.228s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 3.228s
+sirin.testkit.ReferenceAgreementSuite: finished 9.251s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 9.251s
+sirin.testkit.EventDeadlineAgreementSuite: finished 9.594s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 9.594s
+sirin.testkit.WorkAgreementSuite: finished 10.233s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 10.233s
+sirin.testkit.VirtualCollectionAgreementSuite: finished 15.134s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 15.134s
+sirin.testkit.ReconciliationAgreementSuite: finished 18.485s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 18.485s
+sirin.testkit.ProgressAgreementSuite: finished 18.896s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 18.896s
+sirin.testkit.LifetimeAgreementSuite: finished 28.662s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 28.662s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 54 s, completed Oct 28, 2026, 11:28:35 p.m.
+[info] compiling 3 Scala sources to /private/tmp/sirin-camera-20261029/specimens/workbench/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/specimens/workbench/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1163 ms)
+[info] Discovered 3485 classes and 21695 methods after classloading
+[info] Checking intermediate code (quick) (49 ms)
+[info] Discovered 3446 classes and 16791 methods after optimization
+[info] Optimizing (debug mode) (1521 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (6726 ms)
+[info] Compiling to native code (5559 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (133 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10161 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '64474'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '64477'.
+Test run sirin.specimen.WorkbenchSuite started
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.050s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.050s
+sirin.specimen.WorkbenchSuite: finished 0.182s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.182s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 13 s, completed Oct 28, 2026, 11:28:48 p.m.
+[info] compiling 4 Scala sources to /private/tmp/sirin-camera-20261029/host/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/host/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1504 ms)
+[info] Discovered 3443 classes and 22102 methods after classloading
+[info] Checking intermediate code (quick) (67 ms)
+[info] Discovered 3337 classes and 16951 methods after optimization
+[info] Optimizing (debug mode) (1654 ms)
+[info] Produced 98 LLVM IR files
+[info] Generating intermediate code (7759 ms)
+[info] Compiling to native code (6449 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (166 ms)
+[info] Postprocessing (0 ms)
+[info] Total (11503 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '64512'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '64517'.
+Test run sirin.host.InteractionSuite started
+Test run sirin.host.HostSuite started
+sirin.host.InteractionSuite: finished 0.007s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 9 total 0.007s
+sirin.host.HostSuite: finished 0.013s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.013s
+[info] Passed: Total 15, Failed 0, Errors 0, Passed 15
+[success] Total time: 18 s, completed Oct 28, 2026, 11:29:05 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/text-native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/text-native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1044 ms)
+[info] Discovered 2525 classes and 17294 methods after classloading
+[info] Checking intermediate code (quick) (47 ms)
+[info] Discovered 2485 classes and 13408 methods after optimization
+[info] Optimizing (debug mode) (1087 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (6648 ms)
+[info] Compiling to native code (6076 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (183 ms)
+[info] Postprocessing (0 ms)
+[info] Total (9502 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/text-native/target/scala-3.7.4/sirin-text-native-test' on port '64544'.
+Test run sirin.graphics.text.NativeFontSuite started
+sirin.graphics.text.NativeFontSuite: finished 0.194s
+Test run sirin.graphics.text.NativeFontSuite finished: 0 failed, 0 ignored, 7 total 0.194s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 13 s, completed Oct 28, 2026, 11:29:19 p.m.
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/probes/unicode/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/probes/unicode/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (559 ms)
+[info] Discovered 2489 classes and 16816 methods after classloading
+[info] Checking intermediate code (quick) (22 ms)
+[info] Discovered 2459 classes and 13016 methods after optimization
+[info] Optimizing (debug mode) (712 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (6442 ms)
+[info] Compiling to native code (6057 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (258 ms)
+[info] Postprocessing (0 ms)
+[info] Total (8510 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/unicode/target/scala-3.7.4/sirin-probe-unicode-test' on port '64556'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/unicode/target/scala-3.7.4/sirin-probe-unicode-test' on port '64560'.
+Test run sirin.graphics.unicode.UnicodeSuite started
+Test run sirin.graphics.unicode.BidiLineSuite started
+sirin.graphics.unicode.UnicodeSuite: finished 2.730s
+Test run sirin.graphics.unicode.UnicodeSuite finished: 0 failed, 0 ignored, 8 total 2.730s
+sirin.graphics.unicode.BidiLineSuite: finished 25.410s
+Test run sirin.graphics.unicode.BidiLineSuite finished: 0 failed, 0 ignored, 4 total 25.410s
+[info] Passed: Total 12, Failed 0, Errors 0, Passed 12
+[success] Total time: 37 s, completed Oct 28, 2026, 11:29:55 p.m.
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/probes/paragraph/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 5 Scala sources to /private/tmp/sirin-camera-20261029/probes/paragraph/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1853 ms)
+[info] Discovered 3616 classes and 22013 methods after classloading
+[info] Checking intermediate code (quick) (73 ms)
+[info] Discovered 3579 classes and 16905 methods after optimization
+[info] Optimizing (debug mode) (2702 ms)
+[info] Produced 98 LLVM IR files
+[info] Generating intermediate code (7327 ms)
+[info] Compiling to native code (6811 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (234 ms)
+[info] Postprocessing (0 ms)
+[info] Total (12916 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '64634'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '64638'.
+Test run sirin.graphics.text.CanvasBridgeSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '64639'.
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '64641'.
+Test run sirin.graphics.text.WrappingSuite started
+Test run sirin.graphics.text.TextUiSuite started
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/paragraph/target/scala-3.7.4/sirin-probe-paragraph-test' on port '64643'.
+Test run sirin.graphics.text.EditingGeometrySuite started
+Test run sirin.graphics.text.ParagraphSuite started
+sirin.graphics.text.CanvasBridgeSuite: finished 0.210s
+Test run sirin.graphics.text.CanvasBridgeSuite finished: 0 failed, 0 ignored, 5 total 0.210s
+sirin.graphics.text.TextUiSuite: finished 0.438s
+Test run sirin.graphics.text.TextUiSuite finished: 0 failed, 0 ignored, 8 total 0.438s
+sirin.graphics.text.ParagraphSuite: finished 0.404s
+Test run sirin.graphics.text.ParagraphSuite finished: 0 failed, 0 ignored, 8 total 0.404s
+sirin.graphics.text.EditingGeometrySuite: finished 0.499s
+Test run sirin.graphics.text.EditingGeometrySuite finished: 0 failed, 0 ignored, 10 total 0.499s
+sirin.graphics.text.WrappingSuite: finished 0.545s
+Test run sirin.graphics.text.WrappingSuite finished: 0 failed, 0 ignored, 9 total 0.545s
+[info] Passed: Total 40, Failed 0, Errors 0, Passed 40
+[success] Total time: 17 s, completed Oct 28, 2026, 11:30:12 p.m.
+[info] compiling 6 Scala sources to /private/tmp/sirin-camera-20261029/probes/render/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 5 Scala sources to /private/tmp/sirin-camera-20261029/probes/render/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1545 ms)
+[info] Discovered 3528 classes and 21913 methods after classloading
+[info] Checking intermediate code (quick) (51 ms)
+[info] Discovered 3495 classes and 17177 methods after optimization
+[info] Optimizing (debug mode) (2368 ms)
+[info] Produced 95 LLVM IR files
+[info] Generating intermediate code (9067 ms)
+[info] Compiling to native code (7527 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (210 ms)
+[info] Postprocessing (0 ms)
+[info] Total (14111 ms)
+[info] Starting process '/private/tmp/sirin-camera-20261029/probes/render/target/scala-3.7.4/sirin-probe-render-test' on port '64684'.
+Test run sirin.render.StrokeGradientSuite started
+sirin.render.StrokeGradientSuite: finished 3.024s
+Test run sirin.render.StrokeGradientSuite finished: 0 failed, 0 ignored, 5 total 3.024s
+Test run sirin.render.CurvesReuseSuite started
+sirin.render.CurvesReuseSuite: finished 9.063s
+Test run sirin.render.CurvesReuseSuite finished: 0 failed, 0 ignored, 6 total 9.063s
+Test run sirin.graphics.RebasedGradientSuite started
+sirin.graphics.RebasedGradientSuite: finished 0.203s
+Test run sirin.graphics.RebasedGradientSuite finished: 0 failed, 0 ignored, 1 total 0.203s
+Test run sirin.render.BatchSuite started
+batch-adapter=Apple M2 Pro
+comparison=curves-layers-1.0 checked=3072 excluded=0 worstByteError=0
+comparison=curves-layers-1.25 checked=4800 excluded=0 worstByteError=0
+comparison=curves-layers-1.5 checked=6910 excluded=2 worstByteError=0
+comparison=curves-layers-2.0 checked=12288 excluded=0 worstByteError=0
+comparison=textures-text-1.0 checked=3072 excluded=0 worstByteError=0
+comparison=textures-text-1.25 checked=4710 excluded=90 worstByteError=0
+comparison=textures-text-1.5 checked=6775 excluded=137 worstByteError=0
+comparison=textures-text-2.0 checked=12253 excluded=35 worstByteError=0
+sirin.render.BatchSuite: finished 4.512s
+Test run sirin.render.BatchSuite finished: 0 failed, 0 ignored, 14 total 4.512s
+Test run sirin.render.OffscreenSuite started
+adapter=Apple M2 Pro
+thorvg-composition scale=1.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.25 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=1.5 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+thorvg-composition scale=2.0 expected-linear=Color(0.7353569830524495,0.0,0.7353569830524495,1.0) actual=Color(0.5019607843137255,0.0,0.4980392156862745,1.0)
+adapter=Apple M2 Pro
+prepare-ns=311541,281833,279500,282542,278209,278375,277125,278375,277000,277542
+synchronized-render-readback-ns=7111250,7215000,8379084,8397625,8413042,8422667,9084625,9648625,9680208,9692833
+upload-bytes-per-render=3184
+padded-readback-bytes-per-render=92160
+mask-bytes=0
+not GPU timestamps, input-to-display, allocations or production throughput
+
+sirin.render.OffscreenSuite: finished 1.993s
+Test run sirin.render.OffscreenSuite finished: 0 failed, 0 ignored, 8 total 1.993s
+[info] Passed: Total 34, Failed 0, Errors 0, Passed 34
+[success] Total time: 40 s, completed Oct 28, 2026, 11:30:52 p.m.
+[info] compiling 4 Scala sources to /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.BenchmarkFixtureSuite started
+sirin.desktop.BenchmarkFixtureSuite: finished 0.047s
+Test run sirin.desktop.BenchmarkFixtureSuite finished: 0 failed, 0 ignored, 3 total 0.064s
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 2.006s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 8 total 2.006s
+renderSession GPU frame retirement test
+Test run sirin.desktop.GpuFrameSuite started
+sirin.desktop.GpuFrameSuite: finished 1.302s
+Test run sirin.desktop.GpuFrameSuite finished: 0 failed, 0 ignored, 6 total 1.302s
+canvasComparison sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=2 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=3 scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=4 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(6144,0,0,0,None)
+canvasComparison sample=5 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=6 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=7 scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=8 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(9548,52,0,0,None)
+canvasComparison sample=9 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=10 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(13817,7,0,0,None)
+canvasComparison sample=11 scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=12 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(13818,6,0,0,None)
+canvasComparison sample=13 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=14 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=15 scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(24561,15,0,0,None)
+canvasComparison sample=16 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(24576,0,0,0,None)
+workerCancellation retireNs=576042
+renderSession retire control
+workerCancellation retireNs=44333
+renderSession retire control
+workerCancellation retireNs=42375
+renderSession retire control
+workerCancellation retireNs=28875
+renderSession retire control
+workerCancellation retireNs=18417
+renderSession retire control
+workerCancellation retireNs=47417
+renderSession retire control
+workerCancellation retireNs=16750
+renderSession retire control
+workerCancellation retireNs=33500
+renderSession retire control
+workerCancellation retireNs=19208
+renderSession retire control
+workerCancellation retireNs=15583
+renderSession retire control
+workerCancellation retireNs=24000
+renderSession retire control
+workerCancellation retireNs=14417
+renderSession retire control
+workerCancellation retireNs=15750
+renderSession retire control
+workerCancellation retireNs=13792
+renderSession retire control
+workerCancellation retireNs=15458
+renderSession retire control
+workerCancellation retireNs=21416
+renderSession retire control
+workerCancellation retireNs=15541
+renderSession retire control
+workerCancellation retireNs=30500
+renderSession retire control
+workerCancellation retireNs=13709
+renderSession retire control
+workerCancellation retireNs=8958
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+sirin.desktop.RetainedCanvasSuite: finished 5.612s
+Test run sirin.desktop.RetainedCanvasSuite finished: 0 failed, 0 ignored, 5 total 5.612s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.657s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.657s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.027s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.027s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.008s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.008s
+cameraPixels sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=2 scale=1.0 camera=CanvasCamera(4.0,-3.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=5612
+cameraPixels sample=3 scale=1.0 camera=CanvasCamera(-4.0,3.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=5104
+cameraPixels sample=4 scale=1.0 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=5 scale=1.0 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=6 scale=1.0 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(6139,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=7 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(9107,493,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=8 scale=1.25 camera=CanvasCamera(3.2,-2.4,1.0) result=Comparison(9103,497,0,0,None) allByteWorst=21 reuse=8932
+cameraPixels sample=9 scale=1.25 camera=CanvasCamera(-3.2,2.4,1.0) result=Comparison(9180,420,0,0,None) allByteWorst=21 reuse=8288
+cameraPixels sample=10 scale=1.25 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(9570,30,0,0,None) allByteWorst=19 reuse=0
+cameraPixels sample=11 scale=1.25 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(9574,26,0,0,None) allByteWorst=32 reuse=0
+cameraPixels sample=12 scale=1.25 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(9595,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=13 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=14 scale=1.5 camera=CanvasCamera(2.6666666666666665,-2.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=13020
+cameraPixels sample=15 scale=1.5 camera=CanvasCamera(-2.6666666666666665,2.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=12240
+cameraPixels sample=16 scale=1.5 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(13819,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=17 scale=1.5 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=18 scale=1.5 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=19 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=20 scale=2.0 camera=CanvasCamera(2.0,-1.5,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=23500
+cameraPixels sample=21 scale=2.0 camera=CanvasCamera(-2.0,1.5,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=22448
+cameraPixels sample=22 scale=2.0 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=23 scale=2.0 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(24572,4,1,0,None) allByteWorst=1 reuse=0
+cameraPixels sample=24 scale=2.0 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+Test run sirin.desktop.CameraRetentionSuite started
+sirin.desktop.CameraRetentionSuite: finished 8.514s
+Test run sirin.desktop.CameraRetentionSuite finished: 0 failed, 0 ignored, 6 total 8.514s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 0.005s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 4 total 0.005s
+[info] Passed: Total 36, Failed 0, Errors 0, Passed 36
+[success] Total time: 21 s, completed Oct 28, 2026, 11:31:13 p.m.
+[info] compiling 13 Scala sources to /private/tmp/sirin-camera-20261029/examples/target/scala-3.7.4/classes ...
+[info] done compiling
+[success] Total time: 1 s, completed Oct 28, 2026, 11:31:14 p.m.
+[warn] multiple main classes detected: run 'show discoveredMainClasses' to see the list
+[success] Total time: 6 s, completed Oct 28, 2026, 11:31:20 p.m.

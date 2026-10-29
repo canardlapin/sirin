@@ -1,0 +1,23 @@
+{
+  "protocol": "three_interval_samples_idle85_load_half_cpus_v1",
+  "logical_cpus": 10,
+  "samples": [
+    {
+      "at_utc": "2026-10-29T03:42:37.774905+00:00",
+      "cpu_idle_percent": 73.57,
+      "load_1m": 4.62
+    },
+    {
+      "at_utc": "2026-10-29T03:42:44.972120+00:00",
+      "cpu_idle_percent": 73.29,
+      "load_1m": 4.41
+    },
+    {
+      "at_utc": "2026-10-29T03:42:52.112575+00:00",
+      "cpu_idle_percent": 72.46,
+      "load_1m": 4.12
+    }
+  ],
+  "accepted": false,
+  "output": "/private/tmp/sirin-camera-20261029/desktop/target/latency-runs/20261029T034235.559239Z/preflight"
+}

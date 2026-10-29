@@ -29,9 +29,9 @@ private[render] object WindingMesh:
     val delta=weight*(if b.y>a.y then 1 else -1)
     def x(y: Double): Double=a.x+(b.x-a.x)*((y-a.y)/(b.y-a.y))
   def tessellate(path: FlatPath,rule: FillRule,clips: Vector[PreparedClip],
-      target: RenderTarget,budget: Budget): BatchMesh =
+      target: RenderTarget,budget: Budget,viewportClip: Boolean=true): BatchMesh =
     val viewport=FlatPath(Vector(Vector(Point(0,0),Point(target.width,0),Point(target.width,target.height),Point(0,target.height))))
-    val groups=Vector((path,rule))++clips.map(c => (c.path,c.rule)):+((viewport,FillRule.NonZero))
+    val groups=Vector((path,rule))++clips.map(c => (c.path,c.rule))++Option.when(viewportClip)((viewport,FillRule.NonZero))
     val edges=ArrayBuffer.empty[Edge]
     val ys=ArrayBuffer.empty[Double]
     var inputEdges=0
@@ -56,7 +56,7 @@ private[render] object WindingMesh:
     edges.clear()
     net.foreach { case ((a,b,g),weight) => if weight!=0 then edges+=Edge(a,b,g,weight) }
     budget.pairs+=edges.size.toLong*(edges.size-1)/2
-    require(budget.pairs<=16000000,"mesh intersection work budget")
+    require(budget.pairs<=16000000,s"mesh intersection work budget pairs=${budget.pairs} edges=${edges.size}")
     // Interval sweep visits only pairs with overlapping Y ranges. Keep original
     // pair orientation so intersection arithmetic stays identical. The existing
     // conservative all-pairs admission limit above is unchanged.
@@ -81,7 +81,7 @@ private[render] object WindingMesh:
         j+=1
       i+=1
     val unique=mutable.HashSet.empty[Double]
-    ys.foreach { y => budget.control.checkpoint();if y>=0 && y<=target.height then unique+=y }
+    ys.foreach { y => budget.control.checkpoint();if !viewportClip || (y>=0 && y<=target.height) then unique+=y }
     val levels=unique.toVector.sortWith { (a,b) => budget.control.checkpoint();a<b }
     val vertices=ArrayBuffer.empty[Float]
     def tri(a: Point,b: Point,c: Point): Unit =
@@ -145,6 +145,10 @@ final class BatchProgram private[render](val drawing: PreparedDrawing,
     private[render] val words: Array[Float],private[render] val meshes: Vector[BatchMesh],
     private[render] val uses: Vector[MeshUse],private[render] val assets: Vector[BatchAsset],
     private[render] val patches: Vector[(Int,Int)],private[render] val steps: Vector[BatchStep],val prepareNanos: Long):
+  private[sirin] def coordinateMagnitude: Double = uses.iterator.flatMap { u =>
+    val offset=(u.record+6)*4
+    meshes(u.mesh).positions.grouped(2).map(p => math.max(math.abs(p(0).toDouble+words(offset+2)),math.abs(p(1).toDouble+words(offset+3))))
+  }.maxOption.getOrElse(0.0)
   val vertexCount: Int=uses.map(u => meshes(u.mesh).count).sum
   val drawBatches: Int=steps.count(_.kind==0)
   val triangleCount: Int=vertexCount/3
@@ -161,7 +165,7 @@ final case class BatchCacheStats(meshEntries: Int,meshBytes: Long,assetEntries: 
 private[render] final class BatchCompiler extends AutoCloseable:
   private val owner=Thread.currentThread()
   private var open=true
-  private case class MeshKey(path: FlatPath,rule: FillRule,clips: Vector[PreparedClip],width: Int,height: Int,tolerance: Double)
+  private case class MeshKey(path: FlatPath,rule: FillRule,clips: Vector[PreparedClip],width: Int,height: Int,tolerance: Double,viewportClip: Boolean)
   private case class GlyphKey(font: FontData,face: Int,size: Double,id: Int,scale: Double,
       metrics: FontMetrics,shaper: String,rasterizer: String,units: Int,glyphs: Int)
   private val geometry=mutable.LinkedHashMap.empty[MeshKey,BatchMesh]
@@ -206,7 +210,7 @@ private[render] final class BatchCompiler extends AutoCloseable:
     (entry._2.get,entry._1)
   def hasGlyphInk(font: ResolvedFont,id: Int,scale: Double): Boolean =
     check();val (mask,_)=glyph(font,id,scale);mask.width>0 && mask.height>0
-  def compile(drawing: PreparedDrawing,control: PreparationControl=new PreparationControl): BatchProgram =
+  def compile(drawing: PreparedDrawing,control: PreparationControl=new PreparationControl,viewportClip: Boolean=true): BatchProgram =
     check();val began=System.nanoTime();val t=drawing.target
     require(t.width<=640 && t.height<=360,"batch target budget")
     val work=new WindingMesh.Budget(control)
@@ -222,14 +226,22 @@ private[render] final class BatchCompiler extends AutoCloseable:
     def mesh(original: FlatPath,rule: FillRule,originalClips: Vector[PreparedClip]): (BatchMesh,Point) =
       val ps=original.contours.flatten
       val inside=ps.nonEmpty && ps.forall(p => p.x>=0 && p.y>=0 && p.x<=t.width && p.y<=t.height)
-      val offset=if inside then Point(ps.map(_.x).min,ps.map(_.y).min) else Point(0,0)
-      def shifted(p: FlatPath)=FlatPath(p.contours.map(_.map(q => Point(q.x-offset.x,q.y-offset.y))))
+      val normalized= !viewportClip && ps.nonEmpty && ps.map(_.x).max-ps.map(_.x).min<=1048576 && ps.map(_.y).max-ps.map(_.y).min<=1048576
+      val offset=if inside || normalized then Point(ps.map(_.x).min,ps.map(_.y).min) else Point(0,0)
+      def shifted(p: FlatPath)=FlatPath(p.contours.map(_.map { q =>
+        val x=q.x-offset.x;val y=q.y-offset.y
+        if viewportClip then Point(x,y) else
+          // Canonical GPU-input coordinates make translated copies share a mesh.
+          // Reserve a small part of the existing device-space error before tessellation.
+          require(math.hypot(x.toFloat.toDouble-x,y.toFloat.toDouble-y)<=t.tolerance/64,"camera input precision")
+          Point(x.toFloat.toDouble,y.toFloat.toDouble)
+      }))
       val path=shifted(original);val clips=originalClips.map(c => c.copy(path=shifted(c.path)))
-      val key=MeshKey(path,rule,clips,t.width,t.height,t.tolerance)
+      val key=MeshKey(path,rule,clips,t.width,t.height,t.tolerance,viewportClip)
       geometry.remove(key) match
         case Some(value) => mh+=1;geometry(key)=value;(value,offset)
         case None =>
-          val value=WindingMesh.tessellate(path,rule,clips,t,work)
+          val value=WindingMesh.tessellate(path,rule,clips,t,work,viewportClip)
           require(value.bytes<=8388608,"CPU mesh payload budget")
           while geometry.nonEmpty && (geometry.size>=256 || meshBytes+value.bytes>8388608) do
             val old=geometry.remove(geometry.head._1).get;meshBytes-=old.bytes

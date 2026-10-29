@@ -1,0 +1,14 @@
+[
+  {
+    "control": "missing_sample",
+    "rejected": true
+  },
+  {
+    "control": "geometry_drift",
+    "rejected": true
+  },
+  {
+    "control": "latency_miss",
+    "rejected": true
+  }
+]

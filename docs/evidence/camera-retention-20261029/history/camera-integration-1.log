@@ -1,0 +1,54 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-camera-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-camera-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21622 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-camera-20261029/)
+[info] compiling 16 Scala sources to /private/tmp/sirin-camera-20261029/core/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 17 Scala sources to /private/tmp/sirin-camera-20261029/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/text-ui/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 14 Scala sources to /private/tmp/sirin-camera-20261029/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /private/tmp/sirin-camera-20261029/graphics-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 3 Scala sources to /private/tmp/sirin-camera-20261029/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 4 Scala sources to /private/tmp/sirin-camera-20261029/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 24 Scala sources and 1 Java source to /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 8 Scala sources to /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x000000013163e8a4, pid=29264, tid=43267
+#
+# JRE version: OpenJDK Runtime Environment Temurin-25.0.4.1+1 (25.0.4.1+1) (build 25.0.4.1+1-LTS)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (25.0.4.1+1-LTS, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, bsd-aarch64)
+# Problematic frame:
+# C  [libwgpu_native.dylib+0x528a4]  _$LT$core..iter..adapters..map..Map$LT$I$C$F$GT$$u20$as$u20$core..iter..traits..iterator..Iterator$GT$::fold::hdc8ede4e45a8ed9a+0xc8
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /private/tmp/sirin-camera-20261029/desktop/hs_err_pid29264.log
+[0.830s][warning][os] Loading hsdis library failed
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+[error] Error: Total 0, Failed 0, Errors 0, Passed 0
+[error] Error during tests:
+[error] 	Running java with options -classpath /private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/test-classes:/private/tmp/sirin-camera-20261029/desktop/target/scala-3.7.4/classes:/private/tmp/sirin-camera-20261029/host/.jvm/target/scala-3.7.4/classes:/private/tmp/sirin-camera-20261029/engine/.jvm/target/scala-3.7.4/classes:/private/tmp/sirin-camera-20261029/core/.jvm/target/scala-3.7.4/classes:/private/tmp/sirin-camera-20261029/graphics-ui/.jvm/target/scala-3.7.4/classes:/private/tmp/sirin-camera-20261029/graphics/.jvm/target/scala-3.7.4/classes:/private/tmp/sirin-camera-20261029/text-ui/.jvm/target/scala-3.7.4/classes:/private/tmp/sirin-camera-20261029/specimens/workbench/.jvm/target/scala-3.7.4/classes:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalameta/munit_3/1.3.0/munit_3-1.3.0.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalameta/munit-scalacheck_3/1.3.0/munit-scalacheck_3-1.3.0.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.16/scala-library-2.13.16.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalameta/junit-interface/1.3.0/junit-interface-1.3.0.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalameta/munit-diff_3/1.3.0/munit-diff_3-1.3.0.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalacheck/scalacheck_3/1.19.0/scalacheck_3-1.19.0.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/Users/bbuchsbaum/.sbt/boot/scala-2.12.21/org.scala-sbt/sbt/1.12.14/test-agent-1.12.14.jar:/Users/bbuchsbaum/.sbt/boot/scala-2.12.21/org.scala-sbt/sbt/1.12.14/test-interface-1.0.jar sbt.ForkMain 63530 failed with exit code 134
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 22 s, completed Oct 28, 2026, 11:20:32 p.m.

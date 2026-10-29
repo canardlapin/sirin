@@ -173,3 +173,46 @@ int sirin_desktop_batch_submit(void**raw,int count){
   if(bgpu_error_state(s))return 5;
   s->submissions++;for(int i=0;i<count;i++)bgpu_touch(programs[i]);return 0;
 }
+
+// Exact-sample camera replay. Previous packets own snapshots, never p->output.
+int sirin_desktop_camera(void*raw,void*previous,const float*parameters,void**out){
+  BgpuProgram*p=raw;Bgpu*s=p->owner;DesktopTile*prior=previous;*out=NULL;
+  if(bgpu_error_state(s))return 8;
+  for(int i=0;i<12;i++)if(!isfinite(parameters[i]))return 4;
+  float mode=parameters[2];
+  if(fabsf(parameters[0])>4096||fabsf(parameters[1])>4096||mode<0||mode>2||floorf(mode)!=mode)return 4;
+  if(mode!=0&&(!prior||prior->owner!=s||prior->w!=p->w||prior->h!=p->h))return 4;
+  int dx=(int)parameters[8],dy=(int)parameters[9];
+  if(mode==1&&(dx!=parameters[8]||dy!=parameters[9]||abs(dx)>=p->w||abs(dy)>=p->h))return 4;
+  if(parameters[4]<0||parameters[5]<0||parameters[6]>p->w||parameters[7]>p->h||parameters[4]>parameters[6]||parameters[5]>parameters[7])return 4;
+  WGPUTexture snapshot=desktop_batch_texture(s,p->w,p->h,WGPUTextureFormat_RGBA8Unorm,
+    WGPUTextureUsage_CopySrc|WGPUTextureUsage_CopyDst|WGPUTextureUsage_TextureBinding);
+  if(!snapshot)return 5;
+  BgpuProgram packet={0};packet.owner=s;packet.w=p->w;packet.h=p->h;packet.output=snapshot;
+  int status=sirin_desktop_tile_export(&packet,out);wgpuTextureRelease(snapshot);
+  if(status)return status;
+  DesktopTile*result=*out;
+  wgpuQueueWriteBuffer(s->queue,p->camera,0,parameters,32);
+  WGPUCommandEncoder encoder=wgpuDeviceCreateCommandEncoder(s->device,NULL);
+  if(bgpu_error_state(s)){if(encoder)wgpuCommandEncoderRelease(encoder);tile_release(result);*out=NULL;return 8;}
+  if(mode!=0){
+    WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=prior->texture;
+    WGPUTexelCopyTextureInfo dst=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;dst.texture=p->output;
+    WGPUExtent3D extent={(uint32_t)p->w,(uint32_t)p->h,1};
+    if(mode==1){
+      src.origin.x=dx<0?(uint32_t)-dx:0;src.origin.y=dy<0?(uint32_t)-dy:0;
+      dst.origin.x=dx>0?(uint32_t)dx:0;dst.origin.y=dy>0?(uint32_t)dy:0;
+      extent.width-=abs(dx);extent.height-=abs(dy);
+    }
+    wgpuCommandEncoderCopyTextureToTexture(encoder,&src,&dst,&extent);
+  }
+  bgpu_encode(p,encoder);
+  WGPUTexelCopyTextureInfo src=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;src.texture=p->output;
+  WGPUTexelCopyTextureInfo dst=WGPU_TEXEL_COPY_TEXTURE_INFO_INIT;dst.texture=result->texture;
+  WGPUExtent3D extent={(uint32_t)p->w,(uint32_t)p->h,1};
+  wgpuCommandEncoderCopyTextureToTexture(encoder,&src,&dst,&extent);
+  WGPUCommandBuffer command=wgpuCommandEncoderFinish(encoder,NULL);wgpuQueueSubmit(s->queue,1,&command);
+  wgpuDevicePoll(s->device,1,NULL);wgpuCommandBufferRelease(command);wgpuCommandEncoderRelease(encoder);
+  if(bgpu_error_state(s)){tile_release(result);*out=NULL;return 8;}
+  s->submissions++;s->program_upload+=32;bgpu_touch(p);return 0;
+}
