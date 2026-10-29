@@ -1,0 +1,23 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project phase-build-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build/project
+[info] loading settings for project phase-build from build.sbt...
+[info] set current project to gc-repro (in build file:/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build/)
+[info] compiling 1 Scala source to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (710 ms)
+[info] Discovered 1006 classes and 6193 methods after classloading
+[info] Checking intermediate code (quick) (43 ms)
+[info] Discovered 804 classes and 2856 methods after optimization
+[info] Optimizing (release-fast mode) (1430 ms)
+[error] /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build/target/scala-3.7.4/native/dependencies/phase-diagnostic-0/scala-native/gc/shared/SafepointPollTrampoline.c:114:22: error: call to undeclared function 'sigismember'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+[error]   114 |     unsigned bits = (sigismember(&uc->uc_sigmask, SIGBUS) ? 1u : 0u) |
+[error]       |                      ^
+[error] 1 error generated.
+[info] Produced 48 LLVM IR files
+[info] Generating intermediate code (5590 ms)
+[info] Compiling to native code (5236 ms)
+[info] Total (8370 ms)
+[error] Failed to compile /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build/target/scala-3.7.4/native/dependencies/phase-diagnostic-0/scala-native/gc/shared/SafepointPollTrampoline.c
+[error] (Compile / nativeLink) Failed to compile /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build/target/scala-3.7.4/native/dependencies/phase-diagnostic-0/scala-native/gc/shared/SafepointPollTrampoline.c
+[error] Total time: 11 s, completed Oct 29, 2026, 7:06:20 p.m.

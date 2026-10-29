@@ -1,0 +1,22 @@
+[
+  {
+    "case": "original-before",
+    "runner_exit": 134
+  },
+  {
+    "case": "saved-mask-1",
+    "runner_exit": 0
+  },
+  {
+    "case": "saved-mask-2",
+    "runner_exit": 0
+  },
+  {
+    "case": "saved-mask-3",
+    "runner_exit": 0
+  },
+  {
+    "case": "original-after",
+    "runner_exit": 134
+  }
+]

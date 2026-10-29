@@ -1,0 +1,69 @@
+{
+  "app": "/private/tmp/sirin-relocated-20261029/SirinEdit.app",
+  "library_sha256": "7db2606b07665143684dd55aeb84b18e14f4a3a22bdfa8c840f72eabde6b3251",
+  "sdl_sha256": "4ee3b2efa85a289f57c14e7b24d81b811760721b451b3aa2734a8dce7e49d020",
+  "cfg_sha256": "23c5a1ba96083c636b5d390bb5d17597deb2dad121e55c7e87fba7bec75daea9",
+  "load_commands": [
+    {
+      "kind": "0xd",
+      "path": "@rpath/libsirin_desktop.dylib"
+    },
+    {
+      "kind": "0xc",
+      "path": "@rpath/SDL3.framework/Versions/A/SDL3"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Metal.framework/Versions/A/Metal"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Security.framework/Versions/A/Security"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit"
+    },
+    {
+      "kind": "0xc",
+      "path": "/usr/lib/libc++.1.dylib"
+    },
+    {
+      "kind": "0xc",
+      "path": "/usr/lib/libSystem.B.dylib"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation"
+    },
+    {
+      "kind": "0xc",
+      "path": "/usr/lib/libobjc.A.dylib"
+    },
+    {
+      "kind": "0x8000001c",
+      "path": "@loader_path"
+    }
+  ],
+  "native_closure_valid": true,
+  "codesign_deep_strict_valid": true,
+  "library_loaded_without_UI": true,
+  "packaged_font_files": 7,
+  "scope": "macOS arm64 development image, system frameworks/fonts and OS/JDK requirements remain; no UI/IME/shipping qualification"
+}

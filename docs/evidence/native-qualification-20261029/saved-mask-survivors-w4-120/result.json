@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/bin/saved-mask-control",
+    "120",
+    "4",
+    "2048",
+    "true"
+  ],
+  "cwd": "/private/tmp/sirin-qualification-20261029",
+  "start_utc": "2026-10-29T23:16:26.142197+00:00",
+  "load_start": [
+    8.67529296875,
+    9.17138671875,
+    7.82568359375
+  ],
+  "timeout_seconds": 135.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "d562265a2c955008981a20bdcf9ebbe2d3aba90f2c4693d8a3c3190d5292f9dc",
+  "pid": 11866,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 120.11202570900001,
+  "load_end": [
+    11.33251953125,
+    9.75048828125,
+    8.2138671875
+  ]
+}

@@ -1,0 +1,21 @@
+START pid=10926 out=/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/saved-mask-controls/original-after
+{"command": ["/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/bin/gc-repro-fa4a9e6", "60", "1", "2048", "true"], "cwd": "/private/tmp/sirin-qualification-20261029", "start_utc": "2026-10-29T23:16:03.643335+00:00", "load_start": [8.671875, 9.21630859375, 7.81005859375], "timeout_seconds": 75.0, "environment": {"GC_MAXIMUM_HEAP_SIZE": "128M", "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"}, "binary_sha256": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90", "pid": 10926, "timed_out": false, "returncode": -6, "elapsed_seconds": 22.415327833, "load_end": [8.67529296875, 9.17138671875, 7.82568359375]}
+START elapsed_ms=0 workers=1 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5038 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=3398 iterations=19756800
+
+[19:16:21.062] [gc-repro-fa4a9e6:10926] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[19:16:21.071] [gc-repro-fa4a9e6:10926] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[19:16:21.071] [gc-repro-fa4a9e6:10926] [ScalaNative GC|Warning]   Thread id=6159478784, stackBottom=0x16f223000, state=Managed, alive=yes
+[19:16:21.071] [gc-repro-fa4a9e6:10926] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[19:16:26.018] [gc-repro-fa4a9e6:10926] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms
+

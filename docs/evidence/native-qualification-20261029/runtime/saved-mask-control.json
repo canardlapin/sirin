@@ -1,0 +1,10 @@
+{
+  "source_sha256": "819a43ed28cf90e09822e5695a079b53f7fbb4db7aa9677f1ba4871fc144df35",
+  "output_sha256": "1f2b3369cba2e3e179cf422954ef2545207ccca24942f4aa627537a3fe8ab6c1",
+  "changed_resources": [
+    "scala-native/gc/immix/MutatorThread.h",
+    "scala-native/gc/shared/SafepointPollTrampoline.c"
+  ],
+  "reason": "phase2: saved context4 vs trampoline/resume/admission5; active0 nested0 matched1698 entries/exits",
+  "scope": "Private Darwin Immix causal control only; restores full saved context mask before yield; no handler flags, assembly or Sirin defaults changed"
+}

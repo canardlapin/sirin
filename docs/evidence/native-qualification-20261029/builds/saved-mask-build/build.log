@@ -1,0 +1,20 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project saved-mask-build-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/saved-mask-build/project
+[info] loading settings for project saved-mask-build from build.sbt...
+[info] set current project to gc-repro (in build file:/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/saved-mask-build/)
+[info] compiling 1 Scala source to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/saved-mask-build/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (821 ms)
+[info] Discovered 1006 classes and 6193 methods after classloading
+[info] Checking intermediate code (quick) (52 ms)
+[info] Discovered 804 classes and 2856 methods after optimization
+[info] Optimizing (release-fast mode) (1724 ms)
+[info] Produced 48 LLVM IR files
+[info] Generating intermediate code (6334 ms)
+[info] Compiling to native code (5871 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (123 ms)
+[info] Postprocessing (0 ms)
+[info] Total (9707 ms)
+[success] Total time: 12 s, completed Oct 29, 2026, 7:11:47 p.m.

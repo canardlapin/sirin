@@ -1,0 +1,7 @@
+{
+  "after_warning": true,
+  "pid": 88266,
+  "start_utc": "2026-10-29T23:10:33.858548+00:00",
+  "returncode": 0,
+  "stderr": "Sampling process 88266 for 1 second with 1 millisecond of run time between samples\nSampling completed, processing symbols...\nSample analysis of process 88266 written to file /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-controls/phase-2/native.sample.txt\n"
+}

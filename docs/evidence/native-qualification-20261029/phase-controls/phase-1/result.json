@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/bin/phase-diagnostic-v2",
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "cwd": "/private/tmp/sirin-qualification-20261029",
+  "start_utc": "2026-10-29T23:08:46.382433+00:00",
+  "load_start": [
+    10.1181640625,
+    6.75146484375,
+    5.99560546875
+  ],
+  "timeout_seconds": 75.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "38904848e821749aa709ec9e98f88e226261541574404e763a453a23c6cf49c1",
+  "pid": 83514,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 60.448121125,
+  "load_end": [
+    14.29248046875,
+    8.72412109375,
+    6.79345703125
+  ]
+}

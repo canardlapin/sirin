@@ -1,0 +1,25 @@
+{
+  "frozen_utc": "2026-10-29T23:08:14.805223+00:00",
+  "order": [
+    "original-before",
+    "phase-1",
+    "phase-2",
+    "phase-3",
+    "original-after"
+  ],
+  "arguments": [
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "heap_cap": "128M",
+  "sync_timeout_ms": 15000,
+  "external_timeout_seconds": 75,
+  "sample_only_after_warning": true,
+  "binaries": {
+    "/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/bin/gc-repro-fa4a9e6": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90",
+    "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/bin/phase-diagnostic-v2": "38904848e821749aa709ec9e98f88e226261541574404e763a453a23c6cf49c1"
+  },
+  "qualification": false
+}

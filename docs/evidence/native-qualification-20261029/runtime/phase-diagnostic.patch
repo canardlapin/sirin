@@ -1,0 +1,195 @@
+--- a/scala-native/gc/immix/MutatorThread.h
++++ b/scala-native/gc/immix/MutatorThread.h
+@@ -46,11 +46,19 @@
+     atomic_int sirinDiagAdmissionBus;
+     atomic_int sirinDiagAdmissionSegv;
+     atomic_int sirinDiagYieldBus;
++    atomic_uint sirinMasks[8];
++    atomic_uint sirinMaskCounts[8];
++    atomic_uint sirinHandlersActive;
++    atomic_uint sirinNestedHandlers;
++    atomic_uint sirinHandlerExits;
+ #if ATOMIC_INT_LOCK_FREE != 2 || ATOMIC_POINTER_LOCK_FREE != 2
+ #error Sirin diagnostic requires lock-free signal-handler atomics
+ #endif
+ #endif
+ } MutatorThread;
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_USE_YIELDPOINT_TRAPS)
++void sirin_diag_mask(MutatorThread *self, unsigned hook);
++#endif
+ 
+ typedef struct MutatorThreadNode {
+     MutatorThread *value;
+--- a/scala-native/gc/immix/MutatorThread.c
++++ b/scala-native/gc/immix/MutatorThread.c
+@@ -9,6 +9,7 @@
+ #include "shared/ThreadUtil.h"
+ #include "shared/Log.h"
+ #include <assert.h>
++#include <errno.h>
+ 
+ #ifndef _WIN32
+ #include <signal.h>
+@@ -18,6 +19,25 @@
+ #include "shared/YieldPointTrap.h"
+ #endif
+ 
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_USE_YIELDPOINT_TRAPS)
++/* Native-only diagnostic: NULL new-mask pointer, preserve errno. */
++void sirin_diag_mask(MutatorThread *self, unsigned hook) {
++    if (self == NULL) return;
++    int saved_errno = errno;
++    sigset_t mask;
++    unsigned bits;
++    if (sigprocmask(SIG_SETMASK, NULL, &mask) != 0) {
++        bits = 0x80000000u | (unsigned)errno;
++    } else {
++        bits = (sigismember(&mask, SIGBUS) ? 1u : 0u) |
++               (sigismember(&mask, SIGSEGV) ? 2u : 0u) |
++               (sigismember(&mask, SIGCONT) ? 4u : 0u);
++    }
++    atomic_store_explicit(&self->sirinMasks[hook], bits, memory_order_relaxed);
++    atomic_fetch_add_explicit(&self->sirinMaskCounts[hook], 1, memory_order_relaxed);
++    errno = saved_errno;
++}
++#endif
+ static mutex_t threadListsModificationLock;
+ 
+ static void MutatorThread_dispose(MutatorThread *self) {
+@@ -43,6 +63,9 @@
+     if (self == NULL)
+         return false;
+     currentMutatorThread = self;
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_USE_YIELDPOINT_TRAPS)
++    sirin_diag_mask(self, 7);
++#endif
+     self->threadInfo = &currentThreadInfo;
+ 
+     self->stackBottom = stackbottom;
+@@ -240,6 +263,9 @@
+ 
+ void MutatorThread_admit(MutatorThread *self) {
+     assert(self != NULL);
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_USE_YIELDPOINT_TRAPS)
++    sirin_diag_mask(self, 5);
++#endif
+ #if defined(SCALANATIVE_GC_USE_YIELDPOINT_TRAPS) && !defined(_WIN32)
+     sigset_t sirinMask;
+     int sirinMaskError = pthread_sigmask(SIG_SETMASK, NULL, &sirinMask);
+@@ -247,13 +273,20 @@
+     atomic_store_explicit(&self->sirinDiagAdmissionSegv, sirinMaskError ? -sirinMaskError : sigismember(&sirinMask, SIGSEGV), memory_order_relaxed);
+ #endif
+     if (atomic_load_explicit(&self->state, memory_order_acquire) ==
+-        GC_MutatorThreadState_Managed)
++        GC_MutatorThreadState_Managed) {
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_USE_YIELDPOINT_TRAPS)
++        sirin_diag_mask(self, 6);
++#endif
+         return;
++    }
+     /* GC holds this lifecycle lock while it stops and scans mutators. Wait
+      * while still unmanaged, then publish admission before unlocking. */
+     MutatorThreads_lock();
+     MutatorThread_switchState(self, GC_MutatorThreadState_Managed);
+     MutatorThreads_unlock();
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_USE_YIELDPOINT_TRAPS)
++    sirin_diag_mask(self, 6);
++#endif
+ }
+ 
+ void MutatorThreads_init() { mutex_init(&threadListsModificationLock); }
+--- a/scala-native/gc/immix/Synchronizer.c
++++ b/scala-native/gc/immix/Synchronizer.c
+@@ -63,6 +63,28 @@
+                 atomic_load_explicit(&thread->sirinDiagAdmissionBus,memory_order_relaxed),
+                 atomic_load_explicit(&thread->sirinDiagAdmissionSegv,memory_order_relaxed),
+                 atomic_load_explicit(&thread->sirinDiagYieldBus,memory_order_relaxed));
++#ifdef __APPLE__
++            GC_LOG_WARN("SIRIN_PHASE masks=%x,%x,%x,%x,%x,%x,%x,%x counts=%u,%u,%u,%u,%u,%u,%u,%u active=%u nested=%u exits=%u",
++                atomic_load_explicit(&thread->sirinMasks[0],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMasks[1],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMasks[2],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMasks[3],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMasks[4],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMasks[5],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMasks[6],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMasks[7],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[0],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[1],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[2],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[3],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[4],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[5],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[6],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinMaskCounts[7],memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinHandlersActive,memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinNestedHandlers,memory_order_relaxed),
++                atomic_load_explicit(&thread->sirinHandlerExits,memory_order_relaxed));
++#endif
+ #endif
+         }
+     }
+@@ -224,6 +246,11 @@
+     void *trapCell = NULL;
+     MutatorThread *self = currentMutatorThread;
+     if (self != NULL) {
++#ifdef __APPLE__
++        sirin_diag_mask(self, 0);
++        if (atomic_fetch_add_explicit(&self->sirinHandlersActive, 1, memory_order_relaxed) != 0)
++            atomic_fetch_add_explicit(&self->sirinNestedHandlers, 1, memory_order_relaxed);
++#endif
+         atomic_fetch_add_explicit(&self->sirinDiagSignals, 1, memory_order_relaxed);
+         atomic_store_explicit(&self->sirinDiagPhase, 1, memory_order_relaxed);
+         atomic_store_explicit(&self->sirinDiagFault, (uintptr_t)siginfo->si_addr, memory_order_relaxed);
+@@ -253,6 +280,12 @@
+         } else if (self != NULL) {
+             atomic_fetch_add_explicit(&self->sirinDiagRedirects, 1, memory_order_relaxed);
+             atomic_store_explicit(&self->sirinDiagPhase, 4, memory_order_relaxed);
++        }
++#endif
++#ifdef __APPLE__
++        if (self != NULL) {
++            atomic_fetch_add_explicit(&self->sirinHandlerExits, 1, memory_order_relaxed);
++            atomic_fetch_sub_explicit(&self->sirinHandlersActive, 1, memory_order_relaxed);
+         }
+ #endif
+         errno = old_errno;
+--- a/scala-native/gc/shared/SafepointPollTrampoline.c
++++ b/scala-native/gc/shared/SafepointPollTrampoline.c
+@@ -44,10 +44,21 @@
+ #error "SafepointPollTrampoline requires immix or commix"
+ #endif
+ 
+-void scalanative_gc_safepoint_poll_run_yield(void) { Synchronizer_yield(); }
++void scalanative_gc_safepoint_poll_run_yield(void) {
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_IMMIX)
++    sirin_diag_mask(currentMutatorThread, 2);
++#endif
++    Synchronizer_yield();
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_IMMIX)
++    sirin_diag_mask(currentMutatorThread, 3);
++#endif
++}
+ 
+ uintptr_t scalanative_gc_safepoint_load_resume_pc(void) {
+     MutatorThread *self = currentMutatorThread;
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_IMMIX)
++    sirin_diag_mask(self, 4);
++#endif
+     return (self != NULL) ? self->safepointResumePc : (uintptr_t)0;
+ }
+ 
+@@ -99,6 +110,13 @@
+     if (uap == NULL || self == NULL)
+         return false;
+     ucontext_t *uc = (ucontext_t *)uap;
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_IMMIX)
++    unsigned bits = (sigismember(&uc->uc_sigmask, SIGBUS) ? 1u : 0u) |
++                    (sigismember(&uc->uc_sigmask, SIGSEGV) ? 2u : 0u) |
++                    (sigismember(&uc->uc_sigmask, SIGCONT) ? 4u : 0u);
++    atomic_store_explicit(&self->sirinMasks[1], bits, memory_order_relaxed);
++    atomic_fetch_add_explicit(&self->sirinMaskCounts[1], 1, memory_order_relaxed);
++#endif
+     uintptr_t pc = SN_UC_GET_PC(uc);
+     self->safepointResumePc = pc;
+ #if defined(__x86_64__)

@@ -1,0 +1,5 @@
+{
+  "returncode": 1,
+  "reason": "Python Match does not accept slices; receipt parser bug, not a runtime/test failure",
+  "outcomes_changed": false
+}

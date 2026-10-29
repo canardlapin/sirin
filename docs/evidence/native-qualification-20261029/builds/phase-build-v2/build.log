@@ -1,0 +1,20 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project phase-build-v2-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build-v2/project
+[info] loading settings for project phase-build-v2 from build.sbt...
+[info] set current project to gc-repro (in build file:/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build-v2/)
+[info] compiling 1 Scala source to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build-v2/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (1016 ms)
+[info] Discovered 1006 classes and 6193 methods after classloading
+[info] Checking intermediate code (quick) (54 ms)
+[info] Discovered 804 classes and 2856 methods after optimization
+[info] Optimizing (release-fast mode) (2036 ms)
+[info] Produced 48 LLVM IR files
+[info] Generating intermediate code (8540 ms)
+[info] Compiling to native code (7905 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (302 ms)
+[info] Postprocessing (0 ms)
+[info] Total (12692 ms)
+[success] Total time: 16 s, completed Oct 29, 2026, 7:07:28 p.m.

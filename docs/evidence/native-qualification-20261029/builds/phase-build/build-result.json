@@ -1,0 +1,15 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "-Dsbt.ivy.home=/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy",
+    "-Drepro.runtimeJar=/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/runtime/phase-diagnostic.jar",
+    "nativeLink"
+  ],
+  "cwd": "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-build",
+  "start_utc": "2026-10-29T23:06:05.818257+00:00",
+  "link_time_yieldpoint_override": null,
+  "runtime_jar_sha256": "3e39a5fac32389f0fbacd2470dfb1d26f9f0f3da39b81c2f79c5257b4611e2fa",
+  "returncode": 1,
+  "elapsed_seconds": 14.474375125
+}

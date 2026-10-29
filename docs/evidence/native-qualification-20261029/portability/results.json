@@ -1,0 +1,43 @@
+[
+  {
+    "case": "failed-framework-negative",
+    "command": [
+      "python3",
+      "-B",
+      "/private/tmp/sirin-qualification-20261029/desktop/tools/portable-image.py",
+      "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/packaging-v1-failed-output/SirinEdit.app",
+      "--out",
+      "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/portability/failed-framework-negative.json"
+    ],
+    "returncode": 1,
+    "utc": "2026-10-29T23:16:20.542001+00:00"
+  },
+  {
+    "case": "original-package",
+    "command": [
+      "python3",
+      "-B",
+      "/private/tmp/sirin-qualification-20261029/desktop/tools/portable-image.py",
+      "/private/tmp/sirin-qualification-20261029/desktop/target/package-editor/SirinEdit.app",
+      "--out",
+      "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/portability/original-package.json",
+      "--load-library"
+    ],
+    "returncode": 0,
+    "utc": "2026-10-29T23:16:22.024637+00:00"
+  },
+  {
+    "case": "relocated-package",
+    "command": [
+      "python3",
+      "-B",
+      "/private/tmp/sirin-qualification-20261029/desktop/tools/portable-image.py",
+      "/private/tmp/sirin-relocated-20261029/SirinEdit.app",
+      "--out",
+      "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/portability/relocated-package.json",
+      "--load-library"
+    ],
+    "returncode": 0,
+    "utc": "2026-10-29T23:16:23.468917+00:00"
+  }
+]

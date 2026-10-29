@@ -1,0 +1,25 @@
+START pid=98827 out=/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/saved-mask-controls/original-before
+{"command": ["/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/bin/gc-repro-fa4a9e6", "60", "1", "2048", "true"], "cwd": "/private/tmp/sirin-qualification-20261029", "start_utc": "2026-10-29T23:12:20.950989+00:00", "load_start": [10.765625, 9.63916015625, 7.498046875], "timeout_seconds": 75.0, "environment": {"GC_MAXIMUM_HEAP_SIZE": "128M", "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"}, "binary_sha256": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90", "pid": 98827, "timed_out": false, "returncode": -6, "elapsed_seconds": 41.627359666000004, "load_end": [10.1240234375, 9.6123046875, 7.5966796875]}
+START elapsed_ms=0 workers=1 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5069 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=2212 iterations=12860928
+SAMPLE elapsed_ms=10008 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=5538 iterations=32199936
+SAMPLE elapsed_ms=15047 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=8932 iterations=51934976
+SAMPLE elapsed_ms=20085 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=12336 iterations=71731712
+SAMPLE elapsed_ms=25033 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=15407 iterations=89589504
+
+[19:12:57.547] [gc-repro-fa4a9e6:98827] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[19:12:57.548] [gc-repro-fa4a9e6:98827] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[19:12:57.548] [gc-repro-fa4a9e6:98827] [ScalaNative GC|Warning]   Thread id=6092107776, stackBottom=0x16b1e3000, state=Managed, alive=yes
+[19:12:57.548] [gc-repro-fa4a9e6:98827] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[19:13:02.547] [gc-repro-fa4a9e6:98827] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms
+

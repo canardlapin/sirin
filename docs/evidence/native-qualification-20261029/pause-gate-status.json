@@ -1,0 +1,23 @@
+{
+  "preflight_command": [
+    "python3",
+    "-B",
+    "/private/tmp/sirin-qualification-20261029/probes/gc-repro/check-idle.py",
+    "--out",
+    "/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/idle-preflight"
+  ],
+  "preflight_returncode": 2,
+  "qualification": false,
+  "runtime_default_changed": false,
+  "primary_gate_binary": "/Users/bbuchsbaum/code/scala/sirin/target/gc-editor-tranche-20261029/bin/threads-pinned-conditional",
+  "primary_gate_binary_sha256": "87d7a7a94d48f21646053915415e31702517cf984a78b5b4f8c79287d2c2e5d9",
+  "gate_arguments": [
+    "soak",
+    "600",
+    "4",
+    "1000"
+  ],
+  "gate_status": "not-run",
+  "reason": "unchanged idle preflight did not pass; no retry or threshold waiver",
+  "saved_mask_event_gate_status": "not-run: separately prepared experimental candidate; no long-event qualification"
+}

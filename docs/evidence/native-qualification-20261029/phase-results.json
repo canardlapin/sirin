@@ -1,0 +1,27 @@
+[
+  {
+    "case": "original-before",
+    "runner_exit": 134,
+    "sampled_after_warning": false
+  },
+  {
+    "case": "phase-1",
+    "runner_exit": 0,
+    "sampled_after_warning": false
+  },
+  {
+    "case": "phase-2",
+    "runner_exit": 134,
+    "sampled_after_warning": true
+  },
+  {
+    "case": "phase-3",
+    "runner_exit": 134,
+    "sampled_after_warning": true
+  },
+  {
+    "case": "original-after",
+    "runner_exit": 134,
+    "sampled_after_warning": false
+  }
+]

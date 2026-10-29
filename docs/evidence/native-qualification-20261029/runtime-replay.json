@@ -1,0 +1,8 @@
+{
+  "exact_replay": true,
+  "output_sha256": {
+    "phase-diagnostic": "3e39a5fac32389f0fbacd2470dfb1d26f9f0f3da39b81c2f79c5257b4611e2fa",
+    "phase-diagnostic-v2": "6066e2202361eea9c815b240a98788a215e71c3bbfb7f60a6c51d80a1e917a63",
+    "saved-mask-control": "1f2b3369cba2e3e179cf422954ef2545207ccca24942f4aa627537a3fe8ab6c1"
+  }
+}

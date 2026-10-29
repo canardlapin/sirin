@@ -1,0 +1,16 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/test",
+    "desktopJVM/desktopEditorPackage"
+  ],
+  "start_utc": "2026-10-29T23:13:59.537103+00:00",
+  "reason": "preserve SDL framework symlinks; initial package retained",
+  "timeout_seconds": 300,
+  "timed_out": false,
+  "returncode": 0,
+  "elapsed_seconds": 78.33436491600001
+}

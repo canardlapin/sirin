@@ -1,0 +1,21 @@
+{
+  "frozen_utc": "2026-10-29T23:11:31.423485+00:00",
+  "order": [
+    "original-before",
+    "saved-mask-1",
+    "saved-mask-2",
+    "saved-mask-3",
+    "original-after"
+  ],
+  "arguments": [
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "heap_cap": "128M",
+  "sync_timeout_ms": 15000,
+  "external_timeout_seconds": 75,
+  "candidate_qualification": false,
+  "require_after_short_controls": "fresh120s4worker survivor check; original600s event/50ms gate only after unchanged idle preflight"
+}

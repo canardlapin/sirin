@@ -1,0 +1,15 @@
+[19:08:40.860] [gc-repro-fa4a9e6:81256] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[19:08:40.862] [gc-repro-fa4a9e6:81256] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[19:08:40.862] [gc-repro-fa4a9e6:81256] [ScalaNative GC|Warning]   Thread id=6124072960, stackBottom=0x16d05f000, state=Managed, alive=yes
+[19:08:40.862] [gc-repro-fa4a9e6:81256] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[19:08:45.883] [gc-repro-fa4a9e6:81256] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms

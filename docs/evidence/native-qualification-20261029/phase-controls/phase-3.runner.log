@@ -1,0 +1,24 @@
+START pid=92103 out=/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-controls/phase-3
+{"command": ["/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/bin/phase-diagnostic-v2", "60", "1", "2048", "true"], "cwd": "/private/tmp/sirin-qualification-20261029", "start_utc": "2026-10-29T23:10:39.240170+00:00", "load_start": [12.27099609375, 9.15234375, 7.07568359375], "timeout_seconds": 75.0, "environment": {"GC_MAXIMUM_HEAP_SIZE": "128M", "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"}, "binary_sha256": "38904848e821749aa709ec9e98f88e226261541574404e763a453a23c6cf49c1", "pid": 92103, "timed_out": false, "returncode": -6, "elapsed_seconds": 26.450161917000003, "load_end": [11.39306640625, 9.17578125, 7.142578125]}
+START elapsed_ms=0 workers=1 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5043 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=3522 iterations=20482560
+SAMPLE elapsed_ms=10085 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=7055 iterations=41028096
+
+[19:11:00.649] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning]   Thread id=6163738624, stackBottom=0x16f633000, state=Managed, alive=yes
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] SIRIN_DIAG thread=6163738624 trap=0x109554000 stackTop=0x0 waiting=0 signals=913 recognized=913 redirects=913 yields=913 phase=5 signal=10 fault=0x109554000 resume=0x100a5f6a4 admitBus=1 admitSegv=0 yieldBus=1
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] SIRIN_PHASE masks=5,4,5,5,5,5,5,4 counts=913,913,913,913,913,10889,10889,1 active=0 nested=0 exits=913
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[19:11:05.649] [phase-diagnostic-v2:92103] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms
+

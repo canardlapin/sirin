@@ -1,0 +1,27 @@
+{
+  "source_sha256": "e73c396c789988b48d8e49744c7ad1d02291dcd65fca3bbd2c3d211b3d7a10dc",
+  "output_sha256": "6066e2202361eea9c815b240a98788a215e71c3bbfb7f60a6c51d80a1e917a63",
+  "changed_resources": [
+    "scala-native/gc/immix/MutatorThread.h",
+    "scala-native/gc/immix/MutatorThread.c",
+    "scala-native/gc/immix/Synchronizer.c",
+    "scala-native/gc/shared/SafepointPollTrampoline.c"
+  ],
+  "mask_bits": {
+    "SIGBUS": 1,
+    "SIGSEGV": 2,
+    "SIGCONT": 4,
+    "query_error": 2147483648
+  },
+  "hooks": [
+    "handler entry",
+    "saved ucontext",
+    "trampoline entry",
+    "yield return",
+    "resume helper",
+    "admission entry",
+    "admission exit",
+    "thread registration"
+  ],
+  "scope": "Darwin Immix observation only; no mask/handler policy/assembly change; non-coherent last observations, not performance or remedy qualification"
+}

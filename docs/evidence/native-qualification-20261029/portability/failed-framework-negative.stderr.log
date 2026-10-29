@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/private/tmp/sirin-qualification-20261029/desktop/tools/portable-image.py", line 90, in <module>
+    result = inspect(args.app,args.load_library)
+  File "/private/tmp/sirin-qualification-20261029/desktop/tools/portable-image.py", line 46, in inspect
+    assert (framework/name).is_symlink(), 'flattened framework link: '+name
+AssertionError: flattened framework link: SDL3

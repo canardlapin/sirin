@@ -1,0 +1,17 @@
+[19:11:00.649] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] Waiting for 1 thread(s) to reach safepoint (10.0s elapsed)
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] 1 thread(s) not reaching safepoint:
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning]   Thread id=6163738624, stackBottom=0x16f633000, state=Managed, alive=yes
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] SIRIN_DIAG thread=6163738624 trap=0x109554000 stackTop=0x0 waiting=0 signals=913 recognized=913 redirects=913 yields=913 phase=5 signal=10 fault=0x109554000 resume=0x100a5f6a4 admitBus=1 admitSegv=0 yieldBus=1
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] SIRIN_PHASE masks=5,4,5,5,5,5,5,4 counts=913,913,913,913,913,10889,10889,1 active=0 nested=0 exits=913
+[19:11:00.651] [phase-diagnostic-v2:92103] [ScalaNative GC|Warning] Possible causes:
+  - Thread blocked in native code without @blocking annotation
+  - Thread crashed without cleanup
+  - Infinite loop in native code
+  - Deadlock with resource held by waiting thread
+[19:11:05.649] [phase-diagnostic-v2:92103] [ScalaNative GC|Error] FATAL: Timeout after 15.0s waiting for 1 thread(s)
+Threads did not reach safepoint which blocks the GC.
+This is likely caused by:
+  - Native/extern call missing @blocking annotation
+  - Thread stuck in infinite loop in native code
+Set SCALANATIVE_GC_SYNC_TIMEOUT_MS=0 to disable timeout
+Current timeout: 15000 ms

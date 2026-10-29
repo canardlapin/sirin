@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/private/tmp/sirin-qualification-20261029/docs/evidence/native-qualification-20261029/verify.py", line 46, in <module>
+    assert match[3:5]==('0','0') and int(match[5])==counts[0]
+IndexError: no such group

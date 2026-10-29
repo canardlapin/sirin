@@ -1,0 +1,19 @@
+{
+  "observed_utc": "2026-10-29T23:14:49.068442+00:00",
+  "editor_launch": "rejected_by_automatic_review",
+  "reason": "requires new action-time confirmation; prior approval treated as covering prior invocation",
+  "exact_app": "/private/tmp/sirin-editor-20261029/desktop/target/package-editor/SirinEdit.app",
+  "confirmation_requested": true,
+  "launch_workaround_used": false,
+  "initial_input_sources": [
+    "Canadian"
+  ],
+  "initial_show_input_menu": false,
+  "initial_voiceover_enabled": true,
+  "available_method_observed": "Japanese \u2013 Romaji",
+  "preference_changes_made": false,
+  "real_IME_passed": false,
+  "VoiceOver_editor_passed": false,
+  "native_drag_passed": false,
+  "temporary_setup_confirmation_requested": true
+}

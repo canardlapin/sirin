@@ -1,0 +1,63 @@
+--- a/scala-native/gc/immix/MutatorThread.h
++++ b/scala-native/gc/immix/MutatorThread.h
+@@ -8,6 +8,9 @@
+ #include <stdbool.h>
+ #include "nativeThreadTLS.h"
+ #include <stdint.h>
++#ifdef __APPLE__
++#include <signal.h>
++#endif
+ 
+ typedef struct {
+     _Atomic(GC_MutatorThreadState) state;
+@@ -35,6 +38,10 @@
+     void **yieldpointTrap;
+     /* Faulting PC when using deferred safepoint trampoline (POSIX). */
+     uintptr_t safepointResumePc;
++#ifdef __APPLE__
++    /* Private causal control: preserve the pre-trap context mask. */
++    sigset_t safepointSignalMask;
++#endif
+ #endif
+ } MutatorThread;
+ 
+--- a/scala-native/gc/shared/SafepointPollTrampoline.c
++++ b/scala-native/gc/shared/SafepointPollTrampoline.c
+@@ -33,6 +33,9 @@
+ #include <stddef.h>
+ #include <stdint.h>
+ #include <ucontext.h>
++#include <signal.h>
++#include <errno.h>
++#include <stdlib.h>
+ 
+ #if defined(SCALANATIVE_GC_IMMIX)
+ #include "immix/State.h"
+@@ -44,7 +47,16 @@
+ #error "SafepointPollTrampoline requires immix or commix"
+ #endif
+ 
+-void scalanative_gc_safepoint_poll_run_yield(void) { Synchronizer_yield(); }
++void scalanative_gc_safepoint_poll_run_yield(void) {
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_IMMIX)
++    /* Experimental Darwin control, not adopted runtime policy. */
++    int saved_errno = errno;
++    if (sigprocmask(SIG_SETMASK, &currentMutatorThread->safepointSignalMask, NULL) != 0)
++        abort();
++    errno = saved_errno;
++#endif
++    Synchronizer_yield();
++}
+ 
+ uintptr_t scalanative_gc_safepoint_load_resume_pc(void) {
+     MutatorThread *self = currentMutatorThread;
+@@ -99,6 +111,9 @@
+     if (uap == NULL || self == NULL)
+         return false;
+     ucontext_t *uc = (ucontext_t *)uap;
++#if defined(__APPLE__) && defined(SCALANATIVE_GC_IMMIX)
++    self->safepointSignalMask = uc->uc_sigmask;
++#endif
+     uintptr_t pc = SN_UC_GET_PC(uc);
+     self->safepointResumePc = pc;
+ #if defined(__x86_64__)

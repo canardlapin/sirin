@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/bin/gc-repro-fa4a9e6",
+    "60",
+    "1",
+    "2048",
+    "true"
+  ],
+  "cwd": "/private/tmp/sirin-qualification-20261029",
+  "start_utc": "2026-10-29T23:16:03.643335+00:00",
+  "load_start": [
+    8.671875,
+    9.21630859375,
+    7.81005859375
+  ],
+  "timeout_seconds": 75.0,
+  "environment": {
+    "GC_MAXIMUM_HEAP_SIZE": "128M",
+    "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"
+  },
+  "binary_sha256": "3dd4496c1f0a87ecf16831accf371dfd16a76e00390ecbdda0f88af4be1bac90",
+  "pid": 10926,
+  "timed_out": false,
+  "returncode": -6,
+  "elapsed_seconds": 22.415327833,
+  "load_end": [
+    8.67529296875,
+    9.17138671875,
+    7.82568359375
+  ]
+}

@@ -1,0 +1,19 @@
+START pid=83514 out=/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-controls/phase-1
+{"command": ["/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/bin/phase-diagnostic-v2", "60", "1", "2048", "true"], "cwd": "/private/tmp/sirin-qualification-20261029", "start_utc": "2026-10-29T23:08:46.382433+00:00", "load_start": [10.1181640625, 6.75146484375, 5.99560546875], "timeout_seconds": 75.0, "environment": {"GC_MAXIMUM_HEAP_SIZE": "128M", "SCALANATIVE_GC_SYNC_TIMEOUT_MS": "15000"}, "binary_sha256": "38904848e821749aa709ec9e98f88e226261541574404e763a453a23c6cf49c1", "pid": 83514, "timed_out": false, "returncode": 0, "elapsed_seconds": 60.448121125, "load_end": [14.29248046875, 8.72412109375, 6.79345703125]}
+START elapsed_ms=0 workers=1 slots=2048 ticker=true heap_bytes=4473856 collections=0 iterations=0
+SAMPLE elapsed_ms=5107 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=2139 iterations=12438784
+SAMPLE elapsed_ms=10027 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=3667 iterations=21326080
+SAMPLE elapsed_ms=15040 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=4602 iterations=26762752
+SAMPLE elapsed_ms=20058 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=6454 iterations=37533696
+SAMPLE elapsed_ms=25084 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=8141 iterations=47344896
+SAMPLE elapsed_ms=30099 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=11037 iterations=64183552
+SAMPLE elapsed_ms=35083 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=13504 iterations=78532096
+SAMPLE elapsed_ms=40086 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=15946 iterations=92730112
+SAMPLE elapsed_ms=45063 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=16988 iterations=98786304
+SAMPLE elapsed_ms=50017 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=19016 iterations=110579968
+SAMPLE elapsed_ms=55074 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=21045 iterations=122382336
+SAMPLE elapsed_ms=60030 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=23115 iterations=134416128
+DONE elapsed_ms=60032 workers=1 slots=2048 ticker=true heap_bytes=8947712 collections=23115 iterations=134416311
+RESULT live_payload_bytes=1093688 checksum=27101618227324928
+
+

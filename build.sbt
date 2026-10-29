@@ -313,7 +313,13 @@ lazy val desktopJVM = project.in(file("desktop"))
       require(sys.props("os.name").toLowerCase.contains("mac"), "bounded desktop transport currently requires macOS")
       val (compile, originalLink) = vendorFlags((ThisBuild / vendor).value)
       val v = (ThisBuild / vendor).value
-      val link = originalLink.filterNot(s => s == "-lwgpu_native" || s.contains("wgpu-macos-aarch64/lib"))
+      val link = originalLink.filterNot(s => s == "-lwgpu_native" ||
+        s.contains("wgpu-macos-aarch64/lib") || s.startsWith("-Wl,-rpath,"))
+      // Resolve SDL from beside the shim, both during development and in app images.
+      val sdlFramework = output.getParentFile / "SDL3.framework"
+      IO.delete(sdlFramework)
+      require(Process(Seq("ditto", (v / "SDL3.xcframework/macos-arm64_x86_64/SDL3.framework").toString,
+        sdlFramework.toString), rootDir).! == 0, "SDL framework copy failed")
       val combined = v / "sirin/libsirin_native.a"
       require(combined.isFile, "fetch combined runtime with native/fetch-macos.sh --sirin")
       val text = v / "text"
@@ -324,7 +330,8 @@ lazy val desktopJVM = project.in(file("desktop"))
       require(Process(Seq("clang", "-Wall", "-Wextra", "-Werror", "-fobjc-arc", "-O2", "-c") ++ compile ++
         Seq(s"-I$v/sirin-sources/accesskit-c-0.23.1/include") ++
         Seq((baseDirectory.value / "native" / "editor_ax.m").toString, "-o", ax.toString),rootDir).! == 0,"native accessibility compilation failed")
-      val command = Seq("clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-O2") ++ compile ++
+      val command = Seq("clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-O2",
+        "-Wl,-install_name,@rpath/libsirin_desktop.dylib", "-Wl,-rpath,@loader_path") ++ compile ++
         Seq(s"-I$text/include/harfbuzz", s"-I$text/include/freetype2", "-iquote", headers.toString,
           s"-I$thor/include/thorvg-1", (baseDirectory.value / "native" / "sirin_desktop.c").toString, "-o", output.toString) ++ link ++
         Seq(ax.toString,"-framework","Cocoa", "-framework","Metal", "-framework","QuartzCore", "-framework","Security", "-framework","IOKit",
@@ -347,8 +354,8 @@ lazy val host = crossProject(JVMPlatform, NativePlatform).crossType(CrossType.Pu
   .in(file("host")).dependsOn(engine, graphicsUI)
   .settings(name := "sirin-host", testDeps)
 
-// Identifiable local macOS development app. Its native vendor paths are local;
-// this is an app-image acceptance target, not a redistributable installer.
+// Identifiable macOS development app with bundled SDL and fixture fonts.
+// This is an app-image acceptance target, not a redistributable installer.
 lazy val desktopPackage = taskKey[File]("Package the bounded JVM workbench app-image")
 def packageDesktopImage(repo: File, home: File, output: File, classpath: Seq[File], compiled: File,
     native: File, name: String, bundle: String, arguments: String): File = {
@@ -363,13 +370,16 @@ def packageDesktopImage(repo: File, home: File, output: File, classpath: Seq[Fil
   }
   require(Process(Seq((home / "bin/jar").toString,"--create","--file",(input / "sirin.jar").toString,"-C",classes.toString,"."),repo).! == 0)
   IO.copyFile(native,input / "libsirin_desktop.dylib")
+  require(Process(Seq("ditto", (native.getParentFile / "SDL3.framework").toString,
+    (input / "SDL3.framework").toString), repo).! == 0, "packaged SDL framework copy failed")
+  IO.copyDirectory(repo / "graphics/src/test/resources/fonts", input / "graphics/src/test/resources/fonts")
   val command = Seq((home / "bin/jpackage").toString,"--type","app-image","--name",name,
     "--dest",output.toString,"--input",input.toString,"--main-jar","sirin.jar",
     "--main-class","sirin.desktop.DesktopWorkbench","--runtime-image",home.toString,
     "--mac-package-identifier",bundle,
     "--java-options","-XstartOnFirstThread","--java-options","--enable-native-access=ALL-UNNAMED",
     "--java-options","-Dsirin.desktop.library=$APPDIR/libsirin_desktop.dylib",
-    "--java-options","-Dsirin.repo=" + repo.toString,"--arguments",arguments)
+    "--java-options","-Dsirin.repo=$APPDIR","--arguments",arguments)
   require(compiled.exists && Process(command,repo).! == 0,"desktop package failed")
   output / (name + ".app")
 }

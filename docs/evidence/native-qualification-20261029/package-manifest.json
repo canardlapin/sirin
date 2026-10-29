@@ -1,0 +1,15 @@
+{
+  "app": "/private/tmp/sirin-qualification-20261029/desktop/target/package-editor/SirinEdit.app",
+  "relocated_app": "/private/tmp/sirin-relocated-20261029/SirinEdit.app",
+  "files": {
+    "Contents/MacOS/SirinEdit": "c7057a12ce07d16002e481fc4e73b834ea6480f2d2b9c55e980a929bcf424738",
+    "Contents/app/sirin.jar": "d66b82ca4b62c5d4d546545295dc4067368a8d48deb80bb49b7c7904091373e4",
+    "Contents/app/libsirin_desktop.dylib": "7db2606b07665143684dd55aeb84b18e14f4a3a22bdfa8c840f72eabde6b3251",
+    "Contents/app/SDL3.framework/Versions/A/SDL3": "4ee3b2efa85a289f57c14e7b24d81b811760721b451b3aa2734a8dce7e49d020",
+    "Contents/app/SirinEdit.cfg": "23c5a1ba96083c636b5d390bb5d17597deb2dad121e55c7e87fba7bec75daea9",
+    "Contents/app/graphics/src/test/resources/fonts/SHA256SUMS": "e2e5bb4dcd3c23f87470523c36ed3507b98832ef0ce8fe1ff01cb9c2222bf146"
+  },
+  "native_UI_launched": false,
+  "source_base": "970cd41",
+  "system_font_dependency": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf for the bounded CJK fallback; not bundled"
+}

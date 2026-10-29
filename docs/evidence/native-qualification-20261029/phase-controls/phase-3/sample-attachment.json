@@ -1,0 +1,7 @@
+{
+  "after_warning": true,
+  "pid": 92103,
+  "start_utc": "2026-10-29T23:11:00.835976+00:00",
+  "returncode": 0,
+  "stderr": "Sampling process 92103 for 1 second with 1 millisecond of run time between samples\nSampling completed, processing symbols...\nSample analysis of process 92103 written to file /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/phase-controls/phase-3/native.sample.txt\n"
+}

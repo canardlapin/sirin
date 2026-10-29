@@ -1,0 +1,143 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project event-saved-mask-build-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/project
+[info] loading settings for project root from build.sbt...
+[info] set current project to root (in build file:/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/)
+[info] compiling 14 Scala sources to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/core/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.03s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.036s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 5 s, completed Oct 29, 2026, 7:17:50 p.m.
+[success] Total time: 0 s, completed Oct 29, 2026, 7:17:50 p.m.
+[success] Total time: 0 s, completed Oct 29, 2026, 7:17:51 p.m.
+[info] compiling 14 Scala sources to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/core/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/core/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1695 ms)
+[info] Discovered 2340 classes and 16602 methods after classloading
+[info] Checking intermediate code (quick) (90 ms)
+[info] Discovered 2314 classes and 12842 methods after optimization
+[info] Optimizing (debug mode) (2258 ms)
+[info] Produced 94 LLVM IR files
+[info] Generating intermediate code (7912 ms)
+[info] Compiling to native code (6308 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (149 ms)
+[info] Postprocessing (0 ms)
+[info] Total (12741 ms)
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/core/.native/target/scala-3.7.4/sirin-core-test' on port '59303'.
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/core/.native/target/scala-3.7.4/sirin-core-test' on port '59305'.
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.003s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 16 s, completed Oct 29, 2026, 7:18:07 p.m.
+[info] Linking (multithreadingEnabled=detect) (650 ms)
+[info] Discovered 2082 classes and 14728 methods after classloading
+[info] Checking intermediate code (quick) (31 ms)
+[info] Discovered 2020 classes and 11159 methods after optimization
+[info] Optimizing (debug mode) (1343 ms)
+[info] Produced 89 LLVM IR files
+[info] Generating intermediate code (6791 ms)
+[info] Compiling to native code (6205 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (131 ms)
+[info] Postprocessing (0 ms)
+[info] Total (9381 ms)
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '59326'.
+[success] Total time: 10 s, completed Oct 29, 2026, 7:18:17 p.m.
+[info] Linking (multithreadingEnabled=detect) (579 ms)
+[info] Discovered 2082 classes and 14728 methods after classloading
+[info] Checking intermediate code (quick) (27 ms)
+[info] Discovered 2020 classes and 11159 methods after optimization
+[info] Optimizing (debug mode) (803 ms)
+[info] Produced 89 LLVM IR files
+[info] Generating intermediate code (6582 ms)
+[info] Compiling to native code (6135 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (144 ms)
+[info] Postprocessing (0 ms)
+[info] Total (8519 ms)
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '59343'.
+[success] Total time: 10 s, completed Oct 29, 2026, 7:18:27 p.m.
+[info] compiling 7 Scala sources to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/examples/target/scala-3.7.4/classes ...
+[info] done compiling
+[success] Total time: 3 s, completed Oct 29, 2026, 7:18:30 p.m.
+[info] compiling 3 Scala sources to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/window/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/window/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (1170 ms)
+[info] Discovered 2293 classes and 16241 methods after classloading
+[info] Checking intermediate code (quick) (47 ms)
+[info] Discovered 2261 classes and 12388 methods after optimization
+[info] Optimizing (debug mode) (1697 ms)
+[info] Produced 93 LLVM IR files
+[info] Generating intermediate code (7395 ms)
+[info] Compiling to native code (6442 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (128 ms)
+[info] Postprocessing (0 ms)
+[info] Total (10896 ms)
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/window/target/scala-3.7.4/sirin-probe-window-test' on port '59364'.
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/window/target/scala-3.7.4/sirin-probe-window-test' on port '59367'.
+Test run sirin.probe.AbiSuite started
+sirin.probe.AbiSuite: finished 0.008s
+Test run sirin.probe.AbiSuite finished: 0 failed, 0 ignored, 14 total 0.008s
+[info] Passed: Total 14, Failed 0, Errors 0, Passed 14
+[success] Total time: 15 s, completed Oct 29, 2026, 7:18:45 p.m.
+[info] compiling 4 Scala sources to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/threads/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/threads/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=true) (772 ms)
+[info] Discovered 2386 classes and 16433 methods after classloading
+[info] Checking intermediate code (quick) (39 ms)
+[info] Discovered 2036 classes and 7687 methods after optimization
+[info] Optimizing (release-fast mode) (2566 ms)
+[info] Produced 91 LLVM IR files
+[info] Generating intermediate code (9041 ms)
+[info] Compiling to native code (9270 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (131 ms)
+[info] Postprocessing (0 ms)
+[info] Total (14101 ms)
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/threads/target/scala-3.7.4/sirin-probe-threads-test' on port '59405'.
+[info] Starting process '/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/threads/target/scala-3.7.4/sirin-probe-threads-test' on port '59409'.
+Test run sirin.probe.threads.MailboxSuite started
+sirin.probe.threads.MailboxSuite: finished 0.095s
+Test run sirin.probe.threads.MailboxSuite finished: 0 failed, 0 ignored, 13 total 0.095s
+[info] Passed: Total 13, Failed 0, Errors 0, Passed 13
+[success] Total time: 18 s, completed Oct 29, 2026, 7:19:02 p.m.
+[info] Linking (multithreadingEnabled=true) (280 ms)
+[info] Discovered 1095 classes and 6697 methods after classloading
+[info] Checking intermediate code (quick) (6 ms)
+[info] Discovered 874 classes and 3031 methods after optimization
+[info] Optimizing (release-fast mode) (699 ms)
+[info] Produced 49 LLVM IR files
+[info] Generating intermediate code (5438 ms)
+[info] Compiling to native code (5652 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (133 ms)
+[info] Postprocessing (0 ms)
+[info] Total (7068 ms)
+[success] Total time: 7 s, completed Oct 29, 2026, 7:19:09 p.m.
+[info] * Attributed(/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/event-saved-mask-build/probes/threads/target/scala-3.7.4/classes)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scala3lib_native0.5_3/3.7.4+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scala3lib_native0.5_3.jar)
+[info] * Attributed(/private/tmp/sirin-qualification-20261029/target/native-qualification-20261029/runtime/saved-mask-control.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/clib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/clib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/posixlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/posixlib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/windowslib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/windowslib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/javalib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/javalib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/auxlib_native0.5_3/0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/auxlib_native0.5_3.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4-sources.jar)
+[info] * Attributed(/Users/bbuchsbaum/code/scala/sirin/target/upstream-evaluation/ivy/local/org.scala-native/scalalib_native0.5_2.13/2.13.18+0.5.13-20261026-fa4a9e6-SNAPSHOT/jars/scalalib_native0.5_2.13.jar)
+[info] * Attributed(/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.18/scala-library-2.13.18-sources.jar)
+[success] Total time: 0 s, completed Oct 29, 2026, 7:19:09 p.m.

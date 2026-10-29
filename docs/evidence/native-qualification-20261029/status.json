@@ -1,0 +1,26 @@
+{
+  "source_base": "970cd41",
+  "production_runtime_changed": false,
+  "kernel_semantics_changed": false,
+  "gc_issue": "bd-01M5Z3K47RQTRDXEY7Y2P8TMJ3",
+  "gc_issue_closed": false,
+  "saved_mask_short_controls": {
+    "candidate_completed": 3,
+    "candidate_trials": 3,
+    "original_aborts": 2,
+    "original_trials": 2
+  },
+  "saved_mask_survivor_control": "pass120s4workers",
+  "saved_mask_runtime_adopted": false,
+  "long_event_qualification": false,
+  "pause_gate": "not-run: all six unchanged idle samples fail",
+  "portable_package": "built; deep strict signature/native closure/fonts/headless load pass at original and relocated paths",
+  "current_scala_cases": 696,
+  "desktop_cases_repeated_after_copy_fix": 50,
+  "original_event_compatibility_checks": 31,
+  "native_UI": "blocked: explicit new launch confirmation pending",
+  "temporary_input_sources": "pending explicit preference confirmation; no setting changes",
+  "VoiceOver_original_enabled": true,
+  "upstream_posted": false,
+  "shared_checkout_source_changed": false
+}
