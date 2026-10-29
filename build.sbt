@@ -311,16 +311,24 @@ lazy val desktopJVM = project.in(file("desktop"))
       val output = target.value / "native" / "libsirin_desktop.dylib"
       IO.createDirectory(output.getParentFile)
       require(sys.props("os.name").toLowerCase.contains("mac"), "bounded desktop transport currently requires macOS")
-      val (compile, link) = vendorFlags((ThisBuild / vendor).value)
+      val (compile, originalLink) = vendorFlags((ThisBuild / vendor).value)
       val v = (ThisBuild / vendor).value
+      val link = originalLink.filterNot(s => s == "-lwgpu_native" || s.contains("wgpu-macos-aarch64/lib"))
+      val combined = v / "sirin/libsirin_native.a"
+      require(combined.isFile, "fetch combined runtime with native/fetch-macos.sh --sirin")
       val text = v / "text"
       val unicode = v / "unicode"
       val headers = unicode / "icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/ffi/capi/bindings/c"
       val thor = v / "thorvg/install"
+      val ax = target.value / "native" / "editor_ax.o"
+      require(Process(Seq("clang", "-Wall", "-Wextra", "-Werror", "-fobjc-arc", "-O2", "-c") ++ compile ++
+        Seq(s"-I$v/sirin-sources/accesskit-c-0.23.1/include") ++
+        Seq((baseDirectory.value / "native" / "editor_ax.m").toString, "-o", ax.toString),rootDir).! == 0,"native accessibility compilation failed")
       val command = Seq("clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-O2") ++ compile ++
         Seq(s"-I$text/include/harfbuzz", s"-I$text/include/freetype2", "-iquote", headers.toString,
           s"-I$thor/include/thorvg-1", (baseDirectory.value / "native" / "sirin_desktop.c").toString, "-o", output.toString) ++ link ++
-        Seq(s"$text/lib/libharfbuzz.a", s"$text/lib/libfreetype.a", s"$unicode/libicu4x_probe.a", s"$thor/lib/libthorvg-1.a", "-lc++")
+        Seq(ax.toString,"-framework","Cocoa", "-framework","Metal", "-framework","QuartzCore", "-framework","Security", "-framework","IOKit",
+          s"$text/lib/libharfbuzz.a", s"$text/lib/libfreetype.a", s"$thor/lib/libthorvg-1.a", combined.toString, "-lc++")
       require(Process(command, rootDir).! == 0, "desktop transport compilation failed")
       output
     },
@@ -342,30 +350,36 @@ lazy val host = crossProject(JVMPlatform, NativePlatform).crossType(CrossType.Pu
 // Identifiable local macOS development app. Its native vendor paths are local;
 // this is an app-image acceptance target, not a redistributable installer.
 lazy val desktopPackage = taskKey[File]("Package the bounded JVM workbench app-image")
-desktopJVM / desktopPackage := {
+def packageDesktopImage(repo: File, home: File, output: File, classpath: Seq[File], compiled: File,
+    native: File, name: String, bundle: String, arguments: String): File = {
   import scala.sys.process._
-  val repo = (ThisBuild / baseDirectory).value
-  val output = (desktopJVM / target).value / "package"
-  val input = (desktopJVM / target).value / "package-input"
-  val classes = (desktopJVM / target).value / "package-classes"
-  val compiled = (desktopJVM / Compile / packageBin).value
-  val classpath = (desktopJVM / Runtime / fullClasspath).value.map(_.data)
+  val input = output.getParentFile / (output.getName + "-input")
+  val classes = output.getParentFile / (output.getName + "-classes")
   IO.delete(input); IO.delete(classes); IO.delete(output)
   IO.createDirectory(input); IO.createDirectory(classes)
   classpath.foreach { file =>
     if (file.isDirectory) IO.copyDirectory(file,classes)
     else if (file.getName.endsWith(".jar")) IO.copyFile(file,input / file.getName)
   }
-  val home = file(sys.props("java.home"))
   require(Process(Seq((home / "bin/jar").toString,"--create","--file",(input / "sirin.jar").toString,"-C",classes.toString,"."),repo).! == 0)
-  IO.copyFile((desktopJVM / desktopNativeLibrary).value,input / "libsirin_desktop.dylib")
-  val command = Seq((home / "bin/jpackage").toString,"--type","app-image","--name","Sirin",
+  IO.copyFile(native,input / "libsirin_desktop.dylib")
+  val command = Seq((home / "bin/jpackage").toString,"--type","app-image","--name",name,
     "--dest",output.toString,"--input",input.toString,"--main-jar","sirin.jar",
     "--main-class","sirin.desktop.DesktopWorkbench","--runtime-image",home.toString,
-    "--mac-package-identifier","io.github.canardlapin.sirin.dev",
+    "--mac-package-identifier",bundle,
     "--java-options","-XstartOnFirstThread","--java-options","--enable-native-access=ALL-UNNAMED",
     "--java-options","-Dsirin.desktop.library=$APPDIR/libsirin_desktop.dylib",
-    "--java-options","-Dsirin.repo=" + repo.toString,"--arguments","interactive")
+    "--java-options","-Dsirin.repo=" + repo.toString,"--arguments",arguments)
   require(compiled.exists && Process(command,repo).! == 0,"desktop package failed")
-  output / "Sirin.app"
+  output / (name + ".app")
 }
+desktopJVM / desktopPackage := packageDesktopImage((ThisBuild / baseDirectory).value,file(sys.props("java.home")),
+  (desktopJVM / target).value / "package",(desktopJVM / Runtime / fullClasspath).value.map(_.data),
+  (desktopJVM / Compile / packageBin).value,(desktopJVM / desktopNativeLibrary).value,
+  "Sirin","io.github.canardlapin.sirin.dev","interactive")
+
+lazy val desktopEditorPackage = taskKey[File]("Package the editable text specimen with a distinct app identity")
+desktopJVM / desktopEditorPackage := packageDesktopImage((ThisBuild / baseDirectory).value,file(sys.props("java.home")),
+  (desktopJVM / target).value / "package-editor",(desktopJVM / Runtime / fullClasspath).value.map(_.data),
+  (desktopJVM / Compile / packageBin).value,(desktopJVM / desktopNativeLibrary).value,
+  "SirinEdit","io.github.canardlapin.sirin.edit.integration","editor")

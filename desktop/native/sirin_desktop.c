@@ -66,12 +66,21 @@ static void *await_request(WGPUInstance instance, Request *r) {
   return result;
 }
 void bgpu_close(void *raw);
+void *sirin_ax_open(SDL_Window*,uint32_t);
+void sirin_ax_close(void*);
+int sirin_ax_begin(void*,int64_t);
+int sirin_ax_field(void*,int64_t,int,const char*,const char*,const char*,int,int,int,int,const double*,const double*,int);
+int sirin_ax_publish(void*);
+int sirin_ax_poll(void*,int64_t*,char*,int);
+int sirin_editor_ime_control(void*,const char*,int,int,int);
+int sirin_editor_activate(void*);
 typedef struct Desktop {
   SDL_Window *window; SDL_MetalView metal;
   WGPUInstance instance; WGPUSurface surface; WGPUAdapter adapter;
   WGPUDevice device; WGPUQueue queue; WGPURenderPipeline blit; WGPUTextureFormat format;
   uint32_t width, height, wake_type, window_id;
   pthread_t owner; int configured, copy_dst; void *batch;
+  char text[65537]; void *accessibility;
 } Desktop;
 static _Atomic int live_windows;
 int sirin_desktop_fault(int stage) {
@@ -82,6 +91,7 @@ int sirin_desktop_live(void) { return live_windows; }
 int sirin_desktop_first_thread(void) { return pthread_main_np(); }
 static int owner(Desktop *d) { return d && pthread_equal(d->owner, pthread_self()) && pthread_main_np(); }
 static void destroy(Desktop *d) {
+  if(d->accessibility){sirin_ax_close(d->accessibility);d->accessibility=NULL;}
   // Drain late callbacks after caller ownership was relinquished, while instance lives.
   if(d->instance && atomic_load(&live_requests)) {
     uint64_t deadline=nanos()+5000000000u;
@@ -179,6 +189,7 @@ static int logical_key(SDL_Keycode key) {
     case SDLK_TAB:return 1;case SDLK_RETURN:return 2;case SDLK_SPACE:return 3;case SDLK_ESCAPE:return 4;
     case SDLK_UP:return 5;case SDLK_DOWN:return 6;case SDLK_PAGEUP:return 7;case SDLK_PAGEDOWN:return 8;
     case SDLK_HOME:return 9;case SDLK_END:return 10;
+    case SDLK_LEFT:return 11;case SDLK_RIGHT:return 12;case SDLK_BACKSPACE:return 13;case SDLK_DELETE:return 14;
     default:return key<128 ? 1000+(int)key:0;
   }
 }
@@ -188,11 +199,12 @@ static int modifiers(SDL_Keymod mods) {
 int sirin_desktop_wait(void *raw, int timeout, int32_t *out,double *position,uint64_t *times) {
   Desktop *d=raw;if(!owner(d)||timeout < -1)return -1;
   memset(out,0,14*sizeof(*out));memset(position,0,4*sizeof(*position));times[0]=0;
+  d->text[0]=0;
   SDL_Event e;int found=SDL_WaitEventTimeout(&e,timeout);int flags=0;
   if(found){
     times[0]=e.common.timestamp;
     if(e.type==SDL_EVENT_QUIT || (e.type==SDL_EVENT_WINDOW_CLOSE_REQUESTED && e.window.windowID==d->window_id))flags|=1;
-    if((e.type==SDL_EVENT_WINDOW_EXPOSED || e.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || e.type==SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED) && e.window.windowID==d->window_id)flags|=2;
+    if((e.type==SDL_EVENT_WINDOW_FOCUS_GAINED || e.type==SDL_EVENT_WINDOW_EXPOSED || e.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || e.type==SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED) && e.window.windowID==d->window_id)flags|=2;
     if(e.type==d->wake_type && e.user.windowID==d->window_id)flags|=4;
     if((e.type==SDL_EVENT_KEY_DOWN || e.type==SDL_EVENT_KEY_UP) && e.key.windowID==d->window_id){
       out[7]=e.type==SDL_EVENT_KEY_DOWN?1:2;out[8]=logical_key(e.key.key);out[9]=modifiers(e.key.mod);out[11]=e.key.repeat;
@@ -204,6 +216,10 @@ int sirin_desktop_wait(void *raw, int timeout, int32_t *out,double *position,uin
       out[7]=6;position[0]=e.wheel.mouse_x;position[1]=e.wheel.mouse_y;
       double sign=e.wheel.direction==SDL_MOUSEWHEEL_FLIPPED?-1:1;position[2]=sign*e.wheel.x;position[3]=sign*e.wheel.y;
     }
+    if(e.type==SDL_EVENT_MOUSE_MOTION && e.motion.windowID==d->window_id){out[7]=5;out[10]=(e.motion.state&SDL_BUTTON_LMASK)?1:0;position[0]=e.motion.x;position[1]=e.motion.y;out[9]=modifiers(SDL_GetModState());}
+    if(e.type==SDL_EVENT_TEXT_INPUT && e.text.windowID==d->window_id){if(strlen(e.text.text)>65536)return -2;strcpy(d->text,e.text.text);out[7]=10;}
+    if(e.type==SDL_EVENT_TEXT_EDITING && e.edit.windowID==d->window_id){if(strlen(e.edit.text)>65536)return -2;strcpy(d->text,e.edit.text);out[7]=11;out[8]=e.edit.start;out[9]=e.edit.length;}
+    if(e.type==SDL_EVENT_MOUSE_BUTTON_DOWN || e.type==SDL_EVENT_MOUSE_BUTTON_UP)out[9]=modifiers(SDL_GetModState());
     if(e.type==SDL_EVENT_WINDOW_FOCUS_LOST && e.window.windowID==d->window_id)out[7]=7;
   }
   constrain_window(d);
@@ -215,9 +231,9 @@ int sirin_desktop_inject(void *raw,int kind,int key,int mods,double x,double y,d
   Desktop *d=raw;if(!owner(d))return 1;
   SDL_Event e;SDL_zero(e);e.common.timestamp=SDL_GetTicksNS();
   if(kind==1 || kind==2){
-    const SDL_Keycode keys[]={0,SDLK_TAB,SDLK_RETURN,SDLK_SPACE,SDLK_ESCAPE,SDLK_UP,SDLK_DOWN,SDLK_PAGEUP,SDLK_PAGEDOWN,SDLK_HOME,SDLK_END};
-    if(key<0 || key>=11)return 1;
-    e.type=kind==1?SDL_EVENT_KEY_DOWN:SDL_EVENT_KEY_UP;e.key.windowID=d->window_id;e.key.key=keys[key];
+    const SDL_Keycode keys[]={0,SDLK_TAB,SDLK_RETURN,SDLK_SPACE,SDLK_ESCAPE,SDLK_UP,SDLK_DOWN,SDLK_PAGEUP,SDLK_PAGEDOWN,SDLK_HOME,SDLK_END,SDLK_LEFT,SDLK_RIGHT,SDLK_BACKSPACE,SDLK_DELETE};
+    if(key<0 || (key>=15 && (key<1000 || key>=1128)))return 1;
+    e.type=kind==1?SDL_EVENT_KEY_DOWN:SDL_EVENT_KEY_UP;e.key.windowID=d->window_id;e.key.key=key>=1000 ? (SDL_Keycode)(key-1000):keys[key];
     e.key.mod=((mods&1)?SDL_KMOD_GUI:0)|((mods&2)?SDL_KMOD_SHIFT:0)|((mods&4)?SDL_KMOD_ALT:0)|((mods&8)?SDL_KMOD_CTRL:0);
   } else if(kind==3 || kind==4){
     e.type=kind==3?SDL_EVENT_MOUSE_BUTTON_DOWN:SDL_EVENT_MOUSE_BUTTON_UP;e.button.windowID=d->window_id;e.button.button=SDL_BUTTON_LEFT;e.button.clicks=1;e.button.x=x;e.button.y=y;
@@ -400,3 +416,29 @@ int sirin_desktop_gpu_batch(void **raw,int count,unsigned char *out) {
 #undef program_free
 
 #include "gpu_frames.c"
+
+const char *sirin_desktop_text(void *raw){Desktop *d=raw;return owner(d) ? d->text:NULL;}
+int sirin_desktop_text_input(void *raw,int mode,const double *area){
+ Desktop *d=raw;if(!owner(d))return 1;
+ if(mode==0)return SDL_StopTextInput(d->window) ? 0:1;
+ if(mode==2)return SDL_ClearComposition(d->window) ? 0:1;
+ if(!area || !isfinite(area[0]) || !isfinite(area[1]) || !isfinite(area[2]) || !isfinite(area[3]))return 1;
+ SDL_Rect rect={(int)floor(area[0]),(int)floor(area[1]),(int)fmax(1,ceil(area[2])),(int)fmax(1,ceil(area[3]))};
+ if(!SDL_SetTextInputArea(d->window,&rect,0))return 1;
+ return SDL_TextInputActive(d->window) || SDL_StartTextInput(d->window) ? 0:1;
+}
+int sirin_desktop_clipboard(void *raw,int write,char *text,int capacity){
+ Desktop *d=raw;if(!owner(d) || !text || capacity<1 || capacity>65537)return 1;
+ if(write)return SDL_SetClipboardText(text) ? 0:1;
+ char *value=SDL_GetClipboardText();if(!value)return 1;size_t length=strlen(value);
+ if(length>=(size_t)capacity){SDL_free(value);return 2;}memcpy(text,value,length+1);SDL_free(value);return 0;
+}
+int sirin_desktop_ax_begin(void *raw,int64_t revision){Desktop *d=raw;if(!owner(d))return 1;if(!d->accessibility)d->accessibility=sirin_ax_open(d->window,d->wake_type);return sirin_ax_begin(d->accessibility,revision);}
+int sirin_desktop_ax_field(void *raw,int64_t id,int kind,const char *label,const char *value,const char *help,int start,int length,int focused,int enabled,const double *bounds,const double *spans,int count){Desktop *d=raw;return owner(d) ? sirin_ax_field(d->accessibility,id,kind,label,value,help,start,length,focused,enabled,bounds,spans,count):1;}
+int sirin_desktop_ax_publish(void *raw){Desktop *d=raw;return owner(d) ? sirin_ax_publish(d->accessibility):1;}
+int sirin_desktop_ax_poll(void *raw,int64_t *facts,char *text,int capacity){Desktop *d=raw;return owner(d) && d->accessibility ? sirin_ax_poll(d->accessibility,facts,text,capacity):0;}
+int sirin_desktop_ime_control(void *raw,const char *text,int start,int length,int commit){Desktop *d=raw;if(!owner(d))return 1;fprintf(stderr,"nativeIME focus=%d active=%d\n",SDL_GetKeyboardFocus()==d->window,SDL_TextInputActive(d->window));if(SDL_GetKeyboardFocus()!=d->window || !SDL_TextInputActive(d->window))return 3;void *native=SDL_GetPointerProperty(SDL_GetWindowProperties(d->window),SDL_PROP_WINDOW_COCOA_WINDOW_POINTER,NULL);return sirin_editor_ime_control(native,text,start,length,commit);}
+
+int sirin_desktop_activate(void *raw){Desktop *d=raw;if(!owner(d))return 1;void *native=SDL_GetPointerProperty(SDL_GetWindowProperties(d->window),SDL_PROP_WINDOW_COCOA_WINDOW_POINTER,NULL);int result=sirin_editor_activate(native);SDL_RaiseWindow(d->window);SDL_PumpEvents();return result;}
+
+int sirin_desktop_keyboard_focus(void *raw){Desktop *d=raw;return owner(d) && SDL_GetKeyboardFocus()==d->window;}

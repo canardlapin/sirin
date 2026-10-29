@@ -1,0 +1,6 @@
+Combined runtime: 155990892 KiB free before build
+tar: Failed to set default locale
+    Updating crates.io index
+warning: failed to write cache, path: /Users/bbuchsbaum/.cargo/registry/index/index.crates.io-1949cf8c6b5b557f/.cache/ac/ce/accesskit, error: Operation not permitted (os error 1)
+error: cannot create the lock file /private/tmp/sirin-editor-20261029/native/sirin-native/Cargo.lock because --locked was passed to prevent this
+help: to generate the lock file without accessing the network, remove the --locked flag and use --offline instead.

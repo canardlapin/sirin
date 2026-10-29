@@ -1,0 +1,190 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-editor-20261029-build from plugins.sbt...
+[info] loading project definition from /private/tmp/sirin-editor-20261029/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/private/tmp/sirin-editor-20261029/)
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63785'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63787'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63789'.
+Test run sirin.graphics.PreparationSuite started
+Test run sirin.graphics.StrokePreparationSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63790'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63792'.
+Test run sirin.graphics.RoundedRectangleSuite started
+sirin.graphics.RoundedRectangleSuite: finished 0.006s
+Test run sirin.graphics.RoundedRectangleSuite finished: 0 failed, 0 ignored, 3 total 0.006s
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63794'.
+Test run sirin.graphics.PreparationCacheSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63795'.
+Test run sirin.graphics.ImageSuite started
+sirin.graphics.ImageSuite: finished 0.005s
+Test run sirin.graphics.ImageSuite finished: 0 failed, 0 ignored, 8 total 0.005s
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63797'.
+Test run sirin.graphics.StrokeBoundarySuite started
+Test run sirin.graphics.DrawingResourcesSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63800'.
+Test run sirin.graphics.ValuesSuite started
+sirin.graphics.ValuesSuite: finished 0.008s
+Test run sirin.graphics.ValuesSuite finished: 0 failed, 0 ignored, 7 total 0.008s
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63801'.
+sirin.graphics.DrawingResourcesSuite: finished 0.026s
+Test run sirin.graphics.DrawingResourcesSuite finished: 0 failed, 0 ignored, 6 total 0.026s
+Test run sirin.graphics.GeometrySuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '63803'.
+Test run sirin.graphics.TextDataSuite started
+sirin.graphics.GeometrySuite: finished 0.014s
+Test run sirin.graphics.GeometrySuite finished: 0 failed, 0 ignored, 6 total 0.014s
+Test run sirin.graphics.CurvedStrokeSuite started
+Test run sirin.graphics.DrawingSuite started
+sirin.graphics.DrawingSuite: finished 0.010s
+Test run sirin.graphics.DrawingSuite finished: 0 failed, 0 ignored, 10 total 0.010s
+sirin.graphics.StrokePreparationSuite: finished 0.176s
+Test run sirin.graphics.StrokePreparationSuite finished: 0 failed, 0 ignored, 7 total 0.176s
+sirin.graphics.TextDataSuite: finished 0.074s
+Test run sirin.graphics.TextDataSuite finished: 0 failed, 0 ignored, 4 total 0.074s
+sirin.graphics.PreparationSuite: finished 0.251s
+Test run sirin.graphics.PreparationSuite finished: 0 failed, 0 ignored, 8 total 0.251s
+preparationCancellation checks=251 work=250 elapsedNs=636958 completedEntries=0
+sirin.graphics.PreparationCacheSuite: finished 2.035s
+Test run sirin.graphics.PreparationCacheSuite finished: 0 failed, 0 ignored, 4 total 2.035s
+sirin.graphics.StrokeBoundarySuite: finished 2.306s
+Test run sirin.graphics.StrokeBoundarySuite finished: 0 failed, 0 ignored, 2 total 2.306s
+sirin.graphics.CurvedStrokeSuite: finished 3.241s
+Test run sirin.graphics.CurvedStrokeSuite finished: 0 failed, 0 ignored, 4 total 3.241s
+[info] Passed: Total 69, Failed 0, Errors 0, Passed 69
+[success] Total time: 4 s, completed Oct 29, 2026, 12:21:58 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '63812'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '63814'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '63816'.
+Test run sirin.TextApiSuite started
+Test run sirin.AuthoringValuesSuite started
+sirin.TextApiSuite: finished 0.003s
+Test run sirin.TextApiSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+sirin.AuthoringValuesSuite: finished 0.004s
+Test run sirin.AuthoringValuesSuite finished: 0 failed, 0 ignored, 4 total 0.004s
+[info] Starting process '/private/tmp/sirin-editor-20261029/core/.native/target/scala-3.7.4/sirin-core-test' on port '63817'.
+Test run sirin.HandleSuite started
+sirin.HandleSuite: finished 0.001s
+Test run sirin.HandleSuite finished: 0 failed, 0 ignored, 2 total 0.001s
+Test run sirin.ViewRebuildSuite started
+sirin.ViewRebuildSuite: finished 0.000s
+Test run sirin.ViewRebuildSuite finished: 0 failed, 0 ignored, 1 total 0.000s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 0 s, completed Oct 29, 2026, 12:21:58 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '63820'.
+Test run sirin.text.LayoutUnitsSuite started
+sirin.text.LayoutUnitsSuite: finished 0.003s
+Test run sirin.text.LayoutUnitsSuite finished: 0 failed, 0 ignored, 2 total 0.003s
+[info] Passed: Total 2, Failed 0, Errors 0, Passed 2
+[success] Total time: 0 s, completed Oct 29, 2026, 12:21:58 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '63824'.
+Test run sirin.drawing.RecordingCanvasSuite started
+sirin.drawing.RecordingCanvasSuite: finished 0.007s
+Test run sirin.drawing.RecordingCanvasSuite finished: 0 failed, 0 ignored, 6 total 0.007s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 0 s, completed Oct 29, 2026, 12:21:58 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63826'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63828'.
+Test run sirin.engine.EventDeadlineSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63829'.
+Test run sirin.engine.RetainedVirtualSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63831'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63833'.
+Test run sirin.engine.HostBoundarySuite started
+sirin.engine.HostBoundarySuite: finished 0.008s
+Test run sirin.engine.HostBoundarySuite finished: 0 failed, 0 ignored, 4 total 0.008s
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63834'.
+Test run sirin.engine.WorkCommandSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63836'.
+Test run sirin.engine.TransactionSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63838'.
+Test run sirin.engine.TopologyLifetimeSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '63840'.
+Test run sirin.engine.ReconciliationSuite started
+sirin.engine.TransactionSuite: finished 0.026s
+Test run sirin.engine.TransactionSuite finished: 0 failed, 0 ignored, 24 total 0.026s
+Test run sirin.engine.FocusSuite started
+Test run sirin.engine.ProgressWorkerSuite started
+sirin.engine.FocusSuite: finished 0.023s
+Test run sirin.engine.FocusSuite finished: 0 failed, 0 ignored, 1 total 0.023s
+sirin.engine.WorkCommandSuite: finished 0.075s
+Test run sirin.engine.WorkCommandSuite finished: 0 failed, 0 ignored, 22 total 0.075s
+sirin.engine.TopologyLifetimeSuite: finished 0.076s
+Test run sirin.engine.TopologyLifetimeSuite finished: 0 failed, 0 ignored, 28 total 0.076s
+sirin.engine.ProgressWorkerSuite: finished 0.048s
+Test run sirin.engine.ProgressWorkerSuite finished: 0 failed, 0 ignored, 20 total 0.048s
+sirin.engine.EventDeadlineSuite: finished 0.179s
+Test run sirin.engine.EventDeadlineSuite finished: 0 failed, 0 ignored, 22 total 0.179s
+sirin.engine.RetainedVirtualSuite: finished 0.151s
+Test run sirin.engine.RetainedVirtualSuite finished: 0 failed, 0 ignored, 25 total 0.151s
+sirin.engine.ReconciliationSuite: finished 0.107s
+Test run sirin.engine.ReconciliationSuite finished: 0 failed, 0 ignored, 29 total 0.107s
+[info] Passed: Total 175, Failed 0, Errors 0, Passed 175
+[success] Total time: 0 s, completed Oct 29, 2026, 12:21:59 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63844'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63846'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63848'.
+Test run sirin.testkit.ReferenceAgreementSuite startedTest run sirin.testkit.VirtualCollectionAgreementSuite started
+
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63849'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63851'.
+Test run sirin.testkit.WorkAgreementSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63853'.
+Test run sirin.testkit.ProgressAgreementSuite started
+Test run sirin.testkit.LifetimeAgreementSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63855'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '63856'.
+Test run sirin.testkit.EventDeadlineAgreementSuite started
+Test run sirin.testkit.LatestAgreementSuite started
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.LatestAgreementSuite: finished 1.820s
+Test run sirin.testkit.LatestAgreementSuite finished: 0 failed, 0 ignored, 3 total 1.820s
+sirin.testkit.ReferenceAgreementSuite: finished 5.671s
+Test run sirin.testkit.ReferenceAgreementSuite finished: 0 failed, 0 ignored, 1 total 5.671s
+sirin.testkit.EventDeadlineAgreementSuite: finished 6.157s
+Test run sirin.testkit.EventDeadlineAgreementSuite finished: 0 failed, 0 ignored, 1 total 6.157s
+sirin.testkit.WorkAgreementSuite: finished 6.475s
+Test run sirin.testkit.WorkAgreementSuite finished: 0 failed, 0 ignored, 17 total 6.475s
+sirin.testkit.VirtualCollectionAgreementSuite: finished 9.199s
+Test run sirin.testkit.VirtualCollectionAgreementSuite finished: 0 failed, 0 ignored, 1 total 9.199s
+sirin.testkit.ProgressAgreementSuite: finished 12.281s
+Test run sirin.testkit.ProgressAgreementSuite finished: 0 failed, 0 ignored, 3 total 12.281s
+sirin.testkit.ReconciliationAgreementSuite: finished 12.287s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 2 total 12.287s
+sirin.testkit.LifetimeAgreementSuite: finished 26.040s
+Test run sirin.testkit.LifetimeAgreementSuite finished: 0 failed, 0 ignored, 2 total 26.040s
+[info] Passed: Total 30, Failed 0, Errors 0, Passed 30
+[success] Total time: 26 s, completed Oct 29, 2026, 12:22:25 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '63904'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '63906'.
+Test run sirin.specimen.WorkbenchSuite started
+Test run sirin.specimen.StructuralWorkbenchSuite started
+sirin.specimen.StructuralWorkbenchSuite: finished 0.045s
+Test run sirin.specimen.StructuralWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.045s
+sirin.specimen.WorkbenchSuite: finished 0.184s
+Test run sirin.specimen.WorkbenchSuite finished: 0 failed, 0 ignored, 6 total 0.184s
+[info] Passed: Total 7, Failed 0, Errors 0, Passed 7
+[success] Total time: 0 s, completed Oct 29, 2026, 12:22:26 p.m.
+[info] Build skipped: No changes detected in build configuration and class path contents since last build.
+[info] Starting process '/private/tmp/sirin-editor-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '63908'.
+[info] Starting process '/private/tmp/sirin-editor-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '63910'.
+Test run sirin.host.HostSuite started
+[info] Starting process '/private/tmp/sirin-editor-20261029/host/.native/target/scala-3.7.4/sirin-host-test' on port '63911'.
+sirin.host.HostSuite: finished 0.015s
+Test run sirin.host.HostSuite finished: 0 failed, 0 ignored, 6 total 0.015s
+Test run sirin.host.InteractionSuite started
+sirin.host.InteractionSuite: finished 0.006s
+Test run sirin.host.InteractionSuite finished: 0 failed, 0 ignored, 9 total 0.006s
+Test run sirin.host.TextEditingSuite started
+sirin.host.TextEditingSuite: finished 0.008s
+Test run sirin.host.TextEditingSuite finished: 0 failed, 0 ignored, 10 total 0.008s
+[info] Passed: Total 25, Failed 0, Errors 0, Passed 25
+[success] Total time: 0 s, completed Oct 29, 2026, 12:22:26 p.m.

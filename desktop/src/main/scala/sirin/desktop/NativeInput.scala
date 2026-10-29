@@ -20,6 +20,10 @@ object NativeInput:
       case 8 => Some(Key.PageDown)
       case 9 => Some(Key.Home)
       case 10 => Some(Key.End)
+      case 11 => Some(Key.ArrowLeft)
+      case 12 => Some(Key.ArrowRight)
+      case 13 => Some(Key.Backspace)
+      case 14 => Some(Key.Delete)
       case k if k>=1000 && k<1128 => Some(Key.Character((k-1000).toChar))
       case _ => None
     event.kind() match
@@ -27,6 +31,9 @@ object NativeInput:
       case 2 => key.map(HostInput.KeyUp(_,mods))
       case 3 => Some(HostInput.Down(event.x(),event.y(),event.button()==1))
       case 4 => Some(HostInput.Up(event.x(),event.y(),event.button()==1))
+      case 5 => Some(HostInput.Move(event.x(),event.y(),event.button()==1))
+      case 10 => Some(HostInput.TextInput(event.text()))
+      case 11 => Some(HostInput.Composition(event.text(),event.key(),event.mods()))
       case 6 => Some(HostInput.Wheel(event.x(),event.y(),event.deltaY()))
       case 7 => Some(HostInput.Deactivate)
       case _ => None

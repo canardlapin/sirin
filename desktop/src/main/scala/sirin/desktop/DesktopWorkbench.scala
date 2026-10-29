@@ -13,6 +13,7 @@ object DesktopWorkbench:
     case CommitResult.Committed(value) => value
     case other => throw new IllegalStateException(s"$other")
   def main(args: Array[String]): Unit =
+    if args.headOption.contains("editor") then {EditorWorkbench.main(args.drop(1));return}
     if args.headOption.contains("canvas") then {CanvasWorkbench.main(args.drop(1));return}
     val mainEnteredAt=System.nanoTime()
     val root=Path.of(System.getProperty("sirin.repo", ".")).toAbsolutePath.normalize()

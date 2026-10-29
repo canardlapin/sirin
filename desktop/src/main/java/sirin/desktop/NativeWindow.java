@@ -27,6 +27,16 @@ public final class NativeWindow implements AutoCloseable {
     private static final MethodHandle DESTROY_DEVICE = bind("sirin_desktop_renderer_destroy",JAVA_INT,ADDRESS);
     private static final MethodHandle BATCH = bind("sirin_desktop_batch_start",JAVA_INT,ADDRESS,ADDRESS,ADDRESS,ADDRESS);
     private static final MethodHandle GPU = bind("sirin_desktop_frame_present",JAVA_INT,ADDRESS,ADDRESS);
+    private static final MethodHandle KEYBOARD_FOCUS = bind("sirin_desktop_keyboard_focus",JAVA_INT,ADDRESS);
+    private static final MethodHandle ACTIVATE = bind("sirin_desktop_activate",JAVA_INT,ADDRESS);
+    private static final MethodHandle TEXT = bind("sirin_desktop_text",ADDRESS,ADDRESS);
+    private static final MethodHandle TEXT_INPUT = bind("sirin_desktop_text_input",JAVA_INT,ADDRESS,JAVA_INT,ADDRESS);
+    private static final MethodHandle CLIPBOARD = bind("sirin_desktop_clipboard",JAVA_INT,ADDRESS,JAVA_INT,ADDRESS,JAVA_INT);
+    private static final MethodHandle AX_BEGIN = bind("sirin_desktop_ax_begin",JAVA_INT,ADDRESS,JAVA_LONG);
+    private static final MethodHandle AX_FIELD = bind("sirin_desktop_ax_field",JAVA_INT,ADDRESS,JAVA_LONG,JAVA_INT,ADDRESS,ADDRESS,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT,JAVA_INT,ADDRESS,ADDRESS,JAVA_INT);
+    private static final MethodHandle AX_PUBLISH = bind("sirin_desktop_ax_publish",JAVA_INT,ADDRESS);
+    private static final MethodHandle AX_POLL = bind("sirin_desktop_ax_poll",JAVA_INT,ADDRESS,ADDRESS,ADDRESS,JAVA_INT);
+    private static final MethodHandle IME_CONTROL = bind("sirin_desktop_ime_control",JAVA_INT,ADDRESS,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT);
     private static final MethodHandle LIVE = bind("sirin_desktop_live", JAVA_INT);
     private static final MethodHandle LATE = bind("sirin_desktop_late",JAVA_INT);
     private static final MethodHandle LATE_OBJECTS = bind("sirin_desktop_late_objects",JAVA_INT);
@@ -40,7 +50,7 @@ public final class NativeWindow implements AutoCloseable {
     private int windowId, wakeType;
     private volatile boolean closed;
     private Event initialEvent;
-    public record Event(boolean found, int flags, int width, int height, int logicalWidth, int logicalHeight, int kind, int key, int mods, int button, boolean repeat, double x, double y, double deltaX, double deltaY, long timestamp, long ticks) {
+    public record Event(boolean found, int flags, int width, int height, int logicalWidth, int logicalHeight, int kind, int key, int mods, int button, boolean repeat, double x, double y, double deltaX, double deltaY, long timestamp, long ticks, String text, int clicks) {
         public boolean quit() { return (flags & 1) != 0; }
         public boolean redraw() { return (flags & 2) != 0; }
         public boolean wakeup() { return (flags & 4) != 0; }
@@ -102,7 +112,7 @@ public final class NativeWindow implements AutoCloseable {
             windowId = facts.getAtIndex(JAVA_INT, 3); wakeType = facts.getAtIndex(JAVA_INT, 4);
             return new Event(found != 0, facts.getAtIndex(JAVA_INT, 0), facts.getAtIndex(JAVA_INT, 1), facts.getAtIndex(JAVA_INT, 2), facts.getAtIndex(JAVA_INT, 5), facts.getAtIndex(JAVA_INT, 6),
                 facts.getAtIndex(JAVA_INT,7),facts.getAtIndex(JAVA_INT,8),facts.getAtIndex(JAVA_INT,9),facts.getAtIndex(JAVA_INT,10),facts.getAtIndex(JAVA_INT,11)!=0,
-                position.getAtIndex(JAVA_DOUBLE,0),position.getAtIndex(JAVA_DOUBLE,1),position.getAtIndex(JAVA_DOUBLE,2),position.getAtIndex(JAVA_DOUBLE,3),times.getAtIndex(JAVA_LONG,0),times.getAtIndex(JAVA_LONG,1));
+                position.getAtIndex(JAVA_DOUBLE,0),position.getAtIndex(JAVA_DOUBLE,1),position.getAtIndex(JAVA_DOUBLE,2),position.getAtIndex(JAVA_DOUBLE,3),times.getAtIndex(JAVA_LONG,0),times.getAtIndex(JAVA_LONG,1),((MemorySegment)TEXT.invokeExact(handle)).reinterpret(65537).getString(0),facts.getAtIndex(JAVA_INT,12));
         } catch (Throwable e) { throw failure(e); }
     }
     /** May be called on a JVM worker. Serializes with close; never touches handle memory. */
@@ -180,6 +190,47 @@ public final class NativeWindow implements AutoCloseable {
             closed = true; arena.close();
         } catch (Throwable e) { throw failure(e); }
     }
+    private static void accepted(int status) {if(status!=0)throw new IllegalStateException("native editor transport refused: "+status);}
+    public boolean keyboardFocus(){checkOwner();try{return (int)KEYBOARD_FOCUS.invokeExact(handle)!=0;}catch(Throwable e){throw failure(e);}}
+    public void activate(){checkOwner();try{accepted((int)ACTIVATE.invokeExact(handle));}catch(Throwable e){throw failure(e);}}
+    public void textInput(int mode,double x,double y,double width,double height) {
+        checkOwner();try(Arena a=Arena.ofConfined()) {
+            MemorySegment rect=a.allocateFrom(JAVA_DOUBLE,x,y,width,height);
+            accepted((int)TEXT_INPUT.invokeExact(handle,mode,rect));
+        }catch(Throwable e){throw failure(e);}
+    }
+    public static final class ClipboardUnavailable extends RuntimeException {public ClipboardUnavailable(){super("Clipboard is unavailable");}}
+    public String clipboard() {
+        checkOwner();try(Arena a=Arena.ofConfined()) {
+            MemorySegment text=a.allocate(65537);int status=(int)CLIPBOARD.invokeExact(handle,0,text,65537);if(status==2)throw new IllegalArgumentException("clipboard budget");if(status!=0)throw new ClipboardUnavailable();return text.getString(0);
+        }catch(Throwable e){throw failure(e);}
+    }
+    public void clipboard(String value) {
+        checkOwner();if(value.indexOf('\0')>=0 || value.getBytes(java.nio.charset.StandardCharsets.UTF_8).length>65536)throw new IllegalArgumentException("clipboard budget/NUL");
+        try(Arena a=Arena.ofConfined()){if((int)CLIPBOARD.invokeExact(handle,1,a.allocateFrom(value),65537)!=0)throw new ClipboardUnavailable();}catch(Throwable e){throw failure(e);}
+    }
+    public void beginAccessibility(long revision) {checkOwner();try{accepted((int)AX_BEGIN.invokeExact(handle,revision));}catch(Throwable e){throw failure(e);}}
+    public void accessibilityField(long id,int kind,String label,String value,String help,int start,int length,boolean focused,boolean enabled,double[] bounds,double[] spans) {
+        checkOwner();if(bounds.length!=4 || spans.length%7!=0)throw new IllegalArgumentException("AX geometry");
+        try(Arena a=Arena.ofConfined()){
+            MemorySegment b=a.allocateFrom(JAVA_DOUBLE,bounds),g=a.allocateFrom(JAVA_DOUBLE,spans);
+            accepted((int)AX_FIELD.invokeExact(handle,id,kind,a.allocateFrom(label),a.allocateFrom(value),a.allocateFrom(help),start,length,focused?1:0,enabled?1:0,b,g,spans.length/7));
+        }catch(Throwable e){throw failure(e);}
+    }
+    public void publishAccessibility(){checkOwner();try{accepted((int)AX_PUBLISH.invokeExact(handle));}catch(Throwable e){throw failure(e);}}
+    /** Selection facts use an anchor and signed UTF-16 extent, preserving direction. */
+    public record AccessibilityAction(long revision,long target,int kind,int start,int length,String value){}
+    public AccessibilityAction pollAccessibility(){
+        checkOwner();try(Arena a=Arena.ofConfined()){
+            MemorySegment facts=a.allocate(JAVA_LONG,5),text=a.allocate(65537);
+            int result=(int)AX_POLL.invokeExact(handle,facts,text,65537);
+            if(result==-2){System.err.println("AccessKit request refused (invalid action, budget or wake failure)");return null;}
+            if(result<0)throw new IllegalStateException("AX action queue failure: "+result);if(result==0)return null;
+            return new AccessibilityAction(facts.getAtIndex(JAVA_LONG,0),facts.getAtIndex(JAVA_LONG,1),(int)facts.getAtIndex(JAVA_LONG,2),(int)facts.getAtIndex(JAVA_LONG,3),(int)facts.getAtIndex(JAVA_LONG,4),text.getString(0));
+        }catch(Throwable e){throw failure(e);}
+    }
+    /** Development control goes through Cocoa's actual NSTextInputClient. */
+    public void imeControl(String text,int start,int length,boolean commit){checkOwner();try(Arena a=Arena.ofConfined()){accepted((int)IME_CONTROL.invokeExact(handle,a.allocateFrom(text),start,length,commit?1:0));}catch(Throwable e){throw failure(e);}}
     /** Independent C compiler layout and by-value round trip; no native window needed. */
     public static void verifyAbi() {
         MethodHandle layout = bind("sirin_abi_layout", JAVA_LONG, JAVA_INT, ADDRESS);

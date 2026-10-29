@@ -2,7 +2,7 @@ package sirin.drawing
 
 import sirin as ui
 import sirin.graphics as g
-import sirin.text.{LayoutUnits, ResolvedTextLayout}
+import sirin.text.{LayoutUnits, ResolvedTextLayout, DocumentTextLayout}
 
 /** Synchronous core Canvas -> public graphics recording. By-name core scopes
   * share this lexical handle while their active graphics target is replaced.
@@ -35,11 +35,12 @@ final class RecordingCanvas private (initialTarget: g.Canvas2D, initialTheme: ui
     target.stroke(path, paint(color), g.StrokeStyle(width = width.toDouble))
   override def text(layout: ui.TextLayout, at: ui.Point, color: ui.Color): Unit =
     val target = current.target
-    val resolved = layout match
-      case result: ResolvedTextLayout => result
-      case _ => throw new IllegalArgumentException("recording requires a ResolvedTextLayout")
-    // Identity scope makes a multi-run text operation atomic on failure too.
-    target.transformed(g.Affine.identity)(child => resolved.record(child, at, color))
+    // Both adapters record the same retained paragraphs used for their geometry.
+    target.transformed(g.Affine.identity) { child => layout match
+      case result: ResolvedTextLayout => result.record(child,at,color)
+      case result: DocumentTextLayout => result.record(child,at,color)
+      case _ => throw new IllegalArgumentException("recording requires a retained text layout")
+    }
   override def text(content: String, at: ui.Point, style: ui.TextStyle, color: ui.Color): Unit =
     text(current.text.requireLayout(TextRequest(content, style)), at, color)
   override def withOpacity(alpha: Double)(body: => Unit): Unit =

@@ -33,7 +33,7 @@ object DevelopmentTheme extends Theme:
 trait RenderBackend extends OwnedRenderBackend[FrameRequest,FrameOutput]
 
 /** Long-lived native ownership stays entirely on its dedicated Scala-created thread. */
-final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,batch: Option[sirin.render.BatchGpu]=None) extends RenderBackend:
+final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,batch: Option[sirin.render.BatchGpu]=None,editorSystemFonts: Boolean=false) extends RenderBackend:
   require(tileEdge>=32 && tileEdge<=192,"tile edge budget")
   private val unicode=NativeUnicode.open()
   private val faces=scala.collection.mutable.Map.empty[TextStyle,Vector[NativeFont]]
@@ -62,6 +62,16 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
     try {bytes.foreach(data => opened+=NativeFont.open(data,size));opened.toVector}
     catch case e: Throwable => {opened.foreach(_.close());throw e}
   })
+  private val cjk=scala.collection.mutable.Map.empty[TextStyle,NativeFont]
+  private lazy val cjkData=FontData.copy(Files.readAllBytes(Path.of("/System/Library/Fonts/Supplemental/Arial Unicode.ttf")))
+  private def textFaces(style: TextStyle,text: String): Vector[NativeFont] =
+    val base=configured(style)
+    val needsCjk=editorSystemFonts && text.exists(c => (c>='\u3040' && c<='\u30ff') || (c>='\u3400' && c<='\u9fff'))
+    if !needsCjk then base else
+      val face=cjk.getOrElseUpdate(style,{
+        val f=NativeFont.open(cjkData,base.head.font.size);extraFaces(f.font)=f;f
+      })
+      base:+face
   private def raster(font: sirin.graphics.ResolvedFont,id: Int,scale: Double,budget: Int): sirin.graphics.GlyphRaster =
     val key=(font,id,scale)
     masks.remove(key) match
@@ -82,26 +92,28 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
     def check(): Unit = if cancelled() then throw new InterruptedException("obsolete frame")
     check()
     val payload=request.payload
-    val key=payload.copy(focus=None,keyboardFocus=false,pressed=None)
+    val key=if payload.editors.nonEmpty then payload else payload.copy(focus=None,keyboardFocus=false,pressed=None)
     var layoutNanos=0L;var drawingNanos=0L
     val (layout,target,charges,baseProfile)=previousBase match
       case Some((prior,layout,target)) if prior==key =>
         (layout,target,(0L,0L,0L),"reused=true")
       case _ =>
         previousBase=None
-        val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls) { text =>
+        val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls,payload.editors) { text =>
           check()
           layouts.remove(text) match
             case Some(value) => layouts(text)=value;value
             case None =>
-              val value=ResolvedTextLayout(NativeParagraph.wrap(text.content,configured(text.style),unicode,text.maxWidth.toDouble,ParagraphOptions()))
+              val value=if text.maxWidth.toDouble==Double.PositiveInfinity then
+                ResolvedTextLayout(NativeParagraph.layout(text.content,textFaces(text.style,text.content),unicode,ParagraphOptions()))
+              else ResolvedTextLayout(NativeParagraph.wrap(text.content,textFaces(text.style,text.content),unicode,text.maxWidth.toDouble,ParagraphOptions()))
               if layouts.size>=256 then layouts.remove(layouts.head._1)
               layouts(text)=value;shaped+=1;value
         }
         check()
         if layout.viewports.exists(v => !payload.viewports.get(v.instance).contains(v.viewport)) then return LayoutFeedback(request,layout)
         val layoutAt=System.nanoTime();layoutNanos=layoutAt-began
-        val drawing=layout.drawing(DevelopmentTheme)
+        val drawing=layout.drawing(DevelopmentTheme,fieldFocus=payload.focus)
         val target=gpu.target(payload.pixelWidth,payload.pixelHeight,1).copy(logicalToDevice=Affine.scale(
           payload.pixelWidth/payload.logicalWidth,payload.pixelHeight/payload.logicalHeight))
         val prepared=DrawingPreparation.prepare(drawing,target).fold(error => throw new IllegalStateException(error.toString),identity)
@@ -133,7 +145,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
     check()
     val control=new sirin.graphics.PreparationControl(cancelled=cancelled)
     val payload=request.payload
-    val baseKey=payload.copy(focus=None,keyboardFocus=false,pressed=None)
+    val baseKey=if payload.editors.nonEmpty then payload else payload.copy(focus=None,keyboardFocus=false,pressed=None)
     val before=batch.get.stats
     var prepared=0
     val (layout,drawing)=gpuDrawing match
@@ -144,12 +156,14 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
           case Some((prior,layout,base)) if prior==baseKey => (layout,base)
           case _ =>
             gpuBase=None
-            val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls) { text =>
+            val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls,payload.editors) { text =>
               check()
               layouts.remove(text) match
                 case Some(value) => layouts(text)=value;value
                 case None =>
-                  val value=ResolvedTextLayout(NativeParagraph.wrap(text.content,configured(text.style),unicode,text.maxWidth.toDouble,ParagraphOptions()))
+                  val value=if text.maxWidth.toDouble==Double.PositiveInfinity then
+                    ResolvedTextLayout(NativeParagraph.layout(text.content,textFaces(text.style,text.content),unicode,ParagraphOptions()))
+                  else ResolvedTextLayout(NativeParagraph.wrap(text.content,textFaces(text.style,text.content),unicode,text.maxWidth.toDouble,ParagraphOptions()))
                   if layouts.size>=256 then layouts.remove(layouts.head._1)
                   layouts(text)=value;shaped+=1;value
             }
@@ -157,7 +171,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
             if layout.viewports.exists(v => !payload.viewports.get(v.instance).contains(v.viewport)) then return LayoutFeedback(request,layout)
             val target=batch.get.target(payload.pixelWidth,payload.pixelHeight,1).copy(logicalToDevice=Affine.scale(
               payload.pixelWidth/payload.logicalWidth,payload.pixelHeight/payload.logicalHeight))
-            val base=preparation.prepare(layout.drawing(DevelopmentTheme),target,control=control).fold(e => throw new IllegalStateException(e.toString),identity)
+            val base=preparation.prepare(layout.drawing(DevelopmentTheme,fieldFocus=payload.focus),target,control=control).fold(e => throw new IllegalStateException(e.toString),identity)
             prepared+=1;gpuBase=Some((baseKey,layout,base));(layout,base)
         val overlay=preparation.prepare(layout.overlay(DevelopmentTheme,payload.focus,payload.keyboardFocus,payload.pressed),base.target,control=control)
           .fold(e => throw new IllegalStateException(e.toString),identity)
@@ -189,7 +203,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
         case None => try {tiles.close();composite.close()} finally gpu.close()
     finally
       faces.valuesIterator.flatten.foreach(_.close());extraFaces.values.foreach(_.close());unicode.close()
-      preparation.close();layouts.clear();masks.clear();faces.clear();extraFaces.clear();previousBase=None;gpuBase=None;gpuDrawing=None
+      preparation.close();layouts.clear();masks.clear();faces.clear();extraFaces.clear();cjk.clear();previousBase=None;gpuBase=None;gpuDrawing=None
 
 object FrameWorker:
   def render(request: FrameRequest,fontRoot: Path,captureRoot: Path)(using cancellation: Cancellation): FrameOutput =

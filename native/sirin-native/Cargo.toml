@@ -1,0 +1,23 @@
+[package]
+name = "sirin-native"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+icu_capi = { path = "../vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/ffi/capi", default-features = false, features = ["std", "compiled_data", "properties", "segmenter"] }
+icu_segmenter = { path = "../vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/segmenter", default-features = false, features = ["compiled_data", "unstable"] }
+unicode-bidi = { version = "=0.3.18", default-features = false }
+icu_properties = { path = "../vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/properties", default-features = false, features = ["compiled_data"] }
+
+wgpu-native = { path = "../vendor/sirin-sources/wgpu-native-29.0.1.1", default-features = false, features = ["metal", "wgsl"] }
+accesskit-c = { path = "../vendor/sirin-sources/accesskit-c-0.23.1" }
+
+[profile.release]
+opt-level = 2
+lto = "thin"
+codegen-units = 8
+panic = "abort"

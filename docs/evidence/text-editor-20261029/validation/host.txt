@@ -1,0 +1,9 @@
+ProductName:		macOS
+ProductVersion:		15.1.1
+BuildVersion:		24B91
+Darwin BUC-GW01.local 24.1.0 Darwin Kernel Version 24.1.0: Thu Oct 10 21:03:11 PDT 2024; root:xnu-11215.41.3~2/RELEASE_ARM64_T6020 arm64
+Apple clang version 16.0.0 (clang-1600.0.26.4)
+Target: arm64-apple-darwin24.1.0
+Thread model: posix
+InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+cargo 1.95.0 (f2d3ce0bd 2026-03-21)

@@ -8,10 +8,14 @@ enum HostInput:
   case Down(x: Double,y: Double,primary: Boolean=true)
   case Up(x: Double,y: Double,primary: Boolean=true)
   case Wheel(x: Double,y: Double,delta: Double)
+  case Move(x: Double,y: Double,primary: Boolean)
+  case TextInput(value: String)
+  case Composition(value: String,start: Int,length: Int)
   case Deactivate
 
 enum TargetKind:
   case Button(instance: Long)
+  case Editor(instance: Long)
   case Scroll(instance: Long,maximum: Double)
 final case class Target(id: NodeId,kind: TargetKind,bounds: Box,clip: Box,enabled: Boolean,
     directRefs: Vector[Long],ancestorRefs: Vector[Long],ancestors: Vector[NodeId]):
@@ -28,6 +32,8 @@ object InteractionSnapshot:
         case Content.Styled(_,_) => p.children.foreach(visit(_,direct,ancestors,parents:+p.node.id))
         case Content.Button(instance,_,enabled,_,_) =>
           targets+=Target(p.node.id,TargetKind.Button(instance),p.bounds,p.clip,enabled,direct,ancestors,parents)
+        case Content.Editable(instance,_,_,_,_,_) =>
+          targets+=Target(p.node.id,TargetKind.Editor(instance),p.bounds,p.clip,true,direct,ancestors,parents)
         case Content.Scroll(instance,_) =>
           val maximum=math.max(0,p.children.headOption.fold(0.0)(_.bounds.height)-p.bounds.height)
           targets+=Target(p.node.id,TargetKind.Scroll(instance,maximum),p.bounds,p.clip,true,direct,ancestors,parents)

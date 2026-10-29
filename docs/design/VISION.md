@@ -1719,3 +1719,29 @@ material now belongs to the downstream adapters.
   linked.
 
 These stay as probe questions.
+
+### Editable text implementation slice (owner-authorized2026-10-29)
+
+`TextField.bind` uses existing Cell/UiTxn and mounted control identity. The host
+owns bounded selection, provisional composition and undo state; render requests
+contain immutable snapshots only. Existing retained text layouts drive hit, caret,
+selection, visual navigation, IME placement and accessibility geometry. Native
+text input and AccessKit transport queue copied facts/actions without managed
+upcalls. AccessKit C 0.23.1 owns macOS platform objects through its SDL-window
+subclassing adapter; there is no Sirin implementation of NSAccessibilityElement.
+A native-owned immutable snapshot answers activation and supplies text-run
+children from retained grapheme geometry, with directional UTF-16 selection
+mapping. The shim converts logical retained bounds to physical pixels using the
+window backing scale for AccessKit; platform conversion remains AccessKit-owned. A
+grapheme exceeding AccessKit's 255-byte character-length representation keeps
+value/focus/set-value semantics but omits rich text ranges for that field.
+The desktop links one `sirin-native` Rust static library containing wgpu-native,
+ICU4X and AccessKit, with a checked-in combined dependency lockfile. Independent
+qualification probes retain their separate process/library boundaries.
+Value/selection/geometry snapshots publish together after successful presentation;
+stale actions revalidate identity and revision. Editor events preserve order while
+geometry is stale. External replacement cancels composition/history, and removal
+retires editor/native state. See `docs/plans/2026-10-29-text-editor.md` for bounded
+commands, composition lifecycle, native transport and concrete acceptance. This
+adds control behavior through the existing transaction/mount contracts; it does
+not change kernel scheduling, identity or lifetime semantics.

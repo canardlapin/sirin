@@ -1,0 +1,298 @@
+sirin-native v0.0.0 (/private/tmp/sirin-editor-20261029/native/sirin-native)
+├── accesskit-c v0.23.1 (/private/tmp/sirin-editor-20261029/native/vendor/sirin-sources/accesskit-c-0.23.1)
+│   ├── accesskit v0.25.2
+│   │   └── uuid v1.29.0
+│   └── accesskit_macos v0.27.2
+│       ├── accesskit v0.25.2 (*)
+│       ├── accesskit_consumer v0.39.2
+│       │   ├── accesskit v0.25.2 (*)
+│       │   └── hashbrown v0.17.1
+│       │       └── foldhash v0.2.0
+│       ├── hashbrown v0.17.1 (*)
+│       ├── objc2 v0.5.3
+│       │   ├── objc-sys v0.3.5
+│       │   └── objc2-encode v4.1.0
+│       ├── objc2-app-kit v0.2.2
+│       │   ├── bitflags v2.13.2
+│       │   ├── objc2 v0.5.3 (*)
+│       │   └── objc2-foundation v0.2.2
+│       │       ├── bitflags v2.13.2
+│       │       └── objc2 v0.5.3 (*)
+│       └── objc2-foundation v0.2.2 (*)
+├── icu_capi v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/ffi/capi)
+│   ├── diplomat v0.17.0 (proc-macro)
+│   │   ├── diplomat_core v0.17.0
+│   │   │   ├── proc-macro2 v1.0.107
+│   │   │   │   └── unicode-ident v1.0.27
+│   │   │   ├── quote v1.0.47
+│   │   │   │   └── proc-macro2 v1.0.107 (*)
+│   │   │   ├── serde v1.0.229
+│   │   │   │   ├── serde_core v1.0.229
+│   │   │   │   └── serde_derive v1.0.229 (proc-macro)
+│   │   │   │       ├── proc-macro2 v1.0.107 (*)
+│   │   │   │       ├── quote v1.0.47 (*)
+│   │   │   │       └── syn v3.0.9
+│   │   │   │           ├── proc-macro2 v1.0.107 (*)
+│   │   │   │           ├── quote v1.0.47 (*)
+│   │   │   │           └── unicode-ident v1.0.27
+│   │   │   ├── smallvec v1.16.4
+│   │   │   ├── strck v1.0.0
+│   │   │   │   └── unicode-ident v1.0.27
+│   │   │   └── syn v3.0.9 (*)
+│   │   ├── proc-macro2 v1.0.107 (*)
+│   │   ├── quote v1.0.47 (*)
+│   │   └── syn v3.0.9 (*)
+│   ├── diplomat-runtime v0.16.1
+│   ├── icu_collections v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/collections)
+│   │   ├── displaydoc v0.2.7 (proc-macro)
+│   │   │   ├── proc-macro2 v1.0.107 (*)
+│   │   │   ├── quote v1.0.47 (*)
+│   │   │   └── syn v3.0.9 (*)
+│   │   ├── potential_utf v0.1.6 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/potential_utf)
+│   │   │   ├── writeable v0.6.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/writeable)
+│   │   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec)
+│   │   │       ├── yoke v0.8.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/yoke)
+│   │   │       │   ├── stable_deref_trait v1.2.1
+│   │   │       │   ├── yoke-derive v0.8.4 (proc-macro) (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/yoke/derive)
+│   │   │       │   │   ├── proc-macro2 v1.0.107 (*)
+│   │   │       │   │   ├── quote v1.0.47 (*)
+│   │   │       │   │   ├── syn v3.0.9 (*)
+│   │   │       │   │   └── synstructure v0.14.0
+│   │   │       │   │       ├── proc-macro2 v1.0.107 (*)
+│   │   │       │   │       ├── quote v1.0.47 (*)
+│   │   │       │   │       └── syn v3.0.9 (*)
+│   │   │       │   └── zerofrom v0.1.8 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerofrom)
+│   │   │       │       └── zerofrom-derive v0.1.8 (proc-macro) (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerofrom/derive)
+│   │   │       │           ├── proc-macro2 v1.0.107 (*)
+│   │   │       │           ├── quote v1.0.47 (*)
+│   │   │       │           ├── syn v3.0.9 (*)
+│   │   │       │           └── synstructure v0.14.0 (*)
+│   │   │       ├── zerofrom v0.1.8 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerofrom) (*)
+│   │   │       └── zerovec-derive v0.11.7 (proc-macro) (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec/derive)
+│   │   │           ├── proc-macro2 v1.0.107 (*)
+│   │   │           ├── quote v1.0.47 (*)
+│   │   │           └── syn v3.0.9 (*)
+│   │   ├── utf8_iter v1.0.4
+│   │   ├── yoke v0.8.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/yoke) (*)
+│   │   ├── zerofrom v0.1.8 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerofrom) (*)
+│   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec) (*)
+│   ├── icu_locale_core v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/locale_core)
+│   │   ├── displaydoc v0.2.7 (proc-macro) (*)
+│   │   ├── litemap v0.8.3 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/litemap)
+│   │   ├── tinystr v0.8.5 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/tinystr)
+│   │   │   ├── displaydoc v0.2.7 (proc-macro) (*)
+│   │   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec) (*)
+│   │   ├── writeable v0.6.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/writeable)
+│   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec) (*)
+│   ├── icu_properties v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/properties)
+│   │   ├── displaydoc v0.2.7 (proc-macro) (*)
+│   │   ├── icu_collections v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/collections) (*)
+│   │   ├── icu_locale_core v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/locale_core) (*)
+│   │   ├── icu_properties_data v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/data/properties)
+│   │   ├── icu_provider v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/core)
+│   │   │   ├── displaydoc v0.2.7 (proc-macro) (*)
+│   │   │   ├── icu_locale_core v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/locale_core) (*)
+│   │   │   ├── stable_deref_trait v1.2.1
+│   │   │   ├── writeable v0.6.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/writeable)
+│   │   │   ├── yoke v0.8.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/yoke) (*)
+│   │   │   ├── zerofrom v0.1.8 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerofrom) (*)
+│   │   │   ├── zerotrie v0.2.5 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerotrie)
+│   │   │   │   ├── displaydoc v0.2.7 (proc-macro) (*)
+│   │   │   │   ├── yoke v0.8.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/yoke) (*)
+│   │   │   │   └── zerofrom v0.1.8 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerofrom) (*)
+│   │   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec) (*)
+│   │   ├── unicode-bidi v0.3.18
+│   │   ├── zerotrie v0.2.5 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerotrie) (*)
+│   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec) (*)
+│   ├── icu_provider v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/core) (*)
+│   ├── icu_provider_adapters v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/adapters)
+│   │   ├── icu_locale_fallback v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/locale_fallback)
+│   │   │   ├── icu_locale_core v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/locale_core) (*)
+│   │   │   ├── icu_locale_fallback_data v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/data/locale_fallback)
+│   │   │   ├── icu_provider v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/core) (*)
+│   │   │   ├── potential_utf v0.1.6 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/potential_utf) (*)
+│   │   │   ├── tinystr v0.8.5 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/tinystr) (*)
+│   │   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec) (*)
+│   │   └── icu_provider v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/core) (*)
+│   ├── icu_segmenter v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/segmenter)
+│   │   ├── core_maths v0.1.1
+│   │   │   └── libm v0.2.16
+│   │   ├── icu_collections v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/collections) (*)
+│   │   ├── icu_locale_fallback v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/locale_fallback) (*)
+│   │   ├── icu_provider v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/core) (*)
+│   │   ├── icu_segmenter_data v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/provider/data/segmenter)
+│   │   ├── potential_utf v0.1.6 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/potential_utf) (*)
+│   │   ├── smallvec v1.16.4
+│   │   ├── utf8_iter v1.0.4
+│   │   ├── zerotrie v0.2.5 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerotrie) (*)
+│   │   └── zerovec v0.11.9 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/zerovec) (*)
+│   ├── unicode-bidi v0.3.18
+│   └── writeable v0.6.4 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/utils/writeable)
+├── icu_properties v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/properties) (*)
+├── icu_segmenter v2.4.0 (/private/tmp/sirin-editor-20261029/native/vendor/unicode/icu4x-031d9e89f6a3fd26a14491e090729d46094328fd/components/segmenter) (*)
+├── unicode-bidi v0.3.18
+└── wgpu-native v0.0.0 (/private/tmp/sirin-editor-20261029/native/vendor/sirin-sources/wgpu-native-29.0.1.1)
+    ├── bitflags v2.13.2
+    ├── log v0.4.34
+    ├── parking_lot v0.12.5
+    │   ├── lock_api v0.4.14
+    │   │   └── scopeguard v1.2.0
+    │   └── parking_lot_core v0.9.12
+    │       ├── cfg-if v1.0.5
+    │       ├── libc v0.2.191
+    │       └── smallvec v1.16.4
+    ├── paste v1.0.15 (proc-macro)
+    ├── raw-window-handle v0.6.2
+    ├── smallvec v1.16.4
+    ├── thiserror v2.0.21
+    │   └── thiserror-impl v2.0.21 (proc-macro)
+    │       ├── proc-macro2 v1.0.107 (*)
+    │       ├── quote v1.0.47 (*)
+    │       └── syn v3.0.9 (*)
+    ├── wgpu-core v29.0.4
+    │   ├── arrayvec v0.7.8
+    │   ├── bit-set v0.9.1
+    │   │   └── bit-vec v0.9.1
+    │   ├── bit-vec v0.9.1
+    │   ├── bitflags v2.13.2
+    │   ├── bytemuck v1.25.2
+    │   │   └── bytemuck_derive v1.12.1 (proc-macro)
+    │   │       ├── proc-macro2 v1.0.107 (*)
+    │   │       ├── quote v1.0.47 (*)
+    │   │       └── syn v3.0.9 (*)
+    │   ├── document-features v0.2.12 (proc-macro)
+    │   │   └── litrs v1.0.1
+    │   ├── hashbrown v0.16.1
+    │   │   └── foldhash v0.2.0
+    │   ├── indexmap v2.14.2
+    │   │   ├── equivalent v1.0.3
+    │   │   └── hashbrown v0.17.1 (*)
+    │   ├── log v0.4.34
+    │   ├── naga v29.0.4
+    │   │   ├── arrayvec v0.7.8
+    │   │   ├── bit-set v0.9.1 (*)
+    │   │   ├── bitflags v2.13.2
+    │   │   ├── cfg-if v1.0.5
+    │   │   ├── codespan-reporting v0.13.1
+    │   │   │   └── unicode-width v0.2.3
+    │   │   ├── half v2.7.1
+    │   │   │   ├── cfg-if v1.0.5
+    │   │   │   ├── num-traits v0.2.19
+    │   │   │   │   └── libm v0.2.16
+    │   │   │   │   [build-dependencies]
+    │   │   │   │   └── autocfg v1.5.1
+    │   │   │   └── zerocopy v0.8.63
+    │   │   │       └── zerocopy-derive v0.8.63 (proc-macro)
+    │   │   │           ├── proc-macro2 v1.0.107 (*)
+    │   │   │           ├── quote v1.0.47 (*)
+    │   │   │           └── syn v2.0.119
+    │   │   │               ├── proc-macro2 v1.0.107 (*)
+    │   │   │               ├── quote v1.0.47 (*)
+    │   │   │               └── unicode-ident v1.0.27
+    │   │   ├── hashbrown v0.16.1 (*)
+    │   │   ├── hexf-parse v0.2.1
+    │   │   ├── indexmap v2.14.2 (*)
+    │   │   ├── libm v0.2.16
+    │   │   ├── log v0.4.34
+    │   │   ├── num-traits v0.2.19 (*)
+    │   │   ├── once_cell v1.21.4
+    │   │   ├── rustc-hash v1.1.0
+    │   │   ├── thiserror v2.0.21 (*)
+    │   │   └── unicode-ident v1.0.27
+    │   │   [build-dependencies]
+    │   │   └── cfg_aliases v0.2.2
+    │   ├── once_cell v1.21.4
+    │   ├── parking_lot v0.12.5 (*)
+    │   ├── profiling v1.0.18
+    │   ├── raw-window-handle v0.6.2
+    │   ├── rustc-hash v1.1.0
+    │   ├── smallvec v1.16.4
+    │   ├── thiserror v2.0.21 (*)
+    │   ├── wgpu-core-deps-apple v29.0.4
+    │   │   └── wgpu-hal v29.0.4
+    │   │       ├── arrayvec v0.7.8
+    │   │       ├── bitflags v2.13.2
+    │   │       ├── block2 v0.6.2
+    │   │       │   └── objc2 v0.6.5
+    │   │       │       └── objc2-encode v4.1.0
+    │   │       ├── bytemuck v1.25.2 (*)
+    │   │       ├── cfg-if v1.0.5
+    │   │       ├── hashbrown v0.16.1 (*)
+    │   │       ├── libc v0.2.191
+    │   │       ├── log v0.4.34
+    │   │       ├── naga v29.0.4 (*)
+    │   │       ├── objc2 v0.6.5 (*)
+    │   │       ├── objc2-core-foundation v0.3.2
+    │   │       │   ├── bitflags v2.13.2
+    │   │       │   └── objc2 v0.6.5 (*)
+    │   │       ├── objc2-foundation v0.3.2
+    │   │       │   ├── bitflags v2.13.2
+    │   │       │   ├── objc2 v0.6.5 (*)
+    │   │       │   └── objc2-core-foundation v0.3.2 (*)
+    │   │       ├── objc2-metal v0.3.2
+    │   │       │   ├── bitflags v2.13.2
+    │   │       │   ├── block2 v0.6.2 (*)
+    │   │       │   ├── objc2 v0.6.5 (*)
+    │   │       │   └── objc2-foundation v0.3.2 (*)
+    │   │       ├── objc2-quartz-core v0.3.2
+    │   │       │   ├── bitflags v2.13.2
+    │   │       │   ├── objc2 v0.6.5 (*)
+    │   │       │   ├── objc2-core-foundation v0.3.2 (*)
+    │   │       │   ├── objc2-foundation v0.3.2 (*)
+    │   │       │   └── objc2-metal v0.3.2 (*)
+    │   │       ├── parking_lot v0.12.5 (*)
+    │   │       ├── profiling v1.0.18
+    │   │       ├── raw-window-handle v0.6.2
+    │   │       ├── raw-window-metal v1.1.0
+    │   │       │   ├── objc2 v0.6.5 (*)
+    │   │       │   ├── objc2-core-foundation v0.3.2 (*)
+    │   │       │   ├── objc2-foundation v0.3.2 (*)
+    │   │       │   └── objc2-quartz-core v0.3.2 (*)
+    │   │       ├── smallvec v1.16.4
+    │   │       ├── thiserror v2.0.21 (*)
+    │   │       ├── wgpu-naga-bridge v29.0.4
+    │   │       │   ├── naga v29.0.4 (*)
+    │   │       │   └── wgpu-types v29.0.4
+    │   │       │       ├── bitflags v2.13.2
+    │   │       │       ├── bytemuck v1.25.2 (*)
+    │   │       │       ├── log v0.4.34
+    │   │       │       └── raw-window-handle v0.6.2
+    │   │       └── wgpu-types v29.0.4 (*)
+    │   │       [build-dependencies]
+    │   │       └── cfg_aliases v0.2.2
+    │   ├── wgpu-hal v29.0.4 (*)
+    │   ├── wgpu-naga-bridge v29.0.4 (*)
+    │   └── wgpu-types v29.0.4 (*)
+    │   [build-dependencies]
+    │   └── cfg_aliases v0.2.2
+    ├── wgpu-hal v29.0.4 (*)
+    └── wgpu-types v29.0.4 (*)
+    [build-dependencies]
+    └── bindgen v0.72.1
+        ├── bitflags v2.13.2
+        ├── cexpr v0.6.0
+        │   └── nom v7.1.3
+        │       ├── memchr v2.8.3
+        │       └── minimal-lexical v0.2.1
+        ├── clang-sys v1.9.1
+        │   ├── glob v0.3.4
+        │   ├── libc v0.2.191
+        │   └── libloading v0.8.9
+        │       └── cfg-if v1.0.5
+        │   [build-dependencies]
+        │   └── glob v0.3.4
+        ├── itertools v0.13.0
+        │   └── either v1.19.0
+        ├── log v0.4.34
+        ├── prettyplease v0.2.37
+        │   ├── proc-macro2 v1.0.107 (*)
+        │   └── syn v2.0.119 (*)
+        ├── proc-macro2 v1.0.107 (*)
+        ├── quote v1.0.47 (*)
+        ├── regex v1.13.1
+        │   ├── regex-automata v0.4.18
+        │   │   └── regex-syntax v0.8.11
+        │   └── regex-syntax v0.8.11
+        ├── rustc-hash v2.1.3
+        ├── shlex v1.3.0
+        └── syn v2.0.119 (*)
