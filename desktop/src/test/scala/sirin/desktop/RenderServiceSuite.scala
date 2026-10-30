@@ -63,3 +63,19 @@ class RenderServiceSuite extends munit.FunSuite:
     intercept[IllegalArgumentException](new RenderSession(Path.of("unused"),Path.of("unused"),0))
     assertEquals(sirin.render.OffscreenGpu.liveOwners,before)
   }
+
+  test("requestClose returns while backend retirement is pending and reports completion afterwards") {
+    val closing=new CountDownLatch(1);val release=new CountDownLatch(1)
+    val backend=new RenderBackend:
+      def stats="retirement-test"
+      def render(r: FrameRequest,cancelled: () => Boolean): FrameOutput=LayoutFeedback(r,layout)
+      def close(): Unit={closing.countDown();require(release.await(2,TimeUnit.SECONDS),"test release timed out")}
+    val service=new RenderService(Path.of("unused"),Path.of("unused"),() => (),Some(() => backend))
+    try
+      service.requestClose()
+      assert(closing.await(2,TimeUnit.SECONDS))
+      assert(!service.isRetired)
+      intercept[IllegalArgumentException](service.submit(request(1)))
+      release.countDown();assert(service.awaitStopped(2000));assert(service.isRetired)
+    finally {release.countDown();service.close()}
+  }

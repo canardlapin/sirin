@@ -5,6 +5,7 @@
 #include <time.h>
 #include <pthread.h>
 #include <math.h>
+#include "event_queue.h"
 
 static _Atomic int live_requests;
 static int fault_stage;
@@ -74,22 +75,71 @@ int sirin_ax_publish(void*);
 int sirin_ax_poll(void*,int64_t*,char*,int);
 int sirin_editor_ime_control(void*,const char*,int,int,int);
 int sirin_editor_activate(void*);
-typedef struct Desktop {
+#define SIRIN_MAX_WINDOWS 16
+typedef struct Desktop Desktop;
+typedef struct DesktopApp {
+  pthread_t owner; int explicit_owner, count, serial; uint32_t wake_type;
+  Desktop *windows[SIRIN_MAX_WINDOWS]; size_t queued_text;
+  uint64_t stale_events, refused_events;
+} DesktopApp;
+struct Desktop {
   SDL_Window *window; SDL_MetalView metal;
   WGPUInstance instance; WGPUSurface surface; WGPUAdapter adapter;
   WGPUDevice device; WGPUQueue queue; WGPURenderPipeline blit; WGPUTextureFormat format;
   uint32_t width, height, wake_type, window_id;
   pthread_t owner; int configured, copy_dst; void *batch;
   char text[65537]; void *accessibility;
-} Desktop;
-static _Atomic int live_windows;
+  DesktopApp *app; SirinEventQueue events;
+};
+static _Atomic int live_windows,live_apps;
+static DesktopApp *application;
+static int app_serial;
+static int app_owner(DesktopApp *app) {
+  return pthread_main_np() && app && app==application && pthread_equal(app->owner,pthread_self());
+}
+static DesktopApp *app_create(int explicit_owner,char *error) {
+  if(!pthread_main_np() || application || app_serial==INT32_MAX) {
+    snprintf(error,512,"application requires process main thread and no existing context");return NULL;
+  }
+  DesktopApp *app=calloc(1,sizeof(*app));
+  if(!app){snprintf(error,512,"application allocation failed");return NULL;}
+  if(!SDL_Init(SDL_INIT_VIDEO)){snprintf(error,512,"SDL initialization failed: %s",SDL_GetError());SDL_Quit();free(app);return NULL;}
+  app->wake_type=SDL_RegisterEvents(1);
+  if(!app->wake_type){snprintf(error,512,"SDL wake registration failed");SDL_Quit();free(app);return NULL;}
+  app->owner=pthread_self();app->explicit_owner=explicit_owner;app->serial=++app_serial;
+  application=app;live_apps=1;return app;
+}
+static void app_destroy(DesktopApp *app) {
+  SDL_Quit();application=NULL;live_apps=0;free(app);
+}
+int sirin_desktop_app_open(void **out,int32_t *info,char *error) {
+  *out=NULL;DesktopApp *app=app_create(1,error);if(!app)return 1;
+  info[0]=app->serial;info[1]=(int32_t)app->wake_type;*out=app;return 0;
+}
+int sirin_desktop_app_close(void *raw) {
+  DesktopApp *app=raw;if(!app_owner(app) || app->count || app->queued_text)return 1;
+  app_destroy(app);return 0;
+}
+int sirin_desktop_app_live(void) {return live_apps;}
+int sirin_desktop_app_wake(int serial,int wake_type) {
+  SDL_Event event;SDL_zero(event);event.type=(uint32_t)wake_type;event.user.code=serial;
+  return SDL_PushEvent(&event)?0:1;
+}
+int sirin_desktop_app_stats(void *raw,uint64_t *out) {
+  DesktopApp *app=raw;if(!app_owner(app))return 1;
+  out[0]=(uint64_t)app->count;out[1]=app->queued_text;out[2]=app->stale_events;out[3]=app->refused_events;return 0;
+}
 int sirin_desktop_fault(int stage) {
-  if (!pthread_main_np() || live_windows || stage<0 || stage>10) return 1;
+  if (!pthread_main_np() || live_requests || (live_windows && (!application || !application->explicit_owner)) || stage<0 || stage>10) return 1;
   fault_stage=stage;return 0;
 }
 int sirin_desktop_live(void) { return live_windows; }
 int sirin_desktop_first_thread(void) { return pthread_main_np(); }
-static int owner(Desktop *d) { return d && pthread_equal(d->owner, pthread_self()) && pthread_main_np(); }
+static int owner(Desktop *d) {
+  if(!pthread_main_np() || !d || !app_owner(application))return 0;
+  for(int i=0;i<SIRIN_MAX_WINDOWS;i++)if(application->windows[i]==d)return 1;
+  return 0;
+}
 static void destroy(Desktop *d) {
   if(d->accessibility){sirin_ax_close(d->accessibility);d->accessibility=NULL;}
   // Drain late callbacks after caller ownership was relinquished, while instance lives.
@@ -112,7 +162,11 @@ static void destroy(Desktop *d) {
   if (d->instance) wgpuInstanceRelease(d->instance);
   if (d->metal) SDL_Metal_DestroyView(d->metal);
   if (d->window) SDL_DestroyWindow(d->window);
-  free(d); SDL_Quit(); live_windows = 0;
+  DesktopApp *app=d->app;
+  sirin_fact_clear(&d->events,&app->queued_text);
+  for(int i=0;i<SIRIN_MAX_WINDOWS;i++)if(app->windows[i]==d)app->windows[i]=NULL;
+  app->count--;live_windows--;free(d);
+  if(!app->explicit_owner && !app->count)app_destroy(app);
 }
 // Development framebuffer policy: <=1280x800 physical pixels, including DPI changes.
 static void constrain_window(Desktop *d) {
@@ -126,13 +180,15 @@ static void constrain_window(Desktop *d) {
 }
 int sirin_desktop_open(const char *title, int width, int height, void **out, char *error) {
   *out = NULL;
-  if (!pthread_main_np() || live_windows || width <= 0 || height <= 0) {
-    snprintf(error,512,"open requires process main thread, one window and positive dimensions"); return 1;
+  if (!pthread_main_np() || width <= 0 || height <= 0 || (application && application->count>=SIRIN_MAX_WINDOWS)) {
+    snprintf(error,512,"open requires process main thread, positive dimensions and at most 16 windows"); return 1;
   }
+  DesktopApp *app=application?application:app_create(0,error);if(!app)return 2;
   Desktop *d = calloc(1, sizeof(*d));
-  if (!d) { snprintf(error,512,"allocation failed");return 2; }
-  d->owner = pthread_self(); live_windows = 1;
-  if (!SDL_Init(SDL_INIT_VIDEO)) goto fail;
+  if (!d) { snprintf(error,512,"allocation failed");if(!app->explicit_owner && !app->count)app_destroy(app);return 2; }
+  d->owner = pthread_self();d->app=app;
+  for(int i=0;i<SIRIN_MAX_WINDOWS;i++)if(!app->windows[i]){app->windows[i]=d;break;}
+  app->count++;live_windows++;
   if (fault_stage==1) goto fail;
   d->window = SDL_CreateWindow(title,width,height,SDL_WINDOW_RESIZABLE|SDL_WINDOW_HIGH_PIXEL_DENSITY|SDL_WINDOW_METAL);
   if (!d->window) goto fail;
@@ -173,7 +229,7 @@ int sirin_desktop_open(const char *title, int width, int height, void **out, cha
   wgpuSurfaceCapabilitiesFreeMembers(caps);
   if (!d->format) goto fail;
   d->window_id = SDL_GetWindowID(d->window);
-  d->wake_type = SDL_RegisterEvents(1); if (d->wake_type == 0) goto fail;
+  d->wake_type = app->wake_type;
   *out = d; return 0;
 fail:
   snprintf(error,512,"native open failed: %s",SDL_GetError());destroy(d);return 3;
@@ -196,35 +252,104 @@ static int logical_key(SDL_Keycode key) {
 static int modifiers(SDL_Keymod mods) {
   return ((mods&SDL_KMOD_GUI)?1:0)|((mods&SDL_KMOD_SHIFT)?2:0)|((mods&SDL_KMOD_ALT)?4:0)|((mods&SDL_KMOD_CTRL)?8:0);
 }
-int sirin_desktop_wait(void *raw, int timeout, int32_t *out,double *position,uint64_t *times) {
-  Desktop *d=raw;if(!owner(d)||timeout < -1)return -1;
-  memset(out,0,14*sizeof(*out));memset(position,0,4*sizeof(*position));times[0]=0;
-  d->text[0]=0;
-  SDL_Event e;int found=SDL_WaitEventTimeout(&e,timeout);int flags=0;
-  if(found){
-    times[0]=e.common.timestamp;
-    if(e.type==SDL_EVENT_QUIT || (e.type==SDL_EVENT_WINDOW_CLOSE_REQUESTED && e.window.windowID==d->window_id))flags|=1;
-    if((e.type==SDL_EVENT_WINDOW_FOCUS_GAINED || e.type==SDL_EVENT_WINDOW_EXPOSED || e.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || e.type==SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED) && e.window.windowID==d->window_id)flags|=2;
-    if(e.type==d->wake_type && e.user.windowID==d->window_id)flags|=4;
-    if((e.type==SDL_EVENT_KEY_DOWN || e.type==SDL_EVENT_KEY_UP) && e.key.windowID==d->window_id){
-      out[7]=e.type==SDL_EVENT_KEY_DOWN?1:2;out[8]=logical_key(e.key.key);out[9]=modifiers(e.key.mod);out[11]=e.key.repeat;
+static int enqueue_fact(Desktop *d,const SirinFact *fact,const char *text) {
+  int status=sirin_fact_push(&d->events,fact,text,&d->app->queued_text);
+  if(status)d->app->refused_events++;
+  return status?-2:0;
+}
+/* One global SDL pump. All managed clients subsequently poll their own FIFO. */
+int sirin_desktop_app_wait(void *raw,int timeout,int32_t *out) {
+  DesktopApp *app=raw;if(!app_owner(app) || timeout < -1)return -1;
+  memset(out,0,3*sizeof(*out));SDL_Event e;
+  if(!SDL_WaitEventTimeout(&e,timeout))return 0;
+  if(e.type==SDL_EVENT_QUIT) {
+    out[0]=1;
+    if(!app->explicit_owner)for(int i=0;i<SIRIN_MAX_WINDOWS;i++)if(app->windows[i]) {
+      SirinFact fact={0};fact.values[0]=1;fact.timestamp=e.common.timestamp;
+      if(enqueue_fact(app->windows[i],&fact,NULL))return -2;
     }
-    if((e.type==SDL_EVENT_MOUSE_BUTTON_DOWN || e.type==SDL_EVENT_MOUSE_BUTTON_UP) && e.button.windowID==d->window_id){
-      out[7]=e.type==SDL_EVENT_MOUSE_BUTTON_DOWN?3:4;out[10]=e.button.button;out[12]=e.button.clicks;position[0]=e.button.x;position[1]=e.button.y;
-    }
-    if(e.type==SDL_EVENT_MOUSE_WHEEL && e.wheel.windowID==d->window_id){
-      out[7]=6;position[0]=e.wheel.mouse_x;position[1]=e.wheel.mouse_y;
-      double sign=e.wheel.direction==SDL_MOUSEWHEEL_FLIPPED?-1:1;position[2]=sign*e.wheel.x;position[3]=sign*e.wheel.y;
-    }
-    if(e.type==SDL_EVENT_MOUSE_MOTION && e.motion.windowID==d->window_id){out[7]=5;out[10]=(e.motion.state&SDL_BUTTON_LMASK)?1:0;position[0]=e.motion.x;position[1]=e.motion.y;out[9]=modifiers(SDL_GetModState());}
-    if(e.type==SDL_EVENT_TEXT_INPUT && e.text.windowID==d->window_id){if(strlen(e.text.text)>65536)return -2;strcpy(d->text,e.text.text);out[7]=10;}
-    if(e.type==SDL_EVENT_TEXT_EDITING && e.edit.windowID==d->window_id){if(strlen(e.edit.text)>65536)return -2;strcpy(d->text,e.edit.text);out[7]=11;out[8]=e.edit.start;out[9]=e.edit.length;}
-    if(e.type==SDL_EVENT_MOUSE_BUTTON_DOWN || e.type==SDL_EVENT_MOUSE_BUTTON_UP)out[9]=modifiers(SDL_GetModState());
-    if(e.type==SDL_EVENT_WINDOW_FOCUS_LOST && e.window.windowID==d->window_id)out[7]=7;
+    return 1;
   }
+  if(e.type==app->wake_type && !e.user.windowID) {
+    if(e.user.code==app->serial)out[1]=1;else app->stale_events++;
+    return 1;
+  }
+  uint32_t id=0;
+  if(e.type==app->wake_type)id=e.user.windowID;
+  else if(e.type>=SDL_EVENT_WINDOW_FIRST && e.type<=SDL_EVENT_WINDOW_LAST)id=e.window.windowID;
+  else if(e.type==SDL_EVENT_KEY_DOWN || e.type==SDL_EVENT_KEY_UP)id=e.key.windowID;
+  else if(e.type==SDL_EVENT_MOUSE_BUTTON_DOWN || e.type==SDL_EVENT_MOUSE_BUTTON_UP)id=e.button.windowID;
+  else if(e.type==SDL_EVENT_MOUSE_MOTION)id=e.motion.windowID;
+  else if(e.type==SDL_EVENT_MOUSE_WHEEL)id=e.wheel.windowID;
+  else if(e.type==SDL_EVENT_TEXT_INPUT)id=e.text.windowID;
+  else if(e.type==SDL_EVENT_TEXT_EDITING)id=e.edit.windowID;
+  else return 1;
+  Desktop *d=NULL;
+  for(int i=0;i<SIRIN_MAX_WINDOWS;i++)if(app->windows[i] && app->windows[i]->window_id==id){d=app->windows[i];break;}
+  if(!d){app->stale_events++;return 1;}
+  out[2]=(int32_t)id;SirinFact fact={0};fact.timestamp=e.common.timestamp;const char *text=NULL;
+  if(e.type==SDL_EVENT_WINDOW_CLOSE_REQUESTED)fact.values[0]|=1;
+  if(e.type==SDL_EVENT_WINDOW_FOCUS_GAINED || e.type==SDL_EVENT_WINDOW_EXPOSED || e.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || e.type==SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED)fact.values[0]|=2;
+  if(e.type==app->wake_type)fact.values[0]|=4;
+  if(e.type==SDL_EVENT_KEY_DOWN || e.type==SDL_EVENT_KEY_UP){
+    fact.values[7]=e.type==SDL_EVENT_KEY_DOWN?1:2;fact.values[8]=logical_key(e.key.key);fact.values[9]=modifiers(e.key.mod);fact.values[11]=e.key.repeat;
+  }
+  if(e.type==SDL_EVENT_MOUSE_BUTTON_DOWN || e.type==SDL_EVENT_MOUSE_BUTTON_UP){
+    fact.values[7]=e.type==SDL_EVENT_MOUSE_BUTTON_DOWN?3:4;fact.values[10]=e.button.button;fact.values[12]=e.button.clicks;
+    fact.values[9]=modifiers(SDL_GetModState());fact.position[0]=e.button.x;fact.position[1]=e.button.y;
+  }
+  if(e.type==SDL_EVENT_MOUSE_WHEEL){
+    fact.values[7]=6;fact.position[0]=e.wheel.mouse_x;fact.position[1]=e.wheel.mouse_y;
+    double sign=e.wheel.direction==SDL_MOUSEWHEEL_FLIPPED?-1:1;fact.position[2]=sign*e.wheel.x;fact.position[3]=sign*e.wheel.y;
+  }
+  if(e.type==SDL_EVENT_MOUSE_MOTION){fact.values[7]=5;fact.values[10]=(e.motion.state&SDL_BUTTON_LMASK)?1:0;fact.position[0]=e.motion.x;fact.position[1]=e.motion.y;fact.values[9]=modifiers(SDL_GetModState());}
+  if(e.type==SDL_EVENT_TEXT_INPUT){text=e.text.text;fact.values[7]=10;}
+  if(e.type==SDL_EVENT_TEXT_EDITING){text=e.edit.text;fact.values[7]=11;fact.values[8]=e.edit.start;fact.values[9]=e.edit.length;}
+  if(e.type==SDL_EVENT_WINDOW_FOCUS_GAINED)fact.values[0]|=8;
+  if(e.type==SDL_EVENT_WINDOW_FOCUS_LOST){fact.values[0]|=16;fact.values[7]=7;}
+  return enqueue_fact(d,&fact,text)?-2:1;
+}
+static void geometry(Desktop *d,int32_t *out,uint64_t *times) {
   constrain_window(d);
-  out[0]=flags;SDL_GetWindowSizeInPixels(d->window,&out[1],&out[2]);out[3]=d->window_id;out[4]=d->wake_type;
-  SDL_GetWindowSize(d->window,&out[5],&out[6]);times[1]=SDL_GetTicksNS();return found;
+  SDL_GetWindowSizeInPixels(d->window,&out[1],&out[2]);out[3]=d->window_id;out[4]=d->wake_type;
+  SDL_GetWindowSize(d->window,&out[5],&out[6]);times[1]=SDL_GetTicksNS();
+}
+int sirin_desktop_geometry(void *raw,int32_t *out,double *position,uint64_t *times) {
+  Desktop *d=raw;if(!owner(d))return -1;
+  memset(out,0,14*sizeof(*out));memset(position,0,4*sizeof(*position));times[0]=0;d->text[0]=0;
+  geometry(d,out,times);return 0;
+}
+int sirin_desktop_poll(void *raw,int32_t *out,double *position,uint64_t *times) {
+  Desktop *d=raw;if(!owner(d))return -1;
+  memset(out,0,14*sizeof(*out));memset(position,0,4*sizeof(*position));times[0]=0;d->text[0]=0;
+  SirinFact fact={0};int found=sirin_fact_pop(&d->events,&fact);
+  if(found){memcpy(out,fact.values,sizeof(fact.values));memcpy(position,fact.position,sizeof(fact.position));times[0]=fact.timestamp;
+    if(fact.text)memcpy(d->text,fact.text,fact.text_bytes);
+    sirin_fact_release(&fact,&d->app->queued_text);
+  }
+  geometry(d,out,times);return found;
+}
+int sirin_desktop_wait(void *raw,int timeout,int32_t *out,double *position,uint64_t *times) {
+  Desktop *d=raw;if(!owner(d) || timeout < -1)return -1;
+  if(d->events.count)return sirin_desktop_poll(raw,out,position,times);
+  int32_t app_fact[3];int status=sirin_desktop_app_wait(d->app,timeout,app_fact);
+  if(status<0)return status;
+  return sirin_desktop_poll(raw,out,position,times);
+}
+int sirin_desktop_hide(void *raw) {
+  Desktop *d=raw;return owner(d) && SDL_HideWindow(d->window)?0:1;
+}
+int sirin_desktop_title_get(void *raw,char *out,int capacity) {
+  Desktop *d=raw;if(!owner(d) || capacity<=0)return 1;
+  const char *title=SDL_GetWindowTitle(d->window);size_t n=strlen(title);
+  if(n>=(size_t)capacity)return 2;memcpy(out,title,n+1);return 0;
+}
+int sirin_desktop_app_request_quit(void *raw) {
+  if(!app_owner(raw))return 1;
+  SDL_Event event;SDL_zero(event);event.type=SDL_EVENT_QUIT;return SDL_PushEvent(&event)?0:1;
+}
+int sirin_desktop_title(void *raw,const char *title) {
+  Desktop *d=raw;return owner(d) && title && SDL_SetWindowTitle(d->window,title)?0:1;
 }
 // Development/test injection enters the same SDL event queue and decoding path.
 int sirin_desktop_inject(void *raw,int kind,int key,int mods,double x,double y,double delta) {

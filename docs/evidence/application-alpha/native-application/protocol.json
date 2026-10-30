@@ -1,0 +1,44 @@
+{
+  "commands": [
+    [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM",
+      "testNative",
+      "examples/compile"
+    ],
+    [
+      "sbt",
+      "--java-home",
+      "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+      "-J-XX:ActiveProcessorCount=4",
+      "desktopJVM/test",
+      "desktopJVM/desktopApplicationPackage"
+    ]
+  ],
+  "start_utc": "2026-10-30T01:49:53.395769+00:00",
+  "base_commit": "b320e8ad0cb7adede984bf437213595e68c587ab",
+  "source_hashes": {
+    "build.sbt": "1d64415e285e0c3fc8d3663545fb7d966cae017c96d376e3a7cb76fa27add136",
+    "core/src/main/scala/sirin/App.scala": "13d6b8d5684050b5d0428a89802c389f3bc6419cf1d5bf0ecbf1de7443161c1a",
+    "desktop/native/sirin_desktop.c": "21d12249ef6854eb2aca8d94c1cc57041a3e92da4505a1c38cbf52fa8133e19c",
+    "desktop/src/main/java/sirin/desktop/NativeWindow.java": "eaed9892c7fd29161a948506b8aef1017af82f3a629544f74daf05446235a2ba",
+    "desktop/src/main/scala/sirin/desktop/EditorAccessibility.scala": "d3432b2490d874a2447d736c3659e356c456fad292ca875421f4440a813d5653",
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "6a3abc0fbedffaac850c4ecc685188b2b0f9835557e20968d9409067f6b03bee",
+    "desktop/src/main/scala/sirin/desktop/FrameWorker.scala": "03ea5d36a61894a38209f228c127227da7615b98d1ebed3adf38138b6e86ec8b",
+    "desktop/src/test/scala/sirin/desktop/RenderServiceSuite.scala": "9987206e229bbbaca1c4830207f1fb93c3402616ce05f83f4acc4f298e19c705",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "33e7d869d2a19197acadeb8f59ba3575a1b42d71ccc3f236df3050730d519def",
+    "core/src/test/scala/sirin/ApplicationPlatformSuite.scala": "5df0ed7dab41610ea54ccd1df6649563a8edd5080228c33364725645c10601d7",
+    "desktop/native/event_queue.h": "2d997b8f6a09f16fb5036feccdba97e0bdcc2f79dc199cfe7e9270d05081576b",
+    "desktop/native/tests/event_queue_test.c": "0bf4a4a9b4c521d5bae1d8622e85abdd00203d96052a6625ea3a4aeed249c177",
+    "desktop/src/main/java/sirin/desktop/NativeApplication.java": "fa9e7ef7f811adb3df9489dd23a48e6b4010d56e1a913e46f9eae7d0dd249a5b",
+    "desktop/src/main/resources/META-INF/services/sirin.ApplicationPlatform": "dff01a7f1aec67fc2325385e6a2dcda8593c15133548e328475bd23f2cfa247e",
+    "desktop/src/main/scala/sirin/desktop/ApplicationHostProbe.scala": "d5deafa8158872fcfedaba1d505137938cf092955e71df0f777a0695ddd5e0aa",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "97991ab7eabebaaf148ec15f198542326f4238f461077f1ca8988673fb189746",
+    "desktop/src/test/scala/sirin/desktop/NativeApplicationSuite.scala": "4a94fac49a2086c6e59eb85960f156996b9df32cbf594b7c3420791aa42d5aaa",
+    "docs/design/decisions/2026-10-30-native-application.md": "9c3162b53aa3ebccca9f0f2bb1a4b5926cc0f32ed1b9acd0c64d274f0cfb1c0e",
+    "host/src/main/scala/sirin/host/WindowCapture.scala": "706259d9f645469dec9a4bf06e2840528c8108cc9a98dafb952f9e4868b0327a",
+    "host/src/test/scala/sirin/host/WindowCaptureSuite.scala": "f8f024045c1c7a75b0c27aedfd45f3ade924ad6ec322771ef91ee4ef89fb0985"
+  },
+  "results": []
+}

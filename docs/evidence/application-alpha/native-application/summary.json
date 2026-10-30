@@ -1,0 +1,56 @@
+{
+  "recorded_utc": "2026-10-30T02:11:03.716788+00:00",
+  "base_commit": "b320e8ad0cb7adede984bf437213595e68c587ab",
+  "cases": {
+    "JVM": 351,
+    "Native": 351,
+    "desktop": 54
+  },
+  "affected_successor_cases": 8,
+  "changed_after_full_check": [
+    "build.sbt",
+    "desktop/src/main/scala/sirin/desktop/ApplicationHostProbe.scala"
+  ],
+  "current_source_hashes": {
+    ".github/workflows/ci.yml": "d25ad8bf0fbc23a28fb2e83dfde0fd892b48b879cf001dcc4fd05f21f48083c4",
+    "build.sbt": "f51ba4fe24309cfa581f943126552eaf35e6cf7090e4f154e95771cecdda9ef9",
+    "core/src/main/scala/sirin/App.scala": "13d6b8d5684050b5d0428a89802c389f3bc6419cf1d5bf0ecbf1de7443161c1a",
+    "core/src/test/scala/sirin/ApplicationPlatformSuite.scala": "5df0ed7dab41610ea54ccd1df6649563a8edd5080228c33364725645c10601d7",
+    "desktop/native/event_queue.h": "2d997b8f6a09f16fb5036feccdba97e0bdcc2f79dc199cfe7e9270d05081576b",
+    "desktop/native/sirin_desktop.c": "21d12249ef6854eb2aca8d94c1cc57041a3e92da4505a1c38cbf52fa8133e19c",
+    "desktop/native/tests/event_queue_test.c": "0bf4a4a9b4c521d5bae1d8622e85abdd00203d96052a6625ea3a4aeed249c177",
+    "desktop/src/main/java/sirin/desktop/NativeApplication.java": "fa9e7ef7f811adb3df9489dd23a48e6b4010d56e1a913e46f9eae7d0dd249a5b",
+    "desktop/src/main/java/sirin/desktop/NativeWindow.java": "eaed9892c7fd29161a948506b8aef1017af82f3a629544f74daf05446235a2ba",
+    "desktop/src/main/resources/META-INF/services/sirin.ApplicationPlatform": "dff01a7f1aec67fc2325385e6a2dcda8593c15133548e328475bd23f2cfa247e",
+    "desktop/src/main/scala/sirin/desktop/ApplicationHostProbe.scala": "19f9abc39af76c4cb97ad4e7ffa6d00d472cb04b2a659e398553c300fe334e78",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "97991ab7eabebaaf148ec15f198542326f4238f461077f1ca8988673fb189746",
+    "desktop/src/main/scala/sirin/desktop/EditorAccessibility.scala": "d3432b2490d874a2447d736c3659e356c456fad292ca875421f4440a813d5653",
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "6a3abc0fbedffaac850c4ecc685188b2b0f9835557e20968d9409067f6b03bee",
+    "desktop/src/main/scala/sirin/desktop/FrameWorker.scala": "03ea5d36a61894a38209f228c127227da7615b98d1ebed3adf38138b6e86ec8b",
+    "desktop/src/test/scala/sirin/desktop/NativeApplicationSuite.scala": "4a94fac49a2086c6e59eb85960f156996b9df32cbf594b7c3420791aa42d5aaa",
+    "desktop/src/test/scala/sirin/desktop/RenderServiceSuite.scala": "9987206e229bbbaca1c4830207f1fb93c3402616ce05f83f4acc4f298e19c705",
+    "docs/design/decisions/2026-10-30-native-application.md": "9c3162b53aa3ebccca9f0f2bb1a4b5926cc0f32ed1b9acd0c64d274f0cfb1c0e",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "33e7d869d2a19197acadeb8f59ba3575a1b42d71ccc3f236df3050730d519def",
+    "host/src/main/scala/sirin/host/WindowCapture.scala": "706259d9f645469dec9a4bf06e2840528c8108cc9a98dafb952f9e4868b0327a",
+    "host/src/test/scala/sirin/host/WindowCaptureSuite.scala": "f8f024045c1c7a75b0c27aedfd45f3ade924ad6ec322771ef91ee4ef89fb0985"
+  },
+  "native_queue_sanitizer_check": {
+    "command": "clang -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined desktop/native/tests/event_queue_test.c -o target/alpha/native-application/event-queue-test",
+    "observed_exit_code": 0,
+    "observed_stdout": "native event FIFO: copy lifetime, UTF-8 bytes, order/wrap, full refusal, shared budget and retirement passed"
+  },
+  "GUI_launched": false,
+  "multiwindow_UI_qualified": false,
+  "Scala_Native_UI_backend_qualified": false,
+  "menus_implemented": false,
+  "alpha_complete": false,
+  "quiet_host_screen": {
+    "idle_percent": [
+      65.71,
+      66.6
+    ],
+    "required_idle_percent": 80,
+    "original_600s_gate_started": false
+  },
+  "launch_approval": "pending action-time confirmation for concrete SirinAlpha.app"
+}

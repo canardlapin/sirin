@@ -240,6 +240,7 @@ private[desktop] final class OwnedRenderService[A,B <: AutoCloseable](wake: () =
   private val stopped=new java.util.concurrent.atomic.AtomicBoolean(false)
   private val fatal=new java.util.concurrent.atomic.AtomicReference[Throwable](null)
   private val closeFailure=new java.util.concurrent.atomic.AtomicReference[Throwable](null)
+  private val retired=new java.util.concurrent.atomic.AtomicBoolean(false)
   private val thread=new Thread(() => loop(),"sirin-render-owner")
   thread.setDaemon(true);thread.start()
   private def loop(): Unit =
@@ -281,6 +282,8 @@ private[desktop] final class OwnedRenderService[A,B <: AutoCloseable](wake: () =
           try s.close() catch case e: Throwable => closeFailure.set(e)
       }
       try finish() catch case e: Throwable => closeFailure.set(e)
+      retired.set(true)
+      try wake() catch case e: Throwable => closeFailure.set(e)
   def quiesce(): Unit =
     require(Thread.currentThread() eq caller,"render retirement caller mismatch")
     val done=new java.util.concurrent.CountDownLatch(1)
@@ -302,8 +305,11 @@ private[desktop] final class OwnedRenderService[A,B <: AutoCloseable](wake: () =
   }
   def poll(): Option[(Long,Either[Throwable,B])] = result.getAndSet(None)
   private[desktop] def awaitStopped(millis: Long): Boolean = {thread.join(millis); !thread.isAlive}
-  def close(): Unit =
+  def requestClose(): Unit =
     synchronized {if stopped.compareAndSet(false,true) then {queue.clear();result.getAndSet(None).foreach(_._2.foreach(_.close()));require(queue.offer(stopInput))}}
+  def isRetired: Boolean = retired.get()
+  def close(): Unit =
+    requestClose()
     thread.join(10000)
     require(!thread.isAlive,"render owner did not retire")
     Option(closeFailure.get()).foreach(throw _)
@@ -318,4 +324,6 @@ final class RenderService(fontRoot: Path,captureRoot: Path,wake: () => Unit,fact
   def poll(): Option[(Long,Either[Throwable,FrameOutput])]=service.poll()
   def quiesce(): Unit=service.quiesce()
   private[desktop] def awaitStopped(millis: Long): Boolean=service.awaitStopped(millis)
+  def requestClose(): Unit=service.requestClose()
+  def isRetired: Boolean=service.isRetired
   def close(): Unit=service.close()

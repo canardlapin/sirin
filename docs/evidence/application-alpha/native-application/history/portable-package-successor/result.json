@@ -1,0 +1,16 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.NativeApplicationSuite sirin.desktop.RenderServiceSuite",
+    "desktopJVM/desktopApplicationPackage"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 15.874249875,
+  "changed_sources": {
+    "build.sbt": "f51ba4fe24309cfa581f943126552eaf35e6cf7090e4f154e95771cecdda9ef9",
+    "desktop/src/main/scala/sirin/desktop/ApplicationHostProbe.scala": "19f9abc39af76c4cb97ad4e7ffa6d00d472cb04b2a659e398553c300fe334e78"
+  }
+}

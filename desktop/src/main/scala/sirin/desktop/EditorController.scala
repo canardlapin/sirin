@@ -56,6 +56,12 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
     case _ => false
   private def publishFocus()(using UiTxn): Unit =
     val (direct,ancestors,keyboard)=interaction.focusReferences;runtime.publishFocus(direct,ancestors,keyboard)
+  def nativeFocus(active: Boolean): Unit =
+    runtime.transact {
+      if active then publishFocus()
+      else runtime.publishFocus(Set.empty,Set.empty,false)
+    }
+    ()
   private def applyState(id: Long,next: TextEditing,commit: Boolean=false): Boolean =
     captured.editors.get(id).exists { binding =>
       val old=states(id)

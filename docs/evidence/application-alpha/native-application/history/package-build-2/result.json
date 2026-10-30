@@ -1,0 +1,13 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.NativeApplicationSuite sirin.desktop.RenderServiceSuite",
+    "desktopJVM/desktopApplicationPackage"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 14.879883083000001,
+  "utc": "2026-10-30T01:44:19.032300+00:00"
+}

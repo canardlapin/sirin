@@ -1,0 +1,20 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21624 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/classes ...
+[warn] -- [E198] Unused Symbol Warning: /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/src/main/scala/sirin/desktop/ApplicationHostProbe.scala:37:8 
+[warn] 37 |    var finalSaved="";var finalText="";var failure=Option.empty[Throwable]
+[warn]    |        ^^^^^^^^^^
+[warn]    |        local variable was mutated but not read
+[warn] -- [E198] Unused Symbol Warning: /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/src/main/scala/sirin/desktop/ApplicationHostProbe.scala:37:26 
+[warn] 37 |    var finalSaved="";var finalText="";var failure=Option.empty[Throwable]
+[warn]    |                          ^^^^^^^^^
+[warn]    |                          local variable was mutated but not read
+[error] No warnings can be incurred under -Werror (or -Xfatal-warnings)
+[warn] two warnings found
+[error] one error found
+[error] (desktopJVM / Compile / compileIncremental) Compilation failed
+[error] Total time: 4 s, completed Oct 29, 2026, 9:43:08 p.m.

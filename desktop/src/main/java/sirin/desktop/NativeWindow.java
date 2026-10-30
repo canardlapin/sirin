@@ -11,12 +11,17 @@ public final class NativeWindow implements AutoCloseable {
     private static final SymbolLookup LIBRARY = SymbolLookup.libraryLookup(
         Path.of(System.getProperty("sirin.desktop.library")), LIBRARY_ARENA);
     private static final Linker LINKER = Linker.nativeLinker();
-    private static MethodHandle bind(String name, MemoryLayout result, MemoryLayout... args) {
+    static MethodHandle bind(String name, MemoryLayout result, MemoryLayout... args) {
         return LINKER.downcallHandle(LIBRARY.find(name).orElseThrow(), FunctionDescriptor.of(result, args));
     }
     private static final MethodHandle OPEN = bind("sirin_desktop_open", JAVA_INT, ADDRESS, JAVA_INT, JAVA_INT, ADDRESS, ADDRESS);
     private static final MethodHandle CLOSE = bind("sirin_desktop_close", JAVA_INT, ADDRESS);
     private static final MethodHandle WAIT = bind("sirin_desktop_wait", JAVA_INT, ADDRESS, JAVA_INT, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle GEOMETRY = bind("sirin_desktop_geometry", JAVA_INT, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle POLL = bind("sirin_desktop_poll", JAVA_INT, ADDRESS, ADDRESS, ADDRESS, ADDRESS);
+    private static final MethodHandle HIDE = bind("sirin_desktop_hide", JAVA_INT, ADDRESS);
+    private static final MethodHandle TITLE_GET = bind("sirin_desktop_title_get", JAVA_INT, ADDRESS, ADDRESS, JAVA_INT);
+    private static final MethodHandle TITLE = bind("sirin_desktop_title", JAVA_INT, ADDRESS, ADDRESS);
     private static final MethodHandle TICKS = bind("sirin_desktop_ticks",JAVA_LONG);
     private static final MethodHandle INJECT = bind("sirin_desktop_inject",JAVA_INT,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT,JAVA_DOUBLE,JAVA_DOUBLE,JAVA_DOUBLE);
     private static final MethodHandle WAKE = bind("sirin_desktop_wake", JAVA_INT, JAVA_INT, JAVA_INT);
@@ -54,8 +59,10 @@ public final class NativeWindow implements AutoCloseable {
         public boolean quit() { return (flags & 1) != 0; }
         public boolean redraw() { return (flags & 2) != 0; }
         public boolean wakeup() { return (flags & 4) != 0; }
+        public boolean focusGained() { return (flags & 8) != 0; }
+        public boolean focusLost() { return (flags & 16) != 0; }
     }
-    private static RuntimeException failure(Throwable error) {
+    static RuntimeException failure(Throwable error) {
         return error instanceof RuntimeException r ? r : new IllegalStateException("FFM call failed", error);
     }
     public static int liveWindows() {
@@ -91,7 +98,7 @@ public final class NativeWindow implements AutoCloseable {
             if (status != 0) throw new IllegalStateException(error.getString(0));
             opened = pointer.get(ADDRESS, 0);
             handle = opened;
-            initialEvent = waitEvent(0);
+            initialEvent = readEvent(0, 0);
         } catch (Throwable e) {
             if (opened.address() != 0) try { int ignored = (int)CLOSE.invokeExact(opened); }
             catch (Throwable closeError) { e.addSuppressed(closeError); }
@@ -102,12 +109,18 @@ public final class NativeWindow implements AutoCloseable {
         if (closed) throw new IllegalStateException("window is closed");
         if (Thread.currentThread() != owner) throw new IllegalStateException("window requires its owner thread");
     }
-    public Event waitEvent(int timeoutMillis) {
+    /** Poll only this peer's native FIFO; the application owns the global pump. */
+    public Event pollEvent() { return readEvent(0, 0); }
+    public Event waitEvent(int timeoutMillis) { return readEvent(1, timeoutMillis); }
+    public Event geometry() { return readEvent(2, 0); }
+    private Event readEvent(int mode, int timeoutMillis) {
         checkOwner();
         if (timeoutMillis < -1) throw new IllegalArgumentException("invalid event timeout");
-        if (initialEvent != null) { Event event = initialEvent; initialEvent = null; return event; }
+        if (mode != 2 && initialEvent != null) { Event event = initialEvent; initialEvent = null; return event; }
         try {
-            int found = (int)WAIT.invokeExact(handle, timeoutMillis, facts,position,times);
+            int found = mode == 1 ? (int)WAIT.invokeExact(handle, timeoutMillis, facts,position,times)
+                      : mode == 2 ? (int)GEOMETRY.invokeExact(handle, facts,position,times)
+                                  : (int)POLL.invokeExact(handle, facts,position,times);
             if (found < 0) throw new IllegalStateException("native event wait rejected");
             windowId = facts.getAtIndex(JAVA_INT, 3); wakeType = facts.getAtIndex(JAVA_INT, 4);
             return new Event(found != 0, facts.getAtIndex(JAVA_INT, 0), facts.getAtIndex(JAVA_INT, 1), facts.getAtIndex(JAVA_INT, 2), facts.getAtIndex(JAVA_INT, 5), facts.getAtIndex(JAVA_INT, 6),
@@ -128,6 +141,26 @@ public final class NativeWindow implements AutoCloseable {
         checkOwner();
         try {if((int)INJECT.invokeExact(handle,kind,key,mods,x,y,delta)!=0)throw new IllegalArgumentException("injection rejected");}
         catch(Throwable e){throw failure(e);}
+    }
+    public int id() { checkOwner(); return windowId; }
+    public void title(String value) {
+        checkOwner();
+        if (value.indexOf('\0') >= 0 || value.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 4096)
+            throw new IllegalArgumentException("invalid window title");
+        try (Arena a = Arena.ofConfined()) {
+            if ((int)TITLE.invokeExact(handle, a.allocateFrom(value)) != 0) throw new IllegalStateException("title update rejected");
+        } catch(Throwable e) { throw failure(e); }
+    }
+    public void hide() {
+        checkOwner();try { if((int)HIDE.invokeExact(handle)!=0)throw new IllegalStateException("hide rejected"); }
+        catch(Throwable e){throw failure(e);}
+    }
+    public String title() {
+        checkOwner();try(Arena a=Arena.ofConfined()) {
+            MemorySegment value=a.allocate(4097);
+            if((int)TITLE_GET.invokeExact(handle,value,4097)!=0)throw new IllegalStateException("title read rejected");
+            return value.getString(0);
+        } catch(Throwable e){throw failure(e);}
     }
     public void resize(int width, int height) {
         checkOwner();

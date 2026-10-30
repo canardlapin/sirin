@@ -73,3 +73,34 @@ actual Application.run backend, native title updates, menus/shortcuts/dialogs an
 orderly application quit. Only then wire the complete persistent workbench into
 that public platform. Existing native qualification and all remaining items stay
 open; no UI acceptance is inferred from the headless window tests.
+
+
+## Native application implementation checkpoint (UI acceptance pending)
+
+Application.run now has a backend-neutral service-provider launch path and a real
+JVM/JDK25 development provider. The native context owns SDL across zero or more
+windows and routes bounded copied input to individual peers. The provider uses
+one workspace runtime and existing editor/render/viewport machinery per window;
+peer retirement hides immediately and waits for renderer release asynchronously.
+Full checks pass 351 JVM + 351 Native + 54 desktop cases and authoring compilation.
+The exact sources, initial portability refusal and corrected app-image checks are
+in ../evidence/application-alpha/native-application/.
+
+The b320e8a window-model checkpoint is now published on main; main CI40986314862
+passes all eight jobs. This does not qualify the new application host. A separate
+headless macOS/JDK25 host/package CI job is added for the new implementation.
+
+A concrete SirinAlpha.app is built and its packaged provider/native closure/fonts
+and deep strict signature verified without UI. Action-time confirmation for that
+new executable is pending; the earlier approval named a different SirinEdit.app.
+The scripted multiwindow/failed-open/save/zero-window/reopen/title/quit scenario
+has not run, and no native multiwindow/IME/VoiceOver/drag qualification is claimed.
+The provider remains JVM development support; a Scala Native UI provider needs
+its own implementation/qualification. Native menus/shortcuts/dialogs are the next
+platform work (nonempty menus currently fail explicitly). Complete visible
+persistence, controls, diagram editor, inspector/starter, independent comparison,
+owner visual approval and all original acceptance gates remain required.
+
+A fresh nonqualifying host screen observed 65.71/66.60% idle, still below the
+original GC gate's 80% requirement. No 600-second qualification was started and
+no thresholds or unrelated processes changed.

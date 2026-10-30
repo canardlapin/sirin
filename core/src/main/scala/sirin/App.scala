@@ -1,4 +1,4 @@
-// Application descriptions. Application.run still awaits the native host.
+// Application descriptions and backend-neutral launch service.
 package sirin
 
 enum MenuEntry:
@@ -97,8 +97,19 @@ object Window:
   def apply(title: Signal[String], menu: MenuBar)(content: View): Window =
     Description(title, menu, content)
 
+/** Backend SPI. An application includes one platform provider on its classpath. */
+trait ApplicationPlatform:
+  def run(build: Scope => Windows): Unit
+
 object Application:
+  private[sirin] def platform(providers: java.util.Iterator[ApplicationPlatform]): ApplicationPlatform =
+    if !providers.hasNext then throw new IllegalStateException("No Sirin application backend is installed")
+    val result = providers.next()
+    if providers.hasNext then throw new IllegalStateException("Multiple Sirin application backends are installed")
+    result
+
   /** Runs the event loop on the process main thread. `build` receives the
     * application scope, which outlives every window.
     */
-  def run(build: Scope => Windows): Unit = ???
+  def run(build: Scope => Windows): Unit =
+    platform(java.util.ServiceLoader.load(classOf[ApplicationPlatform]).iterator()).run(build)

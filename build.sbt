@@ -358,7 +358,8 @@ lazy val host = crossProject(JVMPlatform, NativePlatform).crossType(CrossType.Pu
 // This is an app-image acceptance target, not a redistributable installer.
 lazy val desktopPackage = taskKey[File]("Package the bounded JVM workbench app-image")
 def packageDesktopImage(repo: File, home: File, output: File, classpath: Seq[File], compiled: File,
-    native: File, name: String, bundle: String, arguments: String): File = {
+    native: File, name: String, bundle: String, arguments: String,
+    mainClass: String = "sirin.desktop.DesktopWorkbench"): File = {
   import scala.sys.process._
   val input = output.getParentFile / (output.getName + "-input")
   val classes = output.getParentFile / (output.getName + "-classes")
@@ -375,7 +376,7 @@ def packageDesktopImage(repo: File, home: File, output: File, classpath: Seq[Fil
   IO.copyDirectory(repo / "graphics/src/test/resources/fonts", input / "graphics/src/test/resources/fonts")
   val command = Seq((home / "bin/jpackage").toString,"--type","app-image","--name",name,
     "--dest",output.toString,"--input",input.toString,"--main-jar","sirin.jar",
-    "--main-class","sirin.desktop.DesktopWorkbench","--runtime-image",home.toString,
+    "--main-class",mainClass,"--runtime-image",home.toString,
     "--mac-package-identifier",bundle,
     "--java-options","-XstartOnFirstThread","--java-options","--enable-native-access=ALL-UNNAMED",
     "--java-options","-Dsirin.desktop.library=$APPDIR/libsirin_desktop.dylib",
@@ -393,3 +394,10 @@ desktopJVM / desktopEditorPackage := packageDesktopImage((ThisBuild / baseDirect
   (desktopJVM / target).value / "package-editor",(desktopJVM / Runtime / fullClasspath).value.map(_.data),
   (desktopJVM / Compile / packageBin).value,(desktopJVM / desktopNativeLibrary).value,
   "SirinEdit","io.github.canardlapin.sirin.edit.integration","editor")
+
+// Public Application.run + native multiwindow functional acceptance image.
+lazy val desktopApplicationPackage = taskKey[File]("Package the public application host probe")
+desktopJVM / desktopApplicationPackage := packageDesktopImage((ThisBuild / baseDirectory).value,file(sys.props("java.home")),
+  (desktopJVM / target).value / "package-application",(desktopJVM / Runtime / fullClasspath).value.map(_.data),
+  (desktopJVM / Compile / packageBin).value,(desktopJVM / desktopNativeLibrary).value,
+  "SirinAlpha","io.github.canardlapin.sirin.alpha.dev","scenario",mainClass="sirin.desktop.ApplicationHostProbe")
