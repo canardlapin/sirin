@@ -67,6 +67,13 @@ final case class ElementFeedback(focused: Boolean = false, keyboard: Boolean = f
   */
 final case class ElementActivation(part: PartId, enabled: Boolean)
 
+/** Focus arriving at or leaving a focusable element. */
+enum FocusEvent:
+  case Gained
+
+  /** Focus is moving away, or the window deactivated. Refusing a move away keeps focus on this element. */
+  case Lost
+
 trait ElementHandlers:
   /** Reads in handlers are explicitly staged model reads; geometry is in event.hit. */
   def pointer(
@@ -110,6 +117,15 @@ trait ElementHandlers:
       @unused
       txn: UiTxn
   ): Boolean = false
+
+  /** Runs in its own transaction before focus moves away and after it arrives. */
+  def focus(
+      @unused
+      event: FocusEvent
+  )(using
+      @unused
+      txn: UiTxn
+  ): Unit = ()
 
   /** Text controls override these forms to reach the clipboard, segmentation and presented text. */
   def key(

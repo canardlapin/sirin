@@ -121,6 +121,10 @@ class TextInputSeamSuite extends munit.FunSuite:
       assert(f.controller.consumesKey(HostInput.KeyDown(Key.Character('q'), Mods.none)))
       assert(f.controller.consumesKey(HostInput.KeyDown(Key.Space, Mods.Shift)))
       assert(!f.controller.consumesKey(HostInput.KeyDown(Key.Character('q'), Mods.Primary)))
+      assert(f.controller.consumesKey(HostInput.KeyDown(Key.Character('c'), Mods.Primary)))
+      assert(!f.controller.consumesKey(HostInput.KeyDown(Key.Character('c'), Mods.Primary | Mods.Shift)))
+      assert(f.controller.consumesKey(HostInput.KeyDown(Key.ArrowLeft, Mods.Shift | Mods.Alt)))
+      assert(!f.controller.consumesKey(HostInput.KeyDown(Key.Enter, Mods.none)))
       assert(!f.controller.handleElementKey(HostInput.KeyDown(Key.Character('q'), Mods.Primary)))
     finally
       f.close()
@@ -272,6 +276,123 @@ class TextInputSeamSuite extends munit.FunSuite:
       f.input(HostInput.Composition("にほ", 2, 0))
       f.input(HostInput.Deactivate)
       assertEquals(events, Vector(TextInputEvent.Compose("にほ", TextRange(2, 2)), TextInputEvent.CancelComposition))
+    finally
+      f.close()
+  }
+
+  private final class FocusRecorder(name: String, var refuseLoss: Boolean = false) extends ElementHandlers:
+    var events = Vector.empty[FocusEvent]
+    override def focus(event: FocusEvent)(using UiTxn): Unit =
+      events :+= event
+      if event == FocusEvent.Lost && refuseLoss then
+        UiTxn.refuse(s"$name keeps focus")
+  private val box =
+    new Element[Unit, Unit, Unit, Unit, Unit]:
+      override def measure(state: Unit, c: Constraints, text: TextServices)(using Committed): Size =
+        Size(c.maxWidth.min(240.lp).max(c.minWidth), 20.lp.max(c.minHeight).min(c.maxHeight))
+      def paint(state: Unit, presentation: Unit, size: Size, canvas: Canvas)(using Committed): Unit = ()
+  private def focusable(name: String, handlers: ElementHandlers): View =
+    val unit = Signal.const(())
+    Element(name, ElementInputs(unit, unit, unit, unit, Presentation.const(())), box, true, handlers = Some(handlers))
+
+  test("focus moves deliver Lost then Gained, a refused Lost vetoes the move and deactivation reports Lost") {
+    val first = FocusRecorder("first")
+    val second = FocusRecorder("second")
+    val f = new Fixture(_ => Column(focusable("first", first), focusable("second", second)), focusAt = Some((20, 10)))
+    try
+      assertEquals(first.events, Vector(FocusEvent.Gained))
+      f.key(Key.Tab)
+      assertEquals(first.events, Vector(FocusEvent.Gained, FocusEvent.Lost))
+      assertEquals(second.events, Vector(FocusEvent.Gained))
+      second.refuseLoss = true
+      val focused = f.controller.interaction.state.focused
+      f.input(HostInput.Down(20, 10))
+      f.input(HostInput.Up(20, 10))
+      assertEquals(f.controller.interaction.state.focused, focused)
+      assertEquals(first.events.count(_ == FocusEvent.Gained), 1)
+      assert(f.controller.rejected > 0)
+      second.refuseLoss = false
+      f.input(HostInput.Deactivate)
+      assertEquals(second.events.last, FocusEvent.Lost)
+      assertEquals(f.controller.interaction.state.focused, focused)
+    finally
+      f.close()
+  }
+
+  test("hard-line element text resolves to one document in measure, paint and semantics") {
+    val content = "a\u0301\r\nשלום\n\nx"
+    val request = TextRequest(content, TextStyle.Body)
+    var measured = Option.empty[TextLayout]
+    val element =
+      new Element[Unit, Unit, Unit, Unit, Unit]:
+        override def measureTextRequests(state: Unit, c: Constraints)(using Committed): Seq[TextRequest] =
+          Vector(request)
+        override def measure(state: Unit, c: Constraints, text: TextServices)(using Committed): Size =
+          val layout = text.layout(content, TextStyle.Body, Lp(Double.PositiveInfinity))
+          measured = Some(layout)
+          Size(
+            layout.size.width.max(c.minWidth).min(c.maxWidth),
+            layout.size.height.max(c.minHeight).min(c.maxHeight)
+          )
+        override def textRequests(state: Unit, presentation: Unit, size: Size)(using Committed): Seq[TextRequest] =
+          Vector(request)
+        def paint(state: Unit, presentation: Unit, size: Size, canvas: Canvas)(using Committed): Unit =
+          canvas.text(content, Point.origin, TextStyle.Body, Color.rgba(255, 255, 255))
+        override def semantics(state: Unit, size: Size)(using Committed): Seq[SemanticNode] = Vector(
+          SemanticNode(
+            PartId(0),
+            Semantics(Role.TextInput, value = Some(content)),
+            Rect(Point.origin, size),
+            Set.empty,
+            Some(TextSemantics(request, Point.origin, TextRange.at(0), multiline = true))
+          )
+        )
+    val unit = Signal.const(())
+    val f = new Fixture(
+      _ => Element("document", ElementInputs(unit, unit, unit, unit, Presentation.const(())), element),
+      focusAt = None
+    )
+    try
+      val layout = f.settle()
+      val text = layout.text.get(request).get
+      assertEquals(text.text, content)
+      assert(measured.exists(m => m.text == content && m.size == text.size))
+      assertEquals(text.caretsAt(3), Vector.empty)
+      assert(text.caretsAt(4).head.lineIndex > text.caretsAt(2).head.lineIndex)
+      assert(text.caretsAt(10).head.lineIndex > text.caretsAt(9).head.lineIndex)
+      assertEquals(layout.semanticParts.head._2.text.map(_.request), Some(request))
+    finally
+      f.close()
+  }
+
+  test("handlers learn their presented size and report refusals to host feedback only when they commit") {
+    var sizes = Vector.empty[Option[Size]]
+    val reporter =
+      new ElementHandlers:
+        override def key(event: KeyEvent, services: TextEditingServices)(using UiTxn): Boolean =
+          sizes :+= services.presentedSize
+          services.refused(s"refused ${event.key}")
+          if event.key == Key.Escape then
+            UiTxn.refuse("rolled back")
+          true
+    val unit = Signal.const(())
+    val f = new Fixture(_ =>
+      Element(
+        "reporter",
+        ElementInputs(unit, unit, unit, unit, Presentation.const(())),
+        box,
+        focusable = true,
+        handlers = Some(reporter)
+      )
+    )
+    try
+      f.key(Key.Enter)
+      assertEquals(sizes, Vector(Some(Size(240.lp, 40.lp))))
+      assertEquals(f.controller.rejected, 1)
+      assertEquals(f.controller.notice, Some("refused Enter"))
+      f.key(Key.Escape)
+      assertEquals(f.controller.rejected, 2)
+      assertEquals(f.controller.notice, Some("This element action could not be committed."))
     finally
       f.close()
   }

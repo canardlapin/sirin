@@ -3,7 +3,7 @@ package sirin.host
 import sirin.*
 import sirin.drawing.{PreparedText, RecordingCanvas}
 import sirin.graphics.Drawing
-import sirin.text.ResolvedTextLayout
+import sirin.text.{DocumentTextLayout, ResolvedTextLayout}
 
 final case class Box(x: Double, y: Double, width: Double, height: Double):
   require(Vector(x, y, width, height).forall(_.isFinite) && width >= 0 && height >= 0, "invalid host box")
@@ -342,6 +342,23 @@ object Layout:
   )(resolve: TextRequest => ResolvedTextLayout): LayoutResult =
     require(width.isFinite && height.isFinite && width > 0 && height > 0, "positive finite root size required")
     val prepared = scala.collection.mutable.LinkedHashMap.empty[TextRequest, ResolvedTextLayout]
+    val documents = scala.collection.mutable.LinkedHashSet.empty[TextRequest]
+
+    /** Element text; a request with hard line breaks prepares its paragraphs and resolves to their document. */
+    def prepareElementText(request: TextRequest): Unit =
+      val parts = PreparedText.paragraphs(request)
+      if parts.size > 1 then
+        documents += request
+      parts.foreach { part =>
+        require(prepared.contains(part) || prepared.size < 1024, "text preparation request budget exceeded")
+        prepared.getOrElseUpdate(part, resolve(part))
+      }
+    def elementText(requests: Seq[TextRequest]): PreparedText =
+      val parts = requests.flatMap(PreparedText.paragraphs).distinct.toVector
+      PreparedText.fromResolved(
+        parts.map(r => r -> prepared(r)),
+        documents = requests.filter(r => DocumentTextLayout.hasBreaks(r.content)).distinct.toVector
+      )
     val offsets = scala.collection.mutable.Map.empty[Long, Double]
     val fieldLabels = scala.collection.mutable.Map.empty[Long, FieldLabels]
     def bounded(value: Double, limit: Double): Double = math.max(0, math.min(value, limit))
@@ -426,11 +443,8 @@ object Layout:
             val c = constraintsFor(w, h, fillWidth, fillHeight, minWidth, minHeight)
             validateConstraints(c)
             val requests = frame.measureTextRequests(c)
-            requests.foreach { request =>
-              require(prepared.contains(request) || prepared.size < 1024, "text preparation request budget exceeded")
-              prepared.getOrElseUpdate(request, resolve(request))
-            }
-            val services = PreparedText.fromResolved(requests.map(r => r -> prepared(r)))
+            requests.foreach(prepareElementText)
+            val services = elementText(requests)
             val size = measureCache.measure(frame, c, epochs)(frame.measure(c, services))
             validateSize(size, c)
             Measured(node, size.width.toDouble, size.height.toDouble, Vector.empty, None)
@@ -748,10 +762,7 @@ object Layout:
           val size = Size(m.width.lp, m.height.lp)
           // Text semantics resolve from the same inventory, so assistive geometry matches paint.
           (frame.textRequests(size) ++ frame.semantics(size).flatMap(_.text.map(_.request)))
-            .foreach { request =>
-              require(prepared.contains(request) || prepared.size < 1024, "text preparation request budget exceeded")
-              prepared.getOrElseUpdate(request, resolve(request))
-            }
+            .foreach(prepareElementText)
         case _ =>
           ()
       val children = m.children.map((child, dx, dy) => place(child, x + dx, y + dy, clip))
@@ -760,7 +771,7 @@ object Layout:
     LayoutResult(
       result,
       requests.result(),
-      PreparedText.fromResolved(prepared.toVector),
+      PreparedText.fromResolved(prepared.toVector, documents = documents.toVector),
       offsets.toMap,
       editors,
       fieldLabels.toMap

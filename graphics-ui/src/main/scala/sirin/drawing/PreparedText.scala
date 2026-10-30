@@ -3,7 +3,7 @@ package sirin.drawing
 import scala.annotation.unused
 import sirin as ui
 import sirin.graphics as g
-import sirin.text.ResolvedTextLayout
+import sirin.text.{DocumentTextLayout, ResolvedTextLayout}
 
 /** Source-compatible bridge to the core request value. */
 type TextRequest = ui.TextRequest
@@ -26,24 +26,32 @@ final class TextNotPrepared(val request: TextRequest)
     )
 
 /** Immutable layout inventory, also a lookup-only core TextServices. Nothing here retains the preparer, native owners
-  * or a deferred preparation callback.
+  * or a deferred preparation callback. A request whose content has hard line breaks resolves to a document composed
+  * from its prepared paragraphs.
   */
 final class PreparedText private (
     val requests: Vector[TextRequest],
-    private val entries: Map[TextRequest, ResolvedTextLayout]
+    private val entries: Map[TextRequest, ResolvedTextLayout],
+    private val documents: Map[TextRequest, DocumentTextLayout] = Map.empty
 ) extends ui.TextServices:
-  def get(request: TextRequest): Option[ResolvedTextLayout] = entries.get(request)
-  private[drawing] def requireLayout(request: TextRequest): ResolvedTextLayout = entries.getOrElse(
-    request,
+  def get(request: TextRequest): Option[ui.TextLayout] = documents.get(request).orElse(entries.get(request))
+  private[drawing] def requireLayout(request: TextRequest): ui.TextLayout = get(request).getOrElse(
     throw new TextNotPrepared(request)
   )
   override def layout(content: String, style: ui.TextStyle, maxWidth: ui.Lp)(using
       @unused
       committed: ui.Committed
-  ): ResolvedTextLayout = requireLayout(TextRequest(content, style, maxWidth))
+  ): ui.TextLayout = requireLayout(TextRequest(content, style, maxWidth))
 
 object PreparedText:
   val empty: PreparedText = new PreparedText(Vector.empty, Map.empty)
+
+  /** The paragraph requests a hard-line request is composed from, in source order; otherwise the request itself. */
+  def paragraphs(request: TextRequest): Vector[TextRequest] =
+    if DocumentTextLayout.hasBreaks(request.content) then
+      DocumentTextLayout.paragraphs(request.content).map(part => request.copy(content = part))
+    else
+      Vector(request)
 
   /** Explicit synchronous preparation before paint, under existing phase and slow-work policy. Duplicate requests call
     * the service once, in first-use order. Failure returns no inventory and never closes caller resources.
@@ -71,14 +79,24 @@ object PreparedText:
     */
   def fromResolved(
       entries: Vector[(TextRequest, ResolvedTextLayout)],
-      limits: TextPreparationLimits = TextPreparationLimits()
+      limits: TextPreparationLimits = TextPreparationLimits(),
+      documents: Vector[TextRequest] = Vector.empty
   ): PreparedText =
     require(entries.size <= limits.maxRequests, "too many text preparation requests")
     val requests = entries.map(_._1)
     validateRequests(requests, limits)
     val map = entries.toMap
     require(entries.forall((request, layout) => map(request) eq layout), "conflicting prepared text request")
-    build(requests.distinct, map.apply, limits)
+    val built = build(requests.distinct, map.apply, limits)
+    if documents.isEmpty then
+      built
+    else
+      // Documents add no glyphs: each paragraph is already a counted entry.
+      val composed = documents.distinct.map { request =>
+        require(DocumentTextLayout.hasBreaks(request.content), "a prepared document needs a hard line break")
+        request -> DocumentTextLayout(request.content)(part => built.entries(request.copy(content = part)))
+      }
+      new PreparedText(built.requests ++ documents.distinct, built.entries, composed.toMap)
 
   private def validateRequests(requests: Vector[TextRequest], limits: TextPreparationLimits): Unit =
     require(requests.size <= limits.maxRequests, "too many text preparation requests")

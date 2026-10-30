@@ -34,6 +34,15 @@ final class EditorController(
         case _ =>
           None
     )
+  def focusedElement: Option[Long] = interaction
+    .focused
+    .flatMap(
+      _.kind match
+        case TargetKind.Custom(frame) =>
+          Some(frame.instance)
+        case _ =>
+          None
+    )
   private def limitNotice(id: Long): String =
     s"Use at most ${captured.editors(id).description.maxUnits} UTF-16 units in this field."
 
@@ -64,13 +73,15 @@ final class EditorController(
             content
       node.copy(content = content)
     project(captured.tree)
-  private def rejectEdit(id: Option[Long], message: String): Boolean =
+  /** At most 512 UTF-16 units, never ending in half a surrogate pair. */
+  private def bounded(message: String): String =
     val clipped = message.take(512)
-    val safe =
-      if message.length > 512 && clipped.lastOption.exists(Character.isHighSurrogate) then
-        clipped.dropRight(1)
-      else
-        clipped
+    if message.length > 512 && clipped.lastOption.exists(Character.isHighSurrogate) then
+      clipped.dropRight(1)
+    else
+      clipped
+  private def rejectEdit(id: Option[Long], message: String): Boolean =
+    val safe = bounded(message)
     refusals += 1
     notice = Some(safe)
     id.filter(states.contains)
@@ -106,6 +117,7 @@ final class EditorController(
   private final class StagedServices extends TextEditingServices:
     var copied = Option.empty[String]
     var cancelled = false
+    var refusal = Option.empty[String]
     def graphemeBoundaries(text: String): Vector[Int] = boundaries(text)
     def words(text: String): Vector[TextRange] =
       val a = analyze(text)
@@ -121,6 +133,8 @@ final class EditorController(
     def copy(text: String): Unit = copied = Some(text)
     def cancelComposition(): Unit = cancelled = true
     def presented(request: TextRequest): Option[TextLayout] = elements.presented(request)
+    def presentedSize: Option[Size] = None
+    def refused(reason: String): Unit = refusal = Some(reason)
   private def staged[A](run: TextEditingServices => Option[CommitResult[A]]): Option[CommitResult[A]] =
     val services = new StagedServices
     val result = run(services)
@@ -130,6 +144,12 @@ final class EditorController(
         if services.cancelled then
           composingElement = None
           clearComposition()
+        services
+          .refusal
+          .foreach { reason =>
+            refusals += 1
+            notice = Some(bounded(reason))
+          }
       case _ =>
         ()
     result
@@ -265,8 +285,11 @@ final class EditorController(
         else if key == Key.Tab && (mods.isEmpty || mods == Mods.Shift) then
           true
         else if textElement.nonEmpty then
-          // Printable keys belong to the text channel; the element's key handler has already declined them.
+          // Printable keys belong to the text channel; declared editing keys and chords belong to the control.
+          val request = textElement.get._3
           key match
+            case _ if request.chords.contains(Chord(key, mods)) || request.keys.contains(key) =>
+              true
             case Key.Character(_) | Key.Space =>
               !mods.has(Mods.Primary) && !mods.has(Mods.Control)
             case _ =>
@@ -371,6 +394,31 @@ final class EditorController(
             false
       }
   }
+  /** Focus has just moved in `interaction`. The editor that lost it blurs and the element that lost it receives
+    * `Lost`; either refusal vetoes the move. An element that gains focus then receives `Gained`.
+    */
+  private def moved(oldEditor: Option[Long], oldElement: Option[Long]): Boolean =
+    val leaving = oldElement.filterNot(focusedElement.contains)
+    val allowed =
+      (oldEditor == focusedId || blur(oldEditor)) && leaving.forall { id =>
+        elements.focus(id, FocusEvent.Lost) match
+          case None | Some(CommitResult.Committed(_)) =>
+            true
+          case Some(_) =>
+            refusals += 1
+            notice = Some("Focus could not leave this element.")
+            false
+      }
+    if allowed && focusedElement != oldElement then
+      focusedElement.foreach { id =>
+        elements.focus(id, FocusEvent.Gained) match
+          case None | Some(CommitResult.Committed(_)) =>
+            ()
+          case Some(_) =>
+            refusals += 1
+            notice = Some("This element could not accept focus.")
+      }
+    allowed
   private def point(id: Long, x: Double, y: Double): Option[TextPosition] = placed(id).map { p =>
     val origin = shown.get._2.textOrigin(p)
     p.text.get.hit(Point((x - origin.x.toDouble).lp, (y - origin.y.toDouble).lp)).primary.position
@@ -421,9 +469,10 @@ final class EditorController(
   def focusReference(reference: Long): Boolean =
     val before = interaction.state
     val previous = focusedId
+    val element = focusedElement
     if !interaction.focusRef(reference) then
       false
-    else if previous != focusedId && !blur(previous) then {
+    else if !moved(previous, element) then {
       interaction.rollbackPublication(before)
       false
     } else {
@@ -435,16 +484,21 @@ final class EditorController(
   def focusEditor(id: Long): Unit =
     if states.contains(id) then
       val old = focusedId
-      if old.contains(id) || blur(old) then
-        interaction.state = interaction
-          .state
-          .copy(focused = Some(NodeId(Vector("editor", id))), keyboard = true, pressed = None)
+      val element = focusedElement
+      val before = interaction.state
+      interaction.state = interaction
+        .state
+        .copy(focused = Some(NodeId(Vector("editor", id))), keyboard = true, pressed = None)
+      if !moved(old, element) then
+        interaction.rollbackPublication(before)
+      else
         runtime.transact {
           publishFocus()
         }
         ()
   private def dispatch(input: HostInput, mods: Mods, clicks: Int): Unit =
     val oldFocus = focusedId
+    val oldElement = focusedElement
     if ready && elements.accepts(input) then
       val before = interaction.state
       input match
@@ -453,7 +507,7 @@ final class EditorController(
           ()
         case _ =>
           ()
-      if oldFocus != focusedId && !blur(oldFocus) then
+      if !moved(oldFocus, oldElement) then
         interaction.rollbackPublication(before)
       else
         staged(services => elements.pointer(input, mods, clicks, services))
@@ -522,13 +576,21 @@ final class EditorController(
         }
       case HostInput.Deactivate =>
         blur(oldFocus)
+        oldElement.foreach { id =>
+          elements.focus(id, FocusEvent.Lost) match
+            case None | Some(CommitResult.Committed(_)) =>
+              ()
+            case Some(_) =>
+              refusals += 1
+              notice = Some("This element could not handle deactivation.")
+        }
         drag = None
         interaction.handle(input)
         ()
       case HostInput.Down(x, y, true) =>
         val before = interaction.state
         interaction.handle(input)
-        if oldFocus != focusedId && !blur(oldFocus) then
+        if !moved(oldFocus, oldElement) then
           interaction.rollbackPublication(before)
         focusedId.foreach { id =>
           if states(id).snapshot.preedit.nonEmpty then
@@ -593,7 +655,7 @@ final class EditorController(
       case HostInput.KeyDown(Key.Tab, _, _) =>
         val before = interaction.state
         interaction.handle(input)
-        if oldFocus != focusedId && !blur(oldFocus) then
+        if !moved(oldFocus, oldElement) then
           interaction.rollbackPublication(before)
         runtime.transact {
           publishFocus()
@@ -730,10 +792,11 @@ final class EditorController(
   private def focusElement(id: Long): Boolean =
     val before = interaction.state
     val previous = focusedId
+    val element = focusedElement
     interaction.state = interaction
       .state
       .copy(focused = Some(NodeId(Vector("element", id))), keyboard = true, pressed = None)
-    if previous.nonEmpty && !blur(previous) then {
+    if !moved(previous, element) then {
       interaction.rollbackPublication(before)
       false
     } else {
@@ -760,27 +823,12 @@ final class EditorController(
           action.kind() match
             case 1 =>
               val before = interaction.state
+              val previous = focusedId
+              val element = focusedElement
               interaction.state = interaction
                 .state
                 .copy(focused = Some(NodeId(Vector("editor", id))), keyboard = true, pressed = None)
-              if before.focused != interaction.state.focused &&
-                !blur(
-                  before
-                    .focused
-                    .flatMap(n =>
-                      interaction
-                        .presented
-                        .target(n)
-                        .flatMap(
-                          _.kind match
-                            case TargetKind.Editor(i) =>
-                              Some(i)
-                            case _ =>
-                              None
-                        )
-                    )
-                )
-              then {
+              if !moved(previous, element) then {
                 interaction.rollbackPublication(before)
                 false
               } else {

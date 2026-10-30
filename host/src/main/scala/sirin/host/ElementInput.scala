@@ -26,6 +26,19 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
   /** Lookup in the presented frame's prepared inventory; never shapes. */
   def presented(request: TextRequest): Option[TextLayout] = prepared.get(request)
 
+  /** Services for one delivery, carrying the recipient's presented size. */
+  private def routed(instance: Long, services: TextEditingServices): TextEditingServices =
+    val size = shown.get(instance).map(p => Size(p.bounds.width.lp, p.bounds.height.lp))
+    new TextEditingServices:
+      def graphemeBoundaries(text: String): Vector[Int] = services.graphemeBoundaries(text)
+      def words(text: String): Vector[TextRange] = services.words(text)
+      def clipboard: Option[String] = services.clipboard
+      def copy(text: String): Unit = services.copy(text)
+      def cancelComposition(): Unit = services.cancelComposition()
+      def presented(request: TextRequest): Option[TextLayout] = services.presented(request)
+      def presentedSize: Option[Size] = size
+      def refused(reason: String): Unit = services.refused(reason)
+
   /** The focused, presented element that currently declares text input, with its accepted placement. */
   def textTarget: Option[(Long, Placed, TextInputRequest)] = interaction
     .focused
@@ -57,7 +70,12 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
   def deliver(instance: Long, event: TextInputEvent, services: TextEditingServices): Option[CommitResult[Boolean]] =
     Option
       .when(shown.contains(instance) && bindings.contains(instance))(())
-      .map(_ => runtime.transact(bindings(instance).text(event, services)))
+      .map(_ => runtime.transact(bindings(instance).text(event, routed(instance, services))))
+
+  /** Focus changes reach any still-bound element, presented or not, so a removed placement is the only silent case. */
+  def focus(instance: Long, event: FocusEvent): Option[CommitResult[Unit]] = bindings
+    .get(instance)
+    .map(binding => runtime.transact(binding.focus(event)))
 
   /** Assistive requests target exposed text directly; ranges outside it refuse before dispatch. */
   def textTo(instance: Long, event: TextInputEvent, services: TextEditingServices): Option[CommitResult[Boolean]] =
@@ -72,7 +90,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
       .flatMap(_ => deliver(instance, event, services))
   def text(event: TextInputEvent, services: TextEditingServices): Option[CommitResult[Boolean]] = textTarget.map {
     (id, _, _) =>
-      runtime.transact(bindings(id).text(event, services))
+      runtime.transact(bindings(id).text(event, routed(id, services)))
   }
   private def target(x: Double, y: Double): Option[Long] = interaction
     .presented
@@ -152,7 +170,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
           val result = runtime.transact {
             bindings(id).pointer(
               PointerEvent(phase, local, button, mods, clicks, hit, capture.exists(_._1 == id)),
-              services
+              routed(id, services)
             )
           }
           result match
@@ -194,7 +212,9 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
     .flatMap(
       _.kind match
         case TargetKind.Custom(frame) if shown.contains(frame.instance) =>
-          bindings.get(frame.instance).map(binding => runtime.transact(binding.key(event, services)))
+          bindings
+            .get(frame.instance)
+            .map(binding => runtime.transact(binding.key(event, routed(frame.instance, services))))
         case _ =>
           None
     )

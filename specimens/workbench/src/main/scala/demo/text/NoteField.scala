@@ -21,6 +21,8 @@ object NoteField:
     def apply(text: String): State = State(text, TextRange.at(text.length))
 
   private val part = PartId(0)
+  private val keys: Set[Key] = Set(Key.ArrowLeft, Key.ArrowRight, Key.Home, Key.End, Key.Backspace, Key.Delete)
+  private val chords: Set[Chord] = "acxv".map(c => Chord(Key.Character(c), Mods.Primary)).toSet
   private val inset = 6.lp
   private def request(state: State): TextRequest = TextRequest(state.display, TextStyle.Body)
 
@@ -91,7 +93,7 @@ object NoteField:
 
       override def textInput(state: State, size: Size, text: TextServices)(using Committed): Option[TextInputRequest] =
         val line = text.layout(state.display, TextStyle.Body, Lp(Double.PositiveInfinity))
-        caret(state, line).map(c => TextInputRequest(c.bounds.translate(Point(inset, inset))))
+        caret(state, line).map(c => TextInputRequest(c.bounds.translate(Point(inset, inset)), keys, chords))
 
       override def semantics(state: State, size: Size)(using
           @unused

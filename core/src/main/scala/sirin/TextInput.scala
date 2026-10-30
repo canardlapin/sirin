@@ -31,8 +31,10 @@ enum TextInputEvent:
 
 /** Declared by a focused element that accepts text. The host enables platform text input only while one is declared,
   * and positions the IME candidate window at `caret`, local to the element and clipped to its presented bounds.
+  * Printable keys are always reserved for the text channel. `keys` are editing keys reserved under any modifiers, and
+  * `chords` are the exact command chords the control declares; both take precedence over application shortcuts.
   */
-final case class TextInputRequest(caret: Rect)
+final case class TextInputRequest(caret: Rect, keys: Set[Key] = Set.empty, chords: Set[Chord] = Set.empty)
 
 /** Platform text services for one dispatched handler. Clipboard writes and composition cancellation are staged: they
   * take effect only if the handler's transaction commits.
@@ -52,6 +54,12 @@ trait TextEditingServices:
   /** The layout prepared for this element's request in the frame the event was routed against. Lookup only. */
   def presented(request: TextRequest): Option[TextLayout]
 
+  /** The size this element was presented at in that frame, so it can rebuild its text requests. */
+  def presentedSize: Option[Size]
+
+  /** Reports a refused edit to the host's feedback once the handler's transaction commits. */
+  def refused(reason: String): Unit
+
 object TextEditingServices:
   /** For dispatch paths without a text platform. Segmentation and copying refuse rather than guess. */
   val unavailable: TextEditingServices =
@@ -65,6 +73,8 @@ object TextEditingServices:
         throw new UnsupportedOperationException("the clipboard is unavailable on this dispatch path")
       def cancelComposition(): Unit = ()
       def presented(request: TextRequest): Option[TextLayout] = None
+      def presentedSize: Option[Size] = None
+      def refused(reason: String): Unit = ()
 
 /** Text exposed to assistive technology for one semantic node. The host resolves `request` from the element's prepared
   * text and places it at `origin`, local to the element. A composing control exposes its displayed text.

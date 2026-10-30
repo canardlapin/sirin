@@ -90,7 +90,8 @@ final class ElementBinding private[engine] (
     keyRun: (KeyEvent, TextEditingServices, UiTxn) => Boolean,
     actionRun: (PartId, SemanticAction, UiTxn) => Boolean,
     wheelRun: (WheelEvent, UiTxn) => Boolean,
-    textRun: (TextInputEvent, TextEditingServices, UiTxn) => Boolean
+    textRun: (TextInputEvent, TextEditingServices, UiTxn) => Boolean,
+    focusRun: (FocusEvent, UiTxn) => Unit
 ):
   def pointer(event: PointerEvent, services: TextEditingServices = TextEditingServices.unavailable)(using
       txn: UiTxn
@@ -101,6 +102,7 @@ final class ElementBinding private[engine] (
   def action(part: PartId, action: SemanticAction)(using txn: UiTxn): Boolean = actionRun(part, action, txn)
   def text(event: TextInputEvent, services: TextEditingServices)(using txn: UiTxn): Boolean =
     textRun(event, services, txn)
+  def focus(event: FocusEvent)(using txn: UiTxn): Unit = focusRun(event, txn)
 
 final class LayoutFrame private[engine] (
     val instance: Long,

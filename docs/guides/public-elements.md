@@ -77,6 +77,17 @@ state, separate from committed text. Override the two-argument `key` and
 `pointer` forms to reach `TextEditingServices`. These provide grapheme and word
 boundaries, the clipboard, and the layout presented for a request. Clipboard
 writes and composition cancellation happen only if your transaction commits.
+`presentedSize` gives the size you were presented at, so a key handler can
+rebuild the exact request it painted. `refused` reports a refusal, for example
+an over-limit paste, to the host's feedback. List editing keys and command
+chords in `TextInputRequest.keys` and `chords` so that they take precedence
+over application shortcuts. Printable keys are always reserved.
+
+Override `focus` to act when focus arrives or leaves. `Lost` also runs when the
+window deactivates. Refusing `Lost` keeps focus where it is, which is how
+validation on blur is enforced. Text with hard line breaks works in any
+request. The host lays it out paragraph by paragraph as one document, keeping
+CRLF as a single separator.
 
 Expose text to assistive technology with `SemanticNode.text`. Name the request
 you paint, its origin and the selection. The host resolves it from the same

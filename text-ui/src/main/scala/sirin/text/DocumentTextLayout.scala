@@ -45,6 +45,21 @@ final class DocumentTextLayout private (val text: String,val parts: Vector[Docum
 object DocumentTextLayout:
   final case class Part(start: Int,end: Int,separatorEnd: Int,y: Double,line: Int,layout: ResolvedTextLayout)
   def hasBreaks(text: String): Boolean=text.exists(c => "\n\r\u000B\u000C\u0085\u2028\u2029".contains(c))
+  /** The paragraph sources `apply` resolves, in order, under the same budget. */
+  def paragraphs(text: String): Vector[String] =
+    val result=Vector.newBuilder[String]
+    var start=0;var i=0;var count=0
+    def append(end: Int,separatorEnd: Int): Unit =
+      count+=1;require(count<=256,"document paragraph budget")
+      result+=text.substring(start,end);start=separatorEnd
+    while i<text.length do
+      val c=text.charAt(i)
+      if "\n\r\u000B\u000C\u0085\u2028\u2029".contains(c) then
+        val next=if c=='\r' && i+1<text.length && text.charAt(i+1)=='\n' then i+2 else i+1
+        append(i,next);i=next
+      else i+=1
+    append(text.length,text.length)
+    result.result()
   def apply(text: String)(resolve: String => ResolvedTextLayout): DocumentTextLayout =
     val parts=Vector.newBuilder[Part]
     var start=0;var i=0;var y=0.0;var line=0;var count=0

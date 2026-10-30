@@ -526,6 +526,11 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
           runtime.capability(txn) {
             runtime.ensureScope(scope)
             description.handlers.getOrElse(description.element).text(event, services)(using txn)
+          },
+        (event, txn) =>
+          runtime.capability(txn) {
+            runtime.ensureScope(scope)
+            description.handlers.getOrElse(description.element).focus(event)(using txn)
           }
       )
     def accepts(view: View): Boolean =
