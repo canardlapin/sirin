@@ -67,7 +67,7 @@ class DiagramSeamSuite extends munit.FunSuite:
           focus.focused,
           focus.keyboard,
           focus.pressed.map(_.target),
-          editors = controller.snapshots
+          textFocus = controller.textFocus
         )
       )
       val output = renderer.render(request, () => false).asInstanceOf[RenderedFrame]

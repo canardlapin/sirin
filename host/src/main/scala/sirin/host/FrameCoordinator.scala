@@ -1,7 +1,9 @@
 package sirin.host
 
 final case class FramePayload(tree: Node, logicalWidth: Double, logicalHeight: Double,
-    pixelWidth: Int, pixelHeight: Int, scrolls: Map[Long,Double],focus: Option[NodeId]=None,keyboardFocus: Boolean=false,pressed: Option[NodeId]=None,viewports: Map[Long,sirin.engine.RowViewport]=Map.empty,editors: Map[Long,EditSnapshot]=Map.empty)
+    pixelWidth: Int, pixelHeight: Int, scrolls: Map[Long,Double],focus: Option[NodeId]=None,keyboardFocus: Boolean=false,pressed: Option[NodeId]=None,viewports: Map[Long,sirin.engine.RowViewport]=Map.empty,
+    /** The focused text control, which a cached base drawing must paint as focused. */
+    textFocus: Option[NodeId]=None)
 final case class FrameRequest(generation: Long, payload: FramePayload)
 
 /** Owner-only generation gate. Immutable worker results never advance it. */

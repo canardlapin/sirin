@@ -1,7 +1,4 @@
-package sirin.host
-
-import sirin.*
-import sirin.engine.*
+package sirin
 
 class TextEditingSuite extends munit.FunSuite:
   private def ascii(s: String): Vector[Int]=(0 to s.length).toVector
@@ -71,46 +68,4 @@ class TextEditingSuite extends munit.FunSuite:
   test("line ending normalization is one undoable edit") {
     val state=TextEditing("").replace("a\r\nb\rc",ascii)
     assertEquals(state.snapshot.text,"a\nb\nc");assertEquals(state.undo.snapshot.text,"")
-  }
-  test("public TextField builder captures declared values, error and transaction binding") {
-    val runtime=new HeadlessRuntime
-    val scope=runtime.scope("fields");val value=scope.cell("draft");val commits=scope.cell(0)
-    val field=TextField.bind(value).label("Document").placeholder("Type here").multiline.error(value.map(v => Option.when(v.isEmpty)("Required")))
-      .onCommit(commits.set(commits.get+1)).width(200.lp).padding(4.lp).ref(scope.ref())
-    val mounted=runtime.mount(scope,field)
-    runtime.observe(mounted.snapshot)(_ => ())
-    try
-      runtime.drive(32)
-      val captured=runtime.withCommitted { r => CommittedTree.captureWithBindings(r(mounted.snapshot).asInstanceOf[Value.Ok[MountedSnapshot]].value,r) }
-      assertEquals(captured.editors.size,1)
-      val binding=captured.editors.head._2.description
-      assertEquals(binding.fieldLabel,"Document");assertEquals(binding.hint,"Type here");assert(binding.multiple)
-      runtime.transact {binding.value.set("edited");binding.commit(summon[UiTxn])} match
-        case CommitResult.Committed(_) => ()
-        case other => fail(s"$other")
-      assertEquals(runtime.transact {value.get},CommitResult.Committed("edited"))
-      assertEquals(runtime.transact {commits.get},CommitResult.Committed(1))
-    finally runtime.close()
-  }
-  test("changing a field's bound Cell replaces identity even when text is equal; rollback preserves old identity") {
-    val runtime=new HeadlessRuntime
-    val scope=runtime.scope("fields");val a=scope.cell("same");val b=scope.cell("same")
-    val mounted=runtime.mount(scope,TextField.bind(a))
-    runtime.observe(mounted.snapshot)(_ => ())
-    def capture(): CapturedTree =
-      runtime.drive(32)
-      runtime.withCommitted { r => r(mounted.snapshot) match
-        case Value.Ok(snapshot) => CommittedTree.captureWithBindings(snapshot,r)
-        case Value.Failed(error) => throw error
-      }
-    try
-      val old=capture().editors.keys.head
-      runtime.transact {mounted.update(TextField.bind(b));UiTxn.refuse("cancel")}
-      assertEquals(capture().editors.keys.head,old)
-      runtime.transact {mounted.update(TextField.bind(b))}
-      val replacement=capture().editors.keys.head
-      assertNotEquals(replacement,old)
-      runtime.transact {mounted.update(View.empty)}
-      assertEquals(capture().editors,Map.empty[Long,TextBinding])
-    finally runtime.close()
   }

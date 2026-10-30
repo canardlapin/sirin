@@ -60,6 +60,12 @@ recovery checks cover this path; the C shim and ABI are unchanged.
 
 Automated public-client and packaged-image checks are a bounded Alpha4 step.
 Real pointer use, native semantic-part transport, owner visual review and the
-remaining Alpha4 acceptance criteria stay open. The next implementation step is
-the remaining public-control seam, particularly text input and composition;
-motion must still land before the alpha API freezes.
+remaining Alpha4 acceptance criteria stay open.
+
+TextField now runs on the public seam (text input, composition, focus events,
+editing services and text-range semantics), and the host's private editor is
+gone; see `docs/design/decisions/2026-10-30-textfield-port.md`. Real IME and
+VoiceOver sessions on the port remain unqualified. The next implementation steps
+are motion, which must land before the alpha API freezes, and moving the
+remaining layout controls (`Text`, `Row`, `Column`, `Scroll`, `VirtualRows`,
+`DockOutlet`) onto the seam.

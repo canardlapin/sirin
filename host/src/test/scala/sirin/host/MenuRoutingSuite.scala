@@ -94,11 +94,11 @@ class MenuRoutingSuite extends munit.FunSuite:
       val m=mount(r)(owner,Windows.single("doc")(_ => Window("Document",MenuBar(Menu("File",MenuItem(window,chord))))(
         Column(first,second).shortcut(chord,outer))).menuBar(MenuBar(Menu("File",MenuItem(app,chord)))))
       val all=capture(r,m);val w=all.windows.head
-      val ids=w.content.editors.keys.toVector.sorted
+      val ids=w.content.elements.keys.toVector.sorted
       def route(tree: CapturedTree,focus: Option[NodeId],menus: CapturedMenus=w.menu): Unit =
         invoke(r,r.withCommitted(_ => KeyboardRouting.command(tree,focus,Chord.primary('S'),menus,all.menu).get))
-      route(w.content,Some(NodeId(Vector("editor",ids.head))));assertEquals(value(r,log).last,"inner")
-      route(w.content,Some(NodeId(Vector("editor",ids.last))));assertEquals(value(r,log).last,"outer")
+      route(w.content,Some(NodeId(Vector("element",ids.head))));assertEquals(value(r,log).last,"inner")
+      route(w.content,Some(NodeId(Vector("element",ids.last))));assertEquals(value(r,log).last,"outer")
       route(w.content.copy(keys=Vector.empty),None);assertEquals(value(r,log).last,"window")
       route(w.content.copy(keys=Vector.empty),None,CapturedMenus.empty);assertEquals(value(r,log).last,"app")
     finally r.close()

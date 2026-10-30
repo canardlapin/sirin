@@ -58,11 +58,11 @@ object ApplicationHostProbe:
           require(NativeWindow.liveWindows()==2 && NativeApplication.liveApplications()==1,"failed peer open retired another owner")
           ok(host.runtime.transact {locals.head._2.focus()})
           stage=1
-        case 1 if ready && peers.head.controller.focusedId.nonEmpty && peers.head.hasPresentedEditorFocus && peers.head.window.keyboardFocus() =>
+        case 1 if ready && peers.head.hasPresentedEditorFocus && peers.head.window.keyboardFocus() =>
           peers.head.window.imeControl("First window edit",17,0,true)
           stage=2
         case 2 if ready && read(shared)=="First window edit" =>
-          require(peers.forall(_.controller.snapshots.values.exists(_.text=="First window edit")),"shared document did not reach both windows")
+          require(peers.forall(_.controller.layout.exists(_.semanticParts.exists(_._2.semantics.value.contains("First window edit")))),"shared document did not reach both windows")
           ok(host.runtime.transact {save.dispatch(())})
           stage=3
         case 3 if started.get() && peers.size==2 =>

@@ -19,74 +19,12 @@ final case class Box(x: Double, y: Double, width: Double, height: Double):
     )
 final case class ViewportRequest(instance: Long, viewport: sirin.engine.RowViewport)
 final case class Placed(node: Node, bounds: Box, clip: Box, children: Vector[Placed], text: Option[TextLayout])
-final case class FieldLabels(
-    label: Option[ResolvedTextLayout],
-    error: Option[ResolvedTextLayout],
-    hint: Option[ResolvedTextLayout]
-):
-  def labelHeight: Double = label.fold(0.0)(t => math.max(20, t.size.height.toDouble))
-  def errorHeight: Double = error.fold(0.0)(t => math.max(20, t.size.height.toDouble + 2))
 final case class LayoutResult(
     root: Placed,
     viewports: Vector[ViewportRequest],
     text: PreparedText,
-    scrollOffsets: Map[Long, Double],
-    editors: Map[Long, EditSnapshot] = Map.empty,
-    fieldLabels: Map[Long, FieldLabels] = Map.empty
+    scrollOffsets: Map[Long, Double]
 ):
-  def editorState(p: Placed): EditSnapshot =
-    p.node.content match
-      case Content.Editable(id, value, _, _, _, _) =>
-        editors.getOrElse(id, EditSnapshot(value, EditSelection.at(0)))
-      case _ =>
-        throw new IllegalArgumentException("not a field")
-  def editorArea(p: Placed): Box =
-    p.node.content match
-      case Content.Editable(id, _, label, _, _, error) =>
-        val top =
-          fieldLabels
-            .get(id)
-            .fold(
-              if label.nonEmpty then
-                20.0
-              else
-                0.0
-            )(_.labelHeight)
-        val bottom =
-          fieldLabels
-            .get(id)
-            .fold(
-              if error.nonEmpty then
-                20.0
-              else
-                0.0
-            )(_.errorHeight)
-        Box(
-          p.bounds.x + 10,
-          p.bounds.y + top + 8,
-          math.max(0, p.bounds.width - 20),
-          math.max(0, p.bounds.height - top - 16 - bottom)
-        )
-      case _ =>
-        p.bounds
-  def editorCaret(p: Placed): TextCaret =
-    val layout = p.text.get
-    val head = editorState(p).visibleSelection.head
-    layout
-      .caret(head)
-      .getOrElse(
-        layout
-          .graphemeBoundaries
-          .flatMap(layout.caretsAt)
-          .minBy(c => math.abs(c.position.utf16Offset - head.utf16Offset))
-      )
-  def textOrigin(p: Placed): Point =
-    val area = editorArea(p)
-    val caret = editorCaret(p).bounds
-    Point(
-      (area.x - math.max(0, caret.origin.x.toDouble - area.width + 2)).lp,
-      (area.y - math.max(0, caret.origin.y.toDouble + caret.size.height.toDouble - area.height)).lp
-    )
   def elements: Vector[Placed] =
     def visit(p: Placed): Vector[Placed] =
       Option.when(p.node.content.isInstanceOf[Content.Custom])(p).toVector ++ p.children.flatMap(visit)
@@ -97,7 +35,7 @@ final case class LayoutResult(
     p.node.content match
       case Content.Custom(frame) =>
         frame
-          .semantics(Size(p.bounds.width.lp, p.bounds.height.lp))
+          .semantics(Size(p.bounds.width.lp, p.bounds.height.lp), text)
           .map { node =>
             val b = node.bounds
             val clipped = Box(
@@ -112,17 +50,15 @@ final case class LayoutResult(
       case _ =>
         Vector.empty
   }
-  def fields: Vector[Placed] =
-    def visit(p: Placed): Vector[Placed] =
-      Option.when(p.node.content.isInstanceOf[Content.Editable])(p).toVector ++ p.children.flatMap(visit)
-    visit(root)
-
+  /** `textFocus` paints the focused text control as focused in a base drawing that carries no other focus, so its
+    * caret and selection stay with the text they belong to.
+    */
   def drawing(
       theme: Theme,
       focus: Option[NodeId] = None,
       keyboardFocus: Boolean = false,
       pressed: Option[NodeId] = None,
-      fieldFocus: Option[NodeId] = None
+      textFocus: Option[NodeId] = None
   ): Drawing =
     RecordingCanvas.record(theme, text) { canvas =>
       def paint(p: Placed): Unit =
@@ -156,111 +92,6 @@ final case class LayoutResult(
                     ColorRole.Muted
                 )
               )
-            case Content.Editable(id, _, label, _, _, error) =>
-              def rect(b: Box) = Rect(Point(b.x.lp, b.y.lp), Size(b.width.lp, b.height.lp))
-              val area = editorArea(p)
-              val top =
-                fieldLabels
-                  .get(id)
-                  .fold(
-                    if label.nonEmpty then
-                      20.0
-                    else
-                      0.0
-                  )(_.labelHeight)
-              val bottom =
-                fieldLabels
-                  .get(id)
-                  .fold(
-                    if error.nonEmpty then
-                      20.0
-                    else
-                      0.0
-                  )(_.errorHeight)
-              val border = Box(
-                p.bounds.x,
-                p.bounds.y + top,
-                p.bounds.width,
-                math.max(0, p.bounds.height - top - bottom)
-              )
-              canvas.fill(
-                rect(border),
-                if error.nonEmpty then
-                  Color.rgba(222, 100, 100)
-                else
-                  Color.rgba(89, 103, 126)
-              )
-              canvas.fill(
-                rect(Box(border.x + 1, border.y + 1, math.max(0, border.width - 2), math.max(0, border.height - 2))),
-                Color.rgba(28, 34, 46)
-              )
-              fieldLabels
-                .get(id)
-                .foreach { labels =>
-                  labels
-                    .label
-                    .foreach(t => canvas.text(t, Point(p.bounds.x.lp, p.bounds.y.lp), theme.color(ColorRole.OnSurface)))
-                  labels
-                    .error
-                    .foreach(t =>
-                      canvas.text(t, Point(p.bounds.x.lp, (border.y + border.height + 2).lp), Color.rgba(255, 145, 145))
-                    )
-                }
-              canvas.withClip(rect(area.intersect(p.clip))) {
-                val layout = p.text.get
-                val state = editorState(p)
-                val origin = textOrigin(p)
-                def region(r: TextSelectionRegion, color: Color): Unit = canvas.fill(
-                  Rect(
-                    Point(
-                      (origin.x.toDouble + r.bounds.origin.x.toDouble).lp,
-                      (origin.y.toDouble + r.bounds.origin.y.toDouble).lp
-                    ),
-                    r.bounds.size
-                  ),
-                  color
-                )
-                def selected(from: Int, until: Int): Vector[TextSelectionRegion] =
-                  val stops = layout.graphemeBoundaries
-                  val a = stops.filter(_ <= from).lastOption.getOrElse(0)
-                  val b = stops.find(_ >= until).getOrElse(layout.text.length)
-                  layout.selection(a, b)
-                val selection = state.visibleSelection
-                if fieldFocus.orElse(focus).contains(p.node.id) && !selection.empty then
-                  selected(selection.start, selection.end).foreach(region(_, Color.rgba(62, 110, 169)))
-                if layout.text.isEmpty then
-                  fieldLabels.get(id).flatMap(_.hint).foreach(t => canvas.text(t, origin, theme.color(ColorRole.Muted)))
-                else
-                  canvas.text(layout, origin, theme.color(ColorRole.OnSurface))
-                state
-                  .marked
-                  .foreach { (a, b) =>
-                    selected(a, b).foreach { r =>
-                      canvas.fill(
-                        Rect(
-                          Point(
-                            (origin.x.toDouble + r.bounds.origin.x.toDouble).lp,
-                            (origin.y.toDouble + r.bounds.origin.y.toDouble + r.bounds.size.height.toDouble - 2).lp
-                          ),
-                          Size(r.bounds.size.width, 1.lp)
-                        ),
-                        theme.color(ColorRole.Accent)
-                      )
-                    }
-                  }
-                if fieldFocus.orElse(focus).contains(p.node.id) then
-                  val caret = editorCaret(p).bounds
-                  canvas.fill(
-                    Rect(
-                      Point(
-                        (origin.x.toDouble + caret.origin.x.toDouble).lp,
-                        (origin.y.toDouble + caret.origin.y.toDouble).lp
-                      ),
-                      Size(1.lp, caret.size.height)
-                    ),
-                    theme.color(ColorRole.Accent)
-                  )
-              }
             case Content.Scroll(_, _) if keyboardFocus && focus.contains(p.node.id) =>
               val b = p.bounds
               canvas.fill(Rect(Point(b.x.lp, b.y.lp), Size(2.lp, b.height.lp)), theme.color(ColorRole.Accent))
@@ -269,7 +100,11 @@ final case class LayoutResult(
                 frame.paint(
                   Size(p.bounds.width.lp, p.bounds.height.lp),
                   canvas,
-                  ElementFeedback(focus.contains(p.node.id), keyboardFocus, pressed.contains(p.node.id))
+                  ElementFeedback(
+                    focus.orElse(textFocus).contains(p.node.id),
+                    keyboardFocus,
+                    pressed.contains(p.node.id)
+                  )
                 )
               }
             case Content.Label(_, _, color) =>
@@ -336,7 +171,6 @@ object Layout:
       width: Double,
       height: Double,
       scrolls: Map[Long, Double] = Map.empty,
-      editors: Map[Long, EditSnapshot] = Map.empty,
       measureCache: ElementMeasureCache = new ElementMeasureCache,
       epochs: PhaseEpochs = PhaseEpochs()
   )(resolve: TextRequest => ResolvedTextLayout): LayoutResult =
@@ -360,7 +194,6 @@ object Layout:
         documents = requests.filter(r => DocumentTextLayout.hasBreaks(r.content)).distinct.toVector
       )
     val offsets = scala.collection.mutable.Map.empty[Long, Double]
-    val fieldLabels = scala.collection.mutable.Map.empty[Long, FieldLabels]
     def bounded(value: Double, limit: Double): Double = math.max(0, math.min(value, limit))
     def grow(node: Node): Boolean =
       node.content match
@@ -522,36 +355,6 @@ object Layout:
             val request = TextRequest(label, TextStyle.Body, Lp(math.max(0, w - 24)))
             val text = prepared.getOrElseUpdate(request, resolve(request))
             leaf(text.size.width.toDouble + 24, text.size.height.toDouble + 16, Some(text))
-          case Content.Editable(id, value, label, hint, multiple, error) =>
-            val shown = editors.getOrElse(id, EditSnapshot(value, EditSelection.at(0))).display
-            val limit =
-              if multiple then
-                math.max(1, w - 20)
-              else
-                Double.PositiveInfinity
-            def resolveText(value: String, style: TextStyle, max: Double) =
-              val request = TextRequest(value, style, Lp(max))
-              prepared.getOrElseUpdate(request, resolve(request))
-            val layout: TextLayout =
-              if sirin.text.DocumentTextLayout.hasBreaks(shown) then
-                sirin.text.DocumentTextLayout(shown)(part => resolveText(part, TextStyle.Body, limit))
-              else
-                resolveText(shown, TextStyle.Body, limit)
-            fieldLabels(id) = FieldLabels(
-              Option.when(label.nonEmpty)(resolveText(label, TextStyle.Caption, math.max(1, w))),
-              error.map(t => resolveText(t, TextStyle.Caption, math.max(1, w))),
-              Option.when(hint.nonEmpty)(resolveText(hint, TextStyle.Body, math.max(1, w - 20)))
-            )
-            leaf(
-              w,
-              (
-                if multiple then
-                  140
-                else
-                  layout.size.height.toDouble + 16
-              ) + fieldLabels(id).labelHeight + fieldLabels(id).errorHeight,
-              Some(layout)
-            )
           case Content.Label(text, style, _) =>
             val request = TextRequest(text, style, Lp(w))
             val layout = prepared.getOrElseUpdate(request, resolve(request))
@@ -761,8 +564,10 @@ object Layout:
         case Content.Custom(frame) =>
           val size = Size(m.width.lp, m.height.lp)
           // Text semantics resolve from the same inventory, so assistive geometry matches paint.
-          (frame.textRequests(size) ++ frame.semantics(size).flatMap(_.text.map(_.request)))
-            .foreach(prepareElementText)
+          // Semantics see paint's requests; their own text resolves from the same inventory as paint.
+          val painted = frame.textRequests(size)
+          painted.foreach(prepareElementText)
+          frame.semantics(size, elementText(painted)).flatMap(_.text.map(_.request)).foreach(prepareElementText)
         case _ =>
           ()
       val children = m.children.map((child, dx, dy) => place(child, x + dx, y + dy, clip))
@@ -772,7 +577,5 @@ object Layout:
       result,
       requests.result(),
       PreparedText.fromResolved(prepared.toVector, documents = documents.toVector),
-      offsets.toMap,
-      editors,
-      fieldLabels.toMap
+      offsets.toMap
     )

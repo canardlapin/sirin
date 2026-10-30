@@ -15,15 +15,16 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
     case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => windows(child))
     case MountedSnapshot.Group(children,_,_,_) => children.flatMap(windows)
     case _ => Vector.empty
-  private def controls(s: MountedSnapshot): Vector[(Long,View)]=s match
-    case MountedSnapshot.Control(id,view) => Vector(id->view)
-    case MountedSnapshot.Group(children,_,_,_) => children.flatMap(controls)
-    case MountedSnapshot.Component(_,_,child) => controls(child)
-    case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => controls(child))
-    case MountedSnapshot.Branch(_,_,child) => controls(child)
-    case MountedSnapshot.Scroll(_,child) => controls(child)
-    case MountedSnapshot.Styled(child,_) => controls(child)
-    case MountedSnapshot.Referenced(_,child) => controls(child)
+  /** TextField mounts as a component around its public element; the element instance is the field identity. */
+  private def fields(s: MountedSnapshot): Vector[(Long,TextField.Description)]=s match
+    case MountedSnapshot.Component(_,field: TextField.Description,MountedSnapshot.Custom(frame,_)) => Vector(frame.instance->field)
+    case MountedSnapshot.Group(children,_,_,_) => children.flatMap(fields)
+    case MountedSnapshot.Component(_,_,child) => fields(child)
+    case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => fields(child))
+    case MountedSnapshot.Branch(_,_,child) => fields(child)
+    case MountedSnapshot.Scroll(_,child) => fields(child)
+    case MountedSnapshot.Styled(child,_) => fields(child)
+    case MountedSnapshot.Referenced(_,child) => fields(child)
     case _ => Vector.empty
   private def command(window: MountedSnapshot.Window,id: String): Command[Unit,?]=
     window.menu.menus.flatMap(_.entries).collectFirst {
@@ -36,18 +37,18 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       val mounted=r.mountWindows(owner,Windows.single("main")(_ => Window("Document",MenuBar.empty)(TextField.bind(text))))
       owner.observe(mounted.snapshot)(_ => ())
       def window=windows(read(r,mounted.snapshot)).head
-      val before=window;val field=controls(before.child).collectFirst {case (id,_: TextField.Description) => id}.get
+      val before=window;val field=fields(before.child).head._1
       val failure=WindowRenderFailure(1,"resource_limit","original renderer refusal",2)
       assertEquals(r.transact {mounted.reportWindowRenderFailure(before.instance,failure);UiTxn.refuse("rollback")},CommitResult.Refused("rollback"))
       assertEquals(window.renderStatus,WindowRenderStatus.empty)
       ok(r.transact {mounted.reportWindowRenderFailure(before.instance,failure)})
       assertEquals(window.instance,before.instance);assertEquals(window.renderStatus.current,Some(failure))
-      assert(!controls(window.child).exists(_._1==field))
+      assert(!fields(window.child).exists(_._1==field))
       ok(r.transact {text.set("changed while unavailable")})
       val retry=command(window,"window.render.retry")
       ok(r.transact {retry.dispatch(())})
       assertEquals(window.renderStatus.current,None);assertEquals(window.renderStatus.recent,Vector(failure))
-      assert(controls(window.child).exists(_._1==field))
+      assert(fields(window.child).exists(_._1==field))
       assertEquals(read(r,text),"changed while unavailable")
     finally r.close()
   }
@@ -103,14 +104,14 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       def window=windows(read(r,mounted.snapshot)).head
       val instance=window.instance
       ok(r.transact {mounted.reportWindowRenderFailure(instance,WindowRenderFailure(1,"bad_scene","detail"))})
-      assert(controls(window.child).exists {case (_,field: TextField.Description) => field.value eq custom;case _ => false})
+      assert(fields(window.child).exists(_._2.value eq custom))
       ok(r.transact {mounted.reportWindowRenderFailure(instance,WindowRenderFailure(2,"bad_recovery","detail",recoveryFailed=true))})
-      assert(!controls(window.child).exists(_._2.isInstanceOf[TextField.Description]))
+      assert(fields(window.child).isEmpty)
       assertEquals(window.menu.menus.count(_.title=="View"),1)
       assertEquals(command(window,"existing").id.name,"existing")
       val retry=command(window,"window.render.retry")
       ok(r.transact {retry.dispatch(())})
-      assert(controls(window.child).exists {case (_,field: TextField.Description) => field.value eq normal;case _ => false})
+      assert(fields(window.child).exists(_._2.value eq normal))
     finally r.close()
   }
 

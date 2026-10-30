@@ -1,16 +1,14 @@
-package sirin.host
+package sirin
 
-import sirin.*
-
-final case class EditSelection(anchor: TextPosition,head: TextPosition):
+private[sirin] final case class EditSelection(anchor: TextPosition,head: TextPosition):
   def start: Int=math.min(anchor.utf16Offset,head.utf16Offset)
   def end: Int=math.max(anchor.utf16Offset,head.utf16Offset)
   def empty: Boolean=start==end
-object EditSelection:
+private[sirin] object EditSelection:
   def at(offset: Int): EditSelection =
     val p=TextPosition(offset,TextAffinity.Downstream);EditSelection(p,p)
-final case class Preedit(text: String,selectionStart: Int,selectionEnd: Int)
-final case class EditSnapshot(text: String,selection: EditSelection,preedit: Option[Preedit]=None):
+private[sirin] final case class Preedit(text: String,selectionStart: Int,selectionEnd: Int)
+private[sirin] final case class EditSnapshot(text: String,selection: EditSelection,preedit: Option[Preedit]=None):
   def display: String=preedit.fold(text)(p => text.take(selection.start)+p.text+text.drop(selection.end))
   def visibleSelection: EditSelection=preedit.fold(selection)(p => EditSelection(
     TextPosition(selection.start+p.selectionStart,TextAffinity.Downstream),TextPosition(selection.start+p.selectionEnd,TextAffinity.Upstream)))
@@ -19,7 +17,7 @@ final case class EditSnapshot(text: String,selection: EditSelection,preedit: Opt
 /** Owner snapshots only; native segmentation and retained geometry are supplied.
   * No mutation occurs until the caller publishes the returned value after UiTxn.
   */
-final case class TextEditing private (snapshot: EditSnapshot,private val past: Vector[EditSnapshot],
+private[sirin] final case class TextEditing private (snapshot: EditSnapshot,private val past: Vector[EditSnapshot],
     private val future: Vector[EditSnapshot],private val typing: Boolean):
   import TextEditing.*
   def canUndo: Boolean=past.nonEmpty
@@ -96,7 +94,7 @@ final case class TextEditing private (snapshot: EditSnapshot,private val past: V
     else next.position
     select(EditSelection(if extend then snapshot.selection.anchor else position,position),boundaries)
 
-object TextEditing:
+private[sirin] object TextEditing:
   val MaxUnits=16384
   def normalize(value: String): String=value.replace("\r\n","\n").replace('\r','\n')
   def validate(text: String): Unit =

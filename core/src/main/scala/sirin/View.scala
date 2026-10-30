@@ -138,8 +138,10 @@ object TextField:
       commit: UiTxn => Unit = _ => (),
       blur: UiTxn => Unit = _ => (),
       maxUnits: Int = 16384
-  ) extends TextFieldView:
+  ) extends TextFieldView
+      with View.Proxy:
     require(maxUnits >= 0 && maxUnits <= 16384, "Text field limit must be between 0 and 16,384 UTF-16 units")
+    lazy val body: View = TextFieldElement.view(this)
     def label(text: String): TextFieldView = copy(fieldLabel = text)
     def placeholder(text: String): TextFieldView = copy(hint = text)
     def error(message: Signal[Option[String]]): TextFieldView = copy(problem = message)

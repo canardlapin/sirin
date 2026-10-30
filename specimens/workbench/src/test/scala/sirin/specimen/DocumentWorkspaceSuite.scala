@@ -70,7 +70,8 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
     def selected: Option[DocumentId]=value(r,model.selected)
     def bodyIds(document: WorkspaceDocument): Vector[Long] =
       def loop(snapshot: MountedSnapshot): Vector[Long]=snapshot match
-        case MountedSnapshot.Control(id,field: TextField.Description) if field.value eq document.editor.body => Vector(id)
+        // TextField mounts as a component around its public element; the element instance is the field identity.
+        case MountedSnapshot.Component(_,field: TextField.Description,MountedSnapshot.Custom(frame,_)) if field.value eq document.editor.body => Vector(frame.instance)
         case MountedSnapshot.Group(children,_,_,_) => children.flatMap(loop)
         case MountedSnapshot.Component(_,_,child) => loop(child)
         case MountedSnapshot.Window(_,_,_,child,_) => loop(child)

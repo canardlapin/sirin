@@ -8,43 +8,12 @@ object EditorAccessibility:
   def publish(window: NativeWindow, controller: EditorController, frame: RenderedFrame, active: Boolean = true): Unit =
     val layout = frame.layout
     window.beginAccessibility(frame.request.generation)
-    layout
-      .fields
-      .filter(p => p.clip.width > 0 && p.clip.height > 0)
-      .foreach { p =>
-        p.node.content match
-          case Content.Editable(id, _, label, hint, multiple, error) =>
-            val snapshot = layout.editorState(p)
-            val text = p.text.get
-            val origin = layout.textOrigin(p)
-            val area = layout.editorArea(p).intersect(p.clip)
-            val selection = snapshot.visibleSelection
-            window.accessibilityField(
-              id,
-              if multiple then
-                1
-              else
-                0
-              ,
-              label,
-              snapshot.display,
-              error.getOrElse(hint),
-              selection.anchor.utf16Offset,
-              selection.head.utf16Offset - selection.anchor.utf16Offset,
-              active && controller.focusedId.contains(id),
-              true,
-              Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
-              spans(text, origin, area, snapshot.visibleSelection.head.utf16Offset, Some(layout.editorCaret(p)))
-            )
-          case _ =>
-            ()
-      }
     def buttons(p: Placed): Unit =
       p.node.content match
         case Content.Custom(element) if p.clip.width > 0 && p.clip.height > 0 =>
           val size = Size(p.bounds.width.lp, p.bounds.height.lp)
           element
-            .semantics(size)
+            .semantics(size, layout.text)
             .iterator
             .flatMap(node => node.text.map(node -> _))
             .nextOption()
@@ -60,6 +29,14 @@ object EditorAccessibility:
                   val caret = shaped
                     .caret(TextPosition(text.selection.focus, TextAffinity.Downstream))
                     .orElse(shaped.caretsAt(text.selection.focus).headOption)
+                  // Spans outside the text node, such as text scrolled out of a field, are clipped away.
+                  val b = node.bounds
+                  val area = Box(
+                    p.bounds.x + b.origin.x.toDouble,
+                    p.bounds.y + b.origin.y.toDouble,
+                    b.size.width.toDouble,
+                    b.size.height.toDouble
+                  ).intersect(p.clip)
                   window.accessibilityField(
                     element.instance,
                     if text.multiline then
@@ -75,7 +52,7 @@ object EditorAccessibility:
                     active && controller.interaction.state.focused.contains(p.node.id),
                     text.editable,
                     Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
-                    spans(shaped, origin, p.clip, text.selection.focus, caret)
+                    spans(shaped, origin, area, text.selection.focus, caret)
                   )
                 }
             }
@@ -83,7 +60,7 @@ object EditorAccessibility:
             .activation
             .foreach { activation =>
               element
-                .semantics(Size(p.bounds.width.lp, p.bounds.height.lp))
+                .semantics(Size(p.bounds.width.lp, p.bounds.height.lp), layout.text)
                 .find(node => node.part == activation.part && node.semantics.role == Role.Button)
                 .foreach { node =>
                   window.accessibilityField(
@@ -120,7 +97,7 @@ object EditorAccessibility:
       p.children.foreach(buttons)
     buttons(layout.root)
     window.publishAccessibility()
-    updateTextInput(window, controller, frame, active)
+    updateTextInput(window, controller, active)
 
   /** Caret and grapheme spans in window coordinates, clipped to `area`; `focus` uses the supplied caret. */
   private def spans(text: TextLayout, origin: Point, area: Box, focus: Int, focusCaret: Option[TextCaret]): Array[Double] =
@@ -151,30 +128,8 @@ object EditorAccessibility:
     result.result().toArray
 
   /** Enable input immediately on focus using accepted geometry; the next frame refines the caret. */
-  def updateTextInput(window: NativeWindow, controller: EditorController, frame: RenderedFrame, active: Boolean): Unit =
-    val layout = frame.layout
-    controller
-      .focusedId
-      .filter(_ => active)
-      .flatMap(id => layout.fields.find(_.node.id == NodeId(Vector("editor", id))))
-      .foreach { p =>
-        val origin = layout.textOrigin(p)
-        val caret = controller
-          .snapshots
-          .get(controller.focusedId.get)
-          .flatMap(s => p.text.flatMap(_.caret(s.visibleSelection.head)))
-          .getOrElse(layout.editorCaret(p))
-        val c = caret.bounds
-        val area = layout.editorArea(p).intersect(p.clip)
-        val rect = Box(
-          origin.x.toDouble + c.origin.x.toDouble,
-          origin.y.toDouble + c.origin.y.toDouble,
-          1,
-          c.size.height.toDouble
-        ).intersect(area)
-        window.textInput(1, rect.x, rect.y, math.max(1, rect.width), math.max(1, rect.height))
-      }
-    val element = controller.textElement.filter(_ => active && controller.focusedId.isEmpty)
+  def updateTextInput(window: NativeWindow, controller: EditorController, active: Boolean): Unit =
+    val element = controller.textElement.filter(_ => active)
     element.foreach { (_, p, request) =>
       val c = request.caret
       val rect = Box(
@@ -185,5 +140,5 @@ object EditorAccessibility:
       ).intersect(p.clip)
       window.textInput(1, rect.x, rect.y, math.max(1, rect.width), math.max(1, rect.height))
     }
-    if !active || (controller.focusedId.isEmpty && element.isEmpty) then
+    if element.isEmpty then
       window.textInput(0, 0, 0, 1, 1)

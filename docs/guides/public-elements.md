@@ -83,6 +83,13 @@ an over-limit paste, to the host's feedback. List editing keys and command
 chords in `TextInputRequest.keys` and `chords` so that they take precedence
 over application shortcuts. Printable keys are always reserved.
 
+Set `TextInputRequest.composing` while you hold provisional composition text.
+If a presented control stops declaring it by itself, for example because its
+text was replaced from outside, the host ends the platform's composition. When
+semantic geometry depends on presented text, as a scrolled field's text origin
+does, override `semantics(state, size, text)`. It receives the requests you
+declared in `textRequests`.
+
 Override `focus` to act when focus arrives or leaves. `Lost` also runs when the
 window deactivates. Refusing `Lost` keeps focus where it is, which is how
 validation on blur is enforced. Text with hard line breaks works in any
@@ -93,9 +100,10 @@ Expose text to assistive technology with `SemanticNode.text`. Name the request
 you paint, its origin and the selection. The host resolves it from the same
 prepared inventory, so declare that request in `textRequests`.
 `specimens/workbench/src/main/scala/demo/text/NoteField.scala` is a complete
-one-line example outside the `sirin` package.
+one-line example outside the `sirin` package. The standard `TextField`, in
+`core/src/main/scala/sirin/TextFieldElement.scala`, uses the same APIs and adds
+undo, limits, multiline documents and refusal feedback.
 
 This API is provisional. Arbitrary semantic parts have headless snapshots.
 Native accessibility transport covers button activation and one text node per
-element. The TextField port and real animation remain open work before API
-freeze.
+element. Real animation remains open work before API freeze.

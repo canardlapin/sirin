@@ -1794,9 +1794,13 @@ These stay as probe questions.
 
 ### Editable text implementation slice (owner-authorized2026-10-29)
 
-`TextField.bind` uses existing Cell/UiTxn and mounted control identity. The host
-owns bounded selection, provisional composition and undo state; render requests
-contain immutable snapshots only. Existing retained text layouts drive hit, caret,
+`TextField.bind` uses existing Cell/UiTxn and mounted control identity. Since
+2026-10-30 it is a public element: the mounted field owns bounded selection,
+provisional composition and undo state in a cell of its own scope, and every edit
+publishes that state and the bound value in one transaction. Binding a different
+cell mounts a new field. Render requests carry immutable element frames only
+(`docs/design/decisions/2026-10-30-textfield-port.md`). Existing retained text
+layouts drive hit, caret,
 selection, visual navigation, IME placement and accessibility geometry. Native
 text input and AccessKit transport queue copied facts/actions without managed
 upcalls. AccessKit C 0.23.1 owns macOS platform objects through its SDL-window

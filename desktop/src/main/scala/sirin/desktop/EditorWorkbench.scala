@@ -22,11 +22,11 @@ object EditorWorkbench:
     val document=scope.cell(Draft)
     val message=scope.cell("Ready")
     val intent=scope.cell(("",0))
-    val canUndo=scope.cell(false);val canRedo=scope.cell(false)
     val titleRef=scope.ref();val documentRef=scope.ref()
     def request(value: String)(using UiTxn): Unit=intent.set((value,intent.get._2+1))
-    val undo=scope.action[Unit]("editor.undo","Undo",enabled=canUndo)(_ => request("undo"))
-    val redo=scope.action[Unit]("editor.redo","Redo",enabled=canRedo)(_ => request("redo"))
+    // Fields own their history; these send the field's own undo and redo keys to the last focused field.
+    val undo=scope.action[Unit]("editor.undo","Undo")(_ => request("undo"))
+    val redo=scope.action[Unit]("editor.redo","Redo")(_ => request("redo"))
     val restore=scope.action[Unit]("editor.restore","Restore draft")(_ => {document.set(Draft);message.set("Draft restored")})
     val view=Column(
       Row(Text("Sirin").style(TextStyle.Title).color(ColorRole.Accent),Spacer().grow,Text("Editable text").style(TextStyle.Caption)),
@@ -73,21 +73,12 @@ object EditorWorkbench:
     }
     def refresh(): CapturedTree =
       val turn=runtime.drive(16);require(turn.failures.isEmpty,"editor driver failure")
-      val tree=capture();controller.update(tree)
-      if flags() then
-        val indicators=runtime.drive(16);require(indicators.failures.isEmpty,"editor indicator driver failure")
-        val updated=capture();controller.update(updated);updated
-      else tree
-    def flags(): Boolean = lastEditor.filter(controller.snapshots.contains).exists { id =>
-      val state=controller.state(id)
-      if value(canUndo)==state.canUndo && value(canRedo)==state.canRedo then false
-      else {ok(runtime.transact {canUndo.set(state.canUndo);canRedo.set(state.canRedo)});true}
-    }
+      val tree=capture();controller.update(tree);tree
     def input(event: HostInput,mods: Mods=Mods.none,clicks: Int=1): Unit =
-      controller.focusedId.foreach(id => lastEditor=Some(id))
-      if event==HostInput.KeyDown(Key.Escape,Mods.none,false) && controller.focusedId.forall(id => controller.state(id).snapshot.preedit.isEmpty) then running=false
+      controller.focusedElement.foreach(id => lastEditor=Some(id))
+      if event==HostInput.KeyDown(Key.Escape,Mods.none,false) && !controller.composingText then running=false
       else controller.handle(event,mods,clicks)
-      controller.focusedId.foreach(id => lastEditor=Some(id))
+      controller.focusedElement.foreach(id => lastEditor=Some(id))
       controller.notice.foreach(n => ok(runtime.transact {message.set(n)}));controller.notice=None
     def makeRenderer(): RenderService=new RenderService(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/editor-frames"),() => {window.wake();()},
       Some(() => new RenderSession(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/editor-frames"),batch=Some(BatchGpu.shared(activeRenderer)),editorSystemFonts=true)))
@@ -116,7 +107,7 @@ object EditorWorkbench:
             require(pending.size<256,"editor essential-input queue overflow")
             val mods=(if (facts.mods()&2)!=0 then Mods.Shift else Mods.none)
             pending.enqueue((event,mods,math.max(1,facts.clicks())))
-            trace(s"input kind=${facts.kind()} key=${facts.key()} x=${facts.x()} y=${facts.y()} ready=${controller.ready} focused=${controller.focusedId} pending=${pending.size}")
+            trace(s"input kind=${facts.kind()} key=${facts.key()} x=${facts.x()} y=${facts.y()} ready=${controller.ready} focused=${controller.focusedElement} pending=${pending.size}")
         }
         tree=refresh()
         var continue=true
@@ -128,7 +119,7 @@ object EditorWorkbench:
         if request._2!=lastIntent then
           lastIntent=request._2
           lastEditor.foreach { id =>
-            controller.focusEditor(id)
+            controller.focusElement(id)
             input(HostInput.KeyDown(Key.Character('z'),if request._1=="redo" then Mods.Primary|Mods.Shift else Mods.Primary))
           }
           tree=refresh()
@@ -136,12 +127,12 @@ object EditorWorkbench:
         while action!=null do
           val accepted=controller.accessibility(action)
           trace(s"ax kind=${action.kind()} revision=${action.revision()} shown=${controller.presentedRevision} readyAfter=${controller.ready} accepted=$accepted")
-          lastEditor=controller.focusedId.orElse(lastEditor);tree=refresh();action=window.pollAccessibility()
+          lastEditor=controller.focusedElement.orElse(lastEditor);tree=refresh();action=window.pollAccessibility()
         focusRequests++=runtime.takeFocusRequests()
         if controller.ready then {focusRequests.foreach(controller.focusReference);focusRequests=Vector.empty}
         if facts.width()>0 && facts.height()>0 then
           val state=controller.interaction.state
-          val payload=FramePayload(controller.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),state.scrolls,state.focused,state.keyboard,state.pressed.map(_.target),editors=controller.snapshots)
+          val payload=FramePayload(controller.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),state.scrolls,state.focused,state.keyboard,state.pressed.map(_.target),textFocus=controller.textFocus)
           coordinator.request(payload).foreach { req => latest=Some(req);trace(s"request generation=${req.generation}");renderer.get.submit(req) }
           renderer.get.poll().foreach {
             case (_,Right(frame: RenderedFrame)) if coordinator.accepts(frame.request) => trace(s"received generation=${frame.request.generation}");current.foreach(_.close());current=Some(frame);repaint=true
@@ -154,16 +145,13 @@ object EditorWorkbench:
             if repaint && {val accepted=frame.present(window);if !lastAttempt.contains((frame.request.generation,accepted)) then {trace(s"attempt generation=${frame.request.generation} success=$accepted size=${frame.width}x${frame.height}");lastAttempt=Some((frame.request.generation,accepted))};accepted} then
               repaint=false;presentations+=1;recapture=true;consecutiveLosses=0
               controller.install(frame.request.generation,frame.layout)
-              trace(s"present generation=${frame.request.generation} ready=${controller.ready} sameTree=${frame.layout.root.node==tree.tree} sameEditors=${frame.layout.editors==controller.snapshots}")
+              trace(s"present generation=${frame.request.generation} ready=${controller.ready} sameTree=${frame.layout.root.node==tree.tree}")
               EditorAccessibility.publish(window,controller,frame)
               if scripted then
                 println(s"editorStage=$scenario generation=${frame.request.generation}")
-                val fields=frame.layout.fields
-                val docId=fields.find(_.node.content match
-                  case Content.Editable(_,_,"Document",_,_,_) => true
-                  case _ => false).get.node.content.asInstanceOf[Content.Editable].instance
+                val docId=frame.layout.semanticParts.find(_._2.semantics.name.contains("Document")).get._1
                 scenario match
-                  case 0 => controller.focusEditor(docId);lastEditor=Some(docId);scenario=1
+                  case 0 => controller.focusElement(docId);lastEditor=Some(docId);scenario=1
                   case 1 => input(HostInput.KeyDown(Key.Character('a'),Mods.Primary));input(HostInput.TextInput("office café שלום مرحبا"));scenario=2
                   case 2 if window.keyboardFocus() =>
                     require(value(document)=="office café שלום مرحبا","committed text missing")
@@ -174,10 +162,10 @@ object EditorWorkbench:
                     input(HostInput.KeyDown(Key.Character('v'),Mods.Primary))
                     // This sequence restores identical pixels; do not await a nonexistent new frame.
                     window.imeControl("にほ",2,0,false);scenario=4
-                  case 4 if controller.state(docId).snapshot.preedit.nonEmpty =>
+                  case 4 if controller.composingText =>
                     require(value(document)=="office café שלום مرحبا","preedit escaped to Cell")
                     window.imeControl("日本語",3,0,true);scenario=5
-                  case 5 if controller.state(docId).snapshot.preedit.isEmpty && value(document).endsWith("日本語") =>
+                  case 5 if !controller.composingText && value(document).endsWith("日本語") =>
                     input(HostInput.KeyDown(Key.Character('z'),Mods.Primary));require(value(document)=="office café שלום مرحبا","IME commit was not one undo step")
                     scenario=6;window.resize(600,360)
                   case 6 =>
@@ -186,7 +174,9 @@ object EditorWorkbench:
                     require(recoveries==1,"editor recovery missing")
                     ok(runtime.transact {document.set(Draft)});scenario=8
                   case 8 =>
-                    require(value(document)==Draft && !value(canUndo) && !value(canRedo) && !controller.state(docId).canUndo,"restored history indicators stale")
+                    // External restoration retires the field's history, so undo leaves the draft alone.
+                    controller.focusElement(docId);input(HostInput.KeyDown(Key.Character('z'),Mods.Primary))
+                    require(value(document)==Draft,"restored draft kept stale history")
                     scenario=9;window.inject(8,0,0,0,0,0)
                   case _ => ()
           }

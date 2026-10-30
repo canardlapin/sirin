@@ -250,6 +250,7 @@ class TextInputSeamSuite extends munit.FunSuite:
   }
 
   test("an element without text semantics still receives cancellation when its composition is retired") {
+    // It declares a composition throughout, so only retirement can end the platform's.
     var events = Vector.empty[TextInputEvent]
     val recorder =
       new ElementHandlers:
@@ -261,7 +262,7 @@ class TextInputSeamSuite extends munit.FunSuite:
         def paint(state: Unit, presentation: Unit, size: Size, canvas: Canvas)(using Committed): Unit = ()
         override def textInput(state: Unit, size: Size, text: TextServices)(using
             Committed
-        ): Option[TextInputRequest] = Some(TextInputRequest(Rect(Point.origin, Size(1.lp, 10.lp))))
+        ): Option[TextInputRequest] = Some(TextInputRequest(Rect(Point.origin, Size(1.lp, 10.lp)), composing = true))
     val unit = Signal.const(())
     val f = new Fixture(_ =>
       Element(

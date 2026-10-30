@@ -18,7 +18,7 @@ object FrozenDrawing:
       p.pixelWidth,
       p.pixelHeight,
       Affine.scale(p.pixelWidth / p.logicalWidth, p.pixelHeight / p.logicalHeight),
-      layout.drawing(DevelopmentTheme, fieldFocus = p.focus),
+      layout.drawing(DevelopmentTheme, textFocus = p.textFocus),
       layout.overlay(DevelopmentTheme, p.focus, p.keyboardFocus, p.pressed)
     )
     Files.createDirectories(path.getParent)

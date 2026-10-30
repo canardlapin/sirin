@@ -250,8 +250,6 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
         Vector(p.label, p.binding.enabled, p.binding.running)
       case p: Text.Description =>
         Vector(p.content)
-      case p: TextField.Description =>
-        Vector(p.value, p.problem)
       case p: sirin.Window.Description =>
         Vector(p.title) ++ MenuBindings.dependencies(p.menu) ++ directDependencies(p.content)
       case p: Windows.MenuDescription =>
@@ -443,18 +441,7 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
     val scope = parent.child("leaf")
     private var view = initial
     def accepts(next: View): Boolean =
-      if view.isInstanceOf[Button.Description] != next.isInstanceOf[Button.Description] ||
-        view.isInstanceOf[TextField.Description] != next.isInstanceOf[TextField.Description]
-      then
-        false
-      else if (
-          (view, next) match
-            case (a: TextField.Description, b: TextField.Description) =>
-              !(a.value eq b.value)
-            case _ =>
-              false
-        )
-      then
+      if view.isInstanceOf[Button.Description] != next.isInstanceOf[Button.Description] then
         false
       else
         next match
@@ -476,7 +463,7 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
     def dependencies: Vector[Signal[?]] = Vector.empty
     def snapshot: MountedSnapshot =
       view match
-        case _: Button.Description | _: TextField.Description =>
+        case _: Button.Description =>
           MountedSnapshot.Control(scope.id, view)
         case _ =>
           if view eq View.Empty then

@@ -323,9 +323,8 @@ private[desktop] final class ApplicationPeer(
   private var losses = 0
   private var focusActive = window.keyboardFocus()
   private var shownFocus = Option.empty[NodeId]
-  def hasPresentedEditorFocus: Boolean = controller
-    .focusedId
-    .exists(id => shownFocus.contains(NodeId(Vector("editor", id))))
+  /** A text control holds focus in the presented frame. */
+  def hasPresentedEditorFocus: Boolean = controller.textFocus.exists(shownFocus.contains)
   private var geometryAt = 0L
   private var viewports = Map.empty[Long, RowViewport]
   private val pending = new OwnerInputQueue[NativeWindow.Event]
@@ -382,9 +381,9 @@ private[desktop] final class ApplicationPeer(
         true
       case None =>
         false
-  private def updateInputClient(): Unit = current.foreach(frame =>
-    EditorAccessibility.updateTextInput(window, controller, frame, focusActive)
-  )
+  private def updateInputClient(): Unit =
+    if current.nonEmpty then
+      EditorAccessibility.updateTextInput(window, controller, focusActive)
   def drain(): Unit =
     var count = 0
     var unapplied = 0L
@@ -550,7 +549,7 @@ private[desktop] final class ApplicationPeer(
       focusActive && state.keyboard,
       state.pressed.map(_.target),
       viewports,
-      controller.snapshots
+      controller.textFocus.filter(_ => focusActive)
     )
     renderRecovery
       .request(payload)
@@ -596,7 +595,7 @@ private[desktop] final class ApplicationPeer(
         case (generation, Left(_: GraphicsDeviceLost)) if coordinator.acceptsGeneration(generation) =>
           recover()
         case (generation, Left(scala.util.control.NonFatal(error))) =>
-          val composing = controller.snapshots.values.exists(_.preedit.nonEmpty)
+          val composing = controller.composingText
           renderRecovery.report(generation, error, captured.renderStatus, pending.size, composing) match
             case RenderFailureDisposition.Ignored =>
               ()

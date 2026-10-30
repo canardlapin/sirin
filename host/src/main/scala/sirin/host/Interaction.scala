@@ -16,7 +16,6 @@ enum HostInput:
 enum TargetKind:
   case Custom(frame: sirin.engine.ElementFrame)
   case Button(instance: Long)
-  case Editor(instance: Long)
   case Scroll(instance: Long, maximum: Double)
 final case class Target(
     id: NodeId,
@@ -90,9 +89,6 @@ object InteractionSnapshot:
           case Content.Button(instance, _, enabled, _, _) =>
             targets +=
               Target(p.node.id, TargetKind.Button(instance), p.bounds, p.clip, enabled, direct, ancestors, parents)
-          case Content.Editable(instance, _, _, _, _, _) =>
-            targets +=
-              Target(p.node.id, TargetKind.Editor(instance), p.bounds, p.clip, true, direct, ancestors, parents)
           case Content.Scroll(instance, _) =>
             val maximum = math.max(0, p.children.headOption.fold(0.0)(_.bounds.height) - p.bounds.height)
             targets +=

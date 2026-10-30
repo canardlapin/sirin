@@ -17,14 +17,6 @@ enum Content:
   case Empty
   case Custom(frame: ElementFrame)
   case CustomLayout(frame: LayoutFrame, children: Vector[(Slot, Node)])
-  case Editable(
-      instance: Long,
-      value: String,
-      label: String,
-      placeholder: String,
-      multiline: Boolean,
-      error: Option[String]
-  )
   case Button(instance: Long, label: String, enabled: Boolean, busy: Boolean, primary: Boolean)
   case Reference(reference: Long, child: Node)
   case Label(text: String, style: TextStyle, color: ColorRole)
@@ -36,11 +28,9 @@ enum Content:
 final case class Node(id: NodeId, content: Content)
 
 final case class Activation(enabled: Boolean, run: UiTxn => Unit)
-final case class TextBinding(description: TextField.Description)
 final case class CapturedTree(
     tree: Node,
     bindings: Map[Long, Activation],
-    editors: Map[Long, TextBinding] = Map.empty,
     keys: Vector[KeyBinding] = Vector.empty,
     elements: Map[Long, ElementBinding] = Map.empty
 )
@@ -70,7 +60,6 @@ object CommittedTree:
       initialDepth: Int
   ): CapturedTree =
     val bindings = scala.collection.mutable.Map.empty[Long, Activation]
-    val editors = scala.collection.mutable.Map.empty[Long, TextBinding]
     val keys = scala.collection.mutable.ArrayBuffer.empty[KeyBinding]
     val elements = scala.collection.mutable.Map.empty[Long, ElementBinding]
     def value[A](signal: Signal[A]): A =
@@ -115,15 +104,6 @@ object CommittedTree:
               Node(
                 NodeId(Vector("control", instance)),
                 Content.Button(instance, label, enabled, value(b.binding.running) > 0, b.isPrimary)
-              )
-            case f: TextField.Description =>
-              val text = value(f.value)
-              TextEditing.validate(text)
-              budget.text(text.length)
-              editors(instance) = TextBinding(f)
-              Node(
-                NodeId(Vector("editor", instance)),
-                Content.Editable(instance, text, f.fieldLabel, f.hint, f.multiple, value(f.problem))
               )
             case _ =>
               throw new UnsupportedOperationException("unsupported mounted control")
@@ -221,4 +201,4 @@ object CommittedTree:
         case MountedSnapshot.Unavailable(error) =>
           throw error
     val tree = loop(snapshot, NodeId(Vector("root")), initialDepth)
-    CapturedTree(tree, bindings.toMap, editors.toMap, keys.toVector, elements.toMap)
+    CapturedTree(tree, bindings.toMap, keys.toVector, elements.toMap)

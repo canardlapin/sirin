@@ -83,7 +83,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
             state.focused,
             state.keyboard,
             viewports = viewports,
-            editors = controller.snapshots
+            textFocus = controller.textFocus
           )
         )
         val output = renderer.render(request, () => false)
@@ -134,17 +134,16 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
           model.documents.get(id).get
         }
       )
-      val before = frame()
-      val field =
-        before
-          .windows
-          .head
-          .content
-          .editors
-          .find((_, binding) => binding.description.value eq document.editor.body)
-          .get
-          ._1
-      controller.focusEditor(field)
+      frame()
+      val body = value(runtime, document.editor.body)
+      val field = controller
+        .layout
+        .get
+        .semanticParts
+        .find((_, node) => node.semantics.role == Role.TextInput && node.semantics.value.contains(body))
+        .get
+        ._1
+      assert(controller.focusElement(field))
       frame()
       controller.handle(HostInput.KeyDown(Key.Character('a'), Mods.Primary))
       controller.handle(HostInput.TextInput("typed café 日本語 😀"))

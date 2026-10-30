@@ -21,8 +21,8 @@ class WindowCaptureSuite extends munit.FunSuite:
       val before=capture()
       assertEquals(before.size,2)
       assertEquals(before.map(_.title),Vector(Value.Ok("Document"),Value.Ok("Document")))
-      assertEquals(before.map(_.content.editors.size),Vector(1,1))
-      assert(before(0).content.editors.keySet.intersect(before(1).content.editors.keySet).isEmpty)
+      assertEquals(before.map(_.content.elements.size),Vector(1,1))
+      assert(before(0).content.elements.keySet.intersect(before(1).content.elements.keySet).isEmpty)
       r.transact { text.set("changed");title.set("Renamed");source.move(2,0) }
       val after=capture()
       assertEquals(after.map(_.instance),before.reverse.map(_.instance))

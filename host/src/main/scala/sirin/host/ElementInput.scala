@@ -23,6 +23,8 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
     prepared = sirin.drawing.PreparedText.empty
   }
 
+  def shownElement(instance: Long): Boolean = shown.contains(instance) && bindings.contains(instance)
+
   /** Lookup in the presented frame's prepared inventory; never shapes. */
   def presented(request: TextRequest): Option[TextLayout] = prepared.get(request)
 
@@ -62,7 +64,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
     .filter(_ => bindings.contains(instance))
     .flatMap { p =>
       val frame = p.node.content.asInstanceOf[Content.Custom].frame
-      frame.semantics(Size(p.bounds.width.lp, p.bounds.height.lp)).iterator.flatMap(_.text).nextOption()
+      frame.semantics(Size(p.bounds.width.lp, p.bounds.height.lp), prepared).iterator.flatMap(_.text).nextOption()
     }
   def exposesText(instance: Long): Boolean = exposedText(instance).nonEmpty
 
@@ -224,7 +226,9 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
       val frame = p.node.content.asInstanceOf[Content.Custom].frame
       Option
         .when(
-          frame.semantics(Size(p.bounds.width.lp, p.bounds.height.lp)).exists(n => n.part == part && n.actions(action))
+          frame
+            .semantics(Size(p.bounds.width.lp, p.bounds.height.lp), prepared)
+            .exists(n => n.part == part && n.actions(action))
         )(())
         .flatMap(_ => bindings.get(instance).map(binding => runtime.transact(binding.action(part, action))))
     }

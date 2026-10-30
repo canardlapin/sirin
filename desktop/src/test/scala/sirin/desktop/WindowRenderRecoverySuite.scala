@@ -94,16 +94,10 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
             state.scrolls,
             state.focused,
             state.keyboard,
-            editors = controller.snapshots
+            textFocus = controller.textFocus
           )
         )
         .get
-    def freeze(request: FrameRequest, name: String): Unit =
-      val file = Path.of("target/render-recovery").resolve(name)
-      java.nio.file.Files.createDirectories(file.getParent)
-      val output = new java.io.ObjectOutputStream(java.nio.file.Files.newOutputStream(file))
-      try output.writeObject(request)
-      finally output.close()
     def present(save: Boolean = false): Unit =
       val req = request()
       val frame = renderer.render(req, () => false).asInstanceOf[RenderedFrame]
@@ -129,20 +123,25 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       assert(requests.exists(inputs.current.focusReference))
     try
       present()
-      val field = current.content.editors.head._1
-      inputs.current.focusEditor(field)
+      def textFields: Vector[Long] = inputs
+        .current
+        .layout
+        .toVector
+        .flatMap(_.semanticParts.filter(_._2.semantics.role == Role.TextInput).map(_._1))
+      val field = textFields.head
+      assert(inputs.current.focusElement(field))
+      present()
       inputs.current.handle(HostInput.KeyDown(Key.Character('a'), Mods.Primary))
       inputs.current.handle(HostInput.TextInput("retained draft"))
       inputs.current.update(current.content)
       inputs.current.handle(HostInput.Composition("仮", 1, 0))
-      assert(inputs.current.state(field).snapshot.preedit.nonEmpty)
+      assert(inputs.current.composingText)
       ok(
         r.transact {
           problem.set(Some("a" + "😀" * 255))
         }
       )
       val failed = request()
-      freeze(failed, "refused.frame")
       val error = intercept[IllegalArgumentException](renderer.render(failed, () => false))
       assert(error.getMessage.contains("paragraph exceeds shaping work budget"))
       val pending = new OwnerInputQueue[Int]
@@ -169,7 +168,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       assert(!inputs.accepts(HostInput.KeyDown(Key.Tab, Mods.none), 99, 100, false))
       assert(!inputs.accepts(HostInput.KeyDown(Key.Enter, Mods.none), 99, 100, false))
       assert(inputs.accepts(HostInput.KeyDown(Key.Tab, Mods.none), 101, 100, false))
-      assert(inputs.current.snapshots.isEmpty)
+      assert(textFields.isEmpty, "recovery content presents no text field")
       assert(retryFocus.exists(inputs.current.focusReference))
       val other = capture(r, mounted).windows(1)
       val healthy = renderer.render(
@@ -185,9 +184,8 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       inputs.current.handle(HostInput.KeyDown(Key.Enter, Mods.none))
       assertEquals(current.renderStatus.current, None)
       present()
-      assertEquals(current.content.editors.keySet, Set(field))
-      assert(inputs.current.state(field).canUndo)
-      assertEquals(inputs.current.state(field).snapshot.preedit, None)
+      assertEquals(textFields, Vector(field))
+      assert(!inputs.current.composingText)
       inputs.current.handle(HostInput.KeyDown(Key.Character('z'), Mods.Primary))
       assertEquals(value(r, text), "original")
       assertEquals(current.renderStatus.recent.map(_.generation), Vector(failed.generation))

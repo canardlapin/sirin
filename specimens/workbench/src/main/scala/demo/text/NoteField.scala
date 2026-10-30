@@ -93,7 +93,10 @@ object NoteField:
 
       override def textInput(state: State, size: Size, text: TextServices)(using Committed): Option[TextInputRequest] =
         val line = text.layout(state.display, TextStyle.Body, Lp(Double.PositiveInfinity))
-        caret(state, line).map(c => TextInputRequest(c.bounds.translate(Point(inset, inset)), keys, chords))
+        caret(state, line)
+          .map(c =>
+            TextInputRequest(c.bounds.translate(Point(inset, inset)), keys, chords, state.composition.nonEmpty)
+          )
 
       override def semantics(state: State, size: Size)(using
           @unused

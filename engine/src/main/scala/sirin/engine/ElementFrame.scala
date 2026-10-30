@@ -55,8 +55,8 @@ final class ElementFrame private[engine] (
     definition.paintOverlay(states(1), states(4), size, canvas, feedback)
   )
   def hit(size: Size, at: Point): Hit = guard(definition.hitTest(states(2), size, at))
-  def semantics(size: Size): Vector[SemanticNode] = guard {
-    val result = definition.semantics(states(3), size).iterator.take(10001).toVector
+  def semantics(size: Size, text: TextServices): Vector[SemanticNode] = guard {
+    val result = definition.semantics(states(3), size, text).iterator.take(10001).toVector
     require(
       result.size <= 10000 && result.map(_.part).distinct.size == result.size,
       "duplicate or excessive semantic parts"

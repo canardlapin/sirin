@@ -21,11 +21,14 @@ Sirin is a pre-release prototype. Nothing is published.
   shared logical units. Button now uses this public seam, including prepared
   measurement text, input activation, semantics and focus/press feedback.
   [Validation and limits](evidence/2026-10-30-public-toolkit-proof.md).
-- **Public text input.** Custom elements receive committed text, IME
-  composition and assistive select/replace requests as UTF-16 events. They place
-  the IME caret, use staged clipboard and segmentation services, and expose
-  text-range semantics. TextField itself is not yet ported.
-  [Checks and limits](evidence/2026-10-30-text-input-seam.md).
+- **Public text input and TextField.** Custom elements receive committed text,
+  IME composition and assistive select/replace requests as UTF-16 events. They
+  place the IME caret, use staged clipboard and segmentation services, receive
+  focus events and expose text-range semantics. TextField is built on these
+  public APIs alone; the host's private editor is gone. Real IME and VoiceOver
+  sessions have not been run on the port.
+  [Seam](evidence/2026-10-30-text-input-seam.md),
+  [port](evidence/2026-10-30-textfield-port.md).
 - **Public diagram client.** Application code outside the `sirin` package uses
   Element, named Layout, commands and the graphics adapter for curved connections,
   gradient nodes, prepared labels, selection tools, drag/cancel, pan/zoom and bounded
@@ -71,13 +74,13 @@ Sirin is a pre-release prototype. Nothing is published.
 VISION §8 requires standard controls to use the same public `Element`,
 `LayoutPolicy` and semantics interfaces that applications use. Each entry below
 names a control that does not yet do that, and what public capability it lacks.
-The goal is an empty ledger. Button has moved onto the public seam; its
-headless interaction and rendering checks do not constitute real-client approval.
+The goal is an empty ledger. Button and TextField have moved onto the public
+seam; their headless interaction and rendering checks do not constitute
+real-client approval.
 
 | Control | Built on | Missing public capability | Tracking |
 |---|---|---|---|
 | `Text`, `Row`, `Column`, `Scroll`, `VirtualRows`, `DockOutlet` | Host layout and committed tree (`host/`) | Migration through the now-working seam; preserve virtualization and outlet behavior | Seam migration |
-| `TextField` | `host/TextEditing.scala`, `desktop/EditorController.scala` | None. Public text input, composition, editing services and text-range semantics now exist. The control itself still needs porting. | Seam migration |
 | Menus and shortcuts | Application platform | None; these are application services, not controls | n/a |
 
 ## Current direction and worktrees

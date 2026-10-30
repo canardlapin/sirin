@@ -247,6 +247,16 @@ trait Element[L, P, H, S, A] extends ElementHandlers:
       committed: Committed
   ): Seq[SemanticNode] = Nil
 
+  /** Override this form when semantic geometry depends on presented text. `text` holds the requests declared by
+    * `textRequests`.
+    */
+  def semantics(
+      state: S,
+      size: Size,
+      @unused
+      text: TextServices
+  )(using Committed): Seq[SemanticNode] = semantics(state, size)
+
 object Element:
   /** One state feeds every phase; any state change invalidates all four phases. */
   abstract class Simple[S] extends Element[S, S, S, S, Unit]:

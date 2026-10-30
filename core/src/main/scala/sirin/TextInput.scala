@@ -33,8 +33,15 @@ enum TextInputEvent:
   * and positions the IME candidate window at `caret`, local to the element and clipped to its presented bounds.
   * Printable keys are always reserved for the text channel. `keys` are editing keys reserved under any modifiers, and
   * `chords` are the exact command chords the control declares; both take precedence over application shortcuts.
+  * `composing` is true while the control holds provisional composition text. When a presented control stops declaring
+  * it on its own, for example after external replacement of its text, the host ends the platform's composition.
   */
-final case class TextInputRequest(caret: Rect, keys: Set[Key] = Set.empty, chords: Set[Chord] = Set.empty)
+final case class TextInputRequest(
+    caret: Rect,
+    keys: Set[Key] = Set.empty,
+    chords: Set[Chord] = Set.empty,
+    composing: Boolean = false
+)
 
 /** Platform text services for one dispatched handler. Clipboard writes and composition cancellation are staged: they
   * take effect only if the handler's transaction commits.

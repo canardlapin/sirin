@@ -192,10 +192,8 @@ final class RenderSession(
     check()
     val payload = request.payload
     val key =
-      if payload.editors.nonEmpty then
-        payload
-      else
-        payload.copy(focus = None, keyboardFocus = false, pressed = None)
+      // A focused text control keeps its key through `textFocus`; other focus lives only in the overlay.
+      payload.copy(focus = None, keyboardFocus = false, pressed = None)
     var layoutNanos = 0L
     var drawingNanos = 0L
     val (layout, target, charges, baseProfile) =
@@ -212,7 +210,6 @@ final class RenderSession(
                 payload.logicalWidth,
                 payload.logicalHeight,
                 payload.scrolls,
-                payload.editors,
                 elementMeasurements,
                 phaseEpochs(payload)
               ) { text =>
@@ -253,7 +250,7 @@ final class RenderSession(
             return LayoutFeedback(request, layout)
           val layoutAt = System.nanoTime()
           layoutNanos = layoutAt - began
-          val drawing = layout.drawing(DevelopmentTheme, fieldFocus = payload.focus)
+          val drawing = layout.drawing(DevelopmentTheme, textFocus = payload.textFocus)
           val target = gpu
             .target(payload.pixelWidth, payload.pixelHeight, 1)
             .copy(logicalToDevice =
@@ -322,10 +319,8 @@ final class RenderSession(
     val control = new sirin.graphics.PreparationControl(cancelled = cancelled)
     val payload = request.payload
     val baseKey =
-      if payload.editors.nonEmpty then
-        payload
-      else
-        payload.copy(focus = None, keyboardFocus = false, pressed = None)
+      // A focused text control keeps its key through `textFocus`; other focus lives only in the overlay.
+      payload.copy(focus = None, keyboardFocus = false, pressed = None)
     val before = batch.get.stats
     var prepared = 0
     val (layout, drawing) =
@@ -348,7 +343,6 @@ final class RenderSession(
                       payload.logicalWidth,
                       payload.logicalHeight,
                       payload.scrolls,
-                      payload.editors,
                       elementMeasurements,
                       phaseEpochs(payload)
                     ) { text =>
@@ -394,7 +388,7 @@ final class RenderSession(
                     Affine.scale(payload.pixelWidth / payload.logicalWidth, payload.pixelHeight / payload.logicalHeight)
                   )
                 val base = preparation
-                  .prepare(layout.drawing(DevelopmentTheme, fieldFocus = payload.focus), target, control = control)
+                  .prepare(layout.drawing(DevelopmentTheme, textFocus = payload.textFocus), target, control = control)
                   .fold(e => throw new IllegalStateException(e.toString), identity)
                 prepared += 1
                 gpuBase = Some((baseKey, layout, base))
