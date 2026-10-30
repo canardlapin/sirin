@@ -1,0 +1,44 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] running (fork) sirin.desktop.WorkspaceRenderReplay /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/public-workbench/workspace-2.frame /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/public-workbench/workspace-3.frame /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/public-workbench/workspace-4.frame /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/public-workbench/workspace-5.frame
+[error] WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/code/scala/sirin-alpha/target/bg-jobs/sbt_549deaa0/target/16f4dc48/adca020a/scala3-library_3-3.7.4.jar)
+[error] WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+[error] WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[info] replay=workspace-2.frame viewport=1000.0x720.0
+[error] Exception in thread "main" java.lang.IllegalArgumentException: requirement failed: per-sample work budget
+[error] 	at scala.Predef$.require(Predef.scala:337)
+[error] 	at sirin.render.PixelProgram$.append$1(PixelProgram.scala:76)
+[error] 	at sirin.render.PixelProgram$.compileUsing$$anonfun$2$$anonfun$1(PixelProgram.scala:98)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.render.PixelProgram$.compileUsing$$anonfun$2(PixelProgram.scala:89)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+[error] 	at sirin.render.PixelProgram$.compileUsing(PixelProgram.scala:79)
+[error] 	at sirin.render.PixelProgram$.compile(PixelProgram.scala:45)
+[error] 	at sirin.graphics.desktop.TileCache.render$$anonfun$8$$anonfun$1(TiledRenderer.scala:174)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Range.foreach(Range.scala:192)
+[error] 	at sirin.graphics.desktop.TileCache.render$$anonfun$8(TiledRenderer.scala:154)
+[error] 	at scala.runtime.java8.JFunction1$mcVI$sp.apply(JFunction1$mcVI$sp.scala:18)
+[error] 	at scala.collection.immutable.Range.foreach(Range.scala:192)
+[error] 	at sirin.graphics.desktop.TileCache.render(TiledRenderer.scala:154)
+[error] 	at sirin.desktop.RenderSession.render(FrameWorker.scala:121)
+[error] 	at sirin.desktop.WorkspaceRenderReplay$.main$$anonfun$2(PersistentWorkbenchSuite.scala:104)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+[error] 	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+[error] 	at scala.collection.ArrayOps$.foreach$extension(ArrayOps.scala:1324)
+[error] 	at sirin.desktop.WorkspaceRenderReplay$.main(PersistentWorkbenchSuite.scala:100)
+[error] 	at sirin.desktop.WorkspaceRenderReplay.main(PersistentWorkbenchSuite.scala)
+[error] nonzero exit code returned from runner: 1
+[error] (desktopJVM / Test / runMain) nonzero exit code returned from runner: 1
+[error] Total time: 4 s, completed Oct 30, 2026, 12:30:57 a.m.

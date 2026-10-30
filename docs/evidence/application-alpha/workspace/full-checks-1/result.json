@@ -1,0 +1,71 @@
+{
+  "start_utc": "2026-10-30T04:45:19.139087+00:00",
+  "base_commit": "fce32bf6be803850895a94c9e20943dc233d8523",
+  "commands": [
+    [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM",
+      "testNative",
+      "examples/compile"
+    ],
+    [
+      "sbt",
+      "--java-home",
+      "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+      "-J-XX:ActiveProcessorCount=4",
+      "desktopJVM/test",
+      "desktopJVM/desktopWorkbenchPackage"
+    ]
+  ],
+  "source_hashes": {
+    ".github/workflows/ci.yml": "6356e0ec15d90fc1cd2734d308093107cea27aa7bee993d09394138ffc767eb4",
+    "build.sbt": "b856538947371733f2ab0802b1444c847cf3a6b95e53313400981e223fb709a9",
+    "core/src/main/scala/sirin/App.scala": "7f183d07a54c6e8f1e8782e31edad696588b471843670be513b6d1a56f7f010c",
+    "core/src/main/scala/sirin/Task.scala": "99965238c28a894d8d4230c595b507b4665eccacb4ffd63255a4cb9794a0dc58",
+    "core/src/test/scala/sirin/ApplicationPlatformSuite.scala": "73e8561c888a9396380509f4743ad8e7888f47f64ac722545ab90ac5d7b27a0a",
+    "core/src/test/scala/sirin/WorkCompositionSuite.scala": "240b05cc5c2d2e0d9c782f8967f9847847933d836e605fe6a6c3df85496a67a8",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "916dee4b6ab25f089edfb818bcc2d20fc6bf69861a9fefe2482d2b565ecbb975",
+    "desktop/src/main/scala/sirin/desktop/FileDocumentImporter.scala": "f056e8d5d4124729ae4d784f9639278c865ce4dfd54b619a0bfd6cd520b48248",
+    "desktop/src/main/scala/sirin/desktop/FileDocumentRepository.scala": "758c30ad19464958abf2bc7b2a427a2fde4d3ceae888885a0b7131089d423d4c",
+    "desktop/src/main/scala/sirin/desktop/OwnerInputQueue.scala": "0c02ed34419a917c565f270c13bb3be432e952ea7f126127e8f36464d5827630",
+    "desktop/src/main/scala/sirin/desktop/PersistentWorkbench.scala": "4c9efe0bed94083c61e7122b0cc7abff07e9473283e09957bf584da1f79255ce",
+    "desktop/src/test/scala/sirin/desktop/ApplicationServicesSuite.scala": "fa48ca01c4586fcd9203af49bed16c422b2e6f092d06888f852ff568e9f34c35",
+    "desktop/src/test/scala/sirin/desktop/FileDocumentImporterSuite.scala": "1254ee078b1055b89a6ee3fa6a03e6de1c60c73dc14efef24cee5962dabdb69c",
+    "desktop/src/test/scala/sirin/desktop/OwnerInputQueueSuite.scala": "ec7eedd458d928e19996102014a43ea25d687ea12d69269a272592e30d329a81",
+    "desktop/src/test/scala/sirin/desktop/PersistentWorkbenchSuite.scala": "b987ea5cd7b8a3d1eeda0bbc787344c9649c0c1dd989454aae8552e1f8b58bf7",
+    "docs/design/decisions/2026-10-30-workspace-services.md": "f4b7d1dad50df57384921a1a4d3b7b207f4b9940bf8e1231c285d9556281470e",
+    "engine/src/main/scala/sirin/engine/HeadlessRuntime.scala": "63d4f58f1611b158c70e94917a70ded7e2ec60b8156846cbc43db7e5071ff621",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "3e405e96357ac35bd881c62490e7433746d6d72c7983f2d5c6783b7dd355d133",
+    "engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala": "005385b3927a6c913af880854dc16c2522e1cdf93ffd7a29b7970e987b2be11c",
+    "host/src/main/scala/sirin/host/Layout.scala": "de858da09354e95e34da56bb47b9606c3ccd81c4699d40c3e90bd554893ba3b4",
+    "host/src/test/scala/sirin/host/LayoutClippingSuite.scala": "445820fb4c3bb0eb7e87039873c0e8732aefa74249baaf65d329681f21a294ea",
+    "specimens/workbench/src/main/scala/sirin/specimen/DocumentWorkspace.scala": "7db20b0189036479dcb2dcf6998204a9b76bdc8da1a2784f5db20262fc8046c6",
+    "specimens/workbench/src/test/scala/sirin/specimen/DocumentWorkspaceSuite.scala": "11de71c01395a4fc2c24315141e62991d8483d99cb26aec6b504f94abe47dfe2"
+  },
+  "results": [
+    {
+      "command": [
+        "sbt",
+        "-J-XX:ActiveProcessorCount=4",
+        "testJVM",
+        "testNative",
+        "examples/compile"
+      ],
+      "returncode": 0,
+      "end_utc": "2026-10-30T04:47:56.874311+00:00"
+    },
+    {
+      "command": [
+        "sbt",
+        "--java-home",
+        "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+        "-J-XX:ActiveProcessorCount=4",
+        "desktopJVM/test",
+        "desktopJVM/desktopWorkbenchPackage"
+      ],
+      "returncode": 0,
+      "end_utc": "2026-10-30T04:49:15.490478+00:00"
+    }
+  ]
+}

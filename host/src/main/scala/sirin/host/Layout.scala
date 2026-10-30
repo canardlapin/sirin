@@ -35,51 +35,52 @@ final case class LayoutResult(root: Placed, viewports: Vector[ViewportRequest], 
     visit(root)
 
   def drawing(theme: Theme,focus: Option[NodeId]=None,keyboardFocus: Boolean=false,pressed: Option[NodeId]=None,fieldFocus: Option[NodeId]=None): Drawing = RecordingCanvas.record(theme,text) { canvas =>
-    def paint(p: Placed): Unit = canvas.withClip(Rect(Point(p.clip.x.lp,p.clip.y.lp),Size(p.clip.width.lp,p.clip.height.lp))) {
-      p.node.content match
-        case Content.Button(_,_,enabled,_,primary) =>
-          def rectangle(b: Box) = Rect(Point(b.x.lp,b.y.lp),Size(b.width.lp,b.height.lp))
-          val base=if pressed.contains(p.node.id) then Color.rgba(65,112,160) else if primary then Color.rgba(45,90,140) else Color.rgba(44,53,69)
-          val focused=keyboardFocus && focus.contains(p.node.id)
-          if focused then canvas.fill(rectangle(p.bounds),theme.color(ColorRole.Accent))
-          val inner=if focused then Box(p.bounds.x+2,p.bounds.y+2,math.max(0,p.bounds.width-4),math.max(0,p.bounds.height-4)) else p.bounds
-          canvas.fill(rectangle(inner),base)
-          canvas.text(p.text.get,Point((p.bounds.x+12).lp,(p.bounds.y+8).lp),theme.color(if enabled then ColorRole.OnSurface else ColorRole.Muted))
-        case Content.Editable(id,_,label,_,_,error) =>
-          def rect(b: Box)=Rect(Point(b.x.lp,b.y.lp),Size(b.width.lp,b.height.lp))
-          val area=editorArea(p);val top=if label.nonEmpty then 20 else 0
-          val border=Box(p.bounds.x,p.bounds.y+top,p.bounds.width,math.max(0,p.bounds.height-top-(if error.nonEmpty then 20 else 0)))
-          canvas.fill(rect(border),if error.nonEmpty then Color.rgba(222,100,100) else Color.rgba(89,103,126))
-          canvas.fill(rect(Box(border.x+1,border.y+1,math.max(0,border.width-2),math.max(0,border.height-2))),Color.rgba(28,34,46))
-          fieldLabels.get(id).foreach { labels =>
-            labels.label.foreach(t => canvas.text(t,Point(p.bounds.x.lp,p.bounds.y.lp),theme.color(ColorRole.OnSurface)))
-            labels.error.foreach(t => canvas.text(t,Point(p.bounds.x.lp,(border.y+border.height+2).lp),Color.rgba(255,145,145)))
-          }
-          canvas.withClip(rect(area.intersect(p.clip))) {
-            val layout=p.text.get;val state=editorState(p);val origin=textOrigin(p)
-            def region(r: TextSelectionRegion,color: Color): Unit = canvas.fill(Rect(Point((origin.x.toDouble+r.bounds.origin.x.toDouble).lp,(origin.y.toDouble+r.bounds.origin.y.toDouble).lp),r.bounds.size),color)
-            def selected(from: Int,until: Int): Vector[TextSelectionRegion] =
-              val stops=layout.graphemeBoundaries
-              val a=stops.filter(_<=from).lastOption.getOrElse(0);val b=stops.find(_>=until).getOrElse(layout.text.length)
-              layout.selection(a,b)
-            val selection=state.visibleSelection
-            if fieldFocus.orElse(focus).contains(p.node.id) && !selection.empty then selected(selection.start,selection.end).foreach(region(_,Color.rgba(62,110,169)))
-            if layout.text.isEmpty then fieldLabels.get(id).flatMap(_.hint).foreach(t => canvas.text(t,origin,theme.color(ColorRole.Muted)))
-            else canvas.text(layout,origin,theme.color(ColorRole.OnSurface))
-            state.marked.foreach { (a,b) => selected(a,b).foreach { r =>
-              canvas.fill(Rect(Point((origin.x.toDouble+r.bounds.origin.x.toDouble).lp,(origin.y.toDouble+r.bounds.origin.y.toDouble+r.bounds.size.height.toDouble-2).lp),Size(r.bounds.size.width,1.lp)),theme.color(ColorRole.Accent))
-            }}
-            if fieldFocus.orElse(focus).contains(p.node.id) then
-              val caret=editorCaret(p).bounds
-              canvas.fill(Rect(Point((origin.x.toDouble+caret.origin.x.toDouble).lp,(origin.y.toDouble+caret.origin.y.toDouble).lp),Size(1.lp,caret.size.height)),theme.color(ColorRole.Accent))
-          }
-        case Content.Scroll(_,_) if keyboardFocus && focus.contains(p.node.id) =>
-          val b=p.bounds
-          canvas.fill(Rect(Point(b.x.lp,b.y.lp),Size(2.lp,b.height.lp)),theme.color(ColorRole.Accent))
-        case Content.Label(_,_,color) => canvas.text(p.text.get,Point(p.bounds.x.lp,p.bounds.y.lp),theme.color(color))
-        case _ => ()
+    def paint(p: Placed): Unit =
+      canvas.withClip(Rect(Point(p.clip.x.lp,p.clip.y.lp),Size(p.clip.width.lp,p.clip.height.lp))) {
+        p.node.content match
+          case Content.Button(_,_,enabled,_,primary) =>
+            def rectangle(b: Box) = Rect(Point(b.x.lp,b.y.lp),Size(b.width.lp,b.height.lp))
+            val base=if pressed.contains(p.node.id) then Color.rgba(65,112,160) else if primary then Color.rgba(45,90,140) else Color.rgba(44,53,69)
+            val focused=keyboardFocus && focus.contains(p.node.id)
+            if focused then canvas.fill(rectangle(p.bounds),theme.color(ColorRole.Accent))
+            val inner=if focused then Box(p.bounds.x+2,p.bounds.y+2,math.max(0,p.bounds.width-4),math.max(0,p.bounds.height-4)) else p.bounds
+            canvas.fill(rectangle(inner),base)
+            canvas.text(p.text.get,Point((p.bounds.x+12).lp,(p.bounds.y+8).lp),theme.color(if enabled then ColorRole.OnSurface else ColorRole.Muted))
+          case Content.Editable(id,_,label,_,_,error) =>
+            def rect(b: Box)=Rect(Point(b.x.lp,b.y.lp),Size(b.width.lp,b.height.lp))
+            val area=editorArea(p);val top=if label.nonEmpty then 20 else 0
+            val border=Box(p.bounds.x,p.bounds.y+top,p.bounds.width,math.max(0,p.bounds.height-top-(if error.nonEmpty then 20 else 0)))
+            canvas.fill(rect(border),if error.nonEmpty then Color.rgba(222,100,100) else Color.rgba(89,103,126))
+            canvas.fill(rect(Box(border.x+1,border.y+1,math.max(0,border.width-2),math.max(0,border.height-2))),Color.rgba(28,34,46))
+            fieldLabels.get(id).foreach { labels =>
+              labels.label.foreach(t => canvas.text(t,Point(p.bounds.x.lp,p.bounds.y.lp),theme.color(ColorRole.OnSurface)))
+              labels.error.foreach(t => canvas.text(t,Point(p.bounds.x.lp,(border.y+border.height+2).lp),Color.rgba(255,145,145)))
+            }
+            canvas.withClip(rect(area.intersect(p.clip))) {
+              val layout=p.text.get;val state=editorState(p);val origin=textOrigin(p)
+              def region(r: TextSelectionRegion,color: Color): Unit = canvas.fill(Rect(Point((origin.x.toDouble+r.bounds.origin.x.toDouble).lp,(origin.y.toDouble+r.bounds.origin.y.toDouble).lp),r.bounds.size),color)
+              def selected(from: Int,until: Int): Vector[TextSelectionRegion] =
+                val stops=layout.graphemeBoundaries
+                val a=stops.filter(_<=from).lastOption.getOrElse(0);val b=stops.find(_>=until).getOrElse(layout.text.length)
+                layout.selection(a,b)
+              val selection=state.visibleSelection
+              if fieldFocus.orElse(focus).contains(p.node.id) && !selection.empty then selected(selection.start,selection.end).foreach(region(_,Color.rgba(62,110,169)))
+              if layout.text.isEmpty then fieldLabels.get(id).flatMap(_.hint).foreach(t => canvas.text(t,origin,theme.color(ColorRole.Muted)))
+              else canvas.text(layout,origin,theme.color(ColorRole.OnSurface))
+              state.marked.foreach { (a,b) => selected(a,b).foreach { r =>
+                canvas.fill(Rect(Point((origin.x.toDouble+r.bounds.origin.x.toDouble).lp,(origin.y.toDouble+r.bounds.origin.y.toDouble+r.bounds.size.height.toDouble-2).lp),Size(r.bounds.size.width,1.lp)),theme.color(ColorRole.Accent))
+              }}
+              if fieldFocus.orElse(focus).contains(p.node.id) then
+                val caret=editorCaret(p).bounds
+                canvas.fill(Rect(Point((origin.x.toDouble+caret.origin.x.toDouble).lp,(origin.y.toDouble+caret.origin.y.toDouble).lp),Size(1.lp,caret.size.height)),theme.color(ColorRole.Accent))
+            }
+          case Content.Scroll(_,_) if keyboardFocus && focus.contains(p.node.id) =>
+            val b=p.bounds
+            canvas.fill(Rect(Point(b.x.lp,b.y.lp),Size(2.lp,b.height.lp)),theme.color(ColorRole.Accent))
+          case Content.Label(_,_,color) => canvas.text(p.text.get,Point(p.bounds.x.lp,p.bounds.y.lp),theme.color(color))
+          case _ => ()
+      }
       p.children.foreach(paint)
-    }
     canvas.fill(Rect(Point.origin,Size(root.bounds.width.lp,root.bounds.height.lp)),theme.color(ColorRole.Surface))
     paint(root)
   }
@@ -88,21 +89,22 @@ final case class LayoutResult(root: Placed, viewports: Vector[ViewportRequest], 
   def overlay(theme: Theme,focus: Option[NodeId],keyboard: Boolean,pressed: Option[NodeId]): Drawing =
     RecordingCanvas.record(theme,text) { canvas =>
       def rect(b: Box)=Rect(Point(b.x.lp,b.y.lp),Size(b.width.lp,b.height.lp))
-      def visit(p: Placed): Unit = canvas.withClip(rect(p.clip)) {
-        p.node.content match
-          case Content.Button(_,_,_,_,_) =>
-            val b=p.bounds
-            if pressed.contains(p.node.id) then canvas.fill(rect(b),Color.rgba(50,130,220,46))
-            if keyboard && focus.contains(p.node.id) then
-              val thickness=math.min(2,math.min(b.width,b.height)/2)
-              val color=theme.color(ColorRole.Accent)
-              Vector(Box(b.x,b.y,b.width,thickness),Box(b.x,b.y+b.height-thickness,b.width,thickness),
-                Box(b.x,b.y,thickness,b.height),Box(b.x+b.width-thickness,b.y,thickness,b.height)).foreach(r => canvas.fill(rect(r),color))
-          case Content.Scroll(_,_) if keyboard && focus.contains(p.node.id) =>
-            canvas.fill(rect(Box(p.bounds.x,p.bounds.y,math.min(2,p.bounds.width),p.bounds.height)),theme.color(ColorRole.Accent))
-          case _ => ()
+      def visit(p: Placed): Unit =
+        canvas.withClip(rect(p.clip)) {
+          p.node.content match
+            case Content.Button(_,_,_,_,_) =>
+              val b=p.bounds
+              if pressed.contains(p.node.id) then canvas.fill(rect(b),Color.rgba(50,130,220,46))
+              if keyboard && focus.contains(p.node.id) then
+                val thickness=math.min(2,math.min(b.width,b.height)/2)
+                val color=theme.color(ColorRole.Accent)
+                Vector(Box(b.x,b.y,b.width,thickness),Box(b.x,b.y+b.height-thickness,b.width,thickness),
+                  Box(b.x,b.y,thickness,b.height),Box(b.x+b.width-thickness,b.y,thickness,b.height)).foreach(r => canvas.fill(rect(r),color))
+            case Content.Scroll(_,_) if keyboard && focus.contains(p.node.id) =>
+              canvas.fill(rect(Box(p.bounds.x,p.bounds.y,math.min(2,p.bounds.width),p.bounds.height)),theme.color(ColorRole.Accent))
+            case _ => ()
+        }
         p.children.foreach(visit)
-      }
       visit(root)
     }
 

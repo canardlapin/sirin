@@ -13,6 +13,16 @@ opaque type Work[+O] = Cancellation => O
 object Work:
   private[sirin] def execute[O](work: Work[O], cancellation: Cancellation): O = work(cancellation)
   def apply[O](body: Cancellation ?=> O)(using NotGiven[UiTxn]): Work[O] = c => body(using c)
+  private def check(c: Cancellation): Unit =
+    if c.cancelled then throw new InterruptedException("Work composition cancelled")
+  extension [O](work: Work[O])
+    def map[P](f: O => P)(using NotGiven[UiTxn]): Work[P] = c =>
+      check(c);val value=work(c);check(c);f(value)
+    def flatMap[P](f: O => Work[P])(using NotGiven[UiTxn]): Work[P] = c =>
+      check(c);val value=work(c);check(c);f(value)(c)
+    def attempt(using NotGiven[UiTxn]): Work[Either[Throwable,O]] = c =>
+      check(c)
+      try Right(work(c)) catch case scala.util.control.NonFatal(error) => Left(error)
 
 opaque type Capacity = Int
 object Capacity:

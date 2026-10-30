@@ -1,0 +1,55 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+Test run sirin.specimen.DocumentWorkspaceSuite started
+sirin.specimen.DocumentWorkspaceSuite: finished 0.842s
+Test run sirin.specimen.DocumentWorkspaceSuite finished: 0 failed, 0 ignored, 8 total 0.851s
+[info] Passed: Total 8, Failed 0, Errors 0, Passed 8
+[success] Total time: 4 s, completed Oct 30, 2026, 12:20:07 a.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.PersistentWorkbenchSuite started
+==> X sirin.desktop.PersistentWorkbenchSuite.real public workspace captures, presents headlessly, types Unicode and saves through its menu command 1.066s java.lang.IllegalArgumentException: requirement failed: per-sample work budget
+    at scala.Predef$.require(Predef.scala:337)
+    at sirin.render.PixelProgram$.append$1(PixelProgram.scala:76)
+    at sirin.render.PixelProgram$.compileUsing$$anonfun$2$$anonfun$1(PixelProgram.scala:98)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.render.PixelProgram$.compileUsing$$anonfun$2(PixelProgram.scala:89)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.render.PixelProgram$.compileUsing(PixelProgram.scala:79)
+    at sirin.render.PixelProgram$.compile(PixelProgram.scala:45)
+    at sirin.graphics.desktop.TileCache.render$$anonfun$8$$anonfun$1(TiledRenderer.scala:174)
+    at scala.collection.immutable.Range.foreach(Range.scala:192)
+    at sirin.graphics.desktop.TileCache.render$$anonfun$8(TiledRenderer.scala:154)
+    at scala.collection.immutable.Range.foreach(Range.scala:192)
+    at sirin.graphics.desktop.TileCache.render(TiledRenderer.scala:154)
+    at sirin.desktop.RenderSession.render(FrameWorker.scala:121)
+    at sirin.desktop.PersistentWorkbenchSuite.frame$1(PersistentWorkbenchSuite.scala:50)
+    at sirin.desktop.PersistentWorkbenchSuite.$init$$$anonfun$1(PersistentWorkbenchSuite.scala:70)
+sirin.desktop.PersistentWorkbenchSuite: finished 1.086s
+Test run sirin.desktop.PersistentWorkbenchSuite finished: 1 failed, 0 ignored, 1 total 1.092s
+Test run sirin.desktop.FileDocumentImporterSuite started
+sirin.desktop.FileDocumentImporterSuite: finished 0.15s
+Test run sirin.desktop.FileDocumentImporterSuite finished: 0 failed, 0 ignored, 4 total 0.15s
+Test run sirin.desktop.OwnerInputQueueSuite started
+sirin.desktop.OwnerInputQueueSuite: finished 0.005s
+Test run sirin.desktop.OwnerInputQueueSuite finished: 0 failed, 0 ignored, 3 total 0.005s
+Test run sirin.desktop.ApplicationServicesSuite started
+sirin.desktop.ApplicationServicesSuite: finished 0.024s
+Test run sirin.desktop.ApplicationServicesSuite finished: 0 failed, 0 ignored, 2 total 0.024s
+[error] Failed: Total 10, Failed 1, Errors 0, Passed 9
+[error] Failed tests:
+[error] 	sirin.desktop.PersistentWorkbenchSuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 4 s, completed Oct 30, 2026, 12:20:11 a.m.

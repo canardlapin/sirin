@@ -156,3 +156,36 @@ dirty-close dialogs and actual persistent application startup/reopen. Native
 menus/IME/VoiceOver/drag still need client receipts. Dialog/programmatic quit,
 remaining controls, public graphics editor, inspector/starter, long GC and full
 alpha comparison/visual gates remain open; no numbered deliverable is closed.
+
+
+## Integrated persistent workspace checkpoint (native acceptance pending)
+
+The public DocumentWorkspace now integrates asynchronous collection search,
+retained document/draft ownership through refresh/filter/reorder/outlet moves,
+multiple document views, actual filesystem startup/save/reopen, copy/reload and
+external-change feedback. Import has a separate reopenable view, frozen source
+IDs/stamps, explicit receipt denominators, per-file failures and cancellation that
+retains committed files. ApplicationServices.quit and Windows.onQuitRequest reuse
+existing transaction/command publication laws and guard dirty drafts even with
+zero windows. Queued window close cannot overtake preceding owner input.
+
+Full checks pass 384 JVM + 384 Native + 79 desktop cases, authoring compilation
+and the distinct SirinWorkbench.app package. A public controller/shortcut/render
+workflow saves and reopens exact Unicode through the real filesystem adapter
+without opening a native window. A full workspace rendering failure exposed
+redundant ancestor clip nesting. Exact frozen frame replays fail under old host
+traversal and pass under the successor with every renderer budget unchanged.
+Sources, failures, controls, counts, image and package hashes are frozen in
+../evidence/application-alpha/workspace/. Build/workflow guidance is in
+../guides/persistent-workbench.md.
+
+The preceding document checkpoint fce32bf has all nine CI jobs successful
+(40998156355). That result is not CI qualification for this successor. The new
+workbench app has native closure, deep strict signature and no-UI library-load
+checks; native launch confirmation and actual operation remain pending. Current
+GPU physical-pixel limits, viewport adaptation, emoji coverage, field/diagnostic
+limits, focus/scrolling, native dialogs/modality, IME/VoiceOver/drag and full
+lifecycle acceptance remain toolkit/platform work. Diagram editor, inspector,
+clean-checkout/independent authoring, matched ScalaFX comparison, visual approval,
+long GC gate and the original Linux Native failure investigation remain open.
+No numbered deliverable is closed by this checkpoint.

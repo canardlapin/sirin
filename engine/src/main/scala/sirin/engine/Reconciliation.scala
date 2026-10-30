@@ -44,7 +44,7 @@ object MountedSnapshot:
 final case class MountedIdentity(owner: Long, key: Any, definition: AnyRef, instance: Long)
 
 /** A headless structural root. All public mutations join a UiTxn. */
-final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner: runtime.OwnedScope, initial: View):
+final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner: runtime.OwnedScope, initial: View,applicationQuit: Option[UiTxn => CloseDecision]):
   private var desired = initial
   private val output = owner.cell[MountedSnapshot](MountedSnapshot.Empty)(using MountedSnapshot.equality)
   val snapshot: Signal[MountedSnapshot] = Inputs.from(output)
@@ -60,6 +60,10 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
   private var virtuals = Vector.empty[VirtualSlot]
   private var windows = Vector.empty[WindowSlot]
 
+  def requestApplicationQuit()(using txn: UiTxn): CloseDecision = runtime.capability(txn) {
+    runtime.ensureScope(owner)
+    applicationQuit.fold(CloseDecision.Allow)(_(txn))
+  }
   /** A close fact targets this mounted instance, never a reusable source key. */
   def requestWindowClose(instance: Long)(using txn: UiTxn): Unit = runtime.capability(txn) {
     runtime.ensureScope(owner)

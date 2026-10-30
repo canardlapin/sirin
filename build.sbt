@@ -404,3 +404,11 @@ desktopJVM / desktopApplicationPackage := packageDesktopImage((ThisBuild / baseD
   (desktopJVM / target).value / "package-application",(desktopJVM / Runtime / fullClasspath).value.map(_.data),
   (desktopJVM / Compile / packageBin).value,(desktopJVM / desktopNativeLibrary).value,
   "SirinAlpha","io.github.canardlapin.sirin.alpha.dev","scenario",mainClass="sirin.desktop.ApplicationHostProbe")
+
+
+// Real persistent public-API application, separate from every frozen probe image.
+lazy val desktopWorkbenchPackage = taskKey[File]("Package the persistent document workbench")
+desktopJVM / desktopWorkbenchPackage := packageDesktopImage((ThisBuild / baseDirectory).value,file(sys.props("java.home")),
+  (desktopJVM / target).value / "package-workbench",(desktopJVM / Runtime / fullClasspath).value.map(_.data),
+  (desktopJVM / Compile / packageBin).value,(desktopJVM / desktopNativeLibrary).value,
+  "SirinWorkbench","io.github.canardlapin.sirin.workbench.alpha","interactive",mainClass="sirin.desktop.PersistentWorkbench")

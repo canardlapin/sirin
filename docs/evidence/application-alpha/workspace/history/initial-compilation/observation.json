@@ -1,0 +1,5 @@
+{
+  "kind": "tool observation summary; full stdout not captured",
+  "returncode": 1,
+  "error": "Parameterized enum cases cannot be comma-separated; the first case prevented the remaining WorkspaceDecision cases from being defined."
+}

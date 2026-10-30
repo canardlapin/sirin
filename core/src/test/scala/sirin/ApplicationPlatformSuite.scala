@@ -22,3 +22,11 @@ class ApplicationPlatformSuite extends munit.FunSuite:
     val error=intercept[IllegalStateException](Application.platform(providers(backend,backend)))
     assert(error.getMessage.contains("Multiple Sirin application backends"))
   }
+
+  test("a backend without application services refuses before invoking the service builder") {
+    var built=false
+    intercept[UnsupportedOperationException] {
+      backend.runWithServices { (_,_) => built=true;Windows.single("unused")(_ => Window("Unused",MenuBar.empty)(View.empty)) }
+    }
+    assert(!built)
+  }

@@ -10,7 +10,8 @@ import sirin.render.BatchGpu
 
 /** JVM development provider. The model and host capture remain backend-neutral. */
 final class DesktopApplicationPlatform extends ApplicationPlatform:
-  def run(build: Scope => Windows): Unit =
+  def run(build: Scope => Windows): Unit=runWithServices((scope,_) => build(scope))
+  override def runWithServices(build: (Scope,ApplicationServices) => Windows): Unit =
     val native=new NativeApplication // checks the process main thread before build
     val runtime=new HeadlessRuntime(workCapacity=128)
     var unicode=Option.empty[NativeUnicode]
@@ -30,16 +31,19 @@ final class DesktopApplicationPlatform extends ApplicationPlatform:
 object DesktopApplicationPlatform:
   /** Development acceptance hook, outside the public application model. */
   private[desktop] var observer: Option[DesktopApplicationSession => Unit]=None
+  private[desktop] def services(runtime: HeadlessRuntime)(owner: runtime.OwnedScope,requestQuit: () => Unit): ApplicationServices =
+    new ApplicationServices:
+      val quit=owner.action[Unit]("application.quit","Quit") { _ => owner.afterCommit(requestQuit) }
 
 private[desktop] final class DesktopApplicationSession(val native: NativeApplication,
-    val runtime: HeadlessRuntime,unicode: NativeUnicode,build: Scope => Windows):
+    val runtime: HeadlessRuntime,unicode: NativeUnicode,build: (Scope,ApplicationServices) => Windows):
   private def ok[A](result: CommitResult[A]): A=result match
     case CommitResult.Committed(value) => value
     case CommitResult.Failed(error) => throw error
     case other => throw new IllegalStateException(s"$other")
   val (application,mounted)=ok(runtime.transact {
     val owner=runtime.scope("application")
-    (owner,runtime.mountWindows(owner,build(owner)))
+    (owner,runtime.mountWindows(owner,build(owner,DesktopApplicationPlatform.services(runtime)(owner,() => native.requestQuit()))))
   })
   application.observe(mounted.snapshot)(_ => ())
   private val root=Path.of(System.getProperty("sirin.repo",".")).toAbsolutePath.normalize()
@@ -125,8 +129,12 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
       if event.quit() then
         quitting=true
         val ids=capture().map(_.instance)
-        runtime.transact {ids.foreach(mounted.requestWindowClose)} match
-          case CommitResult.Committed(_) => if capture().nonEmpty then quitting=false
+        runtime.transact {
+          val decision=mounted.requestApplicationQuit()
+          if decision==CloseDecision.Allow && !application.isDisposed then ids.foreach(mounted.requestWindowClose)
+          decision
+        } match
+          case CommitResult.Committed(decision) => if decision==CloseDecision.KeepOpen || capture().nonEmpty then quitting=false
           case CommitResult.Refused(_) => quitting=false
           case CommitResult.Failed(error) =>
             quitting=false
@@ -151,6 +159,8 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
       active.values.toVector.foreach(peer => if peer.render() then recapture=true)
       retiring.filter(_.retired).toVector.foreach { peer => peer.finishClose();retiring-=peer }
       DesktopApplicationPlatform.observer.foreach(_(this))
+      // Opening a fresh view while draining cancels the old quit intent.
+      if quitting && capture().nonEmpty then quitting=false
       if quitting && capture().isEmpty && runtime.scheduler.tickets.isEmpty then running=false
       if running && !application.isDisposed then
         val wait=if recapture || turn.budgetExceeded then 0
@@ -185,7 +195,7 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
   def hasPresentedEditorFocus: Boolean=controller.focusedId.exists(id => shownFocus.contains(NodeId(Vector("editor",id))))
   private var geometryAt=0L
   private var viewports=Map.empty[Long,RowViewport]
-  private val pending=scala.collection.mutable.Queue.empty[(NativeWindow.Event,HostInput)]
+  private val pending=new OwnerInputQueue[NativeWindow.Event]
   val controller=new EditorController(runtime,unicode.analyze(_),() => window.clipboard(),window.clipboard(_),() => window.textInput(2,0,0,1,1))
   private var renderer=Option.empty[RenderService]
   var presentations=0L
@@ -209,11 +219,11 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
   def drain(): Unit =
     var count=0
     var available=true
-    while live && available && count<64 do
+    while live && available && !pending.closing && count<64 do
       val fact=window.pollEvent()
       if !fact.found() then available=false
       else
-        if fact.quit() then {session.closeWindow(instance);pending.clear()}
+        if fact.quit() then pending.add(fact,None)
         else
           repaint = repaint || fact.redraw()
           val focused=if fact.focusGained() then true else if fact.focusLost() then false else window.keyboardFocus()
@@ -225,21 +235,22 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
               case _ => false
             if positional && fact.timestamp()<geometryAt then staleInputs+=1
             else
-              require(pending.size<256,"window essential-input budget exceeded")
-              pending.enqueue(fact -> input)
+              pending.add(fact,Some(input))
           }
         count+=1
         if !refresh() then return
-    var consume=true
-    while consume && pending.nonEmpty do
-      val (fact,input)=pending.front
-      if controller.needsGeometry(input) && !controller.ready then consume=false
-      else
-        pending.dequeue()
-        if !session.shortcut(instance,input,controller) then
-          controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()))
-        if !refresh() then return
-        updateInputClient()
+    if !pending.drain(() => controller.ready,controller.needsGeometry)((fact,input) => {
+      if !session.shortcut(instance,input,controller) then
+        controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()))
+      val mounted=refresh()
+      if mounted then updateInputClient()
+      mounted
+    },_ => {
+      session.closeWindow(instance)
+      val mounted=refresh()
+      if mounted then updateInputClient()
+      mounted
+    }) then return
     var actions=0
     var more=true
     while more && actions<128 do

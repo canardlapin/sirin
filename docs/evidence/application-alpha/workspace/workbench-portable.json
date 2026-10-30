@@ -1,0 +1,70 @@
+{
+  "app": "/Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/package-workbench/SirinWorkbench.app",
+  "library_sha256": "37a2373e5ed2d9abb05c7c89c61ca2fb68eed5e7ffa91ce52617ab6026d3dfbc",
+  "sdl_sha256": "4ee3b2efa85a289f57c14e7b24d81b811760721b451b3aa2734a8dce7e49d020",
+  "cfg_sha256": "a39669232c16e1f9e218a1ce0d7255b6eb2be4272b1190731d1e1a1d6633a5d5",
+  "load_commands": [
+    {
+      "kind": "0xd",
+      "path": "@rpath/libsirin_desktop.dylib"
+    },
+    {
+      "kind": "0xc",
+      "path": "@rpath/SDL3.framework/Versions/A/SDL3"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Metal.framework/Versions/A/Metal"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Security.framework/Versions/A/Security"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit"
+    },
+    {
+      "kind": "0xc",
+      "path": "/usr/lib/libc++.1.dylib"
+    },
+    {
+      "kind": "0xc",
+      "path": "/usr/lib/libSystem.B.dylib"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
+    },
+    {
+      "kind": "0xc",
+      "path": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation"
+    },
+    {
+      "kind": "0xc",
+      "path": "/usr/lib/libobjc.A.dylib"
+    },
+    {
+      "kind": "0x8000001c",
+      "path": "@loader_path"
+    }
+  ],
+  "native_closure_valid": true,
+  "codesign_deep_strict_valid": true,
+  "library_loaded_without_UI": true,
+  "packaged_font_files": 7,
+  "scope": "macOS arm64 development image, system frameworks/fonts and OS/JDK requirements remain; no UI/IME/shipping qualification"
+}
+

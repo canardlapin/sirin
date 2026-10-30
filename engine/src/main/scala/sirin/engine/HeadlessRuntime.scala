@@ -323,10 +323,11 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   private def mountedAvailable(mount: MountedView, disposed: Set[OwnedScope] = Set.empty): Boolean =
     (mount.runtime eq this) && scopes.get(mount.owner.id).exists(valid(_, disposed))
 
-  def mount(owner: OwnedScope, view: View): MountedView = structuralEdit {
+  def mount(owner: OwnedScope, view: View): MountedView=mountRoot(owner,view,None)
+  private def mountRoot(owner: OwnedScope,view: View,quit: Option[UiTxn => CloseDecision]): MountedView = structuralEdit {
     checkScope(owner)
     val root = owner.child("headless-mount")
-    val mounted = new MountedView(this)(root, view)
+    val mounted = new MountedView(this)(root, view,quit)
     mounts += mounted
     recordUndo(() => mounts -= mounted)
     mounted
@@ -334,7 +335,7 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
 
   /** Mount the public window set under existing transactional reconciliation. */
   def mountWindows(owner: OwnedScope, windows: Windows): MountedView =
-    mount(owner, Column(Windows.MenuDescription(windows.applicationMenu), windows.view))
+    mountRoot(owner, Column(Windows.MenuDescription(windows.applicationMenu), windows.view),windows.quitHandler)
 
   /** Names are diagnostic; explicit mount supplies static positional identity. */
   def scope(name: String): OwnedScope = edit { t => createScope(name, None, None, t) }

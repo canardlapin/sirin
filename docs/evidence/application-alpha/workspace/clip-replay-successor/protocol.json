@@ -1,0 +1,16 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/Test/runMain sirin.desktop.WorkspaceRenderReplay /Users/bbuchsbaum/code/scala/sirin-alpha/target/alpha/workspace/old-clips-control/workspace-2.frame /Users/bbuchsbaum/code/scala/sirin-alpha/target/alpha/workspace/old-clips-control/workspace-3.frame /Users/bbuchsbaum/code/scala/sirin-alpha/target/alpha/workspace/old-clips-control/workspace-4.frame /Users/bbuchsbaum/code/scala/sirin-alpha/target/alpha/workspace/old-clips-control/workspace-5.frame"
+  ],
+  "source_sha256": "de858da09354e95e34da56bb47b9606c3ccd81c4699d40c3e90bd554893ba3b4",
+  "fixtures": {
+    "workspace-2.frame": "d01986b2a3f8a3c4660ce80b48c45031bf47136d359fcd58a7271df8441554d9",
+    "workspace-3.frame": "6e131605ed78184dce021d9b18f66295b0661938e9b14ba60bcb24c59ea0f3e8",
+    "workspace-4.frame": "4fc83683e5286aa11abbab84c6223e2f9c37fe28c8a7733a7a0fee4252fbe19b",
+    "workspace-5.frame": "e6c1d870f72576889435bcf05f4bdd4058e0e80c56490f9b20d0ce8f0c9b2fab"
+  }
+}

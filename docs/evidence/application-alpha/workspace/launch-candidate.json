@@ -1,0 +1,17 @@
+{
+  "app": "/Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/package-workbench/SirinWorkbench.app",
+  "recorded_utc": "2026-10-30T04:55:19.617309+00:00",
+  "base_commit": "fce32bf6be803850895a94c9e20943dc233d8523",
+  "launch_approved": false,
+  "GUI_launched": false,
+  "default_documents": "~/.sirin-alpha/documents",
+  "files": {
+    "Contents/MacOS/SirinWorkbench": "06f8c4a0fc79dec4bff670d256abb5d23e9904ebda9b2bccbbcd5090bedf7991",
+    "Contents/app/libsirin_desktop.dylib": "37a2373e5ed2d9abb05c7c89c61ca2fb68eed5e7ffa91ce52617ab6026d3dfbc",
+    "Contents/app/SirinWorkbench.cfg": "a39669232c16e1f9e218a1ce0d7255b6eb2be4272b1190731d1e1a1d6633a5d5",
+    "Contents/app/sirin.jar": "917c894266f7fbd7e12abefa3d93814b5a6b8a0a2cbea00b7c6ad338ff84a567",
+    "Contents/Info.plist": "1c29f25c2de7d2fe6d172523c4906d6def233eb177592ad86e3d45985652550f"
+  },
+  "portable_result": "workbench-portable.json",
+  "qualification": "Frozen macOS arm64 JDK25 development executable; native interaction and alpha acceptance remain unverified."
+}

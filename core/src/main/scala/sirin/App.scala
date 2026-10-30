@@ -55,13 +55,17 @@ sealed trait Window:
 sealed trait Windows:
   private[sirin] def view: View
   private[sirin] def applicationMenu: MenuBar
+  private[sirin] def quitHandler: Option[UiTxn => CloseDecision]
   /** Application-owned commands remain available with no open windows. */
   def menuBar(menu: MenuBar): Windows
+  /** Runs once before native/programmatic quit, even with zero windows. */
+  def onQuitRequest(run: UiTxn ?=> CloseDecision): Windows
 
 object Windows:
   private[sirin] final case class MenuDescription(menu: MenuBar) extends View
-  private final case class Description(view: View,applicationMenu: MenuBar=MenuBar.empty) extends Windows:
+  private final case class Description(view: View,applicationMenu: MenuBar=MenuBar.empty,quitHandler: Option[UiTxn => CloseDecision]=None) extends Windows:
     def menuBar(menu: MenuBar): Windows=copy(applicationMenu=menu)
+    def onQuitRequest(run: UiTxn ?=> CloseDecision): Windows=copy(quitHandler=Some(txn => run(using txn)))
 
   def apply[K, A](source: CollectionSource[K, A])(build: (Scope, Inputs[A]) => Window)(
       using equality: Equality[A], keySchema: SchemaId[K], valueSchema: SchemaId[A]
@@ -120,9 +124,15 @@ object Window:
   def apply(title: Signal[String], menu: MenuBar)(content: View): Window =
     Description(title, menu, content)
 
+/** Application-owned commands; adapters reuse ordinary UiTxn publication laws. */
+trait ApplicationServices:
+  def quit: Command[Unit,Unit]
+
 /** Backend SPI. An application includes one platform provider on its classpath. */
 trait ApplicationPlatform:
   def run(build: Scope => Windows): Unit
+  def runWithServices(build: (Scope,ApplicationServices) => Windows): Unit =
+    throw new UnsupportedOperationException("This Sirin backend does not support application services")
 
 object Application:
   private[sirin] def platform(providers: java.util.Iterator[ApplicationPlatform]): ApplicationPlatform =
@@ -136,3 +146,7 @@ object Application:
     */
   def run(build: Scope => Windows): Unit =
     platform(java.util.ServiceLoader.load(classOf[ApplicationPlatform]).iterator()).run(build)
+
+
+  def run(build: (Scope,ApplicationServices) => Windows): Unit =
+    platform(java.util.ServiceLoader.load(classOf[ApplicationPlatform]).iterator()).runWithServices(build)

@@ -349,3 +349,22 @@ class WindowLifecycleSuite extends munit.FunSuite:
       assertEquals(r.lifetimes, before)
     finally r.close()
   }
+
+  test("application quit guard remains transactional with zero windows and retires with its root") {
+    val r=new HeadlessRuntime
+    try
+      val app=r.scope("application");val source=app.keyed(Seq.empty[Int])(identity)
+      val prompt=app.cell(false);val allow=app.cell(false)
+      val root=r.mountWindows(app,Windows(source)((_,_) => Window("unused",MenuBar.empty)(View.empty)).onQuitRequest {
+        prompt.set(true)
+        if allow.get then CloseDecision.Allow else CloseDecision.KeepOpen
+      })
+      assertEquals(r.transact {root.requestApplicationQuit()},CommitResult.Committed(CloseDecision.KeepOpen))
+      assertEquals(r.transact {prompt.get},CommitResult.Committed(true))
+      assertEquals(r.transact {prompt.set(false);allow.set(true);root.requestApplicationQuit();UiTxn.refuse("rollback")},CommitResult.Refused("rollback"))
+      assertEquals(r.transact {allow.get},CommitResult.Committed(false))
+      assertEquals(r.transact {allow.set(true);root.requestApplicationQuit()},CommitResult.Committed(CloseDecision.Allow))
+      r.transact {root.dispose()}
+      assert(r.transact {root.requestApplicationQuit()}.isInstanceOf[CommitResult.Failed[?]])
+    finally r.close()
+  }

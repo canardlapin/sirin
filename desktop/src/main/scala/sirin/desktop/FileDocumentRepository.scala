@@ -12,14 +12,16 @@ import sirin.*
 import sirin.specimen.*
 
 /** JVM service adapter; constructor and Work descriptions perform no filesystem I/O. */
-final class FileDocumentRepository(root: Path) extends DocumentRepository:
+final class FileDocumentRepository(root: Path,createDirectory: Boolean=true) extends DocumentRepository:
   private val configured=root.toAbsolutePath.normalize()
   private val extension=".sirin-doc"
   private val limit=131072
   private def cancelled()(using c: Cancellation): Unit =
     if c.cancelled then throw new InterruptedException("Document operation cancelled")
   private def directory(): Path =
-    Files.createDirectories(configured);configured.toRealPath()
+    if createDirectory then Files.createDirectories(configured)
+    else if !Files.isDirectory(configured,LinkOption.NOFOLLOW_LINKS) then throw new IOException("Document directory no longer exists or is a link.")
+    configured.toRealPath()
   private def path(dir: Path,id: DocumentId): Path=dir.resolve(id.value+extension)
   private def stamp(bytes: Array[Byte]): DocumentStamp =
     DocumentStamp(MessageDigest.getInstance("SHA-256").digest(bytes).map(b => f"${b&255}%02x").mkString)
