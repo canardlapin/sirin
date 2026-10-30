@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-30, against `main` at `1d5edcc`. This page says, in plain
+Last updated 2026-10-30, for the public-toolkit proof. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -15,6 +15,12 @@ Sirin is a pre-release prototype. Nothing is published.
 - **Standalone graphics.** Immutable drawing recordings with paths, strokes,
   gradients, images, clips, transforms and layers. An offscreen wgpu renderer
   checks pixels against reference output.
+- **First public toolkit proof.** Custom Element and Layout descriptions run
+  through guarded committed phases. Element.simple provides one-state authoring.
+  The graphics-ui adapter exposes the full standalone drawing vocabulary with
+  shared logical units. Button now uses this public seam, including prepared
+  measurement text, input activation, semantics and focus/press feedback.
+  [Validation and limits](evidence/2026-10-30-public-toolkit-proof.md).
 - **Text.** Real HarfBuzz/FreeType shaping, Unicode segmentation and bidi,
   font fallback across supplied fonts, line wrapping, and caret, hit-testing
   and selection geometry.
@@ -26,8 +32,8 @@ Sirin is a pre-release prototype. Nothing is published.
 
 ## What is partial
 
-- **Scala Native desktop.** The kernel and tests run under Scala Native, but no
-  Scala Native windowed application runs yet. Native delivery depends on the
+- **Scala Native desktop.** The kernel and tests run under Scala Native, but there is no
+  qualified Scala Native application provider. Native delivery depends on the
   open GC safepoint stall (P0.6). The delivery order is to be decided before
   Alpha6 (VISION §1.1).
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
@@ -43,9 +49,8 @@ Sirin is a pre-release prototype. Nothing is published.
 
 ## What is missing
 
-- The public custom-element and custom-layout API (`Element.apply`,
-  `Layout.apply`). It is being built under Alpha4.
-- `Checkbox`, `Overlay`, `Popup` and motion (`Presentation`).
+- `Checkbox`, `Overlay`, `Popup` and time-varying motion. Constant and mapped
+  Presentation values exist; they are not animation.
 - The diagram editor, the inspector, a starter project, and the matched
   ScalaFX comparison.
 - Windows and Linux desktop hosts. Those platforms are CI-only.
@@ -55,25 +60,26 @@ Sirin is a pre-release prototype. Nothing is published.
 VISION §8 requires standard controls to use the same public `Element`,
 `LayoutPolicy` and semantics interfaces that applications use. Each entry below
 names a control that does not yet do that, and what public capability it lacks.
-The goal is an empty ledger.
+The goal is an empty ledger. Button has moved onto the public seam; its
+headless interaction and rendering checks do not constitute real-client approval.
 
 | Control | Built on | Missing public capability | Tracking |
 |---|---|---|---|
-| `Text`, `Row`, `Column`, `Scroll`, `VirtualRows`, `DockOutlet` | Host layout and committed tree (`host/`) | `Element.apply` and `Layout.apply` | Alpha4 |
-| `Button` | Host interaction routing | `Element.apply`; public pointer and key handling | Alpha4, then seam migration |
+| `Text`, `Row`, `Column`, `Scroll`, `VirtualRows`, `DockOutlet` | Host layout and committed tree (`host/`) | Migration through the now-working seam; preserve virtualization and outlet behavior | Seam migration |
 | `TextField` | `host/TextEditing.scala`, `desktop/EditorController.scala` | Public text-input and composition events, and text-range semantics for accessibility | Seam migration |
 | Menus and shortcuts | Application platform | None; these are application services, not controls | n/a |
 
-## Worktree stocktake, 2026-10-30
+## Current direction and worktrees
 
-Implementation is paused for review. All completed feature branch tips are in
-main. The two older dirty source trees match their named archive commits; both
-archives are now pushed. New unfinished element/diagram source is also committed
-and pushed as `archive/public-elements-wip-20261030` (`0413beb`), with a known
-compile failure and incomplete validation. It is deliberately outside main.
+Implementation resumed after the owner approved the course correction. Prove
+public toolkit authoring first, then application quality and independent authoring,
+with the Native GC/delivery decision kept explicit. See the
+[execution sequence](plans/2026-10-30-public-toolkit-proof.md).
 
-Nine worktrees remain, each accounted for in the
-[worktree stocktake](plans/2026-10-30-worktree-stocktake.md). This is not a claim
-that cleanup is complete: four old clean trees retain generated artifacts; one
-holds a frozen launch candidate; another supplies the running Sirin app. The
-original checkout also owns the authoritative Mote store. D11 remains open.
+Four obsolete clean worktrees and their branches were removed after all generated
+files were moved to an external artifact directory. The original checkout owns
+the authoritative Mote store and must not be reset or cleaned. The GPU-host tree
+still supplies a running app; the editor tree retains the approved launch candidate.
+Their disposition remains in the [stocktake](plans/2026-10-30-worktree-stocktake.md).
+The three WIP archive branches remain on origin. Unfinished diagram work stays
+archived rather than being included in this proof.

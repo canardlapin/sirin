@@ -47,21 +47,41 @@ object Transition:
   val quick: Transition = Transition(90.millis, Easing.Decelerate)
 
 /** Presentation is deliberately not a Signal: ticks create no graph writes. */
-trait Presentation[+A]
+trait Presentation[+A]:
+  private[sirin] def current: A = throw new UnsupportedOperationException("unsupported presentation source")
 object Presentation:
-  def const[A](value: A): Presentation[A] = ???
+  def const[A](value: A): Presentation[A] =
+    new Presentation[A]:
+      override private[sirin] def current: A = value
 
   /** Projection stays in the presentation phase, never signal composition. */
   extension [A](value: Presentation[A])
-    def map[B](f: A => B): Presentation[B] = ???
+    def map[B](f: A => B): Presentation[B] =
+      new Presentation[B]:
+        override private[sirin] def current: B = f(value.current)
 
 /** Explicit layout animation channel; invalidation cost is charged to layout. */
-trait LayoutPresentation[+A]
+trait LayoutPresentation[+A]:
+  private[sirin] def current: A = throw new UnsupportedOperationException("unsupported layout presentation source")
 object LayoutPresentation:
-  def from[A](value: Presentation[A]): LayoutPresentation[A] = ???
+  def from[A](value: Presentation[A]): LayoutPresentation[A] =
+    new LayoutPresentation[A]:
+      override private[sirin] def current: A = value.current
 
 /** Declared global invalidation sources, recorded with phase-specific cause IDs. */
 enum PhaseDependency:
   case ThemeColors,
     FontMetrics,
     DisplayScale
+
+/** Host-owned epochs. Each counter changes when its corresponding environment changes. */
+final case class PhaseEpochs(fontMetrics: Long = 0, displayScale: Long = 0, themeColors: Long = 0):
+  require(fontMetrics >= 0 && displayScale >= 0 && themeColors >= 0, "phase epochs must be nonnegative")
+  def apply(dependency: PhaseDependency): Long =
+    dependency match
+      case PhaseDependency.FontMetrics =>
+        fontMetrics
+      case PhaseDependency.DisplayScale =>
+        displayScale
+      case PhaseDependency.ThemeColors =>
+        themeColors

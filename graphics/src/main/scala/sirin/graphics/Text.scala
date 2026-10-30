@@ -21,11 +21,8 @@ object Utf16Offset:
 /** Well-formed Unicode source with codepoint-boundary offset conversion. These boundaries are not grapheme boundaries,
   * carets or selection geometry.
   */
-final class TextSource private (
-    val text: String,
-    private val bytes: Array[Byte],
-    private val boundaries: Map[Int, Int]
-):
+final class TextSource private (val text: String, private val bytes: Array[Byte], private val boundaries: Map[Int, Int])
+    extends Serializable:
   def byteSize: Int = bytes.length
   def utf8Copy: Array[Byte] = bytes.clone()
   def utf16Offset(offset: Utf8Offset): Option[Utf16Offset] = boundaries.get(offset.value).map(Utf16Offset(_))
@@ -62,7 +59,7 @@ object TextSource:
 /** Owned font-file bytes. Copying does not validate the font format; a native service must successfully open the bytes
   * before producing a ResolvedFont.
   */
-final class FontData private (private val bytes: Array[Byte]):
+final class FontData private (private val bytes: Array[Byte]) extends Serializable:
   def byteSize: Int = bytes.length
   def bytesCopy: Array[Byte] = bytes.clone()
 
@@ -125,7 +122,7 @@ final class ResolvedFont private[graphics] (
     val metrics: FontMetrics,
     val shaperVersion: String,
     val rasterizerVersion: String
-):
+) extends Serializable:
   require(
     faceIndex >= 0 && size.isFinite && size > 0 && glyphCount > 0 && unitsPerEm > 0,
     "invalid resolved font metadata"
@@ -157,7 +154,7 @@ final class ShapedRun private[graphics] (
     val glyphs: Vector[PositionedGlyph],
     val range: Utf8Range,
     val context: Utf8Range
-):
+) extends Serializable:
   require(
     context.start.value <= range.start.value && context.end.value >= range.end.value &&
       source.utf16Offset(context.start).nonEmpty && source.utf16Offset(context.end).nonEmpty,

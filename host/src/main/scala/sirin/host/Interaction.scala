@@ -14,6 +14,7 @@ enum HostInput:
   case Deactivate
 
 enum TargetKind:
+  case Custom(frame: sirin.engine.ElementFrame)
   case Button(instance: Long)
   case Editor(instance: Long)
   case Scroll(instance: Long, maximum: Double)
@@ -25,10 +26,39 @@ final case class Target(
     enabled: Boolean,
     directRefs: Vector[Long],
     ancestorRefs: Vector[Long],
-    ancestors: Vector[NodeId]
+    ancestors: Vector[NodeId],
+    element: Option[sirin.engine.ElementFrame] = None
 ):
+  private def custom: Option[sirin.engine.ElementFrame] = element.orElse(
+    kind match
+      case TargetKind.Custom(frame) =>
+        Some(frame)
+      case _ =>
+        None
+  )
+  def focusable: Boolean = custom.forall(_.focusable)
   def hit(x: Double, y: Double): Boolean =
-    x >= clip.x && y >= clip.y && x < clip.x + clip.width && y < clip.y + clip.height
+    val inside = x >= clip.x && y >= clip.y && x < clip.x + clip.width && y < clip.y + clip.height
+    inside &&
+    custom.forall(frame =>
+      frame.hit(Size(bounds.width.lp, bounds.height.lp), Point((x - bounds.x).lp, (y - bounds.y).lp)) != Hit.Miss
+    )
+
+  /** Paint-only changes cannot cancel a pending input against unchanged geometry. */
+  private[host] def sameInput(other: Target): Boolean =
+    def identity(target: Target): Any =
+      target.kind match
+        case TargetKind.Custom(frame) =>
+          ("custom", frame.instance)
+        case value =>
+          value
+    def phases(target: Target): Option[(Long, Long)] = target
+      .custom
+      .map(frame => (frame.revisions(2), frame.revisions(3)))
+    id == other.id && bounds == other.bounds && clip == other.clip && enabled == other.enabled &&
+    focusable == other.focusable && directRefs == other.directRefs && ancestorRefs == other.ancestorRefs &&
+    ancestors == other.ancestors && identity(this) == identity(other) && phases(this) == phases(other)
+
 final case class InteractionSnapshot(epoch: Long, targets: Vector[Target]):
   require(targets.size <= 10000 && targets.map(_.id).distinct.size == targets.size, "interaction identity/budget")
   def target(id: NodeId): Option[Target] = targets.find(_.id == id)
@@ -42,6 +72,21 @@ object InteractionSnapshot:
             p.children.foreach(visit(_, direct :+ ref, ancestors, parents :+ p.node.id))
           case Content.Styled(_, _) =>
             p.children.foreach(visit(_, direct, ancestors, parents :+ p.node.id))
+          case Content.Custom(frame) =>
+            val action = frame.activation
+            val kind = action.fold[TargetKind](TargetKind.Custom(frame))(_ => TargetKind.Button(frame.instance))
+            targets +=
+              Target(
+                p.node.id,
+                kind,
+                p.bounds,
+                p.clip,
+                action.forall(_.enabled),
+                direct,
+                ancestors,
+                parents,
+                Some(frame)
+              )
           case Content.Button(instance, _, enabled, _, _) =>
             targets +=
               Target(p.node.id, TargetKind.Button(instance), p.bounds, p.clip, enabled, direct, ancestors, parents)
@@ -86,7 +131,9 @@ final class Interaction:
   def presented: InteractionSnapshot = snapshot
   def install(value: InteractionSnapshot, scrolls: Map[Long, Double]): Unit =
     val next =
-      if value.targets == snapshot.targets then
+      if value.targets.size == snapshot.targets.size &&
+        value.targets.zip(snapshot.targets).forall((a, b) => a.sameInput(b))
+      then
         value.copy(epoch = snapshot.epoch)
       else
         value
@@ -99,7 +146,7 @@ final class Interaction:
     )
   def focused: Option[Target] = state.focused.flatMap(snapshot.target)
   def focusRef(reference: Long): Boolean =
-    snapshot.targets.find(_.directRefs.contains(reference)) match
+    snapshot.targets.find(t => t.focusable && t.directRefs.contains(reference)) match
       case None =>
         false
       case Some(target) =>
@@ -137,7 +184,7 @@ final class Interaction:
       case HostInput.Deactivate =>
         state = state.copy(pressed = None)
       case HostInput.KeyDown(Key.Tab, mods, _) if mods.isEmpty || mods == Mods.Shift =>
-        val all = snapshot.targets
+        val all = snapshot.targets.filter(_.focusable)
         if all.nonEmpty then
           val index = all.indexWhere(t => state.focused.contains(t.id))
           val backwards = mods.has(Mods.Shift)
@@ -202,7 +249,7 @@ final class Interaction:
       case HostInput.Down(x, y, true) =>
         val target = hit(x, y)
         state = state.copy(
-          focused = target.map(_.id),
+          focused = target.filter(_.focusable).map(_.id),
           keyboard = false,
           pressed = target.filter(_.enabled).map(t => Press(t.id, snapshot.epoch, PressOrigin.Pointer))
         )

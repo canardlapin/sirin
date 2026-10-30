@@ -55,7 +55,7 @@ trait Canvas2D:
 /** Immutable commands retaining shared immutable paths, paints, batches, image snapshots and child drawings. No
   * GPU/native resources, UI nodes or callbacks.
   */
-final class Drawing private (val commands: Vector[DrawCommand])
+final class Drawing private (val commands: Vector[DrawCommand]) extends Serializable
 
 object Drawing:
   val empty: Drawing = new Drawing(Vector.empty)
@@ -72,9 +72,12 @@ object Drawing:
       commands.clear()
 
   private final class Recorder(commands: ArrayBuffer[DrawCommand]) extends Canvas2D:
+    private val owner = Thread.currentThread()
     var open = true
 
-    private def checkOpen(): Unit = require(open, "recording canvas is closed")
+    private def checkOpen(): Unit =
+      require(Thread.currentThread() eq owner, "recording canvas belongs to another thread")
+      require(open, "recording canvas is closed")
     private def add(command: DrawCommand): Unit =
       checkOpen()
       commands += command

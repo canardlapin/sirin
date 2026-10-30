@@ -36,8 +36,9 @@ gap is exactly what §1.1's ScalaFX comparison will expose.
 **Directive.** VISION §8 gains a public-seam rule: a standard control is built on
 `Element`/`LayoutPolicy`/semantics, or it is listed in a public-seam ledger with
 the missing public capability and a tracking issue. No new control may add a
-host-private hook without a ledger entry. Alpha4 completes the seam. A follow-up
-issue migrates `TextField` and `Button`.
+host-private hook without a ledger entry. The initial Alpha4 seam proof includes a built-in control port before diagram
+expansion; Button is the first port. D1 tracks the remaining migrations, including
+TextField, without waiting for the full Alpha4 diagram.
 
 ### D2. One drawing vocabulary
 
@@ -123,6 +124,11 @@ because it touches §5.1 vocabulary.
 and image assets), `desktop/src/main/scala/sirin/graphics/unicode/NativeUnicode.scala:29,92,161`,
 and a per-pixel `Array.tabulate` in
 `desktop/src/main/scala/sirin/desktop/FrameWorker.scala:215`.
+
+**Correction after stocktake.** FrameWorker's cited per-pixel path is a fallback.
+BatchGpu copies run during content preparation/cache admission, not on every
+retained frame. D7 remains valid at lower urgency than the seam proof; profile
+actual application work before treating these copies as a hot spot.
 
 **Directive.** VISION §6.1 gains a bulk-transfer rule. Arrays cross the boundary
 with one bulk copy (`memcpy`, `MemorySegment.copy` or equivalent) or a recorded

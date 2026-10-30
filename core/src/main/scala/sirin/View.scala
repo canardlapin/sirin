@@ -62,6 +62,10 @@ extension [V <: View](view: V)(using rebuild: ViewRebuild[V])
   def offset(value: Presentation[Point]): V = rebuild(view, Decoration.Offset(value))
 
 object View:
+  /** A public, immutable composition wrapper, expanded through the usual view machinery. */
+  trait Proxy extends View:
+    def body: View
+
   private[sirin] case object Empty extends View
   private[sirin] final case class Decorated(view: View, decoration: Decoration) extends View
   private[sirin] final case class Stack(
@@ -179,7 +183,15 @@ object Button:
       label: Signal[String],
       isPrimary: Boolean = false,
       binding: Binding = Inert
-  ) extends ButtonView:
+  ) extends ButtonView
+      with View.Proxy:
+    lazy val body: View = ButtonElement.view(
+      label,
+      isPrimary,
+      binding.enabled,
+      binding.running,
+      txn => binding.invoke()(using txn)
+    )
     def primary: ButtonView = copy(isPrimary = true)
     def command(c: Command[Unit, ?]): ButtonView = command(c, Signal.const(()))
     def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(binding = Bound(c, arg))

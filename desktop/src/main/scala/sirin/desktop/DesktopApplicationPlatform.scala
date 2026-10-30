@@ -168,18 +168,16 @@ private[desktop] final class DesktopApplicationSession(
         None
   def hasShortcut(instance: Long, input: HostInput, controller: EditorController): Boolean =
     routedShortcut(instance, input, controller).nonEmpty
-  def shortcut(instance: Long, input: HostInput, controller: EditorController): Boolean = routedShortcut(
-    instance,
-    input,
-    controller
-  ).exists {
-    case Left(action) =>
-      invoke(action)
-      true
-    case Right(kind) =>
-      native.standardMenu(kind)
-      true
-  }
+  def shortcut(instance: Long, input: HostInput, controller: EditorController, allowElement: Boolean): Boolean =
+    (allowElement && controller.handleElementKey(input)) ||
+      routedShortcut(instance, input, controller).exists {
+        case Left(action) =>
+          invoke(action)
+          true
+        case Right(kind) =>
+          native.standardMenu(kind)
+          true
+      }
   private def menuActions(): Unit =
     var count = 0
     var more = true
@@ -459,8 +457,9 @@ private[desktop] final class ApplicationPeer(
         input => inputs.needsGeometry(input, session.hasShortcut(instance, input, controller))
       )(
         (fact, input) => {
-          if !session.shortcut(instance, input, controller) then
-            if inputs.accepts(input, fact.timestamp(), geometryAt, renderRecovery.unavailable) then
+          val accepts = inputs.accepts(input, fact.timestamp(), geometryAt, renderRecovery.unavailable)
+          if !session.shortcut(instance, input, controller, accepts) then
+            if accepts then
               controller.handle(
                 input,
                 if (fact.mods() & 2) != 0 then
@@ -468,7 +467,8 @@ private[desktop] final class ApplicationPeer(
                 else
                   Mods.none
                 ,
-                math.max(1, fact.clicks())
+                math.max(1, fact.clicks()),
+                routeElementKey = false
               )
             else
               captured

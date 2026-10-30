@@ -174,3 +174,84 @@ class RecordingCanvasSuite extends munit.FunSuite:
       intercept[IllegalArgumentException](TextRequest("x", ui.TextStyle.Body, ui.Lp(width)))
     intercept[IllegalArgumentException](TextPreparationLimits(maxRequests = 0))
   }
+
+  test("full graphics inside UI paint matches standalone recording in logical units") {
+    import CanvasGraphics.*
+    import ui.*
+    val curve = g
+      .Path
+      .build { path =>
+        path.moveTo(1.lp, 2.lp)
+        path.cubicTo(g.Point(3.lp, 18.lp), g.Point(20.lp, 4.lp), g.Point(26.lp, 10.lp))
+        path.lineTo(1.lp, 2.lp)
+        path.close()
+      }
+    val gradient = g
+      .Paint
+      .LinearGradient(
+        g.Point(0.lp, 0.lp),
+        g.Point(30.lp, 0.lp),
+        Vector(g.ColorStop(0, g.Color.rgba8(0, 30, 90)), g.ColorStop(1, g.Color.rgba8(150, 220, 255)))
+      )
+    val image = g.ImageSnapshot.copyRgba8(1, 1, Array[Byte](0, 60, 120, -1))
+    val nested = g.Drawing.record(_.fill(curve, gradient))
+    def paint(canvas: g.Canvas2D): Unit =
+      canvas.transformed(g.Affine.translation(4.lp, 6.lp)) { moved =>
+        moved.clipped(g.Path.rectangle(g.Rect(0.lp, 0.lp, 40.lp, 40.lp))) { clipped =>
+          clipped.layer(0.7) { child =>
+            child.fill(curve, gradient)
+            child.stroke(curve, gradient, g.StrokeStyle.logical(1.5.lp))
+            child.image(image.full, g.Rect(2.lp, 3.lp, 8.lp, 9.lp))
+            child.instances(curve, g.InstanceBatch(Vector(g.Affine.identity), g.InstanceValues.Constant(gradient)))
+            child.draw(nested)
+          }
+        }
+      }
+    val standalone = g.Drawing.record(paint)
+    val integrated = RecordingCanvas.record(theme)(canvas => paint(canvas.graphics))
+    assertEquals(integrated.commands, standalone.commands)
+  }
+
+  test("canonical UI scopes expire their child and roll back failed graphics scopes") {
+    import CanvasGraphics.*
+    var escaped = Option.empty[ui.Canvas]
+    val drawing =
+      RecordingCanvas.record(theme) { canvas =>
+        canvas.clipped(rect()) { child =>
+          escaped = Some(child)
+          intercept[IllegalStateException] {
+            child
+              .graphics
+              .layer(0.5) { group =>
+                group.fill(g.Path.rectangle(g.Rect(0, 0, 5, 5)), paint)
+                throw new IllegalStateException("abort scope")
+              }
+          }
+        }
+        intercept[IllegalArgumentException](escaped.get.graphics)
+        canvas.layer(0.6)(_.fill(rect(), ink))
+      }
+    assertEquals(drawing.commands.count(_.isInstanceOf[g.DrawCommand.Fill]), 1)
+  }
+
+  test("graphics adapter refuses escaped and cross-thread recording handles") {
+    import CanvasGraphics.*
+    var escaped = Option.empty[g.Canvas2D]
+    val result = new AtomicReference[Throwable]()
+    RecordingCanvas.record(theme) { canvas =>
+      val graphics = canvas.graphics
+      escaped = Some(graphics)
+      val worker =
+        new Thread(() =>
+          try
+            graphics.draw(g.Drawing.empty)
+          catch
+            case error: Throwable =>
+              result.set(error)
+        )
+      worker.start()
+      worker.join()
+      assert(result.get().isInstanceOf[IllegalArgumentException])
+    }
+    intercept[IllegalArgumentException](escaped.get.draw(g.Drawing.empty))
+  }

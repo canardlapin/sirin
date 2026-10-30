@@ -65,6 +65,29 @@ object EditorAccessibility:
       }
     def buttons(p: Placed): Unit =
       p.node.content match
+        case Content.Custom(element) =>
+          element
+            .activation
+            .foreach { activation =>
+              element
+                .semantics(Size(p.bounds.width.lp, p.bounds.height.lp))
+                .find(node => node.part == activation.part && node.semantics.role == Role.Button)
+                .foreach { node =>
+                  window.accessibilityField(
+                    element.instance,
+                    2,
+                    node.semantics.name.getOrElse(""),
+                    "",
+                    "",
+                    0,
+                    0,
+                    active && controller.interaction.state.focused.contains(p.node.id),
+                    activation.enabled,
+                    Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
+                    Array.emptyDoubleArray
+                  )
+                }
+            }
         case Content.Button(id, label, enabled, _, _) =>
           window.accessibilityField(
             id,

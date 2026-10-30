@@ -1,27 +1,10 @@
 // Provisional A-0 skeleton (VISION §4.1): public shape only, not implemented.
 package sirin
 
-/** Logical pixels. Device pixels (`Px`) belong to the backend-author API. */
-opaque type Lp = Double
-
-object Lp:
-  val zero: Lp = 0.0
-  def apply(value: Double): Lp = value
-
-  extension (a: Lp)
-    def toDouble: Double = a
-    def +(b: Lp): Lp = a + b
-    def -(b: Lp): Lp = a - b
-    def *(k: Double): Lp = a * k
-    def /(k: Double): Lp = a / k
-    def max(b: Lp): Lp = math.max(a, b)
-    def min(b: Lp): Lp = math.min(a, b)
-    def compare(b: Lp): Int = java.lang.Double.compare(a, b)
-
-extension (n: Int)
-  def lp: Lp = Lp(n.toDouble)
-extension (n: Double)
-  def lp: Lp = Lp(n)
+/** Logical pixels shared with standalone drawing, without a core/graphics dependency. */
+type Lp = sirin.units.Lp
+val Lp: sirin.units.Lp.type = sirin.units.Lp
+export sirin.units.syntax.*
 
 final case class Point(x: Lp, y: Lp):
   def +(d: Point): Point = Point(x + d.x, y + d.y)
@@ -52,3 +35,16 @@ object Color:
     ((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff)
   extension (c: Color)
     def argb: Int = c
+
+/** Finite affine paint transform, composed by the standalone graphics backend. */
+final case class Transform2D(a: Double, b: Double, c: Double, d: Double, tx: Double, ty: Double):
+  require(Vector(a, b, c, d, tx, ty).forall(_.isFinite), "transform coefficients must be finite")
+  def apply(point: Point): Point = Point(
+    (a * point.x.toDouble + c * point.y.toDouble + tx).lp,
+    (b * point.x.toDouble + d * point.y.toDouble + ty).lp
+  )
+object Transform2D:
+  val identity: Transform2D = Transform2D(1, 0, 0, 1, 0, 0)
+  def camera(origin: Point, scale: Double): Transform2D =
+    require(scale.isFinite && scale > 0, "camera scale must be positive and finite")
+    Transform2D(scale, 0, 0, scale, origin.x.toDouble, origin.y.toDouble)

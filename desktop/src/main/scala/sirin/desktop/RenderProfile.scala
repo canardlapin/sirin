@@ -36,7 +36,9 @@ object RenderProfile:
           val focus=Some(targets(index%targets.size).id)
           val value=render(focus)
           println(s"profile edge=$edge phase=focus ms=${value.workerNanos/1e6} ${value.profile}")
-        val scroll=targets.collectFirst {case Target(_,TargetKind.Scroll(id,_),_,_,_,_,_,_) => id}.get
+        val scroll = targets.collectFirst {
+          case Target(_, TargetKind.Scroll(id, _), _, _, _, _, _, _, _) => id
+        }.get
         for index <- 0 until 12 do
           scrolls=Map(scroll->(index*40.0))
           val value=render(None)

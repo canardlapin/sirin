@@ -111,7 +111,10 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
         assert(coordinator.accepts(frame.request))
         inputs.current.install(req.generation, frame.layout)
         if save then
-          freeze(req, "recovery.frame")
+          val file = Path.of("target/render-recovery/recovery.drawing")
+          FrozenDrawing.save(file, req, frame.layout)
+          val replayed = FrozenDrawing.replay(FrozenDrawing.read(file))
+          assert(java.util.Arrays.equals(replayed.pixelsCopy, frame.pixels.pixelsCopy))
           FrameWorker.save(frame.pixels, Path.of("target/render-recovery/recovery.png"))
       finally
         frame.close()

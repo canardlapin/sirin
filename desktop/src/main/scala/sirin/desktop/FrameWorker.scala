@@ -62,6 +62,15 @@ final class RenderSession(
     editorSystemFonts: Boolean = false
 ) extends RenderBackend:
   require(tileEdge >= 32 && tileEdge <= 192, "tile edge budget")
+  private val elementMeasurements = new ElementMeasureCache
+  private var displayScale = Option.empty[(Double, Double)]
+  private var displayEpoch = 0L
+  private def phaseEpochs(payload: FramePayload): PhaseEpochs =
+    val scale = (payload.pixelWidth / payload.logicalWidth, payload.pixelHeight / payload.logicalHeight)
+    if !displayScale.contains(scale) then
+      displayScale = Some(scale)
+      displayEpoch = Math.addExact(displayEpoch, 1L)
+    PhaseEpochs(displayScale = displayEpoch)
   private val unicode = NativeUnicode.open()
   private val faces = scala.collection.mutable.Map.empty[TextStyle, Vector[NativeFont]]
   private val extraFaces = scala.collection.mutable.Map.empty[sirin.graphics.ResolvedFont, NativeFont]
@@ -198,39 +207,46 @@ final class RenderSession(
           val layout =
             sirin
               .host
-              .Layout(payload.tree, payload.logicalWidth, payload.logicalHeight, payload.scrolls, payload.editors) {
-                text =>
-                  check()
-                  layouts.remove(text) match
-                    case Some(value) =>
-                      layouts(text) = value
-                      value
-                    case None =>
-                      val value =
-                        if text.maxWidth.toDouble == Double.PositiveInfinity then
-                          ResolvedTextLayout(
-                            NativeParagraph.layout(
-                              text.content,
-                              textFaces(text.style, text.content),
-                              unicode,
-                              ParagraphOptions()
-                            )
+              .Layout(
+                payload.tree,
+                payload.logicalWidth,
+                payload.logicalHeight,
+                payload.scrolls,
+                payload.editors,
+                elementMeasurements,
+                phaseEpochs(payload)
+              ) { text =>
+                check()
+                layouts.remove(text) match
+                  case Some(value) =>
+                    layouts(text) = value
+                    value
+                  case None =>
+                    val value =
+                      if text.maxWidth.toDouble == Double.PositiveInfinity then
+                        ResolvedTextLayout(
+                          NativeParagraph.layout(
+                            text.content,
+                            textFaces(text.style, text.content),
+                            unicode,
+                            ParagraphOptions()
                           )
-                        else
-                          ResolvedTextLayout(
-                            NativeParagraph.wrap(
-                              text.content,
-                              textFaces(text.style, text.content),
-                              unicode,
-                              text.maxWidth.toDouble,
-                              ParagraphOptions()
-                            )
+                        )
+                      else
+                        ResolvedTextLayout(
+                          NativeParagraph.wrap(
+                            text.content,
+                            textFaces(text.style, text.content),
+                            unicode,
+                            text.maxWidth.toDouble,
+                            ParagraphOptions()
                           )
-                      if layouts.size >= 256 then
-                        layouts.remove(layouts.head._1)
-                      layouts(text) = value
-                      shaped += 1
-                      value
+                        )
+                    if layouts.size >= 256 then
+                      layouts.remove(layouts.head._1)
+                    layouts(text) = value
+                    shaped += 1
+                    value
               }
           check()
           if layout.viewports.exists(v => !payload.viewports.get(v.instance).contains(v.viewport)) then
@@ -332,7 +348,9 @@ final class RenderSession(
                       payload.logicalWidth,
                       payload.logicalHeight,
                       payload.scrolls,
-                      payload.editors
+                      payload.editors,
+                      elementMeasurements,
+                      phaseEpochs(payload)
                     ) { text =>
                       check()
                       layouts.remove(text) match

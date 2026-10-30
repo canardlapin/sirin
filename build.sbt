@@ -15,15 +15,23 @@ lazy val testDeps = Seq(
   )
 )
 
+// Shared logical unit only; core and standalone graphics remain independent.
+lazy val units = crossProject(JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("units"))
+  .settings(name := "sirin-units", testDeps)
+
 // Standalone drawing values and recordings: no UI runtime or native library dependency.
 lazy val graphics = crossProject(JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("graphics"))
+  .dependsOn(units)
   .settings(name := "sirin-graphics", testDeps)
 
 lazy val core = crossProject(JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
+  .dependsOn(units)
   .settings(name := "sirin-core", testDeps)
 
 // Pure text adapter; both foundational APIs retain their independent graphs.
@@ -208,7 +216,7 @@ def vendorFlags(v: File): (Seq[String], Seq[String]) = {
 // type-check against the skeletal core API. JVM-only; not aggregated by root.
 lazy val examples = project
   .in(file("examples"))
-  .dependsOn(core.jvm)
+  .dependsOn(core.jvm, graphicsUI.jvm)
   .settings(
     name                  := "sirin-examples",
     publish / skip        := true,

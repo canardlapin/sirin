@@ -60,6 +60,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
           throw error
     )
     var serial = 0L
+    var replayChecked = false
     var viewports = Map.empty[Long, RowViewport]
     def frame(): CapturedApplication =
       var result = capture()
@@ -98,13 +99,15 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
           else
             controller.install(serial, output.layout)
             Files.createDirectories(captureRoot)
-            val frozen =
-              new java.io.ObjectOutputStream(Files.newOutputStream(captureRoot.resolve(s"workspace-$serial.frame")))
-            try frozen.writeObject(request)
-            finally frozen.close()
+            val frozenPath = captureRoot.resolve(s"workspace-$serial.drawing")
+            FrozenDrawing.save(frozenPath, request, output.layout)
             output match
               case rendered: RenderedFrame =>
                 FrameWorker.save(rendered.pixels, captureRoot.resolve("workspace.png"))
+                if !replayChecked then
+                  val replayed = FrozenDrawing.replay(FrozenDrawing.read(frozenPath))
+                  assert(java.util.Arrays.equals(replayed.pixelsCopy, rendered.pixels.pixelsCopy))
+                  replayChecked = true
               case _ =>
                 fail("settled frame omitted pixels")
             settled = true
@@ -173,6 +176,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
         }
       )
       assertEquals(reopened.initial.data.body, "typed café 日本語 😀")
+      assert(replayChecked)
       assertEquals(NativeApplication.liveApplications(), 0)
       assertEquals(NativeWindow.liveWindows(), 0)
     finally
@@ -196,25 +200,32 @@ object WorkspaceRenderReplay:
         editorSystemFonts = true
       )
     try args.foreach { name =>
-        val input = new java.io.ObjectInputStream(Files.newInputStream(Path.of(name)))
-        val request =
-          try input.readObject().asInstanceOf[FrameRequest]
-          finally input.close()
-        println(
-          s"replay=${Path.of(name).getFileName} viewport=${request.payload.logicalWidth}x${request
-              .payload
-              .logicalHeight}"
-        )
-        val frame = renderer.render(request, () => false)
-        try
-          frame match
-            case rendered: RenderedFrame =>
-              FrameWorker.save(
-                rendered.pixels,
-                Path.of("target/public-workbench/replay").resolve(Path.of(name).getFileName.toString + ".png")
-              )
-            case _ =>
-              throw new IllegalStateException("frozen frame requested new viewport feedback")
-        finally frame.close()
+        if name.endsWith(".drawing") then
+          val pixels = FrozenDrawing.replay(FrozenDrawing.read(Path.of(name)))
+          FrameWorker.save(
+            pixels,
+            Path.of("target/public-workbench/replay").resolve(Path.of(name).getFileName.toString + ".png")
+          )
+        else
+          val input = new java.io.ObjectInputStream(Files.newInputStream(Path.of(name)))
+          val request =
+            try input.readObject().asInstanceOf[FrameRequest]
+            finally input.close()
+          println(
+            s"replay=${Path.of(name).getFileName} viewport=${request.payload.logicalWidth}x${request
+                .payload
+                .logicalHeight}"
+          )
+          val frame = renderer.render(request, () => false)
+          try
+            frame match
+              case rendered: RenderedFrame =>
+                FrameWorker.save(
+                  rendered.pixels,
+                  Path.of("target/public-workbench/replay").resolve(Path.of(name).getFileName.toString + ".png")
+                )
+              case _ =>
+                throw new IllegalStateException("frozen frame requested new viewport feedback")
+          finally frame.close()
       }
     finally renderer.close()

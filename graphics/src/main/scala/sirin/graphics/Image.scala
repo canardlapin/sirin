@@ -10,7 +10,8 @@ enum Sampling:
 /** Immutable, tightly packed RGBA8 sRGB pixels with straight alpha. Construction copies caller storage; exports copy as
   * well. Object identity identifies this exact snapshot, not a mutable asset slot or a caller-supplied revision.
   */
-final class ImageSnapshot private (val width: Int, val height: Int, private val pixels: Array[Byte]):
+final class ImageSnapshot private (val width: Int, val height: Int, private val pixels: Array[Byte])
+    extends Serializable:
   val format: ImageFormat = ImageFormat.Rgba8SrgbStraight
   def byteSize: Int = pixels.length
   def full: ImageRegion = ImageRegion(this, Rect(0, 0, width.toDouble, height.toDouble))

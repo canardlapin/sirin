@@ -51,3 +51,10 @@ trait TextServices:
     * capability and native owner policies.
     */
   def layout(text: String, style: TextStyle, maxWidth: Lp)(using Committed): TextLayout
+
+/** Explicit lookup key, prepared before a custom element paints. */
+final case class TextRequest(content: String, style: TextStyle, maxWidth: Lp = Lp(Double.PositiveInfinity)):
+  require(
+    !maxWidth.toDouble.isNaN && maxWidth.toDouble >= 0,
+    "text request width must be nonnegative or positive infinity"
+  )

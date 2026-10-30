@@ -56,3 +56,17 @@ One review correction: main already has shared-device retained GPU presentation
 without a full-frame CPU readback on its normal batch path. Reference/fallback
 rendering and explicit captures still use readback. The status page and D8 now
 make that distinction; no fresh performance measurement is claimed.
+
+## Cleanup successor after owner resume
+
+The camera, qualification, responsive and tranche worktrees were removed after
+checking clean status and merge ancestry again. Every generated file was moved
+intact to `/Users/bbuchsbaum/code/scala/sirin-artifacts/worktree-cleanup-20261030`.
+Its `manifest.json` and per-tree `preservation.json` files record the old heads,
+branches and preserved paths. Their four local feature branches were deleted.
+
+The authoritative untracked `.mote/ops` store remains in the original `sirin`
+checkout. Never run checkout/reset/clean there as a shortcut to cleanup. Retiring
+that checkout requires explicit store preservation or migration first. The running
+app still uses the GPU-host tree; the approved SirinEdit candidate stays at its
+existing path. These are intentional retained trees, not unaccounted work.

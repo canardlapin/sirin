@@ -87,3 +87,14 @@ final case class StrokeStyle(
       dashes
     else
       dashes ++ dashes
+
+object StrokeStyle:
+  /** Logical lengths; the renderer applies device scale only during preparation. */
+  def logical(
+      width: sirin.units.Lp,
+      cap: LineCap = LineCap.Butt,
+      join: LineJoin = LineJoin.Miter,
+      miterLimit: Double = 4,
+      dashes: Vector[sirin.units.Lp] = Vector.empty,
+      dashOffset: sirin.units.Lp = sirin.units.Lp.zero
+  ): StrokeStyle = StrokeStyle(width.toDouble, cap, join, miterLimit, dashes.map(_.toDouble), dashOffset.toDouble)

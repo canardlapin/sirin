@@ -1,5 +1,8 @@
 package sirin.graphics
 
+import sirin.units.Lp
+import scala.annotation.targetName
+
 /** Finite, Double-precision coordinates. Units are chosen by the drawing's host; recording never converts to device
   * pixels or snaps coordinates.
   */
@@ -59,6 +62,9 @@ final case class Affine(a: Double, b: Double, c: Double, d: Double, tx: Double, 
           None
 
 object Affine:
+  @targetName("logicalTranslation")
+  def translation(x: Lp, y: Lp): Affine = translation(x.toDouble, y.toDouble)
+
   val identity: Affine = Affine(1, 0, 0, 1, 0, 0)
   def translation(x: Double, y: Double): Affine = Affine(1, 0, 0, 1, x, y)
   def scale(x: Double, y: Double): Affine = Affine(x, 0, 0, y, 0, 0)
@@ -69,3 +75,13 @@ object Affine:
     val cos = math.cos(radians)
     val sin = math.sin(radians)
     Affine(cos, sin, -sin, cos, 0, 0)
+
+/** Logical constructors do no device conversion or pixel snapping. */
+object Point:
+  @targetName("logicalPoint")
+  def apply(x: Lp, y: Lp): Point = new Point(x.toDouble, y.toDouble)
+
+object Rect:
+  @targetName("logicalRect")
+  def apply(x: Lp, y: Lp, width: Lp, height: Lp): Rect =
+    new Rect(x.toDouble, y.toDouble, width.toDouble, height.toDouble)

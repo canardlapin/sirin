@@ -14,6 +14,7 @@ final class EditorController(
     clearComposition: () => Unit
 ):
   val interaction = new Interaction
+  val elements = new ElementInput(runtime, interaction)
   private var states = Map.empty[Long, TextEditing]
   private var captured = CapturedTree(Node(NodeId(Vector("empty")), Content.Empty), Map.empty)
   private var shown = Option.empty[(Long, LayoutResult)]
@@ -50,6 +51,8 @@ final class EditorController(
             Content.Reference(ref, project(child))
           case Content.Styled(hint, child) =>
             Content.Styled(hint, project(child))
+          case Content.CustomLayout(frame, children) =>
+            Content.CustomLayout(frame, children.map((slot, child) => slot -> project(child)))
           case Content.Stack(horizontal, gap, alignment, children) =>
             Content.Stack(horizontal, gap, alignment, children.map(project))
           case Content.Scroll(id, child) =>
@@ -99,7 +102,12 @@ final class EditorController(
           )
     ).distinct.sorted.filter(boundaries(s).contains)
   def update(value: CapturedTree): Unit =
+    require(
+      value.elements.values.forall(_.capacity == Capacity(256)),
+      "this desktop host supports the shared 256-event input capacity only"
+    )
     captured = value
+    elements.update(value.elements)
     editNotices = editNotices.filter((id, _) => value.editors.contains(id))
     if states.exists((id, state) => !value.editors.contains(id) && state.snapshot.preedit.nonEmpty) then
       clearComposition()
@@ -112,6 +120,8 @@ final class EditorController(
           values(child)
         case Content.Styled(_, child) =>
           values(child)
+        case Content.CustomLayout(_, children) =>
+          children.flatMap((_, child) => values(child))
         case Content.Stack(_, _, _, children) =>
           children.flatMap(values)
         case Content.Scroll(_, child) =>
@@ -133,6 +143,7 @@ final class EditorController(
   def install(revision: Long, layout: LayoutResult): Unit =
     shown = Some((revision, layout))
     interaction.install(InteractionSnapshot(revision, layout), layout.scrollOffsets)
+    elements.install(layout)
   def presentedRevision: Long = shown.fold(0L)(_._1)
   def layout: Option[LayoutResult] = shown.map(_._2)
   private def placed(id: Long): Option[Placed] = shown.flatMap(
@@ -141,6 +152,7 @@ final class EditorController(
   def invalidatePresentation(): Unit = {
     shown = None
     drag = None
+    elements.invalidate()
   }
 
   /** Rendering is unavailable: preserve draft/history, but retire provisional input. */
@@ -163,7 +175,9 @@ final class EditorController(
       true
     else
       input match
-        case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move =>
+        case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move | _: HostInput.Wheel =>
+          true
+        case _: HostInput.KeyDown if interaction.focused.exists(_.kind.isInstanceOf[TargetKind.Custom]) =>
           true
         case HostInput.KeyDown(key, _, _) =>
           Set(Key.ArrowLeft, Key.ArrowRight, Key.ArrowUp, Key.ArrowDown, Key.Home, Key.End, Key.Tab).contains(key)
@@ -289,9 +303,26 @@ final class EditorController(
     else
       normal.replace('\n', ' ').replace('\t', ' ')
   var notice = Option.empty[String]
-  def handle(input: HostInput, mods: Mods = Mods.none, clicks: Int = 1): Unit =
+
+  /** Called once before menu/local shortcuts; false preserves their normal fallback. */
+  def handleElementKey(input: HostInput): Boolean =
+    input match
+      case HostInput.KeyDown(key, mods, repeat) if ready && key != Key.Tab =>
+        elements.key(KeyEvent(key, mods, repeat)) match
+          case Some(CommitResult.Committed(handled)) =>
+            handled
+          case Some(_) =>
+            refusals += 1
+            notice = Some("This element action could not be committed.")
+            true
+          case None =>
+            false
+      case _ =>
+        false
+  def handle(input: HostInput, mods: Mods = Mods.none, clicks: Int = 1, routeElementKey: Boolean = true): Unit =
     try
-      dispatch(input, mods, clicks)
+      if !routeElementKey || !handleElementKey(input) then
+        dispatch(input, mods, clicks)
     catch
       case _: IllegalArgumentException =>
         rejectEdit(focusedId, "This edit exceeds the field limit or has an invalid text range.")
@@ -326,7 +357,46 @@ final class EditorController(
         ()
   private def dispatch(input: HostInput, mods: Mods, clicks: Int): Unit =
     val oldFocus = focusedId
+    if ready && elements.accepts(input) then
+      val before = interaction.state
+      input match
+        case _: HostInput.Down =>
+          interaction.handle(input)
+          ()
+        case _ =>
+          ()
+      if oldFocus != focusedId && !blur(oldFocus) then
+        interaction.rollbackPublication(before)
+      else
+        elements
+          .pointer(input, mods, clicks)
+          .foreach {
+            case CommitResult.Committed(_) =>
+              ()
+            case _ =>
+              refusals += 1
+              notice = Some("This element action could not be committed.")
+          }
+        input match
+          case _: HostInput.Up | HostInput.Deactivate =>
+            interaction.handle(input)
+          case _ =>
+            ()
+        runtime.transact {
+          publishFocus()
+        }
+      return
     input match
+      case HostInput.Wheel(x, y, delta) if ready =>
+        elements.wheel(x, y, delta, mods) match
+          case Some(CommitResult.Committed(true)) =>
+            ()
+          case Some(CommitResult.Committed(false)) | None =>
+            interaction.handle(input)
+            ()
+          case Some(_) =>
+            refusals += 1
+            notice = Some("This element action could not be committed.")
       case HostInput.TextInput(value) =>
         focusedId.foreach { id =>
           applyState(

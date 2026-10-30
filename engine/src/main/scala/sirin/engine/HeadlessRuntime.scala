@@ -234,7 +234,11 @@ final class HeadlessRuntime(
 
   private def checkOwner(): Unit =
     if Thread.currentThread() ne owner then
-      HeadlessRuntime.phase.get().filter(_.worker).foreach(_.failure = Some(KernelError.WrongThread))
+      HeadlessRuntime
+        .phase
+        .get()
+        .filter(p => p.worker || (p.runtime eq this))
+        .foreach(_.failure = Some(KernelError.WrongThread))
       throw KernelError.WrongThread
     if closed then
       throw KernelError.Disposed
@@ -776,14 +780,21 @@ final class HeadlessRuntime(
     control()
     ensureGraph()
     var live = true
+    var readerPhase = Option.empty[HeadlessRuntime.ReadPhase]
     val reader =
       new CommittedRead:
         def apply[B](signal: Signal[B]): Value[B] =
           checkOwner()
           if !live then
-            throw KernelError.ExpiredTransaction
+            fail(KernelError.ExpiredTransaction)
+          if HeadlessRuntime.phase.get() != readerPhase then
+            fail(KernelError.ReadOnlyPhase)
           nodes.getOrElse(signal, throw KernelError.ReadOnlyPhase).value.asInstanceOf[Value[B]]
-    try HeadlessRuntime.readOnly(this, false)(body(reader))
+    try
+      HeadlessRuntime.readOnly(this, false) {
+        readerPhase = HeadlessRuntime.phase.get()
+        body(reader)
+      }
     finally live = false
 
   /** Wake-only backend notification; may run on a worker, never under a transport lock. */

@@ -8,7 +8,7 @@ import sirin.text.{LayoutUnits, ResolvedTextLayout, DocumentTextLayout}
   * active graphics target is replaced.
   */
 final class RecordingCanvas private (initialTarget: g.Canvas2D, initialTheme: ui.Theme, initialText: PreparedText)
-    extends ui.Canvas:
+    extends GraphicsCanvas:
   private case class State(target: g.Canvas2D, theme: ui.Theme, text: PreparedText)
   private val owner = Thread.currentThread()
   private var state: Option[State] = Some(State(initialTarget, initialTheme, initialText))
@@ -21,6 +21,8 @@ final class RecordingCanvas private (initialTarget: g.Canvas2D, initialTheme: ui
     state = Some(previous.copy(target = target))
     try body
     finally state = Some(previous)
+
+  def graphics: g.Canvas2D = current.target
 
   override def theme: ui.Theme = current.theme
   override def textServices: ui.TextServices = current.text
@@ -62,6 +64,19 @@ final class RecordingCanvas private (initialTarget: g.Canvas2D, initialTheme: ui
     at,
     color
   )
+  private def scoped(target: g.Canvas2D)(body: ui.Canvas => Unit): Unit =
+    val state = current
+    val child = new RecordingCanvas(target, state.theme, state.text)
+    try body(child)
+    finally child.close()
+
+  override def layer(alpha: Double)(body: ui.Canvas => Unit): Unit =
+    current.target.layer(alpha)(child => scoped(child)(body))
+  override def clipped(rect: ui.Rect)(body: ui.Canvas => Unit): Unit =
+    current.target.clipped(g.Path.rectangle(rectangle(rect)))(child => scoped(child)(body))
+  override def transformed(t: ui.Transform2D)(body: ui.Canvas => Unit): Unit =
+    current.target.transformed(g.Affine(t.a, t.b, t.c, t.d, t.tx, t.ty))(child => scoped(child)(body))
+
   override def withOpacity(alpha: Double)(body: => Unit): Unit =
     current.target.layer(alpha)(child => within(child)(body))
   override def withClip(rect: ui.Rect)(body: => Unit): Unit =
@@ -70,6 +85,9 @@ final class RecordingCanvas private (initialTarget: g.Canvas2D, initialTheme: ui
     val target = current.target
     val at = point(by)
     target.transformed(g.Affine.translation(at.x, at.y))(child => within(child)(body))
+
+  override def withTransform(t: ui.Transform2D)(body: => Unit): Unit =
+    current.target.transformed(g.Affine(t.a, t.b, t.c, t.d, t.tx, t.ty))(child => within(child)(body))
 
   private def point(value: ui.Point): g.Point = LayoutUnits.point(value)
   private def rectangle(value: ui.Rect): g.Rect = LayoutUnits.rect(value)
