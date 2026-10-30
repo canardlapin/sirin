@@ -1,0 +1,12 @@
+{
+  "base_commit": "5c73273d950de1deaaa949bf7f3e902bcf0e3587",
+  "files": {
+    "README.md": "4c4ba471693b173dc4e39760ce3f61525abd4c003e59eb5e35ef4a49f10b7eee",
+    "baseline.json": "e252a430815f5809b5f4db5f84fcb7dcfaf9c673d79be273f3e097b34f929fd2",
+    "macos-checks.log": "cd59a8fb8b18af2b610dcc3357116be8c70ab8c5f2bd2e3b760e3a5e4fbdc367",
+    "macos-result.json": "93d7b55394caf546038e63dfe248d5c2d7286da75aaff063e46db1084cc6fc4a",
+    "original-failed-job.log": "d36d3870fb8173c80adcb2c8f4e8dde566d10fda0f26e2fac002c3cd1bcf4edd",
+    "original-program.txt": "8d14f2b40ae38d06b04be0a1f2aa585e0db4445d6b17110258dd67c00e236a3e"
+  },
+  "scope": "Original public CI failure and macOS reproduction; Linux cause unresolved"
+}

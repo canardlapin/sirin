@@ -1,0 +1,12 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "testkitJVM/testOnly sirin.testkit.Reconciliation*",
+    "testkitNative/testOnly sirin.testkit.Reconciliation*"
+  ],
+  "start_utc": "2026-10-30T00:27:35.049821+00:00",
+  "scope": "macOS reproduction only; Linux confirmation remains required",
+  "returncode": 0,
+  "elapsed_seconds": 80.40265087499999
+}

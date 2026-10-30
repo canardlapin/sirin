@@ -1,0 +1,13 @@
+{
+  "source_run": "https://github.com/canardlapin/sirin/actions/runs/40974637787",
+  "source_commit": "5c73273d950de1deaaa949bf7f3e902bcf0e3587",
+  "failing_seed": "l8Dl-ZJbwAFzUVsay_UCl1zuWxTHh-oHefe7es6XzbN=",
+  "program_steps": 40,
+  "original_min_successful_property_tests": 300,
+  "retained_randomized_suite": true,
+  "additional_seeded_suite": true,
+  "exception": "ClassCastException: ArrayBuffer$$Lambda$1 cannot be cast to IterableOnce",
+  "original_log_sha256": "d36d3870fb8173c80adcb2c8f4e8dde566d10fda0f26e2fac002c3cd1bcf4edd",
+  "program_sha256": "8d14f2b40ae38d06b04be0a1f2aa585e0db4445d6b17110258dd67c00e236a3e",
+  "source_counterexample_repaired": false
+}

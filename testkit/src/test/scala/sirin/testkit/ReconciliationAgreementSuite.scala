@@ -30,7 +30,17 @@ class ReconciliationAgreementSuite extends ScalaCheckSuite:
     case MountedSnapshot.Branch(_, _, child) => componentRows(child)
     case _ => Vector.empty
 
+  private var exceptionReported = false
   private def checkProgram(steps: Vector[Step]): Unit =
+    try runProgram(steps)
+    catch
+      case scala.util.control.NonFatal(error) =>
+        if !exceptionReported then
+          exceptionReported = true
+          error.printStackTrace() // Preserve the first underlying failure, before property shrinking.
+        throw error
+
+  private def runProgram(steps: Vector[Step]): Unit =
     val r = new HeadlessRuntime
     val owner = r.scope("workspace")
     val source = owner.keyed(Vector.empty[Item])(_.key)
@@ -125,6 +135,10 @@ class ReconciliationAgreementSuite extends ScalaCheckSuite:
       assertEquals(r.diagnostics, Vector.empty)
     }
     r.close()
+
+  test("frozen Linux Native CI40974637787 forty-step counterexample") {
+    checkProgram(ReconciliationCiRegression.steps)
+  }
 
   property("keyed reconciliation agrees on order, live props, drafts, generations, observations, effects and releases") {
     Prop.forAll(program) { steps => checkProgram(steps); true }

@@ -1,0 +1,264 @@
+core tests (ubuntu-latest)	Scala Native tests	﻿2026-10-29T23:41:37.5598788Z ##[group]Run sbt -batch testNative
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:37.5599121Z ^[[36;1msbt -batch testNative^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:37.5629076Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:37.5629422Z env:
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:37.5629720Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.13-9/x64
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:37.5630216Z   JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.13-9/x64
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:37.5630596Z   MAVEN_ARGS: -ntp
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:37.5630809Z ##[endgroup]
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:39.1703921Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mwelcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.13)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:39.9524467Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mloading settings for project sirin-build from plugins.sbt...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:40.6911821Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mloading project definition from /home/runner/work/sirin/sirin/project^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:41.7457433Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mloading settings for project root from build.sbt...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:42.0018390Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mresolving key references (21623 settings) ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:43.8729308Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mset current project to root (in build file:/home/runner/work/sirin/sirin/)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:41:46.9424795Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 17 Scala sources to /home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:01.2577616Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:01.7844229Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 14 Scala sources to /home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/test-classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:07.6073535Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:10.7175295Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking (multithreadingEnabled=detect) (2808 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:10.7257189Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 3348 classes and 21133 methods after classloading^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:10.8903403Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mChecking intermediate code (quick) (162 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:16.6773888Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 3320 classes and 16332 methods after optimization^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:16.6775085Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mOptimizing (debug mode) (5784 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:28.1745212Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mProduced 96 LLVM IR files^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:28.1748314Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mGenerating intermediate code (10947 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:28.9220324Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mCompiling to native code (6624 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:28.9251064Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking with [pthread, dl, m]^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.1812010Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking native code (immix gc, none lto) (258 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.1814180Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPostprocessing (0 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.1817305Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mTotal (21400 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.2078879Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '35633'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.2579656Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '46211'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.3754431Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '36555'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.3804309Z Test run ^[[36msirin.graphics.StrokePreparationSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.3856743Z Test run ^[[36msirin.graphics.ImageSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.3901675Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '43197'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.3993312Z ^[[32msirin.graphics.ImageSuite^[[0m: finished ^[[90m0.021s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.3994708Z Test run ^[[36msirin.graphics.ImageSuite^[[0m finished: 0 failed, 0 ignored, 8 total ^[[90m0.021s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.4093294Z Test run ^[[36msirin.graphics.RoundedRectangleSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.4193136Z Test run ^[[36msirin.graphics.TextDataSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.4212091Z ^[[32msirin.graphics.RoundedRectangleSuite^[[0m: finished ^[[90m0.010s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.4223763Z Test run ^[[36msirin.graphics.RoundedRectangleSuite^[[0m finished: 0 failed, 0 ignored, 3 total ^[[90m0.010s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.4924419Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '42433'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.4993282Z Test run ^[[36msirin.graphics.CurvedStrokeSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.5310785Z Test run ^[[36msirin.graphics.PreparationCacheSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6154146Z ^[[32msirin.graphics.TextDataSuite^[[0m: finished ^[[90m0.197s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6163409Z Test run ^[[36msirin.graphics.TextDataSuite^[[0m finished: 0 failed, 0 ignored, 4 total ^[[90m0.197s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6303137Z Test run ^[[36msirin.graphics.GeometrySuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6723736Z ^[[32msirin.graphics.GeometrySuite^[[0m: finished ^[[90m0.042s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6753228Z Test run ^[[36msirin.graphics.GeometrySuite^[[0m finished: 0 failed, 0 ignored, 6 total ^[[90m0.042s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6873339Z ^[[32msirin.graphics.StrokePreparationSuite^[[0m: finished ^[[90m0.299s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6895994Z Test run ^[[36msirin.graphics.StrokePreparationSuite^[[0m finished: 0 failed, 0 ignored, 7 total ^[[90m0.299s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6962965Z Test run ^[[36msirin.graphics.ValuesSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.6993017Z Test run ^[[36msirin.graphics.DrawingSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7083054Z ^[[32msirin.graphics.DrawingSuite^[[0m: finished ^[[90m0.020s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7113337Z Test run ^[[36msirin.graphics.DrawingSuite^[[0m finished: 0 failed, 0 ignored, 10 total ^[[90m0.020s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7114519Z ^[[32msirin.graphics.ValuesSuite^[[0m: finished ^[[90m0.024s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7143140Z Test run ^[[36msirin.graphics.ValuesSuite^[[0m finished: 0 failed, 0 ignored, 7 total ^[[90m0.024s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7192962Z Test run ^[[36msirin.graphics.StrokeBoundarySuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7403506Z Test run ^[[36msirin.graphics.DrawingResourcesSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7933806Z ^[[32msirin.graphics.DrawingResourcesSuite^[[0m: finished ^[[90m0.055s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.7963500Z Test run ^[[36msirin.graphics.DrawingResourcesSuite^[[0m finished: 0 failed, 0 ignored, 6 total ^[[90m0.055s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:29.8048473Z Test run ^[[36msirin.graphics.PreparationSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:30.1363826Z ^[[32msirin.graphics.PreparationSuite^[[0m: finished ^[[90m0.330s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:30.1373470Z Test run ^[[36msirin.graphics.PreparationSuite^[[0m finished: 0 failed, 0 ignored, 8 total ^[[90m0.330s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:33.4233136Z preparationCancellation checks=251 work=250 elapsedNs=1294955 completedEntries=0
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:34.2550911Z ^[[32msirin.graphics.PreparationCacheSuite^[[0m: finished ^[[90m4.724s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:34.2553257Z Test run ^[[36msirin.graphics.PreparationCacheSuite^[[0m finished: 0 failed, 0 ignored, 4 total ^[[90m4.724s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:34.9037335Z ^[[32msirin.graphics.StrokeBoundarySuite^[[0m: finished ^[[90m5.187s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:34.9039014Z Test run ^[[36msirin.graphics.StrokeBoundarySuite^[[0m finished: 0 failed, 0 ignored, 2 total ^[[90m5.187s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:35.0045223Z ^[[32msirin.graphics.CurvedStrokeSuite^[[0m: finished ^[[90m5.508s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:35.0046194Z Test run ^[[36msirin.graphics.CurvedStrokeSuite^[[0m finished: 0 failed, 0 ignored, 4 total ^[[90m5.508s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:35.0630884Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPassed: Total 69, Failed 0, Errors 0, Passed 69^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:35.1136669Z ^[[0m[^[[0m^[[32msuccess^[[0m] ^[[0m^[[0mTotal time: 51 s, completed Oct 29, 2026, 11:42:35 PM^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:35.9190903Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 16 Scala sources to /home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:45.0043741Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:45.3049094Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 4 Scala sources to /home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/test-classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:46.6221229Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:49.0418473Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking (multithreadingEnabled=detect) (2352 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:49.0475393Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 2454 classes and 17052 methods after classloading^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:49.1836584Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mChecking intermediate code (quick) (134 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:54.2602432Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 2430 classes and 13271 methods after optimization^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:42:54.2645597Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mOptimizing (debug mode) (5077 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:05.0020581Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mProduced 95 LLVM IR files^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:05.0022387Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mGenerating intermediate code (10479 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.1164035Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mCompiling to native code (8072 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.1200422Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking with [pthread, dl, m]^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.4161180Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking native code (immix gc, none lto) (302 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.4164186Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPostprocessing (0 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.4165495Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mTotal (19758 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.4349522Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '39923'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.4647328Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '40603'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5328957Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '42303'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5357543Z Test run ^[[36msirin.TextApiSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5413228Z Test run ^[[36msirin.HandleSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5415538Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '45467'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5445266Z ^[[32msirin.TextApiSuite^[[0m: finished ^[[90m0.009s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5486222Z Test run ^[[36msirin.TextApiSuite^[[0m finished: 0 failed, 0 ignored, 2 total ^[[90m0.009s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5512969Z ^[[32msirin.HandleSuite^[[0m: finished ^[[90m0.014s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5561520Z Test run ^[[36msirin.HandleSuite^[[0m finished: 0 failed, 0 ignored, 2 total ^[[90m0.014s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5592876Z Test run ^[[36msirin.ViewRebuildSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5622956Z ^[[32msirin.ViewRebuildSuite^[[0m: finished ^[[90m0.007s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5643181Z Test run ^[[36msirin.ViewRebuildSuite^[[0m finished: 0 failed, 0 ignored, 1 total ^[[90m0.007s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5662887Z Test run ^[[36msirin.AuthoringValuesSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5723043Z ^[[32msirin.AuthoringValuesSuite^[[0m: finished ^[[90m0.006s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.5743406Z Test run ^[[36msirin.AuthoringValuesSuite^[[0m finished: 0 failed, 0 ignored, 4 total ^[[90m0.006s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.6740939Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPassed: Total 9, Failed 0, Errors 0, Passed 9^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:06.6959029Z ^[[0m[^[[0m^[[32msuccess^[[0m] ^[[0m^[[0mTotal time: 32 s, completed Oct 29, 2026, 11:43:06 PM^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:08.1174446Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 3 Scala sources to /home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:11.7423833Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:11.8094277Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 1 Scala source to /home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/test-classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:12.6903679Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:14.7225196Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking (multithreadingEnabled=detect) (1979 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:14.7265707Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 2284 classes and 16001 methods after classloading^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:14.7997426Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mChecking intermediate code (quick) (72 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:18.1273898Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 2255 classes and 12368 methods after optimization^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:18.1283249Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mOptimizing (debug mode) (3324 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:28.2245537Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mProduced 96 LLVM IR files^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:28.2257065Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mGenerating intermediate code (9867 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:28.9907245Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mCompiling to native code (7342 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:28.9918317Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking with [pthread, dl, m]^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.1917975Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking native code (immix gc, none lto) (201 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.1919527Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPostprocessing (0 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.1943130Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mTotal (16478 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.2160410Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '35127'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.2464587Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '44447'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.3105926Z Test run ^[[36msirin.text.LayoutUnitsSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.3163186Z ^[[32msirin.text.LayoutUnitsSuite^[[0m: finished ^[[90m0.004s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.3164311Z Test run ^[[36msirin.text.LayoutUnitsSuite^[[0m finished: 0 failed, 0 ignored, 2 total ^[[90m0.004s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.4046643Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPassed: Total 2, Failed 0, Errors 0, Passed 2^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:29.4226403Z ^[[0m[^[[0m^[[32msuccess^[[0m] ^[[0m^[[0mTotal time: 23 s, completed Oct 29, 2026, 11:43:29 PM^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:30.4425758Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 2 Scala sources to /home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:32.3143676Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:32.3804333Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 1 Scala source to /home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/test-classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:33.6843749Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:35.6958090Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking (multithreadingEnabled=detect) (1949 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:35.6989704Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 2439 classes and 16858 methods after classloading^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:35.7878489Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mChecking intermediate code (quick) (87 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:38.2774671Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 2410 classes and 13027 methods after optimization^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:38.2783578Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mOptimizing (debug mode) (2489 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:47.7320389Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mProduced 97 LLVM IR files^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:47.7373351Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mGenerating intermediate code (9230 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:48.7604064Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mCompiling to native code (7815 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:48.7623190Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking with [pthread, dl, m]^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.0278945Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking native code (immix gc, none lto) (267 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.0280369Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPostprocessing (0 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.0306675Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mTotal (15311 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.0586110Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '42771'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.1727711Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '40391'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.1906644Z Test run ^[[36msirin.drawing.RecordingCanvasSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.2083659Z ^[[32msirin.drawing.RecordingCanvasSuite^[[0m: finished ^[[90m0.017s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.2090598Z Test run ^[[36msirin.drawing.RecordingCanvasSuite^[[0m finished: 0 failed, 0 ignored, 6 total ^[[90m0.017s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.2854173Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPassed: Total 6, Failed 0, Errors 0, Passed 6^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.3038353Z ^[[0m[^[[0m^[[32msuccess^[[0m] ^[[0m^[[0mTotal time: 20 s, completed Oct 29, 2026, 11:43:49 PM^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:49.9236051Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 14 Scala sources to /home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:58.5501218Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:43:58.7024257Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 9 Scala sources to /home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/test-classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:07.3813589Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:10.6883989Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking (multithreadingEnabled=detect) (3115 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:10.7112436Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 5786 classes and 29522 methods after classloading^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:11.0423726Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mChecking intermediate code (quick) (327 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:17.1015737Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 5756 classes and 22730 methods after optimization^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:17.1039726Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mOptimizing (debug mode) (6060 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:31.9863665Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mProduced 95 LLVM IR files^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:31.9933506Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mGenerating intermediate code (14466 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.3058907Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mCompiling to native code (11272 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.3070316Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking with [pthread, dl, m]^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.5910578Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking native code (immix gc, none lto) (285 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.5911559Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPostprocessing (0 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.5914922Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mTotal (28051 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.6461529Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '37159'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.6840582Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '40997'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.7644470Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '39365'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.7723470Z Test run ^[[36msirin.engine.TransactionSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.7814136Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '39011'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.7845085Z Test run ^[[36msirin.engine.EventDeadlineSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.8053748Z Test run ^[[36msirin.engine.ProgressWorkerSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.8055022Z Test run ^[[36msirin.engine.WorkCommandSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.8765713Z ^[[32msirin.engine.TransactionSuite^[[0m: finished ^[[90m0.107s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.8803324Z Test run ^[[36msirin.engine.TransactionSuite^[[0m finished: 0 failed, 0 ignored, 24 total ^[[90m0.107s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.9224634Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '39151'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:35.9843926Z Test run ^[[36msirin.engine.TopologyLifetimeSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.0603836Z ^[[32msirin.engine.WorkCommandSuite^[[0m: finished ^[[90m0.253s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.0605583Z Test run ^[[36msirin.engine.WorkCommandSuite^[[0m finished: 0 failed, 0 ignored, 22 total ^[[90m0.253s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.0913978Z Test run ^[[36msirin.engine.FocusSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.1023727Z ^[[32msirin.engine.FocusSuite^[[0m: finished ^[[90m0.012s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.1063334Z Test run ^[[36msirin.engine.FocusSuite^[[0m finished: 0 failed, 0 ignored, 1 total ^[[90m0.012s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.1175170Z Test run ^[[36msirin.engine.RetainedVirtualSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.1554758Z ^[[32msirin.engine.ProgressWorkerSuite^[[0m: finished ^[[90m0.357s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.1643451Z Test run ^[[36msirin.engine.ProgressWorkerSuite^[[0m finished: 0 failed, 0 ignored, 20 total ^[[90m0.357s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.1713190Z Test run ^[[36msirin.engine.ReconciliationSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.2203700Z ^[[32msirin.engine.TopologyLifetimeSuite^[[0m: finished ^[[90m0.242s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.2223451Z Test run ^[[36msirin.engine.TopologyLifetimeSuite^[[0m finished: 0 failed, 0 ignored, 28 total ^[[90m0.242s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.2395696Z Test run ^[[36msirin.engine.HostBoundarySuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.2433446Z ^[[32msirin.engine.HostBoundarySuite^[[0m: finished ^[[90m0.003s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.2434934Z Test run ^[[36msirin.engine.HostBoundarySuite^[[0m finished: 0 failed, 0 ignored, 4 total ^[[90m0.003s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.3204040Z ^[[32msirin.engine.EventDeadlineSuite^[[0m: finished ^[[90m0.551s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.3223628Z Test run ^[[36msirin.engine.EventDeadlineSuite^[[0m finished: 0 failed, 0 ignored, 22 total ^[[90m0.551s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.3813976Z ^[[32msirin.engine.ReconciliationSuite^[[0m: finished ^[[90m0.213s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.3816993Z Test run ^[[36msirin.engine.ReconciliationSuite^[[0m finished: 0 failed, 0 ignored, 29 total ^[[90m0.213s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.3959999Z ^[[32msirin.engine.RetainedVirtualSuite^[[0m: finished ^[[90m0.279s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.3961265Z Test run ^[[36msirin.engine.RetainedVirtualSuite^[[0m finished: 0 failed, 0 ignored, 25 total ^[[90m0.279s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.4461397Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPassed: Total 175, Failed 0, Errors 0, Passed 175^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:36.4757038Z ^[[0m[^[[0m^[[32msuccess^[[0m] ^[[0m^[[0mTotal time: 47 s, completed Oct 29, 2026, 11:44:36 PM^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:37.6656474Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 8 Scala sources to /home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:46.2614164Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:46.4002085Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mcompiling 8 Scala sources to /home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/test-classes ...^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:51.6088307Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mdone compiling^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:54.7917326Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking (multithreadingEnabled=detect) (3061 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:54.8055746Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 4236 classes and 25922 methods after classloading^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:44:55.0654200Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mChecking intermediate code (quick) (257 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:00.6053886Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mDiscovered 4169 classes and 19906 methods after optimization^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:00.6054979Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mOptimizing (debug mode) (5538 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:13.2753774Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mProduced 97 LLVM IR files^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:13.2773167Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mGenerating intermediate code (12389 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:14.5933722Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mCompiling to native code (8978 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:14.5953079Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking with [pthread, dl, m]^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:14.8648867Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mLinking native code (immix gc, none lto) (271 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:14.8650765Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mPostprocessing (0 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:14.8659169Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mTotal (23166 ms)^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:14.9026126Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '46633'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:15.0374389Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '39569'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:15.0437693Z Test run ^[[36msirin.testkit.EventDeadlineAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:15.0486386Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '38633'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:15.0584956Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '41201'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:15.0754220Z Test run ^[[36msirin.testkit.ProgressAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:15.0943902Z Test run ^[[36msirin.testkit.WorkAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:15.0972908Z Test run ^[[36msirin.testkit.ReferenceAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:27.2293858Z ^[[32msirin.testkit.EventDeadlineAgreementSuite^[[0m: finished ^[[90m12.185s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:27.2295797Z Test run ^[[36msirin.testkit.EventDeadlineAgreementSuite^[[0m finished: 0 failed, 0 ignored, 1 total ^[[90m12.185s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:27.2964997Z ^[[0m[^[[0m^[[0minfo^[[0m] ^[[0m^[[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '44559'.^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:27.3342834Z Test run ^[[36msirin.testkit.LifetimeAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:28.2523745Z ^[[32msirin.testkit.ReferenceAgreementSuite^[[0m: finished ^[[90m13.153s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:28.2543696Z Test run ^[[36msirin.testkit.ReferenceAgreementSuite^[[0m finished: 0 failed, 0 ignored, 1 total ^[[90m13.153s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:28.3113835Z Test run ^[[36msirin.testkit.VirtualCollectionAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:33.0533394Z ^[[32msirin.testkit.WorkAgreementSuite^[[0m: finished ^[[90m17.959s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:33.0534847Z Test run ^[[36msirin.testkit.WorkAgreementSuite^[[0m finished: 0 failed, 0 ignored, 17 total ^[[90m17.959s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:33.0856737Z Test run ^[[36msirin.testkit.LatestAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:38.7343873Z ^[[32msirin.testkit.LatestAgreementSuite^[[0m: finished ^[[90m5.649s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:38.7353679Z Test run ^[[36msirin.testkit.LatestAgreementSuite^[[0m finished: 0 failed, 0 ignored, 3 total ^[[90m5.649s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:45:38.7503771Z Test run ^[[36msirin.testkit.ReconciliationAgreementSuite^[[0m started
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:00.9002691Z ^[[32msirin.testkit.VirtualCollectionAgreementSuite^[[0m: finished ^[[90m32.585s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:00.9023613Z Test run ^[[36msirin.testkit.VirtualCollectionAgreementSuite^[[0m finished: 0 failed, 0 ignored, 1 total ^[[90m32.585s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7405904Z ==> X ^[[91msirin.testkit.ReconciliationAgreementSuite.keyed reconciliation agrees on order, live props, drafts, generations, observations, effects and releases^[[0m ^[[90m35.990s^[[0m munit.FailException: Failing seed: l8Dl-ZJbwAFzUVsay_UCl1zuWxTHh-oHefe7es6XzbN=
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7423564Z You can reproduce this failure by adding the following override to your suite:
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7480788Z 
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7520014Z   override def scalaCheckInitialSeed = "l8Dl-ZJbwAFzUVsay_UCl1zuWxTHh-oHefe7es6XzbN="
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7542591Z 
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7602778Z Exception raised on property evaluation.
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7659997Z > ARG_0: Vector(Batch(Vector(Assign(Vector(Item(0,0), Item(3,-1), Item(4,-3), Item(2,3))), Draft(0,3), Assign(Vector(Item(0,-2), Item(2,1), Item(3,-3), Item(1,2))))), Batch(Vector(Assign(Vector(Item(2,3), Item(3,-1), Item(4,3), Item(0,-2))), Assign(Vector(Item(4,0), Item(1,1), Item(2,3))), Assign(Vector(Item(2,0), Item(0,-1), Item(3,-1), Item(1,0))))), Batch(Vector(Assign(Vector(Item(1,0), Item(4,-3), Item(3,-2), Item(2,0))), Attempt(Vector(Rebuild, CaughtDefect, Assign(Vector(Item(2,-1), Item(3,-1)))),false), Attempt(Vector(Assign(Vector(Item(0,3), Item(2,-3), Item(4,0), Item(3,-1))), Assign(Vector(Item(3,2))), CaughtDefect),true))), Deliver(3), Batch(Vector(Assign(Vector(Item(3,-1), Item(3,-3), Item(2,-2))), Assign(Vector(Item(3,3), Item(1,-3), Item(4,0), Item(2,-1))), Read(1))), Batch(Vector(Attempt(Vector(CaughtDefect, Assign(Vector(Item(3,1), Item(4,3))), Assign(Vector(Item(2,2), Item(1,3), Item(4,2)))),true), Read(4), Draft(0,-1))), Drain(3), Batch(Vector(Read(1), Draft(4,2), Attempt(Vector(CaughtDefect, Refuse, Draft(1,-1)),false))), Batch(Vector(Attempt(Vector(Assign(Vector(Item(3,-2))), Rebuild, CaughtDefect),false), Attempt(Vector(Read(0), Refuse, Assign(Vector(Item(4,0), Item(0,0), Item(1,3), Item(3,1)))),false), Attempt(Vector(Read(0), Assign(Vector(Item(1,-2), Item(0,3), Item(4,3))), Assign(Vector(Item(0,-2), Item(3,-3), Item(1,-3)))),true))), Batch(Vector(Assign(Vector(Item(4,-2), Item(1,2), Item(0,0), Item(3,-1))), Draft(0,-3), Attempt(Vector(Read(2), Assign(Vector(Item(1,-2), Item(4,2), Item(3,-3))), Draft(1,-2)),false))), Batch(Vector(Read(4), Assign(Vector(Item(0,3), Item(3,1), Item(2,3))), Assign(Vector(Item(1,0), Item(2,0), Item(2,-1))))), Batch(Vector(Assign(Vector(Item(1,-3), Item(3,2), Item(0,1))), Attempt(Vector(Assign(Vector(Item(2,3), Item(1,2), Item(4,1))), Assign(Vector(Item(0,-2), Item(1,-2))), CaughtDefect),false), Assign(Vector(Item(1,-1), Item(2,-2), Item(4,0))))), Batch(Vector(Assign(Vector(Item(1,-1), Item(3,2), Item(2,3))), Attempt(Vector(Draft(1,0), Refuse, Assign(Vector(Item(2,-2), Item(3,-1), Item(0,-1)))),false), Attempt(Vector(Assign(Vector(Item(0,2), Item(4,3), Item(1,0))), Rebuild, Rebuild),false))), Batch(Vector(Assign(Vector(Item(0,-3), Item(4,0), Item(1,-3))), Draft(3,-3), Assign(Vector(Item(0,-1), Item(2,2))))), Batch(Vector(Assign(Vector(Item(2,0), Item(1,-2), Item(4,-1), Item(0,-1))), Draft(0,3), Attempt(Vector(Draft(0,1), Assign(Vector(Item(0,-1), Item(1,1))), Refuse),true))), Batch(Vector(Assign(Vector(Item(3,2), Item(0,-3), Item(4,-3))), CaughtDefect, Attempt(Vector(Assign(Vector(Item(3,0), Item(0,3), Item(4,1))), Draft(4,0), Assign(Vector(Item(2,-1), Item(0,0), Item(1,3), Item(4,3)))),false))), Batch(Vector(Read(2), Rebuild, Assign(Vector(Item(2,-1), Item(3,0), Item(0,-1), Item(1,-2))))), Batch(Vector(Draft(4,0), Assign(Vector(Item(2,1), Item(1,-1), Item(3,3))), Rebuild)), Batch(Vector(Assign(Vector(Item(4,0), Item(3,0), Item(1,-1), Item(2,0))), Draft(0,-1), Attempt(Vector(Read(2), Read(0), Rebuild),true))), Batch(Vector(Draft(4,-2), Attempt(Vector(Read(4), Assign(Vector(Item(0,0), Item(1,1), Item(3,-3))), Rebuild),true), Assign(Vector(Item(1,-1), Item(0,-3), Item(3,2), Item(2,1))))), Batch(Vector(Rebuild, Attempt(Vector(Draft(1,2), Rebuild, Read(4)),true), Attempt(Vector(Refuse, Assign(Vector(Item(1,-3), Item(0,0), Item(3,1), Item(4,1))), Assign(Vector(Item(4,1), Item(0,2), Item(3,0)))),false))), Batch(Vector(Assign(Vector(Item(1,0), Item(0,0), Item(2,3))), Attempt(Vector(Assign(Vector(Item(3,0), Item(1,-1), Item(4,-3), Item(0,-3))), Read(1), Rebuild),true), Rebuild)), Deliver(36), Deliver(40), Drain(3), Batch(Vector(Read(3), Assign(Vector(Item(0,-1), Item(1,1), Item(2,0))), CaughtDefect)), Drain(2), Deliver(2), Batch(Vector(Assign(Vector(Item(2,3), Item(0,0), Item(1,3))), Assign(Vector(Item(1,-2), Item(0,-2), Item(4,-1), Item(2,0))), Assign(Vector(Item(1,-3), Item(4,-2), Item(3,-2), Item(2,-2))))), Batch(Vector(Refuse, Assign(Vector(Item(3,-2), Item(4,0), Item(2,1), Item(1,2), Item(0,3))), Rebuild)), Batch(Vector(Assign(Vector(Item(0,0), Item(4,-1), Item(3,1), Item(2,3))), Assign(Vector(Item(2,1), Item(3,0), Item(4,1), Item(0,2))), Refuse)), Batch(Vector(Assign(Vector(Item(3,-1), Item(4,2), Item(2,3))), Attempt(Vector(Assign(Vector(Item(0,2), Item(3,2), Item(4,-3))), Assign(Vector(Item(0,-2))), Assign(Vector(Item(1,-1), Item(0,2), Item(0,-1)))),true), Read(3))), Batch(Vector(Assign(Vector(Item(3,1), Item(1,2), Item(3,-1))), Assign(Vector(Item(4,3), Item(0,3), Item(3,-2), Item(1,1))), Rebuild)), Batch(Vector(Attempt(Vector(Read(4), Read(1), Assign(Vector(Item(3,-2), Item(0,-2), Item(4,0)))),true), Rebuild, Draft(4,-3))), Batch(Vector(Rebuild, Rebuild, Attempt(Vector(Rebuild, Read(4), Assign(Vector(Item(3,-3), Item(4,2)))),true))), Batch(Vector(Assign(Vector(Item(4,0), Item(0,-2), Item(2,-1))), Read(0), Assign(Vector(Item(1,3), Item(4,3), Item(0,3), Item(3,-2))))), Drain(1), Drain(1), Batch(Vector(Assign(Vector(Item(3,-2), Item(0,-2), Item(4,-3))), Attempt(Vector(Refuse, Rebuild, Assign(Vector(Item(2,-1), Item(3,1), Item(4,-3), Item(1,-3)))),false), Assign(Vector(Item(1,3), Item(0,1), Item(4,2), Item(3,0))))), Batch(Vector(Rebuild, Assign(Vector(Item(2,-1), Item(3,-1))), Read(2))))
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7714405Z > Exception: java.lang.ClassCastException: scala.collection.mutable.ArrayBuffer$$Lambda$1 cannot be cast to scala.collection.IterableOnce
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7716065Z ^[[32msirin.testkit.ReconciliationAgreementSuite^[[0m: finished ^[[90m36.023s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:14.7716968Z Test run ^[[36msirin.testkit.ReconciliationAgreementSuite^[[0m finished: ^[[31m1 failed^[[0m, 0 ignored, 2 total ^[[90m36.023s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:23.3744212Z ^[[32msirin.testkit.ProgressAgreementSuite^[[0m: finished ^[[90m68.297s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:23.3747144Z Test run ^[[36msirin.testkit.ProgressAgreementSuite^[[0m finished: 0 failed, 0 ignored, 3 total ^[[90m68.297s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.2429733Z ^[[32msirin.testkit.LifetimeAgreementSuite^[[0m: finished ^[[90m82.910s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.2433116Z Test run ^[[36msirin.testkit.LifetimeAgreementSuite^[[0m finished: 0 failed, 0 ignored, 2 total ^[[90m82.910s^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.3283460Z ^[[0m[^[[0m^[[31merror^[[0m] ^[[0m^[[0mFailed: Total 30, Failed 1, Errors 0, Passed 29^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.3292071Z ^[[0m[^[[0m^[[31merror^[[0m] ^[[0m^[[0mFailed tests:^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.3293704Z ^[[0m[^[[0m^[[31merror^[[0m] ^[[0m^[[0m	sirin.testkit.ReconciliationAgreementSuite^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.3611988Z ^[[0m[^[[0m^[[31merror^[[0m] ^[[0m^[[0m(testkitNative / Test / ^[[31mtest^[[0m) sbt.TestsFailedException: Tests unsuccessful^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.3638077Z ^[[0m[^[[0m^[[31merror^[[0m] ^[[0m^[[0mTotal time: 134 s (0:02:14.0), completed Oct 29, 2026, 11:46:50 PM^[[0m
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.8458956Z ^[[0J
+core tests (ubuntu-latest)	Scala Native tests	2026-10-29T23:46:50.8473727Z ##[error]Process completed with exit code 1.

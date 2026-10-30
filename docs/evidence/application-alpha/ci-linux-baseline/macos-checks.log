@@ -1,0 +1,52 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 8 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/testkit/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 9 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/testkit/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.testkit.ReconciliationAgreementSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 3.515s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 3 total 3.527s
+Test run sirin.testkit.ReconciliationLinuxSeedSuite started
+sirin.testkit.ReconciliationLinuxSeedSuite: finished 3.773s
+Test run sirin.testkit.ReconciliationLinuxSeedSuite finished: 0 failed, 0 ignored, 3 total 3.784s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 22 s, completed Oct 29, 2026, 8:28:06 p.m.
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 8 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/testkit/.native/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 9 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/testkit/.native/target/scala-3.7.4/test-classes ...
+[info] done compiling
+[info] Linking (multithreadingEnabled=detect) (3059 ms)
+[info] Discovered 4238 classes and 25950 methods after classloading
+[info] Checking intermediate code (quick) (491 ms)
+[info] Discovered 4170 classes and 19928 methods after optimization
+[info] Optimizing (debug mode) (4557 ms)
+[info] Produced 96 LLVM IR files
+[info] Generating intermediate code (10948 ms)
+[info] Compiling to native code (7819 ms)
+[info] Linking with [pthread, dl, m]
+[info] Linking native code (immix gc, none lto) (197 ms)
+[info] Postprocessing (0 ms)
+[info] Total (20224 ms)
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin-alpha/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64773'.
+[info] Starting process '/Users/bbuchsbaum/code/scala/sirin-alpha/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '64775'.
+Test run sirin.testkit.ReconciliationAgreementSuite started
+Test run sirin.testkit.ReconciliationLinuxSeedSuite started
+sirin.testkit.ReconciliationAgreementSuite: finished 12.230s
+Test run sirin.testkit.ReconciliationAgreementSuite finished: 0 failed, 0 ignored, 3 total 12.230s
+sirin.testkit.ReconciliationLinuxSeedSuite: finished 12.902s
+Test run sirin.testkit.ReconciliationLinuxSeedSuite finished: 0 failed, 0 ignored, 3 total 12.902s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 48 s, completed Oct 29, 2026, 8:28:55 p.m.
