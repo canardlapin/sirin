@@ -1,9 +1,8 @@
 // Provisional A-0 skeleton (VISION §4.1): public shape only, not implemented.
 package sirin
 
-/** An immutable, composable description of structure (VISION §4). A plain
-  * function returning a `View` needs no scope. Static children are
-  * positional; changing structure is marked with `Switch` and `ForEach`.
+/** An immutable, composable description of structure (VISION §4). A plain function returning a `View` needs no scope.
+  * Static children are positional; changing structure is marked with `Switch` and `ForEach`.
   */
 trait View
 
@@ -33,9 +32,12 @@ enum Decoration:
   case Opacity(value: Presentation[Double])
   case Offset(value: Presentation[Point])
 
-  private[sirin] lazy val shortcutBinding: Option[Button.Binding] = this match
-    case Shortcut(_, command) => Some(Button.Bound(command, Signal.const(())))
-    case _ => None
+  private[sirin] lazy val shortcutBinding: Option[Button.Binding] =
+    this match
+      case Shortcut(_, command) =>
+        Some(Button.Bound(command, Signal.const(())))
+      case _ =>
+        None
 
 extension [V <: View](view: V)(using rebuild: ViewRebuild[V])
   def padding(all: Lp): V = rebuild(view, Decoration.Padding(all, all))
@@ -50,16 +52,24 @@ extension [V <: View](view: V)(using rebuild: ViewRebuild[V])
   def shortcut(chord: Chord, command: Command[Unit, ?]): V = rebuild(view, Decoration.Shortcut(chord, command))
   def keyed[K](key: K): V = rebuild(view, Decoration.Keyed(key))
   def visible(shown: Signal[Boolean]): V = rebuild(view, Decoration.Visible(shown))
-  def activate[A](command: Command[A, ?], arg: Signal[A], role: Role): V = rebuild(view, Decoration.Activate(command, arg, role))
+  def activate[A](command: Command[A, ?], arg: Signal[A], role: Role): V = rebuild(
+    view,
+    Decoration.Activate(command, arg, role)
+  )
   def opacity(value: Presentation[Double]): V = rebuild(view, Decoration.Opacity(value))
+
   /** Coherent drawing, hit-test and accessibility transform. */
   def offset(value: Presentation[Point]): V = rebuild(view, Decoration.Offset(value))
 
 object View:
   private[sirin] case object Empty extends View
   private[sirin] final case class Decorated(view: View, decoration: Decoration) extends View
-  private[sirin] final case class Stack(children: Vector[View], horizontal: Boolean,
-      gap: Option[Lp] = None, alignment: Option[Alignment] = None) extends StackView:
+  private[sirin] final case class Stack(
+      children: Vector[View],
+      horizontal: Boolean,
+      gap: Option[Lp] = None,
+      alignment: Option[Alignment] = None
+  ) extends StackView:
     def spacing(value: Lp): StackView = copy(gap = Some(value))
     def align(value: Alignment): StackView = copy(alignment = Some(value))
   private[sirin] final case class StackDecoration(view: StackView, decoration: Decoration) extends StackView:
@@ -71,16 +81,16 @@ object View:
   private[sirin] final case class ButtonDecoration(view: ButtonView, decoration: Decoration) extends ButtonView:
     def primary: ButtonView = copy(view = view.primary)
     def command(c: Command[Unit, ?]): ButtonView = copy(view = view.command(c))
-    def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(view = view.command(c,arg))
+    def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(view = view.command(c, arg))
     def onPress(run: Action): ButtonView = copy(view = view.onPress(run))
   private[sirin] final case class FieldDecoration(view: TextFieldView, decoration: Decoration) extends TextFieldView:
-    def label(text: String): TextFieldView = copy(view=view.label(text))
-    def placeholder(text: String): TextFieldView = copy(view=view.placeholder(text))
-    def error(message: Signal[Option[String]]): TextFieldView = copy(view=view.error(message))
-    def maxLength(units: Int): TextFieldView = copy(view=view.maxLength(units))
-    def multiline: TextFieldView = copy(view=view.multiline)
-    def onCommit(run: Action): TextFieldView = copy(view=view.onCommit(run))
-    def onBlur(run: Action): TextFieldView = copy(view=view.onBlur(run))
+    def label(text: String): TextFieldView = copy(view = view.label(text))
+    def placeholder(text: String): TextFieldView = copy(view = view.placeholder(text))
+    def error(message: Signal[Option[String]]): TextFieldView = copy(view = view.error(message))
+    def maxLength(units: Int): TextFieldView = copy(view = view.maxLength(units))
+    def multiline: TextFieldView = copy(view = view.multiline)
+    def onCommit(run: Action): TextFieldView = copy(view = view.onCommit(run))
+    def onBlur(run: Action): TextFieldView = copy(view = view.onBlur(run))
   private[sirin] final case class Space(size: Option[Lp]) extends View
   private[sirin] final case class ScrollContent(content: View) extends View
   def empty: View = Empty
@@ -90,8 +100,11 @@ trait TextView extends View:
   def color(role: ColorRole): TextView
 
 object Text:
-  private[sirin] final case class Description(content: Signal[String], textStyle: TextStyle = TextStyle.Body,
-      colorRole: ColorRole = ColorRole.OnSurface) extends TextView:
+  private[sirin] final case class Description(
+      content: Signal[String],
+      textStyle: TextStyle = TextStyle.Body,
+      colorRole: ColorRole = ColorRole.OnSurface
+  ) extends TextView:
     def style(value: TextStyle): TextView = copy(textStyle = value)
     def color(value: ColorRole): TextView = copy(colorRole = value)
   def apply(content: String): TextView = Description(Signal.const(content))
@@ -103,6 +116,7 @@ trait TextFieldView extends View:
 
   /** Shown when `Some`; also sets `invalid` and `describedBy` semantics. */
   def error(message: Signal[Option[String]]): TextFieldView
+
   /** Maximum committed user-input length in UTF-16 units, from 0 to 16,384. */
   def maxLength(units: Int): TextFieldView
   def multiline: TextFieldView
@@ -111,17 +125,24 @@ trait TextFieldView extends View:
 
 object TextField:
   /** Edits `value`. IME composition stays inside the field until committed. */
-  private[sirin] final case class Description(value: Cell[String],fieldLabel: String="",hint: String="",
-      problem: Signal[Option[String]]=Signal.const(None),multiple: Boolean=false,
-      commit: UiTxn => Unit = _ => (),blur: UiTxn => Unit = _ => (),maxUnits: Int=16384) extends TextFieldView:
-    require(maxUnits>=0 && maxUnits<=16384,"Text field limit must be between 0 and 16,384 UTF-16 units")
-    def label(text: String): TextFieldView = copy(fieldLabel=text)
-    def placeholder(text: String): TextFieldView = copy(hint=text)
-    def error(message: Signal[Option[String]]): TextFieldView = copy(problem=message)
-    def maxLength(units: Int): TextFieldView = copy(maxUnits=units)
-    def multiline: TextFieldView = copy(multiple=true)
-    def onCommit(run: Action): TextFieldView = copy(commit=txn => run(using txn))
-    def onBlur(run: Action): TextFieldView = copy(blur=txn => run(using txn))
+  private[sirin] final case class Description(
+      value: Cell[String],
+      fieldLabel: String = "",
+      hint: String = "",
+      problem: Signal[Option[String]] = Signal.const(None),
+      multiple: Boolean = false,
+      commit: UiTxn => Unit = _ => (),
+      blur: UiTxn => Unit = _ => (),
+      maxUnits: Int = 16384
+  ) extends TextFieldView:
+    require(maxUnits >= 0 && maxUnits <= 16384, "Text field limit must be between 0 and 16,384 UTF-16 units")
+    def label(text: String): TextFieldView = copy(fieldLabel = text)
+    def placeholder(text: String): TextFieldView = copy(hint = text)
+    def error(message: Signal[Option[String]]): TextFieldView = copy(problem = message)
+    def maxLength(units: Int): TextFieldView = copy(maxUnits = units)
+    def multiline: TextFieldView = copy(multiple = true)
+    def onCommit(run: Action): TextFieldView = copy(commit = txn => run(using txn))
+    def onBlur(run: Action): TextFieldView = copy(blur = txn => run(using txn))
   def bind(value: Cell[String]): TextFieldView = Description(value)
 
 trait ButtonView extends View:
@@ -140,25 +161,32 @@ object Button:
     def running: Signal[Int]
     def invoke()(using UiTxn): Unit
   private[sirin] case object Inert extends Binding:
-    val enabled=Signal.const(false)
-    val running=Signal.const(0)
+    val enabled = Signal.const(false)
+    val running = Signal.const(0)
     def invoke()(using UiTxn): Unit = ()
   private[sirin] final case class Plain(run: UiTxn => Unit) extends Binding:
-    val enabled=Signal.always
-    val running=Signal.const(0)
+    val enabled = Signal.always
+    val running = Signal.const(0)
     def invoke()(using txn: UiTxn): Unit = run(txn)
-  private[sirin] final case class Bound[A](command: Command[A,?], arg: Signal[A]) extends Binding:
-    val enabled=command.enabledFor(arg)
+  private[sirin] final case class Bound[A](command: Command[A, ?], arg: Signal[A]) extends Binding:
+    val enabled = command.enabledFor(arg)
     def running: Signal[Int] = command.running
-    def invoke()(using UiTxn): Unit = { command.dispatch(arg.get); () }
-  private[sirin] final case class Description(label: Signal[String],isPrimary: Boolean=false,binding: Binding=Inert) extends ButtonView:
-    def primary: ButtonView = copy(isPrimary=true)
-    def command(c: Command[Unit,?]): ButtonView = command(c,Signal.const(()))
-    def command[A](c: Command[A,?],arg: Signal[A]): ButtonView = copy(binding=Bound(c,arg))
-    def onPress(run: Action): ButtonView = copy(binding=Plain(txn => run(using txn)))
+    def invoke()(using UiTxn): Unit = {
+      command.dispatch(arg.get)
+      ()
+    }
+  private[sirin] final case class Description(
+      label: Signal[String],
+      isPrimary: Boolean = false,
+      binding: Binding = Inert
+  ) extends ButtonView:
+    def primary: ButtonView = copy(isPrimary = true)
+    def command(c: Command[Unit, ?]): ButtonView = command(c, Signal.const(()))
+    def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(binding = Bound(c, arg))
+    def onPress(run: Action): ButtonView = copy(binding = Plain(txn => run(using txn)))
   def apply(label: String): ButtonView = Description(Signal.const(label))
   def apply(label: Signal[String]): ButtonView = Description(label)
-  def apply(command: Command[Unit,?]): ButtonView = apply(command.label).command(command)
+  def apply(command: Command[Unit, ?]): ButtonView = apply(command.label).command(command)
 
 object Checkbox:
   def bind(value: Cell[Boolean], label: String): View = ???
@@ -167,7 +195,11 @@ object Checkbox:
   def apply(checked: Signal[Boolean], label: Signal[String])(onChange: Boolean => Action): View = ???
 
 enum Alignment:
-  case Start, Center, End, Baseline, Stretch
+  case Start,
+    Center,
+    End,
+    Baseline,
+    Stretch
 
 trait StackView extends View:
   def spacing(gap: Lp): StackView
@@ -193,7 +225,11 @@ object Overlay:
   def apply(base: View, layers: View*): View = ???
 
 enum Placement:
-  case Below, Above, Start, End, Over
+  case Below,
+    Above,
+    Start,
+    End,
+    Over
 
 enum FocusRestore:
   /** The node focused when the popup opened, if it still exists and is focusable. */
@@ -202,16 +238,18 @@ enum FocusRestore:
   case Nowhere
 
 enum DismissReason:
-  case Escape, OutsidePress, WindowDeactivated
+  case Escape,
+    OutsidePress,
+    WindowDeactivated
 
 enum DismissDecision:
-  case Allow, Veto
+  case Allow,
+    Veto
 
 final case class Dismissal(onEscape: Boolean = true, onOutsidePress: Boolean = true)
 
-/** A popup owned by its originator but placed in a window overlay layer
-  * (VISION §5.2, §8). Placement, dismissal, focus restoration, and modality
-  * are shared machinery. Dismissal writes `false` to `open`.
+/** A popup owned by its originator but placed in a window overlay layer (VISION §5.2, §8). Placement, dismissal, focus
+  * restoration, and modality are shared machinery. Dismissal writes `false` to `open`.
   */
 object Popup:
   def apply(
@@ -227,25 +265,65 @@ object Popup:
 
 /** Row builder runs once per mounted key, receiving live Inputs. */
 object ForEach:
-  private[sirin] final case class Description[K, A](items: Signal[Seq[A]], key: A => K,
-      row: Inputs[A] => View, equality: Equality[A], schema: String) extends View
-  def apply[K, A](source: CollectionSource[K, A])(row: Inputs[A] => View)(using Equality[A], SchemaId[K], SchemaId[A]): View =
-    Description(source.keyedSnapshot, (pair: (K, A)) => pair._1,
-      (inputs: Inputs[(K, A)]) => row(Inputs.from(inputs.map(_._2))),
-      (a, b) => a._1 == b._1 && summon[Equality[A]].same(a._2, b._2), s"source:${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")
+  private[sirin] final case class Description[K, A](
+      items: Signal[Seq[A]],
+      key: A => K,
+      row: Inputs[A] => View,
+      equality: Equality[A],
+      schema: String
+  ) extends View
+  def apply[K, A](source: CollectionSource[K, A])(
+      row: Inputs[A] => View
+  )(using Equality[A], SchemaId[K], SchemaId[A]): View = Description(
+    source.keyedSnapshot,
+    (pair: (K, A)) => pair._1,
+    (inputs: Inputs[(K, A)]) => row(Inputs.from(inputs.map(_._2))),
+    (a, b) => a._1 == b._1 && summon[Equality[A]].same(a._2, b._2),
+    s"source:${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}"
+  )
+
   /** Explicit O(n) reconciliation for small sequences. */
-  def apply[K, A](items: Signal[Seq[A]], key: A => K)(row: Inputs[A] => View)(using Equality[A], SchemaId[K], SchemaId[A]): View =
-    Description(items, key, row, summon[Equality[A]], s"sequence:${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")
+  def apply[K, A](items: Signal[Seq[A]], key: A => K)(
+      row: Inputs[A] => View
+  )(using Equality[A], SchemaId[K], SchemaId[A]): View = Description(
+    items,
+    key,
+    row,
+    summon[Equality[A]],
+    s"sequence:${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}"
+  )
 
 object Switch:
   /** Unequal values remount the branch. */
-  private[sirin] final case class Plain[A](value: Signal[A], branch: A => View, equality: Equality[A], schema: String) extends View
-  private[sirin] final case class Keyed[K, A](value: Signal[A], key: A => K, branch: Inputs[A] => View, equality: Equality[A], schema: String) extends View
-  def apply[A](value: Signal[A])(branch: A => View)(using Equality[A], SchemaId[A]): View = Plain(value, branch, summon[Equality[A]], summon[SchemaId[A]].value)
+  private[sirin] final case class Plain[A](value: Signal[A], branch: A => View, equality: Equality[A], schema: String)
+      extends View
+  private[sirin] final case class Keyed[K, A](
+      value: Signal[A],
+      key: A => K,
+      branch: Inputs[A] => View,
+      equality: Equality[A],
+      schema: String
+  ) extends View
+  def apply[A](value: Signal[A])(branch: A => View)(using Equality[A], SchemaId[A]): View = Plain(
+    value,
+    branch,
+    summon[Equality[A]],
+    summon[SchemaId[A]].value
+  )
+
   /** Same key preserves the branch and delivers live replacement Inputs. */
-  def keyed[K, A](value: Signal[A])(key: A => K)(branch: Inputs[A] => View)(using Equality[A], SchemaId[K], SchemaId[A]): View =
-    Keyed(value, key, branch, summon[Equality[A]], s"${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")
+  def keyed[K, A](value: Signal[A])(key: A => K)(branch: Inputs[A] => View)(using
+      Equality[A],
+      SchemaId[K],
+      SchemaId[A]
+  ): View = Keyed(value, key, branch, summon[Equality[A]], s"${summon[SchemaId[K]].value}:${summon[SchemaId[A]].value}")
 
 object Show:
   /** Boolean keyed Switch sugar; no new lifetime model. */
-  def apply(when: Signal[Boolean])(content: => View): View = Switch(when)(value => if value then content else View.empty)
+  def apply(when: Signal[Boolean])(content: => View): View =
+    Switch(when)(value =>
+      if value then
+        content
+      else
+        View.empty
+    )

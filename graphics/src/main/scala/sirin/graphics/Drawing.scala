@@ -7,18 +7,18 @@ enum InstanceValues[+A]:
   case Constant(value: A)
   case PerInstance(values: Vector[A])
 
-/** Transforms and paints have stable painter order. Geometry is shared, not
-  * expanded into one path or component per instance.
+/** Transforms and paints have stable painter order. Geometry is shared, not expanded into one path or component per
+  * instance.
   */
 final case class InstanceBatch(transforms: Vector[Affine], paints: InstanceValues[Paint]):
   paints match
-    case InstanceValues.Constant(_) => ()
+    case InstanceValues.Constant(_) =>
+      ()
     case InstanceValues.PerInstance(values) =>
       require(values.size == transforms.size, "instance paint count must match transform count")
 
-/** Flat, inspectable commands. Begin/end markers preserve local coordinate
-  * scope, clip establishment order, and isolated compositing boundaries.
-  * Constructing a command alone cannot construct an invalid Drawing.
+/** Flat, inspectable commands. Begin/end markers preserve local coordinate scope, clip establishment order, and
+  * isolated compositing boundaries. Constructing a command alone cannot construct an invalid Drawing.
   */
 enum DrawCommand:
   case Fill(path: Path, paint: Paint, rule: FillRule)
@@ -34,9 +34,8 @@ enum DrawCommand:
   case BeginLayer(opacity: Double)
   case EndLayer
 
-/** Provisional drawing API. Paints/styles are explicit; scope state is
-  * lexical. A failed scope contributes no commands, even if its error is caught
-  * by the enclosing drawing. Canvas capabilities expire when their body exits.
+/** Provisional drawing API. Paints/styles are explicit; scope state is lexical. A failed scope contributes no commands,
+  * even if its error is caught by the enclosing drawing. Canvas capabilities expire when their body exits.
   */
 trait Canvas2D:
   def fill(path: Path, paint: Paint, rule: FillRule = FillRule.NonZero): Unit
@@ -48,13 +47,13 @@ trait Canvas2D:
   def transformed(transform: Affine)(body: Canvas2D => Unit): Unit
   def clipped(path: Path, rule: FillRule = FillRule.NonZero)(body: Canvas2D => Unit): Unit
 
-  /** Isolated opacity: render children into a transparent intermediate target,
-    * then composite the group once. It is never multiplied into each child.
+  /** Isolated opacity: render children into a transparent intermediate target, then composite the group once. It is
+    * never multiplied into each child.
     */
   def layer(opacity: Double)(body: Canvas2D => Unit): Unit
 
-/** Immutable commands retaining shared immutable paths, paints, batches, image
-  * snapshots and child drawings. No GPU/native resources, UI nodes or callbacks.
+/** Immutable commands retaining shared immutable paths, paints, batches, image snapshots and child drawings. No
+  * GPU/native resources, UI nodes or callbacks.
   */
 final class Drawing private (val commands: Vector[DrawCommand])
 
@@ -82,8 +81,9 @@ object Drawing:
 
     def fill(path: Path, paint: Paint, rule: FillRule): Unit = add(DrawCommand.Fill(path, paint, rule))
     def stroke(path: Path, paint: Paint, style: StrokeStyle): Unit = add(DrawCommand.Stroke(path, paint, style))
-    def instances(path: Path, batch: InstanceBatch, rule: FillRule): Unit =
-      add(DrawCommand.FillInstances(path, batch, rule))
+    def instances(path: Path, batch: InstanceBatch, rule: FillRule): Unit = add(
+      DrawCommand.FillInstances(path, batch, rule)
+    )
     def image(source: ImageRegion, destination: Rect, sampling: Sampling, opacity: Double): Unit =
       require(opacity.isFinite && opacity >= 0 && opacity <= 1, "image opacity must be in [0, 1]")
       add(DrawCommand.Image(source, destination, sampling, opacity))
@@ -110,4 +110,5 @@ object Drawing:
         completed = true
       finally
         child.open = false
-        if !completed then commands.dropRightInPlace(commands.size - start)
+        if !completed then
+          commands.dropRightInPlace(commands.size - start)
