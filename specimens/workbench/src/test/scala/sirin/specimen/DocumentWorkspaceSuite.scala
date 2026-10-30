@@ -73,7 +73,7 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
         case MountedSnapshot.Control(id,field: TextField.Description) if field.value eq document.editor.body => Vector(id)
         case MountedSnapshot.Group(children,_,_,_) => children.flatMap(loop)
         case MountedSnapshot.Component(_,_,child) => loop(child)
-        case MountedSnapshot.Window(_,_,_,child) => loop(child)
+        case MountedSnapshot.Window(_,_,_,child,_) => loop(child)
         case MountedSnapshot.Styled(child,_) => loop(child)
         case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => loop(child))
         case MountedSnapshot.Branch(_,_,child) => loop(child)
@@ -218,5 +218,44 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
       f.settle()
       assert(value(f.r,session.channel.state).isInstanceOf[ChannelState.Cancelled])
       assertEquals(value(f.r,f.model.imports).size,1)
+    finally f.close()
+  }
+
+  test("render recovery exposes data-independent dirty-quit decisions with current revision authority") {
+    val f=new Fixture
+    def frames(s: MountedSnapshot): Vector[MountedSnapshot.Window]=s match
+      case w: MountedSnapshot.Window => Vector(w)
+      case MountedSnapshot.Component(_,_,child) => frames(child)
+      case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => frames(child))
+      case MountedSnapshot.Group(children,_,_,_) => children.flatMap(frames)
+      case _ => Vector.empty
+    def labels(s: MountedSnapshot): Vector[String]=s match
+      case MountedSnapshot.Leaf(text: Text.Description) => Vector(value(f.r,text.content))
+      case MountedSnapshot.Group(children,_,_,_) => children.flatMap(labels)
+      case MountedSnapshot.Component(_,_,child) => labels(child)
+      case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => labels(child))
+      case MountedSnapshot.Branch(_,_,child) => labels(child)
+      case MountedSnapshot.Scroll(_,child) => labels(child)
+      case MountedSnapshot.Styled(child,_) => labels(child)
+      case MountedSnapshot.Referenced(_,child) => labels(child)
+      case _ => Vector.empty
+    def window=frames(value(f.r,f.mounted.snapshot)).head
+    try
+      val document=f.open(a)
+      ok(f.r.transact {document.editor.title.set("😀"*120);document.editor.body.set("unsaved")})
+      val instance=window.instance
+      ok(f.r.transact {f.mounted.reportWindowRenderFailure(instance,WindowRenderFailure(1,"resource_limit","original refusal"))})
+      assertEquals(ok(f.r.transact {f.mounted.requestApplicationQuit()}),CloseDecision.KeepOpen)
+      val shown=labels(window.child)
+      assert(shown.exists(_.startsWith("Discard unsaved drafts and quit?")))
+      assert(shown.forall(_.forall(_<=127)),"recovery must not shape complex document titles or diagnostic data")
+      ok(f.r.transact {document.editor.body.set("newer")})
+      ok(f.r.transact {f.model.confirmDecision.dispatch(())})
+      assert(value(f.r,f.model.prompt).exists(_.changedSinceReview))
+      assert(labels(window.child).exists(_.startsWith("Drafts changed during this decision.")))
+      assertEquals(value(f.r,f.quitRequests),0)
+      ok(f.r.transact {f.model.confirmDecision.dispatch(())})
+      assertEquals(value(f.r,f.quitRequests),1)
+      assertEquals(value(f.r,document.editor.body),"newer")
     finally f.close()
   }

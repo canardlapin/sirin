@@ -9,6 +9,10 @@ private[desktop] final class OwnerInputQueue[A](capacity: Int=256):
   private var closePending=false
   def closing: Boolean=closePending
   def nonEmpty: Boolean=pending.nonEmpty
+  def size: Int=pending.size
+  /** Caller must publish an explicit render-failure receipt before rejecting these facts. */
+  def abandon(): Int =
+    val count=pending.size;clear();count
   def clear(): Unit={pending.clear();closePending=false}
   def add(context: A,input: Option[HostInput]): Unit =
     require(!closePending && pending.size<capacity,"window essential-input budget/order exceeded")

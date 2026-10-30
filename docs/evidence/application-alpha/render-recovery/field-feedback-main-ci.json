@@ -1,0 +1,995 @@
+{
+  "conclusion": "success",
+  "headSha": "1570c9d9cd2374a584f623cc35e44248a6e4b19d",
+  "jobs": [
+    {
+      "completedAt": "2026-10-30T05:36:04Z",
+      "conclusion": "success",
+      "databaseId": 123908695827,
+      "name": "JVM application host and package (macOS)",
+      "startedAt": "2026-10-30T05:30:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:30:35Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:30:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:37Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:30:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:38Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:30:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:38Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-python@v5",
+          "number": 4,
+          "startedAt": "2026-10-30T05:30:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:48Z",
+          "conclusion": "success",
+          "name": "Run dtolnay/rust-toolchain@1.95.0",
+          "number": 5,
+          "startedAt": "2026-10-30T05:30:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:51Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 6,
+          "startedAt": "2026-10-30T05:30:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:53Z",
+          "conclusion": "success",
+          "name": "Native build tools",
+          "number": 7,
+          "startedAt": "2026-10-30T05:30:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:34:15Z",
+          "conclusion": "success",
+          "name": "Prepare pinned native host dependencies",
+          "number": 8,
+          "startedAt": "2026-10-30T05:30:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:35:27Z",
+          "conclusion": "success",
+          "name": "Headless host, editor policy and launch ownership checks",
+          "number": 9,
+          "startedAt": "2026-10-30T05:34:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:35:43Z",
+          "conclusion": "success",
+          "name": "Package the public application entry without launching UI",
+          "number": 10,
+          "startedAt": "2026-10-30T05:35:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:35:55Z",
+          "conclusion": "success",
+          "name": "Package the persistent workbench without launching UI",
+          "number": 11,
+          "startedAt": "2026-10-30T05:35:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:35:56Z",
+          "conclusion": "success",
+          "name": "Verify persistent workbench native closure and strict signature",
+          "number": 12,
+          "startedAt": "2026-10-30T05:35:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:35:57Z",
+          "conclusion": "success",
+          "name": "Verify bundled native closure and strict signature",
+          "number": 13,
+          "startedAt": "2026-10-30T05:35:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:36:00Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 23,
+          "startedAt": "2026-10-30T05:35:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:36:00Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-python@v5",
+          "number": 24,
+          "startedAt": "2026-10-30T05:36:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:36:00Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 25,
+          "startedAt": "2026-10-30T05:36:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:36:01Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 26,
+          "startedAt": "2026-10-30T05:36:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:36:02Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 27,
+          "startedAt": "2026-10-30T05:36:01Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908695827"
+    },
+    {
+      "completedAt": "2026-10-30T05:32:15Z",
+      "conclusion": "success",
+      "databaseId": 123908695931,
+      "name": "native font and paragraph services (macOS)",
+      "startedAt": "2026-10-30T05:27:46Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:27:50Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:27:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:53Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:27:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:53Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:27:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:54Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-python@v5",
+          "number": 4,
+          "startedAt": "2026-10-30T05:27:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:57Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 5,
+          "startedAt": "2026-10-30T05:27:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:59Z",
+          "conclusion": "success",
+          "name": "Font build tools",
+          "number": 6,
+          "startedAt": "2026-10-30T05:27:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:08Z",
+          "conclusion": "success",
+          "name": "Run dtolnay/rust-toolchain@1.95.0",
+          "number": 7,
+          "startedAt": "2026-10-30T05:27:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:07Z",
+          "conclusion": "success",
+          "name": "Fetch and build pinned minimal font stack",
+          "number": 8,
+          "startedAt": "2026-10-30T05:28:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:18Z",
+          "conclusion": "success",
+          "name": "Verify pinned fonts and native shaping/raster tests",
+          "number": 9,
+          "startedAt": "2026-10-30T05:29:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:58Z",
+          "conclusion": "success",
+          "name": "Fetch and build pinned Unicode component for paragraph integration",
+          "number": 10,
+          "startedAt": "2026-10-30T05:30:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:06Z",
+          "conclusion": "success",
+          "name": "Verify shaping, wrapping, core text services and prepared Canvas recording",
+          "number": 11,
+          "startedAt": "2026-10-30T05:30:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:10Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 19,
+          "startedAt": "2026-10-30T05:32:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:10Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-python@v5",
+          "number": 20,
+          "startedAt": "2026-10-30T05:32:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:11Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 21,
+          "startedAt": "2026-10-30T05:32:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:12Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 22,
+          "startedAt": "2026-10-30T05:32:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:13Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-30T05:32:12Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908695931"
+    },
+    {
+      "completedAt": "2026-10-30T05:40:56Z",
+      "conclusion": "success",
+      "databaseId": 123908695949,
+      "name": "core tests (windows-latest)",
+      "startedAt": "2026-10-30T05:26:44Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:26:48Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:26:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:55Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:26:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:55Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:26:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:01Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 4,
+          "startedAt": "2026-10-30T05:26:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:32Z",
+          "conclusion": "success",
+          "name": "JVM tests",
+          "number": 5,
+          "startedAt": "2026-10-30T05:27:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:40:12Z",
+          "conclusion": "success",
+          "name": "Scala Native tests",
+          "number": 6,
+          "startedAt": "2026-10-30T05:29:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:40:40Z",
+          "conclusion": "success",
+          "name": "Authoring corpus type-checks (A-0)",
+          "number": 7,
+          "startedAt": "2026-10-30T05:40:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:40:52Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 12,
+          "startedAt": "2026-10-30T05:40:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:40:53Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 13,
+          "startedAt": "2026-10-30T05:40:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:40:55Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 14,
+          "startedAt": "2026-10-30T05:40:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:40:55Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-30T05:40:55Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908695949"
+    },
+    {
+      "completedAt": "2026-10-30T05:28:40Z",
+      "conclusion": "success",
+      "databaseId": 123908695978,
+      "name": "native ABI probe (ubuntu-latest)",
+      "startedAt": "2026-10-30T05:26:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:26:49Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:26:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:51Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:26:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:51Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:26:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:54Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 4,
+          "startedAt": "2026-10-30T05:26:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:41Z",
+          "conclusion": "success",
+          "name": "Fetch pinned native artifacts",
+          "number": 5,
+          "startedAt": "2026-10-30T05:26:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:41Z",
+          "conclusion": "skipped",
+          "name": "Put Windows DLLs on PATH",
+          "number": 6,
+          "startedAt": "2026-10-30T05:27:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:36Z",
+          "conclusion": "success",
+          "name": "ABI tests (struct layouts, by-value round trip, SDL constants)",
+          "number": 7,
+          "startedAt": "2026-10-30T05:27:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:37Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 12,
+          "startedAt": "2026-10-30T05:28:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:37Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 13,
+          "startedAt": "2026-10-30T05:28:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:37Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 14,
+          "startedAt": "2026-10-30T05:28:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:37Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-30T05:28:37Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908695978"
+    },
+    {
+      "completedAt": "2026-10-30T05:29:12Z",
+      "conclusion": "success",
+      "databaseId": 123908696043,
+      "name": "native ABI probe (windows-latest)",
+      "startedAt": "2026-10-30T05:26:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:26:50Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:26:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:57Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:26:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:57Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:26:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:03Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 4,
+          "startedAt": "2026-10-30T05:26:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:07Z",
+          "conclusion": "success",
+          "name": "Fetch pinned native artifacts",
+          "number": 5,
+          "startedAt": "2026-10-30T05:27:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:27:07Z",
+          "conclusion": "success",
+          "name": "Put Windows DLLs on PATH",
+          "number": 6,
+          "startedAt": "2026-10-30T05:27:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:05Z",
+          "conclusion": "success",
+          "name": "ABI tests (struct layouts, by-value round trip, SDL constants)",
+          "number": 7,
+          "startedAt": "2026-10-30T05:27:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:08Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 12,
+          "startedAt": "2026-10-30T05:29:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:08Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 13,
+          "startedAt": "2026-10-30T05:29:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:10Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 14,
+          "startedAt": "2026-10-30T05:29:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:10Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-30T05:29:10Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908696043"
+    },
+    {
+      "completedAt": "2026-10-30T05:30:29Z",
+      "conclusion": "success",
+      "databaseId": 123908696069,
+      "name": "native ABI probe (macos-14)",
+      "startedAt": "2026-10-30T05:28:49Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:28:53Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:28:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:56Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:28:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:56Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:28:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:59Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 4,
+          "startedAt": "2026-10-30T05:28:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:03Z",
+          "conclusion": "success",
+          "name": "Fetch pinned native artifacts",
+          "number": 5,
+          "startedAt": "2026-10-30T05:28:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:29:03Z",
+          "conclusion": "skipped",
+          "name": "Put Windows DLLs on PATH",
+          "number": 6,
+          "startedAt": "2026-10-30T05:29:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:23Z",
+          "conclusion": "success",
+          "name": "ABI tests (struct layouts, by-value round trip, SDL constants)",
+          "number": 7,
+          "startedAt": "2026-10-30T05:29:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:25Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 12,
+          "startedAt": "2026-10-30T05:30:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:25Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 13,
+          "startedAt": "2026-10-30T05:30:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:25Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 14,
+          "startedAt": "2026-10-30T05:30:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:26Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-30T05:30:25Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908696069"
+    },
+    {
+      "completedAt": "2026-10-30T05:34:29Z",
+      "conclusion": "success",
+      "databaseId": 123908696091,
+      "name": "core tests (ubuntu-latest)",
+      "startedAt": "2026-10-30T05:26:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:26:50Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:26:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:52Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:26:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:52Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:26:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:26:56Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 4,
+          "startedAt": "2026-10-30T05:26:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:28:31Z",
+          "conclusion": "success",
+          "name": "JVM tests",
+          "number": 5,
+          "startedAt": "2026-10-30T05:26:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:34:06Z",
+          "conclusion": "success",
+          "name": "Scala Native tests",
+          "number": 6,
+          "startedAt": "2026-10-30T05:28:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:34:21Z",
+          "conclusion": "success",
+          "name": "Authoring corpus type-checks (A-0)",
+          "number": 7,
+          "startedAt": "2026-10-30T05:34:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:34:26Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 12,
+          "startedAt": "2026-10-30T05:34:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:34:26Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 13,
+          "startedAt": "2026-10-30T05:34:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:34:26Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 14,
+          "startedAt": "2026-10-30T05:34:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:34:26Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-30T05:34:26Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908696091"
+    },
+    {
+      "completedAt": "2026-10-30T05:33:18Z",
+      "conclusion": "success",
+      "databaseId": 123908696128,
+      "name": "isolated Unicode probe (macOS)",
+      "startedAt": "2026-10-30T05:30:31Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:30:37Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:30:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:39Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:30:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:39Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:30:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:49Z",
+          "conclusion": "success",
+          "name": "Run dtolnay/rust-toolchain@1.95.0",
+          "number": 4,
+          "startedAt": "2026-10-30T05:30:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:30:53Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 5,
+          "startedAt": "2026-10-30T05:30:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:31:24Z",
+          "conclusion": "success",
+          "name": "Fetch and build pinned Unicode stack",
+          "number": 6,
+          "startedAt": "2026-10-30T05:30:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:33:10Z",
+          "conclusion": "success",
+          "name": "Verify reference fixtures and native Unicode analysis",
+          "number": 7,
+          "startedAt": "2026-10-30T05:31:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:33:13Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 12,
+          "startedAt": "2026-10-30T05:33:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:33:13Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 13,
+          "startedAt": "2026-10-30T05:33:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:33:14Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 14,
+          "startedAt": "2026-10-30T05:33:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:33:15Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-30T05:33:14Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908696128"
+    },
+    {
+      "completedAt": "2026-10-30T05:39:33Z",
+      "conclusion": "success",
+      "databaseId": 123908696194,
+      "name": "core tests (macos-14)",
+      "startedAt": "2026-10-30T05:32:17Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T05:32:22Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T05:32:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:24Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v5",
+          "number": 2,
+          "startedAt": "2026-10-30T05:32:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:24Z",
+          "conclusion": "success",
+          "name": "Run actions/setup-java@v5",
+          "number": 3,
+          "startedAt": "2026-10-30T05:32:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:32:27Z",
+          "conclusion": "success",
+          "name": "Run sbt/setup-sbt@v1",
+          "number": 4,
+          "startedAt": "2026-10-30T05:32:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:33:59Z",
+          "conclusion": "success",
+          "name": "JVM tests",
+          "number": 5,
+          "startedAt": "2026-10-30T05:32:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:39:14Z",
+          "conclusion": "success",
+          "name": "Scala Native tests",
+          "number": 6,
+          "startedAt": "2026-10-30T05:33:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:39:25Z",
+          "conclusion": "success",
+          "name": "Authoring corpus type-checks (A-0)",
+          "number": 7,
+          "startedAt": "2026-10-30T05:39:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:39:30Z",
+          "conclusion": "success",
+          "name": "Post Run sbt/setup-sbt@v1",
+          "number": 12,
+          "startedAt": "2026-10-30T05:39:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:39:30Z",
+          "conclusion": "success",
+          "name": "Post Run actions/setup-java@v5",
+          "number": 13,
+          "startedAt": "2026-10-30T05:39:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:39:31Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v5",
+          "number": 14,
+          "startedAt": "2026-10-30T05:39:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T05:39:32Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-30T05:39:31Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161/job/123908696194"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/canardlapin/sirin/actions/runs/41008475161"
+}

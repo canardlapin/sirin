@@ -1,0 +1,10 @@
+{
+  "mode": "undeclared-menu-control",
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "hostJVM/testOnly sirin.host.WindowCaptureSuite"
+  ],
+  "source_sha256": "a3df26bceb7314a076dce674c5a0482f27af416ce9bc9b4a5f1896fad1d913d8",
+  "test_sha256": "ab78794d0aaaa25f8d55cef1b51c57e5a9f77d44d752885e6a08612dc2e3345d"
+}

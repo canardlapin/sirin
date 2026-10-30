@@ -1,0 +1,41 @@
+{
+  "start_utc": "2026-10-30T06:26:59.881061+00:00",
+  "base_commit": "1570c9d9cd2374a584f623cc35e44248a6e4b19d",
+  "commands": [
+    [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM",
+      "testNative",
+      "examples/compile"
+    ],
+    [
+      "sbt",
+      "--java-home",
+      "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+      "-J-XX:ActiveProcessorCount=4",
+      "desktopJVM/test"
+    ]
+  ],
+  "source_hashes": {
+    ".github/workflows/ci.yml": "ad1def061712b2ca9c7df38359300d187fbfb14ecc167d4a70ac22eb28b0998c",
+    "core/src/main/scala/sirin/App.scala": "d5dc5f3e67a550f2f22bb671ddd0c8f7e6cac90ea01a8112c2a9a2375f9d2463",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "13f22b89733220b9682c837408244cd6dfae732bbda5d5e2879727f5d961873e",
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "8ceb884d49f49551d4020272ca1a87cd9e3c44f5cff87001672b2d5d59757eda",
+    "desktop/src/main/scala/sirin/desktop/OwnerInputQueue.scala": "a42791334bfbb6b1d81a963d0c934e98472f193f2240cc9ccbf8f2be2ca30a00",
+    "desktop/src/main/scala/sirin/desktop/WindowRenderRecovery.scala": "9559dfcadc0dba22f8849bcfb9cfe2d5c9354cdf34874eb3cc3e5b142e132a68",
+    "desktop/src/test/scala/sirin/desktop/WindowRenderRecoverySuite.scala": "3e9d77917d604fd5ad2dbf032e522f96c900be4950192508eb232bd794002553",
+    "docs/design/decisions/2026-10-30-window-render-recovery.md": "841de9f0cc43d77f3d635da7158c0ddf8edb972e4e11ca54051005a82f93fb5c",
+    "docs/guides/persistent-workbench.md": "d5f41bf454e8f687f5abdc2d2e16afa8b573ca1e18eda0945e7cc1a501cb18e6",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "bfe078cc2d6a66920488795f3ba02753ffa432b9f526c8e468064c76bcac93e3",
+    "engine/src/test/scala/sirin/engine/WindowKeySafetySuite.scala": "6dd9a88d4ee61b5eace308c9437bd8db8dd9921fa61d8270acf0fc14de4d8849",
+    "engine/src/test/scala/sirin/engine/WindowRenderRecoverySuite.scala": "82f2f985989d057d3000a6bf7b32bda887cd93020579d77415fe0a94e5d3cf08",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "82f03df8eb53121c40daaa5c0781ead1d0fca48d9f42e06200718a69e121cde6",
+    "host/src/main/scala/sirin/host/FrameCoordinator.scala": "82a8acfc62141fab48555455301e27ff1abb0f5a4ef65eff43b31a0d6f0a37dc",
+    "host/src/main/scala/sirin/host/WindowCapture.scala": "8e7ff034f361dea41425e666c4b69271b85fa1a8ffe3c216eda13bec5e840210",
+    "host/src/test/scala/sirin/host/WindowCaptureSuite.scala": "ab78794d0aaaa25f8d55cef1b51c57e5a9f77d44d752885e6a08612dc2e3345d",
+    "specimens/workbench/src/main/scala/sirin/specimen/DocumentWorkspace.scala": "e19bdde93aa11362385bf09f74289f0412017038533430f780f032867dfccf21",
+    "specimens/workbench/src/test/scala/sirin/specimen/DocumentWorkspaceSuite.scala": "a2074432a4a63f890df7fc55c26d07ae9e0ff8563341c082297825673b60f6c5"
+  },
+  "results": []
+}

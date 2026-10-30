@@ -1,0 +1,15 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "engineJVM/testOnly sirin.engine.WindowRenderRecoverySuite sirin.engine.WindowLifecycleSuite",
+    "hostJVM/testOnly sirin.host.WindowCaptureSuite"
+  ],
+  "returncode": 1,
+  "source_hashes": {
+    "core/src/main/scala/sirin/App.scala": "b282ca4944ba5c8ba787edffdf492c1785c95acfbddf186f354cd80f48610063",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "82a17088f031c3838592c60fad5d85be6f8cf375f937e05225f818f2fd91e181",
+    "engine/src/test/scala/sirin/engine/WindowRenderRecoverySuite.scala": "05b96ad62e6967b152fc0524727c198701ccee5d3dd04d04824918dde462476f"
+  },
+  "end_utc": "2026-10-30T05:50:51.329122+00:00"
+}

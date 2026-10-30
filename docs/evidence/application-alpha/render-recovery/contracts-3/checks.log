@@ -1,0 +1,73 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+Test run sirin.engine.WindowRenderRecoverySuite started
+sirin.engine.WindowRenderRecoverySuite: finished 0.211s
+Test run sirin.engine.WindowRenderRecoverySuite finished: 0 failed, 0 ignored, 4 total 0.267s
+Test run sirin.engine.WindowLifecycleSuite started
+sirin.engine.WindowLifecycleSuite: finished 0.401s
+Test run sirin.engine.WindowLifecycleSuite finished: 0 failed, 0 ignored, 15 total 0.408s
+[info] Passed: Total 19, Failed 0, Errors 0, Passed 19
+[success] Total time: 1 s, completed Oct 30, 2026, 2:00:04 a.m.
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.DocumentWorkspaceSuite started
+sirin.specimen.DocumentWorkspaceSuite: finished 0.875s
+Test run sirin.specimen.DocumentWorkspaceSuite finished: 0 failed, 0 ignored, 10 total 0.878s
+[info] Passed: Total 10, Failed 0, Errors 0, Passed 10
+[success] Total time: 4 s, completed Oct 30, 2026, 2:00:08 a.m.
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.WindowRenderRecoverySuite started
+==> X sirin.desktop.WindowRenderRecoverySuite.the unchanged complex diagnostic refuses, then a real recovery frame retains draft, field identity and undo 1.086s sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase
+    at sirin.engine.KernelError$.<clinit>(HeadlessRuntime.scala:22)
+    at sirin.engine.HeadlessRuntime.$anonfun$11(HeadlessRuntime.scala:773)
+    at scala.collection.mutable.LinkedHashMap.getOrElseUpdate(LinkedHashMap.scala:143)
+    at sirin.engine.HeadlessRuntime.attach$1(HeadlessRuntime.scala:775)
+    at sirin.engine.HeadlessRuntime.settle$$anonfun$2(HeadlessRuntime.scala:781)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.engine.HeadlessRuntime.settle(HeadlessRuntime.scala:781)
+    at sirin.engine.HeadlessRuntime.publishCandidate(HeadlessRuntime.scala:843)
+    at sirin.engine.HeadlessRuntime.publish(HeadlessRuntime.scala:835)
+    at sirin.engine.HeadlessRuntime.transact(HeadlessRuntime.scala:710)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$edit(HeadlessRuntime.scala:260)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed$$anonfun$1(HeadlessRuntime.scala:417)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$construct(HeadlessRuntime.scala:275)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed(HeadlessRuntime.scala:420)
+    at sirin.desktop.WindowRenderRecoverySuite.$init$$$anonfun$1(WindowRenderRecoverySuite.scala:27)
+==> X sirin.desktop.WindowRenderRecoverySuite.current-generation recovery escalates once, parks repeated failure and rejects stale/replacement outcomes 0.006s sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase
+    at sirin.engine.KernelError$.<clinit>(HeadlessRuntime.scala:22)
+    at sirin.engine.HeadlessRuntime.$anonfun$11(HeadlessRuntime.scala:773)
+    at scala.collection.mutable.LinkedHashMap.getOrElseUpdate(LinkedHashMap.scala:143)
+    at sirin.engine.HeadlessRuntime.attach$1(HeadlessRuntime.scala:775)
+    at sirin.engine.HeadlessRuntime.settle$$anonfun$2(HeadlessRuntime.scala:781)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.engine.HeadlessRuntime.settle(HeadlessRuntime.scala:781)
+    at sirin.engine.HeadlessRuntime.publishCandidate(HeadlessRuntime.scala:843)
+    at sirin.engine.HeadlessRuntime.publish(HeadlessRuntime.scala:835)
+    at sirin.engine.HeadlessRuntime.transact(HeadlessRuntime.scala:710)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$edit(HeadlessRuntime.scala:260)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed$$anonfun$1(HeadlessRuntime.scala:417)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$construct(HeadlessRuntime.scala:275)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed(HeadlessRuntime.scala:420)
+    at sirin.desktop.WindowRenderRecoverySuite.$init$$$anonfun$1(WindowRenderRecoverySuite.scala:27)
+sirin.desktop.WindowRenderRecoverySuite: finished 1.112s
+Test run sirin.desktop.WindowRenderRecoverySuite finished: 2 failed, 0 ignored, 2 total 1.12s
+Test run sirin.desktop.EditorControllerSuite started
+sirin.desktop.EditorControllerSuite: finished 0.985s
+Test run sirin.desktop.EditorControllerSuite finished: 0 failed, 0 ignored, 21 total 0.985s
+Test run sirin.desktop.PersistentWorkbenchSuite started
+sirin.desktop.PersistentWorkbenchSuite: finished 0.578s
+Test run sirin.desktop.PersistentWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.578s
+[error] Failed: Total 24, Failed 2, Errors 0, Passed 22
+[error] Failed tests:
+[error] 	sirin.desktop.WindowRenderRecoverySuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 6 s, completed Oct 30, 2026, 2:00:14 a.m.

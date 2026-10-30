@@ -1,0 +1,20 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "engineJVM/testOnly sirin.engine.WindowLifecycleSuite sirin.engine.WindowKeySafetySuite",
+    "hostJVM/testOnly sirin.host.WindowCaptureSuite",
+    "workbenchJVM/testOnly sirin.specimen.DocumentWorkspaceSuite"
+  ],
+  "returncode": 0,
+  "source_hashes": {
+    "core/src/main/scala/sirin/App.scala": "b282ca4944ba5c8ba787edffdf492c1785c95acfbddf186f354cd80f48610063",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "41e4a90974d4fbf6a8d780786f67bd822b5aee65d497b70cda9f332504e8e434",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "82f03df8eb53121c40daaa5c0781ead1d0fca48d9f42e06200718a69e121cde6",
+    "host/src/main/scala/sirin/host/WindowCapture.scala": "8e7ff034f361dea41425e666c4b69271b85fa1a8ffe3c216eda13bec5e840210",
+    "engine/src/test/scala/sirin/engine/WindowKeySafetySuite.scala": "6dd9a88d4ee61b5eace308c9437bd8db8dd9921fa61d8270acf0fc14de4d8849",
+    "specimens/workbench/src/test/scala/sirin/specimen/DocumentWorkspaceSuite.scala": "bb47c53e5396c0491c830dc4d521d9ae11c0fb4e2140edd48b2c7963cf102c7f",
+    "docs/design/decisions/2026-10-30-window-render-recovery.md": "89aa4899860c67fdff5e15fc9ebdcdac1b6f5c7e25ca4a170023c6d9d30f5239"
+  },
+  "end_utc": "2026-10-30T05:41:14.014756+00:00"
+}

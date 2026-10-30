@@ -1,0 +1,18 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.WindowRenderRecoverySuite sirin.desktop.ApplicationServicesSuite sirin.desktop.OwnerInputQueueSuite sirin.desktop.PersistentWorkbenchSuite"
+  ],
+  "returncode": 0,
+  "source_hashes": {
+    "desktop/src/main/scala/sirin/desktop/WindowRenderRecovery.scala": "9559dfcadc0dba22f8849bcfb9cfe2d5c9354cdf34874eb3cc3e5b142e132a68",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "13f22b89733220b9682c837408244cd6dfae732bbda5d5e2879727f5d961873e",
+    "desktop/src/test/scala/sirin/desktop/WindowRenderRecoverySuite.scala": "3e9d77917d604fd5ad2dbf032e522f96c900be4950192508eb232bd794002553",
+    "docs/design/decisions/2026-10-30-window-render-recovery.md": "18cc31b101f16f5543a02ef6fbc0507fcd2be217c9bd272633a0750b72e46149"
+  },
+  "source_mismatches": [],
+  "end_utc": "2026-10-30T06:19:50.000453+00:00"
+}

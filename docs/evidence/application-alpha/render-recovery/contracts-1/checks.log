@@ -1,0 +1,50 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 12 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.WindowRenderRecoverySuite started
+==> X sirin.engine.WindowRenderRecoverySuite.render refusal publishes transactionally and Retry exposes the same retained field identity and draft 0.119s munit.FailException: engine/src/test/scala/sirin/engine/WindowRenderRecoverySuite.scala:8 Failed(sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase)
+7:    case CommitResult.Committed(value) => value
+8:    case other => fail(s"$other")
+9:  private def read[A](r: HeadlessRuntime,value: Signal[A]): A=r.read(value) match
+    at munit.Assertions.fail(Assertions.scala:297)
+    at munit.Assertions.fail$(Assertions.scala:20)
+    at munit.FunSuite.fail(FunSuite.scala:12)
+    at sirin.engine.WindowRenderRecoverySuite.ok(WindowRenderRecoverySuite.scala:8)
+    at sirin.engine.WindowRenderRecoverySuite.$init$$$anonfun$1(WindowRenderRecoverySuite.scala:47)
+==> X sirin.engine.WindowRenderRecoverySuite.OS close cannot bypass input review, and acknowledged recovery close still invokes the application guard 0.015s munit.FailException: engine/src/test/scala/sirin/engine/WindowRenderRecoverySuite.scala:8 Failed(sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase)
+7:    case CommitResult.Committed(value) => value
+8:    case other => fail(s"$other")
+9:  private def read[A](r: HeadlessRuntime,value: Signal[A]): A=r.read(value) match
+    at munit.Assertions.fail(Assertions.scala:297)
+    at munit.Assertions.fail$(Assertions.scala:20)
+    at munit.FunSuite.fail(FunSuite.scala:12)
+    at sirin.engine.WindowRenderRecoverySuite.ok(WindowRenderRecoverySuite.scala:8)
+    at sirin.engine.WindowRenderRecoverySuite.$init$$$anonfun$2(WindowRenderRecoverySuite.scala:66)
+==> X sirin.engine.WindowRenderRecoverySuite.a failing custom recovery view can be suppressed without replacing the retained normal content 0.009s munit.FailException: engine/src/test/scala/sirin/engine/WindowRenderRecoverySuite.scala:8 Failed(sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase)
+7:    case CommitResult.Committed(value) => value
+8:    case other => fail(s"$other")
+9:  private def read[A](r: HeadlessRuntime,value: Signal[A]): A=r.read(value) match
+    at munit.Assertions.fail(Assertions.scala:297)
+    at munit.Assertions.fail$(Assertions.scala:20)
+    at munit.FunSuite.fail(FunSuite.scala:12)
+    at sirin.engine.WindowRenderRecoverySuite.ok(WindowRenderRecoverySuite.scala:8)
+    at sirin.engine.WindowRenderRecoverySuite.$init$$$anonfun$4(WindowRenderRecoverySuite.scala:106)
+sirin.engine.WindowRenderRecoverySuite: finished 0.217s
+Test run sirin.engine.WindowRenderRecoverySuite finished: 3 failed, 0 ignored, 4 total 0.229s
+Test run sirin.engine.WindowLifecycleSuite started
+sirin.engine.WindowLifecycleSuite: finished 0.377s
+Test run sirin.engine.WindowLifecycleSuite finished: 0 failed, 0 ignored, 15 total 0.383s
+[error] Failed: Total 19, Failed 3, Errors 0, Passed 16
+[error] Failed tests:
+[error] 	sirin.engine.WindowRenderRecoverySuite
+[error] (engineJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 10 s, completed Oct 30, 2026, 1:54:52 a.m.

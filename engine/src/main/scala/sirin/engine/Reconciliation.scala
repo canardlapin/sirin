@@ -8,7 +8,7 @@ enum MountedSnapshot:
   case Control(instance: Long,view: View)
   case Styled(child: MountedSnapshot, decorations: Vector[Decoration])
   case Scroll(instance: Long, child: MountedSnapshot)
-  case Window(instance: Long, title: Value[String], menu: MenuBar, child: MountedSnapshot)
+  case Window(instance: Long, title: Value[String], menu: MenuBar, child: MountedSnapshot,renderStatus: WindowRenderStatus=WindowRenderStatus.empty)
   case Outlet(reference: Long, child: MountedSnapshot)
   case Reparented(key: GlobalKey, instance: Long, child: MountedSnapshot)
   case VirtualRows(instance: Long, revision: Revision, first: Int, total: Int, leading: Lp, trailing: Lp, rowHeight: Lp, rows: MountedSnapshot)
@@ -26,7 +26,7 @@ object MountedSnapshot:
     case (Referenced(i,x),Referenced(j,y)) => i==j && equality.same(x,y)
     case (Control(i,x),Control(j,y)) => i==j && x==y
     case (Styled(x, a), Styled(y, b)) => a == b && equality.same(x, y)
-    case (Window(i, t, m, x), Window(j, u, n, y)) => i == j && t == u && m == n && equality.same(x, y)
+    case (Window(i, t, m, x, r), Window(j, u, n, y, s)) => i == j && t == u && m == n && r==s && equality.same(x, y)
     case (Scroll(i, x), Scroll(j, y)) => i == j && equality.same(x, y)
     case (Outlet(i, x), Outlet(j, y)) => i == j && equality.same(x, y)
     case (Reparented(k, i, x), Reparented(l, j, y)) => k == l && i == j && equality.same(x, y)
@@ -63,6 +63,20 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
   def requestApplicationQuit()(using txn: UiTxn): CloseDecision = runtime.capability(txn) {
     runtime.ensureScope(owner)
     applicationQuit.fold(CloseDecision.Allow)(_(txn))
+  }
+  /** A render outcome targets a live mounted instance, never a reusable key. */
+  def reportWindowRenderFailure(instance: Long,failure: WindowRenderFailure)(using txn: UiTxn): Unit = runtime.capability(txn) {
+    runtime.ensureScope(owner)
+    windows.find(window => window.scope.id==instance && runtime.scopeAvailable(window.scope)) match
+      case Some(window) => window.reportRenderFailure(failure)
+      case None => UiTxn.refuse("window is no longer mounted")
+  }
+  /** Coalesced native facts rejected while the failed view has no current input geometry. */
+  def reportWindowUnappliedInputs(instance: Long,generation: Long,count: Long)(using txn: UiTxn): Unit = runtime.capability(txn) {
+    runtime.ensureScope(owner)
+    windows.find(window => window.scope.id==instance && runtime.scopeAvailable(window.scope)) match
+      case Some(window) => window.reportUnappliedInputs(generation,count)
+      case None => UiTxn.refuse("window is no longer mounted")
   }
   /** A close fact targets this mounted instance, never a reusable source key. */
   def requestWindowClose(instance: Long)(using txn: UiTxn): Unit = runtime.capability(txn) {
@@ -265,21 +279,78 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     private var description = initial
     private var title: Value[String] = Value.Ok("")
     private val child = new Holder(scope, 0)
+    private val recovery = new Holder(scope,"render-recovery")
+    private val status=scope.cell(WindowRenderStatus.empty)
+    private val closeKeptOpen=scope.cell(false)
+    private val inputReviewed=scope.cell(false)
+    private val retryRef=scope.ref()
+    private var settledStatus=WindowRenderStatus.empty
+    private val recoveryContent=scope.cell[View](initial.recoveryContent)
+    private val retry=scope.action[Unit]("window.render.retry","Retry rendering") { _ =>
+      status.set(status.get.copy(current=None));closeKeptOpen.set(false);inputReviewed.set(true)
+    }
+    private val closeView=scope.action[Unit]("window.render.close","Acknowledge input and close") { _ =>
+      inputReviewed.set(true);requestClose()
+    }
+    private val retryEntry=MenuItem(retry)
+    private val closeEntry=MenuItem(closeView)
+    private val recoveryMenu=MenuBar(Menu("View",retryEntry,closeEntry))
+    private val recoveryView: View=Scroll(Column(
+      Text("This view could not render.").style(TextStyle.Heading),
+      Text("Your document state is retained."),
+      Text(status.map(_.current.fold("")(failure => s"Failure ${failure.generation}. ${failure.unappliedInputs} queued inputs were not applied."))),
+      Text(status.map(_.current.filter(_.cancelledComposition).fold("")(_ => "In-progress text composition was cancelled."))),
+      Text(closeKeptOpen.map(kept => if kept then "The view stayed open. Review pending decisions and unapplied input before closing." else "")),
+      Row(Button(retry).ref(retryRef),Button(closeView)).spacing(8.lp),
+      Switch(recoveryContent)(identity)
+    ).spacing(10.lp).padding(16.lp))
     change(windows)(windows = _)(windows :+ this)
     def accepts(view: View): Boolean = view.isInstanceOf[sirin.Window.Description]
     def refresh(view: View): Boolean =
       if description.eq(view) then false
       else { change(description)(description = _)(view.asInstanceOf[sirin.Window.Description]); true }
-    def dependencies: Vector[Signal[?]] = Vector(description.title) ++ MenuBindings.dependencies(description.menu) ++ child.dependencies
-    def snapshot: MountedSnapshot = MountedSnapshot.Window(scope.id, title, description.menu, child.snapshot)
+    def dependencies: Vector[Signal[?]] = Vector(description.title,status,closeKeptOpen) ++ MenuBindings.dependencies(description.menu) ++ MenuBindings.dependencies(recoveryMenu) ++ child.dependencies ++ recovery.dependencies
+    def snapshot: MountedSnapshot =
+      val menu=if settledStatus.current.isEmpty then description.menu
+        else
+          val existing=description.menu.menus
+          val extended=if existing.exists(_.title=="View") then existing.map { m =>
+            if m.title=="View" then Menu(m.title,(m.entries++Seq(retryEntry,closeEntry))*) else m
+          } else existing:+Menu("View",retryEntry,closeEntry)
+          MenuBar(extended*)
+      MountedSnapshot.Window(scope.id,title,menu,if settledStatus.current.nonEmpty then recovery.snapshot else child.snapshot,settledStatus)
+    def reportRenderFailure(failure: WindowRenderFailure)(using UiTxn): Unit =
+      UiTxn.require(status.get.recent.lastOption.forall(_.generation<failure.generation),"render failure generation is stale")
+      status.set(WindowRenderStatus(Some(failure),(status.get.recent:+failure).takeRight(8)))
+      closeKeptOpen.set(false);inputReviewed.set(false);retryRef.focus()
+    def reportUnappliedInputs(generation: Long,count: Long)(using UiTxn): Unit =
+      UiTxn.require(count>0,"unapplied-input count must be positive")
+      val current=status.get.current.getOrElse(UiTxn.refuse("window is not recovering"))
+      UiTxn.require(current.generation==generation,"render failure generation is stale")
+      val updated=current.copy(unappliedInputs=Math.addExact(current.unappliedInputs,count))
+      status.set(WindowRenderStatus(Some(updated),status.get.recent.dropRight(1):+updated))
+      inputReviewed.set(false)
     def requestClose()(using txn: UiTxn): Unit =
-      val dismiss = description.prepareDismiss match
-        case Some(prepare) => prepare(txn)
-        case None => UiTxn.refuse("window is not owned by Windows")
-      val decision = description.close.fold(CloseDecision.Allow)(_(txn))
-      if decision == CloseDecision.Allow && runtime.scopeAvailable(scope) then dismiss(txn)
+      val unreviewed=status.get.current.exists(f => f.unappliedInputs>0 || f.cancelledComposition) && !inputReviewed.get
+      if unreviewed then closeKeptOpen.set(true)
+      else
+        val dismiss = description.prepareDismiss match
+          case Some(prepare) => prepare(txn)
+          case None => UiTxn.refuse("window is not owned by Windows")
+        val decision = description.close.fold(CloseDecision.Allow)(_(txn))
+        if runtime.scopeAvailable(scope) then
+          if decision == CloseDecision.Allow then dismiss(txn)
+          else if status.get.current.nonEmpty then closeKeptOpen.set(true)
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
       var changed = child.sync(description.content, read)
+      read(status) match
+        case Some(Value.Ok(value: WindowRenderStatus)) =>
+          if settledStatus!=value then {change(settledStatus)(settledStatus = _)(value);changed=true}
+        case Some(Value.Failed(error)) => throw error
+        case _ => changed=true
+      val content=if settledStatus.current.exists(_.recoveryFailed) then View.empty else description.recoveryContent
+      if !(recoveryContent.get eq content) then {recoveryContent.set(content);changed=true}
+      if recovery.sync(recoveryView,read) then changed=true
       read(description.title) match
         case None => changed = true
         case Some(value) =>

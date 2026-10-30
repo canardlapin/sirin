@@ -1,0 +1,23 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.EditorControllerSuite sirin.desktop.ApplicationServicesSuite sirin.desktop.PersistentWorkbenchSuite",
+    "workbenchJVM/testOnly sirin.specimen.DocumentWorkspaceSuite"
+  ],
+  "returncode": 0,
+  "source_hashes": {
+    "core/src/main/scala/sirin/App.scala": "b282ca4944ba5c8ba787edffdf492c1785c95acfbddf186f354cd80f48610063",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "82a17088f031c3838592c60fad5d85be6f8cf375f937e05225f818f2fd91e181",
+    "host/src/main/scala/sirin/host/FrameCoordinator.scala": "82a8acfc62141fab48555455301e27ff1abb0f5a4ef65eff43b31a0d6f0a37dc",
+    "desktop/src/main/scala/sirin/desktop/WindowRenderRecovery.scala": "d2ebabed33a9ee1820df6ffb77ac5e7d680521691f653291ed9719c5e8443c3b",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "1e15ef4311eeee1f9e32b19ce171ed5233c39991310a3cf9f95c65ea765dd4ed",
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "8ceb884d49f49551d4020272ca1a87cd9e3c44f5cff87001672b2d5d59757eda",
+    "desktop/src/main/scala/sirin/desktop/OwnerInputQueue.scala": "a42791334bfbb6b1d81a963d0c934e98472f193f2240cc9ccbf8f2be2ca30a00",
+    "specimens/workbench/src/main/scala/sirin/specimen/DocumentWorkspace.scala": "897ea512a091e21f93df56dc919f28d59ec49f313e515d744c2931ab93424da5",
+    "docs/design/decisions/2026-10-30-window-render-recovery.md": "40053b2384afb890adee0775ca418463251a30aea2fd3cbd7187034e18cccefa"
+  },
+  "end_utc": "2026-10-30T05:48:21.604739+00:00"
+}

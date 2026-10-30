@@ -1,0 +1,44 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 11 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.WindowKeySafetySuite started
+sirin.engine.WindowKeySafetySuite: finished 0.149s
+Test run sirin.engine.WindowKeySafetySuite finished: 0 failed, 0 ignored, 1 total 0.16s
+Test run sirin.engine.WindowLifecycleSuite started
+sirin.engine.WindowLifecycleSuite: finished 0.33s
+Test run sirin.engine.WindowLifecycleSuite finished: 0 failed, 0 ignored, 15 total 0.338s
+[info] Passed: Total 16, Failed 0, Errors 0, Passed 16
+[success] Total time: 10 s, completed Oct 30, 2026, 1:41:09 a.m.
+[info] compiling 17 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/text-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 8 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.host.WindowCaptureSuite started
+sirin.host.WindowCaptureSuite: finished 0.083s
+Test run sirin.host.WindowCaptureSuite finished: 0 failed, 0 ignored, 6 total 0.085s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 3 s, completed Oct 30, 2026, 1:41:12 a.m.
+[info] compiling 5 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.DocumentWorkspaceSuite started
+sirin.specimen.DocumentWorkspaceSuite: finished 0.744s
+Test run sirin.specimen.DocumentWorkspaceSuite finished: 0 failed, 0 ignored, 9 total 0.745s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 2 s, completed Oct 30, 2026, 1:41:13 a.m.

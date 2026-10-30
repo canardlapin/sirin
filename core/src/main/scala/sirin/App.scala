@@ -41,6 +41,23 @@ private[sirin] object MenuBindings:
 enum CloseDecision:
   case Allow, KeepOpen
 
+/** Bounded developer receipt; never retains a frame, exception or application owner. */
+final case class WindowRenderFailure(generation: Long,category: String,detail: String,
+    unappliedInputs: Long=0L,cancelledComposition: Boolean=false,recoveryFailed: Boolean=false):
+  require(generation>0 && category.nonEmpty && category.length<=128 && detail.length<=512 && unappliedInputs>=0,
+    "Invalid window render-failure receipt")
+object WindowRenderFailure:
+  def from(generation: Long,error: Throwable,unappliedInputs: Long=0L,cancelledComposition: Boolean=false,recoveryFailed: Boolean=false): WindowRenderFailure =
+    def preview(text: String,limit: Int): String =
+      val part=text.take(limit)
+      if text.length>limit && part.lastOption.exists(Character.isHighSurrogate) then part.dropRight(1) else part
+    WindowRenderFailure(generation,preview(error.getClass.getName,128),
+      preview(Option(error.getMessage).getOrElse("No detail supplied"),512),unappliedInputs,cancelledComposition,recoveryFailed)
+final case class WindowRenderStatus(current: Option[WindowRenderFailure],recent: Vector[WindowRenderFailure]):
+  require(recent.size<=8 && current.forall(recent.lastOption.contains),"Invalid window render status")
+object WindowRenderStatus:
+  val empty: WindowRenderStatus=WindowRenderStatus(None,Vector.empty)
+
 sealed trait Window:
   /** Runs transactionally before dismissal. Refusal or failure keeps the window. */
   def onClose(run: Action): Window
@@ -48,6 +65,10 @@ sealed trait Window:
     * A confirmed asynchronous close can remove its key from the window source.
     */
   def onCloseRequest(run: UiTxn ?=> CloseDecision): Window
+  /** Optional application controls shown beside built-in retry/guarded close.
+    * Keep this view independent of data which might fail layout/painting.
+    */
+  def renderFailureContent(content: View): Window
 
 /** Window builders run once per key mount, with independent window scopes.
   * Source removal disposes that window, not the application/document owner.
@@ -115,7 +136,8 @@ object Windows:
 object Window:
   private[sirin] final case class Description(title: Signal[String], menu: MenuBar,
       content: View, close: Option[UiTxn => CloseDecision] = None,
-      prepareDismiss: Option[UiTxn => (UiTxn => Unit)] = None) extends Window with View:
+      prepareDismiss: Option[UiTxn => (UiTxn => Unit)] = None,recoveryContent: View=View.empty) extends Window with View:
+    def renderFailureContent(content: View): Window=copy(recoveryContent=content)
     def onClose(run: Action): Window = onCloseRequest { run; CloseDecision.Allow }
     def onCloseRequest(run: UiTxn ?=> CloseDecision): Window = copy(close = Some(txn => run(using txn)))
 

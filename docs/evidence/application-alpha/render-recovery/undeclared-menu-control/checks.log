@@ -1,0 +1,44 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 17 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/text-ui/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 8 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 7 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.host.WindowCaptureSuite started
+==> X sirin.host.WindowCaptureSuite.recovery menu dependencies are settled before committed capture and Retry restores normal content 0.015s sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase
+    at sirin.engine.KernelError$.<clinit>(HeadlessRuntime.scala:22)
+    at sirin.engine.HeadlessRuntime.$anonfun$11(HeadlessRuntime.scala:773)
+    at scala.collection.mutable.LinkedHashMap.getOrElseUpdate(LinkedHashMap.scala:143)
+    at sirin.engine.HeadlessRuntime.attach$1(HeadlessRuntime.scala:775)
+    at sirin.engine.HeadlessRuntime.settle$$anonfun$2(HeadlessRuntime.scala:781)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.engine.HeadlessRuntime.settle(HeadlessRuntime.scala:781)
+    at sirin.engine.HeadlessRuntime.publishCandidate(HeadlessRuntime.scala:843)
+    at sirin.engine.HeadlessRuntime.publish(HeadlessRuntime.scala:835)
+    at sirin.engine.HeadlessRuntime.transact(HeadlessRuntime.scala:710)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$edit(HeadlessRuntime.scala:260)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed$$anonfun$1(HeadlessRuntime.scala:417)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$construct(HeadlessRuntime.scala:275)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed(HeadlessRuntime.scala:420)
+    at sirin.host.WindowCaptureSuite.$init$$$anonfun$1(WindowCaptureSuite.scala:13)
+sirin.host.WindowCaptureSuite: finished 0.157s
+Test run sirin.host.WindowCaptureSuite finished: 1 failed, 0 ignored, 7 total 0.166s
+[error] Failed: Total 7, Failed 1, Errors 0, Passed 6
+[error] Failed tests:
+[error] 	sirin.host.WindowCaptureSuite
+[error] (hostJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 11 s, completed Oct 30, 2026, 2:08:43 a.m.

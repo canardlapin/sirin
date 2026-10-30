@@ -232,3 +232,43 @@ failed render is retained and a separate negative regression asserts the explici
 refusal; general complex-diagnostic rendering/recovery is still a toolkit gate,
 not a passing result inferred from green tests. All native client and remaining
 six-part acceptance conditions stay open.
+
+
+## Explicit per-window render recovery checkpoint
+
+A current nonfatal render refusal now publishes a transactional, bounded receipt
+for that live mounted window instance. The normal holder stays mounted while an
+explicit recovery holder renders through the same backend and unchanged budgets.
+Separate input controllers preserve normal field identity, committed drafts and
+undo across retry. Unapplied queued input and cancelled composition are visible;
+old activation keys cannot operate recovery buttons. Fresh known menu chords stay
+available after receipt publication. Built-in OS/quit close requires review of
+unapplied input and still respects application dirty-close guards. Existing direct
+application removal of a source retains its explicit ownership semantics.
+
+Public Window.renderFailureContent supplies data-independent application recovery
+controls. The workbench's dirty-close/quit panel keeps revision authority without
+painting failed document titles. Failure records are limited to eight immutable
+bounded values per window, reject stale/replacement instances and generations,
+and contain no old frame/owner/exception references. A failed custom recovery view
+escalates once to the minimal panel; repeated minimal failure parks submissions.
+Retry invalidates old generations, including when the payload is unchanged.
+
+Full local checks pass 394 JVM +394 Native +89 desktop and examples compilation,
+with frozen source stability. The original unsupported-emoji scene still refuses;
+a real same-budget recovery frame renders, another view remains usable, and explicit
+clear/retry restores the original field's undo. The missing menu-dependency failure
+has an exact old-source negative and declared-binding successor on the identical
+shared capture test. All failing compilation/phase fixtures, logs, source snapshots,
+trusted refused/recovery frames and image are in
+../evidence/application-alpha/render-recovery/. The base1570c9d has nine successful
+CI jobs (41008475161), separately from this successor's local results.
+
+This qualifies explicit recovery from current nonfatal render outcomes only.
+Capture/initialization failures, real transitions back from recovery, device
+lifecycle and native input/menus/IME/VoiceOver/drag/focus/modality remain unqualified.
+The existing launch candidates are unchanged/unlaunched and predate these fixes.
+Complex paragraphs/large surfaces, Native UI delivery, public diagram editor,
+bounded inspector, clean independent authoring, matched ScalaFX comparison, long
+GC/event gate and owner visual approval remain required. No numbered alpha
+requirement is complete.

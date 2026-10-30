@@ -1,0 +1,24 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "engineJVM/testOnly sirin.engine.WindowRenderRecoverySuite sirin.engine.WindowLifecycleSuite",
+    "workbenchJVM/testOnly sirin.specimen.DocumentWorkspaceSuite",
+    "desktopJVM/testOnly sirin.desktop.WindowRenderRecoverySuite sirin.desktop.EditorControllerSuite sirin.desktop.PersistentWorkbenchSuite"
+  ],
+  "returncode": 1,
+  "source_hashes": {
+    "core/src/main/scala/sirin/App.scala": "b282ca4944ba5c8ba787edffdf492c1785c95acfbddf186f354cd80f48610063",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "a3df26bceb7314a076dce674c5a0482f27af416ce9bc9b4a5f1896fad1d913d8",
+    "engine/src/test/scala/sirin/engine/WindowRenderRecoverySuite.scala": "ea717df4401b41866191fc37132a014b1e8066f180fb5ad2f68357a834301ae8",
+    "host/src/main/scala/sirin/host/FrameCoordinator.scala": "82a8acfc62141fab48555455301e27ff1abb0f5a4ef65eff43b31a0d6f0a37dc",
+    "desktop/src/main/scala/sirin/desktop/WindowRenderRecovery.scala": "d2ebabed33a9ee1820df6ffb77ac5e7d680521691f653291ed9719c5e8443c3b",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "1e15ef4311eeee1f9e32b19ce171ed5233c39991310a3cf9f95c65ea765dd4ed",
+    "desktop/src/test/scala/sirin/desktop/WindowRenderRecoverySuite.scala": "145b422f2a66ce0fb80cfc7fef669b78d7ce551024734bd375f6d40fe50d28d7",
+    "specimens/workbench/src/test/scala/sirin/specimen/DocumentWorkspaceSuite.scala": "a2074432a4a63f890df7fc55c26d07ae9e0ff8563341c082297825673b60f6c5"
+  },
+  "source_mismatches": [],
+  "end_utc": "2026-10-30T06:00:14.158447+00:00"
+}

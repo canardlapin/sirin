@@ -28,7 +28,7 @@ enum WorkspaceDecision:
   case CloseDocument(id: DocumentId)
   case Reload(id: DocumentId)
   case Quit
-final case class WorkspacePrompt(decision: WorkspaceDecision,authority: Vector[DocumentAuthority],message: String)
+final case class WorkspacePrompt(decision: WorkspaceDecision,authority: Vector[DocumentAuthority],message: String,changedSinceReview: Boolean=false)
 private[specimen] enum WorkspaceFileRequest:
   case Open(id: DocumentId,epoch: Long)
   case Create(data: DocumentData,epoch: Long)
@@ -219,7 +219,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
       case _ => decision.authority.flatMap(token => currentAuthority(token.id))
     if current!=decision.authority then
       val names=current.flatMap(token => documents.get(token.id)).map(document => DocumentData.preview(document.editor.title.get,80)).mkString(", ")
-      prompt.set(Some(decision.copy(authority=current,message=s"Drafts changed while this decision was open: $names. Review the edits, then confirm again.")))
+      prompt.set(Some(decision.copy(authority=current,message=s"Drafts changed while this decision was open: $names. Review the edits, then confirm again.",changedSinceReview=true)))
     else decision.decision match
       case WorkspaceDecision.CloseView(id) => views.remove(id);prompt.set(None)
       case WorkspaceDecision.CloseDocument(id) =>
@@ -274,6 +274,18 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
     case None => View.empty
     case Some(pending) => Column(Text(pending.message).color(ColorRole.Danger),Row(Button(confirmDecision).ref(confirmRef),Button(cancelDecision)).spacing(8.lp)).spacing(8.lp)
   }
+  private val safeDecisionPanel: View=Switch(prompt) {
+    case None => Text("Application menus remain available. Retry after resolving the document or diagnostic.")
+    case Some(pending) =>
+      val operation=pending.decision match
+        case WorkspaceDecision.CloseView(_) => "Close this view? Unsaved drafts will stay in the running workbench."
+        case WorkspaceDecision.CloseDocument(id) => s"Discard the draft and close document ${id.value.take(8)}?"
+        case WorkspaceDecision.Reload(id) => s"Reload document ${id.value.take(8)} from disk and replace its draft?"
+        case WorkspaceDecision.Quit => "Discard unsaved drafts and quit? Completed files and saves already running are retained."
+      Column(Text(if pending.changedSinceReview then "Drafts changed during this decision. Review the current draft before confirming again." else "Review the pending application decision."),
+        Text(operation),Row(Button(confirmDecision),Button(cancelDecision)).spacing(8.lp)).spacing(8.lp)
+  }
+  private val recoveryContent: View=safeDecisionPanel
   private val importPanel: View=Column(Text("Import documents").style(TextStyle.Heading),
     TextField.bind(importSource).maxLength(2048).label("Source directory").ref(importRef),Button(prepareImport),Switch(currentImport)(_.fold[View](Text("Choose a directory to review its document count."))(_.view))).spacing(8.lp)
   val mainContent: View=Scroll(Column(
@@ -301,7 +313,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
     Window(title,MenuBar(Menu("File",MenuItem(saveView,Chord.primary('s')),MenuItem(closeView,Chord.primary('w')))))(
       Switch(input) { view => if view.mode==WorkspaceViewMode.Import then Scroll(Column(importPanel,Button(openWorkbench)).spacing(12.lp).padding(16.lp)) else view.document.fold(mainContent)(document => Scroll(Column(Text(document.editor.title).style(TextStyle.Heading),document.editor.view,
         Text(document.diskNotice.map(_.getOrElse(""))).color(ColorRole.Danger),Button(openWorkbench)).spacing(10.lp).padding(16.lp))) }
-    ).onCloseRequest {requestWindowClose(input.get.id)}
+    ).onCloseRequest {requestWindowClose(input.get.id)}.renderFailureContent(Switch(input)(view => if view.document.isEmpty && view.mode==WorkspaceViewMode.Workbench then recoveryContent else Column(Button(openWorkbench),recoveryContent).spacing(10.lp)))
   }.menuBar(MenuBar(Menu("File",MenuItem(newDocument,Chord.primary('n')),MenuItem(openWorkbench,Chord.primary('0')),MenuItem(refresh,Chord.primary('r')),MenuItem(showImport,Chord.primary('i')),MenuItem(services.quit,Chord.primary('q')))))
     .onQuitRequest {requestApplicationQuit()}
 

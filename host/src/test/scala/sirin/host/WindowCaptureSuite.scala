@@ -63,3 +63,28 @@ class WindowCaptureSuite extends munit.FunSuite:
       intercept[IllegalArgumentException](WindowCapture.capture(MountedSnapshot.Leaf(View.empty),reader))
     } finally r.close()
   }
+
+  test("recovery menu dependencies are settled before committed capture and Retry restores normal content") {
+    val r=new HeadlessRuntime
+    try
+      val app=r.scope("application")
+      val existing=app.action[Unit]("existing","Existing")(_ => ())
+      val mounted=r.mountWindows(app,Windows.single("main")(_ => Window("Document",MenuBar(Menu("View",MenuItem(existing))))(Text("retained"))))
+      app.observe(mounted.snapshot)(_ => ())
+      def captured=r.withCommitted(reader => reader(mounted.snapshot) match
+        case Value.Ok(snapshot) => WindowCapture.capture(snapshot,reader).head
+        case Value.Failed(error) => throw error)
+      val before=captured
+      assertEquals(r.transact {mounted.reportWindowRenderFailure(before.instance,WindowRenderFailure(1,"resource_limit","detail"))},CommitResult.Committed(()))
+      val failed=captured
+      assertEquals(failed.instance,before.instance)
+      assertEquals(failed.menu.nodes.count {case MenuNode.Group("View",_) => true;case _ => false},1)
+      assertEquals(failed.menu.actions.size,3)
+      val retry=failed.menu.actions.values.collectFirst {
+        case MenuAction(MenuEntry.Item(command,_),activation,_) if command.id.name=="window.render.retry" => activation
+      }.get
+      assertEquals(r.transact {retry.run(summon[UiTxn])},CommitResult.Committed(()))
+      assertEquals(captured.renderStatus.current,None)
+      assertEquals(captured.content.tree,before.content.tree)
+    finally r.close()
+  }

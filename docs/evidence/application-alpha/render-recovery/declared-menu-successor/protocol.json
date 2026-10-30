@@ -1,0 +1,10 @@
+{
+  "mode": "declared-menu-successor",
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "hostJVM/testOnly sirin.host.WindowCaptureSuite"
+  ],
+  "source_sha256": "1c2f94fcb28dd0d5b23764a2f2ab49fa448ff13f2137447ccc12b2d5cebdd072",
+  "test_sha256": "ab78794d0aaaa25f8d55cef1b51c57e5a9f77d44d752885e6a08612dc2e3345d"
+}

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.WindowRenderRecoverySuite"
+  ],
+  "returncode": 1,
+  "source_hashes": {
+    "desktop/src/test/scala/sirin/desktop/WindowRenderRecoverySuite.scala": "1d19e6b66a96de49b7e01f1d9c25bce80d278af2e799b9028e69ba4dacf7ffe0",
+    "desktop/src/main/scala/sirin/desktop/WindowRenderRecovery.scala": "d2ebabed33a9ee1820df6ffb77ac5e7d680521691f653291ed9719c5e8443c3b"
+  },
+  "end_utc": "2026-10-30T06:02:28.168992+00:00"
+}

@@ -1,0 +1,61 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+recovery-stage=mounted
+recovery-stage=first-present
+recovery-stage=first-presented
+recovery-stage=request-failure
+recovery-stage=refusal-observed
+recovery-stage=failure-published
+routing-stage=mounted
+routing-stage=report-current
+routing-stage=reported-current
+Test run sirin.desktop.WindowRenderRecoverySuite started
+==> X sirin.desktop.WindowRenderRecoverySuite.the unchanged complex diagnostic refuses, then a real recovery frame retains draft, field identity and undo 1.057s sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase
+    at sirin.engine.KernelError$.<clinit>(HeadlessRuntime.scala:22)
+    at sirin.engine.HeadlessRuntime.$anonfun$11(HeadlessRuntime.scala:773)
+    at scala.collection.mutable.LinkedHashMap.getOrElseUpdate(LinkedHashMap.scala:143)
+    at sirin.engine.HeadlessRuntime.attach$1(HeadlessRuntime.scala:775)
+    at sirin.engine.HeadlessRuntime.settle$$anonfun$2(HeadlessRuntime.scala:781)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.engine.HeadlessRuntime.settle(HeadlessRuntime.scala:781)
+    at sirin.engine.HeadlessRuntime.publishCandidate(HeadlessRuntime.scala:843)
+    at sirin.engine.HeadlessRuntime.publish(HeadlessRuntime.scala:835)
+    at sirin.engine.HeadlessRuntime.transact(HeadlessRuntime.scala:710)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$edit(HeadlessRuntime.scala:260)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed$$anonfun$1(HeadlessRuntime.scala:417)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$construct(HeadlessRuntime.scala:275)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed(HeadlessRuntime.scala:420)
+    at sirin.desktop.WindowRenderRecoverySuite.$init$$$anonfun$1(WindowRenderRecoverySuite.scala:27)
+==> X sirin.desktop.WindowRenderRecoverySuite.current-generation recovery escalates once, parks repeated failure and rejects stale/replacement outcomes 0.007s sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase
+    at sirin.engine.KernelError$.<clinit>(HeadlessRuntime.scala:22)
+    at sirin.engine.HeadlessRuntime.$anonfun$11(HeadlessRuntime.scala:773)
+    at scala.collection.mutable.LinkedHashMap.getOrElseUpdate(LinkedHashMap.scala:143)
+    at sirin.engine.HeadlessRuntime.attach$1(HeadlessRuntime.scala:775)
+    at sirin.engine.HeadlessRuntime.settle$$anonfun$2(HeadlessRuntime.scala:781)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.engine.HeadlessRuntime.settle(HeadlessRuntime.scala:781)
+    at sirin.engine.HeadlessRuntime.publishCandidate(HeadlessRuntime.scala:843)
+    at sirin.engine.HeadlessRuntime.publish(HeadlessRuntime.scala:835)
+    at sirin.engine.HeadlessRuntime.transact(HeadlessRuntime.scala:710)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$edit(HeadlessRuntime.scala:260)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed$$anonfun$1(HeadlessRuntime.scala:417)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$construct(HeadlessRuntime.scala:275)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed(HeadlessRuntime.scala:420)
+    at sirin.desktop.WindowRenderRecoverySuite.$init$$$anonfun$1(WindowRenderRecoverySuite.scala:27)
+sirin.desktop.WindowRenderRecoverySuite: finished 1.084s
+Test run sirin.desktop.WindowRenderRecoverySuite finished: 2 failed, 0 ignored, 2 total 1.092s
+[error] Failed: Total 2, Failed 2, Errors 0, Passed 0
+[error] Failed tests:
+[error] 	sirin.desktop.WindowRenderRecoverySuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 6 s, completed Oct 30, 2026, 2:02:28 a.m.

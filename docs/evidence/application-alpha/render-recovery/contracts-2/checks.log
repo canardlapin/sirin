@@ -1,0 +1,34 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.WindowRenderRecoverySuite started
+sirin.engine.WindowRenderRecoverySuite: finished 0.205s
+Test run sirin.engine.WindowRenderRecoverySuite finished: 0 failed, 0 ignored, 4 total 0.214s
+Test run sirin.engine.WindowLifecycleSuite started
+sirin.engine.WindowLifecycleSuite: finished 0.325s
+Test run sirin.engine.WindowLifecycleSuite finished: 0 failed, 0 ignored, 15 total 0.331s
+[info] Passed: Total 19, Failed 0, Errors 0, Passed 19
+[success] Total time: 3 s, completed Oct 30, 2026, 1:57:32 a.m.
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 5 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/test-classes ...
+[error] -- [E171] Type Error: /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/src/test/scala/sirin/desktop/WindowRenderRecoverySuite.scala:85:61 
+[error] 85 |      focus(clearRef);inputs.current.handle(HostInput.KeyDown(Key.Enter))
+[error]    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error]    |missing argument for parameter mods of method apply in object KeyDown: (key: sirin.Key, mods: sirin.Mods, repeat: Boolean):
+[error]    |  sirin.host.HostInput.KeyDown
+[error] -- [E171] Type Error: /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/src/test/scala/sirin/desktop/WindowRenderRecoverySuite.scala:89:45 
+[error] 89 |      inputs.current.handle(HostInput.KeyDown(Key.Enter))
+[error]    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error]    |missing argument for parameter mods of method apply in object KeyDown: (key: sirin.Key, mods: sirin.Mods, repeat: Boolean):
+[error]    |  sirin.host.HostInput.KeyDown
+[error] two errors found
+[error] (desktopJVM / Test / compileIncremental) Compilation failed
+[error] Total time: 3 s, completed Oct 30, 2026, 1:57:35 a.m.

@@ -4,7 +4,7 @@ import sirin.*
 import sirin.engine.*
 
 /** UI-owner capture; only content.tree is sent to a render worker. */
-final case class CapturedWindow(instance: Long,title: Value[String],menu: CapturedMenus,content: CapturedTree)
+final case class CapturedWindow(instance: Long,title: Value[String],menu: CapturedMenus,content: CapturedTree,renderStatus: WindowRenderStatus=WindowRenderStatus.empty)
 
 final case class CapturedApplication(menu: CapturedMenus,windows: Vector[CapturedWindow])
 
@@ -32,14 +32,14 @@ object WindowCapture:
           require(!applicationMenuSeen,"duplicate application menu declaration")
           applicationMenuSeen=true
           applicationMenu=MenuCapture.capture(description.menu,reader,budget,depth+1,0)
-        case MountedSnapshot.Window(instance,title,menus,child) =>
+        case MountedSnapshot.Window(instance,title,menus,child,status) =>
           require(result.size<maxWindows,"native window budget exceeded")
           require(seen.add(instance),"duplicate mounted window instance")
           title match
             case Value.Ok(text) => budget.text(text.length)
             case _ => ()
           val capturedMenu=MenuCapture.capture(menus,reader,budget,depth+1,1024)
-          result+=CapturedWindow(instance,title,capturedMenu,CommittedTree.captureWithBudget(child,reader,budget,depth+1))
+          result+=CapturedWindow(instance,title,capturedMenu,CommittedTree.captureWithBudget(child,reader,budget,depth+1),status)
         case MountedSnapshot.Unavailable(error) => throw error
         case _ => throw new IllegalArgumentException("application root must be a Windows description")
     loop(snapshot,0);CapturedApplication(applicationMenu,result.toVector)

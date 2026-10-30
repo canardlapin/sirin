@@ -1,0 +1,46 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 17 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/text-ui/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 5 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 8 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 10 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.EditorControllerSuite started
+sirin.desktop.EditorControllerSuite: finished 1.877s
+Test run sirin.desktop.EditorControllerSuite finished: 0 failed, 0 ignored, 21 total 1.885s
+Test run sirin.desktop.ApplicationServicesSuite started
+sirin.desktop.ApplicationServicesSuite: finished 0.074s
+Test run sirin.desktop.ApplicationServicesSuite finished: 0 failed, 0 ignored, 4 total 0.074s
+Test run sirin.desktop.PersistentWorkbenchSuite started
+sirin.desktop.PersistentWorkbenchSuite: finished 0.733s
+Test run sirin.desktop.PersistentWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.733s
+[info] Passed: Total 26, Failed 0, Errors 0, Passed 26
+[success] Total time: 14 s, completed Oct 30, 2026, 1:48:19 a.m.
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.DocumentWorkspaceSuite started
+sirin.specimen.DocumentWorkspaceSuite: finished 0.965s
+Test run sirin.specimen.DocumentWorkspaceSuite finished: 0 failed, 0 ignored, 9 total 0.972s
+[info] Passed: Total 9, Failed 0, Errors 0, Passed 9
+[success] Total time: 2 s, completed Oct 30, 2026, 1:48:21 a.m.

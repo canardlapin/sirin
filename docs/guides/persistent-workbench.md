@@ -72,6 +72,22 @@ advisory writer locks and atomic replacement. Digest checks are not filesystem
 compare-and-swap against an uncooperative writer; power-loss durability remains
 unqualified.
 
+If a current render is refused, its window shows an explicit recovery view. The
+normal content stays mounted and document state/undo is retained. Queued input
+that could not be applied and cancelled composition are reported. Retry renders
+the current model explicitly; it does not repeat automatically. The built-in
+acknowledge-and-close command still runs the application's dirty-close guard.
+The workbench keeps its confirmation controls available without painting failed
+document titles. Other windows and application-owned saves remain independent.
+
+Window.renderFailureContent adds application recovery controls. Keep them simple
+and independent of failed data. A failed custom recovery view is suppressed once;
+a further minimal-panel failure parks rendering while native menus/OS close remain
+available. A View menu exposes retry and reviewed close. Developer receipts keep
+only the last eight bounded records per window. Explicit source removal remains
+application policy; native capture/initialization, cross-mode event delivery and
+all real client interactions still require their own qualification.
+
 ## Source and extension points
 
 - `desktop/.../PersistentWorkbench.scala`: application entry and service adapters.

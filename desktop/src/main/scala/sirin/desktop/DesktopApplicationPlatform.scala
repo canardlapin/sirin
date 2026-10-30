@@ -61,7 +61,7 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
   private var menuWindow=Option.empty[Long]
   private var failures=Vector.empty[Throwable]
   def reportedFailures: Vector[Throwable]=failures
-  private def report(error: Throwable): Unit =
+  private[desktop] def report(error: Throwable): Unit =
     failures=(failures :+ error).takeRight(64)
     error.printStackTrace()
   def peers: Vector[ApplicationPeer]=active.values.toVector
@@ -92,19 +92,21 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
     runtime.transact {action.run(summon[UiTxn])} match
       case CommitResult.Failed(error) => report(error)
       case _ => ()
-  def shortcut(instance: Long,input: HostInput,controller: EditorController): Boolean=input match
+  private def routedShortcut(instance: Long,input: HostInput,controller: EditorController): Option[Either[Activation,Int]]=input match
     case HostInput.KeyDown(key,mods,_) if !controller.consumesKey(input) =>
       val captured=captureApplication()
-      captured.windows.find(_.instance==instance).exists { window =>
+      captured.windows.find(_.instance==instance).flatMap { window =>
         val chord=Chord(key,mods)
-        val action=runtime.withCommitted(_ => KeyboardRouting.command(window.content,controller.interaction.state.focused,chord,window.menu,captured.menu))
-        action match
-          case Some(binding) => invoke(binding);true
-          case None => ApplicationMenus.standard(chord) match
-            case Some(kind) => native.standardMenu(kind);true
-            case _ => false
+        runtime.withCommitted(_ => KeyboardRouting.command(window.content,controller.interaction.state.focused,chord,window.menu,captured.menu))
+          .map(Left(_)).orElse(ApplicationMenus.standard(chord).map(Right(_)))
       }
-    case _ => false
+    case _ => None
+  def hasShortcut(instance: Long,input: HostInput,controller: EditorController): Boolean=routedShortcut(instance,input,controller).nonEmpty
+  def shortcut(instance: Long,input: HostInput,controller: EditorController): Boolean =
+    routedShortcut(instance,input,controller).exists {
+      case Left(action) => invoke(action);true
+      case Right(kind) => native.standardMenu(kind);true
+    }
   private def menuActions(): Unit =
     var count=0
     var more=true
@@ -186,6 +188,7 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
   private var captured=initial
   private var activeRenderer=java.lang.foreign.MemorySegment.NULL
   private val coordinator=new FrameCoordinator
+  private val renderRecovery=new WindowRenderRecovery(runtime,session.mounted,instance,coordinator)
   private var latest=Option.empty[FrameRequest]
   private var current=Option.empty[RenderedFrame]
   private var repaint=true
@@ -198,7 +201,8 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
   private var geometryAt=0L
   private var viewports=Map.empty[Long,RowViewport]
   private val pending=new OwnerInputQueue[NativeWindow.Event]
-  val controller=new EditorController(runtime,unicode.analyze(_),() => window.clipboard(),window.clipboard(_),() => window.textInput(2,0,0,1,1))
+  private val inputs=new WindowInputControllers(runtime,unicode.analyze(_),() => window.clipboard(),window.clipboard(_),() => window.textInput(2,0,0,1,1))
+  def controller: EditorController=inputs.current
   private var renderer=Option.empty[RenderService]
   var presentations=0L
   var staleInputs=0L
@@ -207,19 +211,22 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
     renderer=Some(new RenderService(root.resolve("graphics/src/test/resources/fonts"),root.resolve(s"desktop/target/application-frames/$instance"),
       () => {session.native.wake();()},Some(() => new RenderSession(root.resolve("graphics/src/test/resources/fonts"),root.resolve(s"desktop/target/application-frames/$instance"),
         batch=Some(BatchGpu.shared(activeRenderer)),editorSystemFonts=true))))
-    controller.update(captured.content)
+    inputs.update(captured)
     window.activate()
   catch case error: Throwable =>
     renderer.foreach(_.close());window.close();throw error
   def update(next: CapturedWindow): Unit =
-    if title(captured.title)!=title(next.title) then window.title(title(next.title))
-    captured=next;controller.update(next.content)
+    val wasUnavailable=renderRecovery.unavailable
+    renderRecovery.update(next.renderStatus)
+    if !renderRecovery.unavailable && (wasUnavailable || title(captured.title)!=title(next.title)) then window.title(title(next.title))
+    captured=next;inputs.update(next)
   private def refresh(): Boolean=session.capture().find(_.instance==instance) match
     case Some(next) => update(next);true
     case None => false
   private def updateInputClient(): Unit=current.foreach(frame => EditorAccessibility.updateTextInput(window,controller,frame,focusActive))
   def drain(): Unit =
     var count=0
+    var unapplied=0L
     var available=true
     while live && available && !pending.closing && count<64 do
       val fact=window.pollEvent()
@@ -235,15 +242,30 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
             val positional=input match
               case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move | _: HostInput.Wheel => true
               case _ => false
-            if positional && fact.timestamp()<geometryAt then staleInputs+=1
+            if !inputs.accepts(input,fact.timestamp(),geometryAt,renderRecovery.unavailable,session.hasShortcut(instance,input,controller)) then
+              unapplied=Math.addExact(unapplied,1L);staleInputs=Math.addExact(staleInputs,1L)
+            else if positional && fact.timestamp()<geometryAt then staleInputs+=1
             else
               pending.add(fact,Some(input))
           }
         count+=1
         if !refresh() then return
-    if !pending.drain(() => controller.ready,controller.needsGeometry)((fact,input) => {
+    if unapplied>0 then
+      captured.renderStatus.current.foreach { failure =>
+        runtime.transact {session.mounted.reportWindowUnappliedInputs(instance,failure.generation,unapplied)} match
+          case CommitResult.Failed(error) => throw error
+          case _ => ()
+      }
+      if !refresh() then return
+    if !pending.drain(() => controller.ready,input => inputs.needsGeometry(input,session.hasShortcut(instance,input,controller)))((fact,input) => {
       if !session.shortcut(instance,input,controller) then
-        controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()))
+        if inputs.accepts(input,fact.timestamp(),geometryAt,renderRecovery.unavailable) then
+          controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()))
+        else captured.renderStatus.current.foreach { failure =>
+          runtime.transact {session.mounted.reportWindowUnappliedInputs(instance,failure.generation,1)} match
+            case CommitResult.Failed(error) => throw error
+            case _ => ()
+        }
       val mounted=refresh()
       if mounted then updateInputClient()
       mounted
@@ -280,7 +302,7 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
     val state=controller.interaction.state
     val payload=FramePayload(controller.tree,geometry.logicalWidth(),geometry.logicalHeight(),geometry.width(),geometry.height(),state.scrolls,
       state.focused.filter(_ => focusActive),focusActive && state.keyboard,state.pressed.map(_.target),viewports,controller.snapshots)
-    coordinator.request(payload).foreach { request => latest=Some(request);renderer.get.submit(request) }
+    renderRecovery.request(payload).foreach { request => latest=Some(request);renderer.get.submit(request) }
     var changed=false
     renderer.get.poll().foreach {
       case (_,Right(frame)) if coordinator.accepts(frame.request) =>
@@ -299,6 +321,17 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
           case _ => frame.close();throw new IllegalStateException("settled layout omitted its frame")
       case (_,Right(frame)) => frame.close()
       case (generation,Left(_: GraphicsDeviceLost)) if coordinator.acceptsGeneration(generation) => recover()
+      case (generation,Left(scala.util.control.NonFatal(error))) =>
+        val composing=controller.snapshots.values.exists(_.preedit.nonEmpty)
+        renderRecovery.report(generation,error,captured.renderStatus,pending.size,composing) match
+          case RenderFailureDisposition.Ignored => ()
+          case disposition =>
+            session.report(error)
+            pending.abandon();controller.suspendPresentation()
+            current.foreach(_.close());current=None;shownFocus=None
+            geometryAt=NativeWindow.ticks();window.textInput(0,0,0,1,1)
+            refresh();repaint=true;changed=true
+            if disposition==RenderFailureDisposition.Unavailable then window.title("View rendering unavailable")
       case (generation,Left(error)) if coordinator.acceptsGeneration(generation) => throw error
       case _ => ()
     }

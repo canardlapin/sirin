@@ -1,0 +1,10 @@
+{
+  "base_commit": "1570c9d9cd2374a584f623cc35e44248a6e4b19d",
+  "files": {
+    "probes/paragraph/src/main/scala/sirin/graphics/text/NativeParagraph.scala": "20f5046b40e22b10b486f8ed4cd335373b6117e8d9e0deb06db7c9ff40ec5a83",
+    "graphics/src/main/scala/sirin/graphics/ParagraphLayout.scala": "4410e8d76ff0c26562b3803441945d34ed2b4953d493d50a3e39029b14b30b3d",
+    "graphics/src/main/scala/sirin/graphics/WrappedParagraphLayout.scala": "d4ee045e27688a9a1e323db5e8b920f9ba7a468bac5d03fe4c1a80d0b609fd5f",
+    "probes/render/src/main/scala/sirin/render/PixelProgram.scala": "ee73276c936ede6996f642d55403954af4b089bb7f689533108e1fa66b1153a7",
+    "desktop/src/main/scala/sirin/graphics/desktop/GpuTileCache.scala": "e6903a820008d4eb998944064d27d73c75b5df140ee88e3321254ce13dd5bb7d"
+  }
+}

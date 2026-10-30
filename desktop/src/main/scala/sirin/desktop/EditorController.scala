@@ -78,6 +78,14 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
   def layout: Option[LayoutResult]=shown.map(_._2)
   private def placed(id: Long): Option[Placed]=shown.flatMap(_._2.fields.find(_.node.id==NodeId(Vector("editor",id))))
   def invalidatePresentation(): Unit={shown=None;drag=None}
+  /** Rendering is unavailable: preserve draft/history, but retire provisional input. */
+  def suspendPresentation(): Boolean =
+    val composing=states.values.exists(_.snapshot.preedit.nonEmpty)
+    if composing then clearComposition()
+    states=states.view.mapValues(_.cancel).toMap
+    invalidatePresentation();interaction.state=interaction.state.copy(pressed=None)
+    runtime.transact {runtime.publishFocus(Set.empty,Set.empty,false)}
+    composing
   def ready: Boolean=shown.exists { (_,layout) => layout.editors==snapshots && layout.root.node==tree }
   def needsGeometry(input: HostInput): Boolean=if shown.isEmpty then true else input match
     case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move => true

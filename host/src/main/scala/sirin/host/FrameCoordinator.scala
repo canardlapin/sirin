@@ -19,4 +19,7 @@ final class FrameCoordinator:
       Some(next)
   def accepts(request: FrameRequest): Boolean = live && current.contains(request)
   def acceptsGeneration(generation: Long): Boolean = live && current.exists(_.generation==generation)
+  /** A failed generation can never become current again, even if Retry uses identical data. */
+  def invalidate(): Unit =
+    require(live,"host is retired");current=None
   def retire(): Unit = { live=false; current=None }
