@@ -12,16 +12,19 @@ final case class Box(x: Double, y: Double, width: Double, height: Double):
     Box(left,top,math.max(0,math.min(x+width,other.x+other.width)-left),math.max(0,math.min(y+height,other.y+other.height)-top))
 final case class ViewportRequest(instance: Long, viewport: sirin.engine.RowViewport)
 final case class Placed(node: Node, bounds: Box, clip: Box, children: Vector[Placed], text: Option[TextLayout])
-final case class FieldLabels(label: Option[ResolvedTextLayout],error: Option[ResolvedTextLayout],hint: Option[ResolvedTextLayout])
+final case class FieldLabels(label: Option[ResolvedTextLayout],error: Option[ResolvedTextLayout],hint: Option[ResolvedTextLayout]):
+  def labelHeight: Double=label.fold(0.0)(t => math.max(20,t.size.height.toDouble))
+  def errorHeight: Double=error.fold(0.0)(t => math.max(20,t.size.height.toDouble+2))
 final case class LayoutResult(root: Placed, viewports: Vector[ViewportRequest], text: PreparedText,
     scrollOffsets: Map[Long,Double],editors: Map[Long,EditSnapshot]=Map.empty,fieldLabels: Map[Long,FieldLabels]=Map.empty):
   def editorState(p: Placed): EditSnapshot = p.node.content match
     case Content.Editable(id,value,_,_,_,_) => editors.getOrElse(id,EditSnapshot(value,EditSelection.at(0)))
     case _ => throw new IllegalArgumentException("not a field")
   def editorArea(p: Placed): Box = p.node.content match
-    case Content.Editable(_,_,label,_,_,error) =>
-      val top=if label.nonEmpty then 20.0 else 0.0
-      Box(p.bounds.x+10,p.bounds.y+top+8,math.max(0,p.bounds.width-20),math.max(0,p.bounds.height-top-16-(if error.nonEmpty then 20 else 0)))
+    case Content.Editable(id,_,label,_,_,error) =>
+      val top=fieldLabels.get(id).fold(if label.nonEmpty then 20.0 else 0.0)(_.labelHeight)
+      val bottom=fieldLabels.get(id).fold(if error.nonEmpty then 20.0 else 0.0)(_.errorHeight)
+      Box(p.bounds.x+10,p.bounds.y+top+8,math.max(0,p.bounds.width-20),math.max(0,p.bounds.height-top-16-bottom))
     case _ => p.bounds
   def editorCaret(p: Placed): TextCaret =
     val layout=p.text.get;val head=editorState(p).visibleSelection.head
@@ -48,8 +51,10 @@ final case class LayoutResult(root: Placed, viewports: Vector[ViewportRequest], 
             canvas.text(p.text.get,Point((p.bounds.x+12).lp,(p.bounds.y+8).lp),theme.color(if enabled then ColorRole.OnSurface else ColorRole.Muted))
           case Content.Editable(id,_,label,_,_,error) =>
             def rect(b: Box)=Rect(Point(b.x.lp,b.y.lp),Size(b.width.lp,b.height.lp))
-            val area=editorArea(p);val top=if label.nonEmpty then 20 else 0
-            val border=Box(p.bounds.x,p.bounds.y+top,p.bounds.width,math.max(0,p.bounds.height-top-(if error.nonEmpty then 20 else 0)))
+            val area=editorArea(p)
+            val top=fieldLabels.get(id).fold(if label.nonEmpty then 20.0 else 0.0)(_.labelHeight)
+            val bottom=fieldLabels.get(id).fold(if error.nonEmpty then 20.0 else 0.0)(_.errorHeight)
+            val border=Box(p.bounds.x,p.bounds.y+top,p.bounds.width,math.max(0,p.bounds.height-top-bottom))
             canvas.fill(rect(border),if error.nonEmpty then Color.rgba(222,100,100) else Color.rgba(89,103,126))
             canvas.fill(rect(Box(border.x+1,border.y+1,math.max(0,border.width-2),math.max(0,border.height-2))),Color.rgba(28,34,46))
             fieldLabels.get(id).foreach { labels =>
@@ -145,7 +150,7 @@ object Layout:
           else resolveText(shown,TextStyle.Body,limit)
           fieldLabels(id)=FieldLabels(Option.when(label.nonEmpty)(resolveText(label,TextStyle.Caption,math.max(1,w))),
             error.map(t => resolveText(t,TextStyle.Caption,math.max(1,w))),Option.when(hint.nonEmpty)(resolveText(hint,TextStyle.Body,math.max(1,w-20))))
-          leaf(w,(if multiple then 140 else layout.size.height.toDouble+16)+(if label.nonEmpty then 20 else 0)+(if error.nonEmpty then 20 else 0),Some(layout))
+          leaf(w,(if multiple then 140 else layout.size.height.toDouble+16)+fieldLabels(id).labelHeight+fieldLabels(id).errorHeight,Some(layout))
         case Content.Label(text,style,_) =>
           val request=TextRequest(text,style,Lp(w))
           val layout=prepared.getOrElseUpdate(request,resolve(request))

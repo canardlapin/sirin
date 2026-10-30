@@ -29,3 +29,15 @@ private[desktop] final class OwnerInputQueue[A](capacity: Int=256):
             case None => closePending=false;close(context)
           if !alive then {clear();return false}
     true
+
+
+/** Native commands observe all earlier transported owner input, including layout waits. */
+private[desktop] final class OwnerCommandBoundary:
+  private var quitPending=false
+  def requestQuit(): Unit=quitPending=true
+  def drain(inputPending: Boolean)(quit: () => Unit,menus: () => Unit): Unit =
+    if !inputPending then
+      if quitPending then
+        quitPending=false
+        quit()
+      menus()

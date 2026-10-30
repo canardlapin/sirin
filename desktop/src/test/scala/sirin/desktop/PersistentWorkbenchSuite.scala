@@ -45,7 +45,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
       while !settled && attempts<10 do
         val tree=result.windows.head.content;controller.update(tree);serial+=1
         val state=controller.interaction.state
-        val request=FrameRequest(serial,FramePayload(tree.tree,1000,720,1000,720,state.scrolls,state.focused,state.keyboard,
+        val request=FrameRequest(serial,FramePayload(controller.tree,1000,720,1000,720,state.scrolls,state.focused,state.keyboard,
           viewports=viewports,editors=controller.snapshots))
         val output=renderer.render(request,() => false)
         try

@@ -7,11 +7,11 @@ import sirin.host.*
 import sirin.graphics.unicode.NativeUnicode
 
 class EditorControllerSuite extends munit.FunSuite:
-  private class Fixture(initial: String="alpha café שלום",commit: UiTxn => Unit = _ => (),multiple: Boolean=true,extraField: Boolean=false) extends AutoCloseable:
+  private class Fixture(initial: String="alpha café שלום",commit: UiTxn => Unit = _ => (),multiple: Boolean=true,extraField: Boolean=false,limit: Int=16384,width: Int=220,height: Int=120) extends AutoCloseable:
     val runtime=new HeadlessRuntime;val scope=runtime.scope("editor-test")
     val value=scope.cell(initial);var clipboard="";var clears=0
     val unicode=NativeUnicode.open(65536)
-    val base=TextField.bind(value).label("Document")
+    val base=TextField.bind(value).maxLength(limit).label("Document")
     val field=(if multiple then base.multiline else base).onCommit(commit(summon[UiTxn]))
     val mounted=runtime.mount(scope,if extraField then Column(field,TextField.bind(value).label("Second")) else field)
     runtime.observe(mounted.snapshot)(_ => ())
@@ -27,12 +27,15 @@ class EditorControllerSuite extends munit.FunSuite:
         case Value.Failed(error) => throw error
       }
       controller.update(tree)
-    def settle(): LayoutResult =
+    def settle(snapshot: Option[Path]=None): LayoutResult =
       update();generation+=1
       val state=controller.interaction.state
-      val request=FrameRequest(generation,FramePayload(tree.tree,220,120,220,120,Map.empty,state.focused,state.keyboard,editors=controller.snapshots))
+      val request=FrameRequest(generation,FramePayload(controller.tree,width,height,width,height,Map.empty,state.focused,state.keyboard,editors=controller.snapshots))
       val frame=renderer.render(request,() => false).asInstanceOf[RenderedFrame]
-      try {controller.install(generation,frame.layout);frame.layout} finally frame.close()
+      try
+        snapshot.foreach(path => FrameWorker.save(frame.pixels,path))
+        controller.install(generation,frame.layout);frame.layout
+      finally frame.close()
     settle()
     val id=tree.editors.keys.head
     controller.focusEditor(id);settle()
@@ -251,4 +254,105 @@ class EditorControllerSuite extends munit.FunSuite:
       focus(TargetKind.Scroll(2,500));assert(key(Key.PageDown));assert(key(Key.Home));assert(key(Key.ArrowUp))
       assert(!key(Key.PageDown,Mods.Primary));assert(!key(Key.Character('s'),Mods.Primary))
     finally runtime.close()
+  }
+
+  test("field limits count UTF-16, reject whole edits and render recoverable feedback") {
+    val f=new Fixture("old",multiple=false,limit=3,width=140,height=160)
+    try
+      f.key(Key.Character('a'),Mods.Primary);f.text("😀a")
+      assertEquals(f.current,"😀a")
+      val before=f.controller.state(f.id)
+      f.clipboard="😀😀";f.key(Key.Character('a'),Mods.Primary)
+      val selected=f.controller.state(f.id)
+      f.key(Key.Character('v'),Mods.Primary)
+      assertEquals(f.current,"😀a");assertEquals(f.controller.state(f.id),selected)
+      assert(!f.controller.ready)
+      val refused=f.settle(Some(Path.of("target/field-feedback/limit-refusal.png")));val problem=refused.fields.head.node.content.asInstanceOf[Content.Editable].error
+      assert(problem.exists(_.contains("3 UTF-16")))
+      val labels=refused.fieldLabels(f.id);val placed=refused.fields.head
+      assert(labels.error.get.size.height.toDouble>20,"fixture must wrap its field diagnostic")
+      val area=refused.editorArea(placed)
+      val borderBottom=area.y+area.height+8
+      assert(borderBottom+2+labels.error.get.size.height.toDouble<=placed.bounds.y+placed.bounds.height+0.001)
+      assert(labels.error.nonEmpty);assert(f.controller.ready)
+      assertEquals(f.controller.state(f.id).historySize,before.historySize)
+      f.text("ok");val recovered=f.settle()
+      assertEquals(f.current,"ok")
+      assertEquals(recovered.fields.head.node.content.asInstanceOf[Content.Editable].error,None)
+      assertEquals(f.controller.notice,None)
+    finally f.close()
+  }
+  test("IME preedit can exceed the input limit but a refused commit preserves the draft and clears marked text") {
+    val f=new Fixture("old",multiple=false,limit=3)
+    try
+      f.key(Key.Character('a'),Mods.Primary)
+      val before=f.controller.state(f.id)
+      f.controller.handle(HostInput.Composition("かなかな",4,0));f.update()
+      assertEquals(f.current,"old");assertEquals(f.controller.state(f.id).snapshot.display,"かなかな")
+      f.text("かなかな")
+      assertEquals(f.current,"old");assertEquals(f.controller.state(f.id).snapshot.preedit,None)
+      assertEquals(f.controller.state(f.id).historySize,before.historySize);assert(f.clears>0)
+      assert(f.settle().fieldLabels(f.id).error.nonEmpty)
+      f.text("語");assertEquals(f.current,"語")
+      f.key(Key.Character('z'),Mods.Primary);assertEquals(f.current,"old")
+    finally f.close()
+  }
+  test("current accessibility replacements share field limits and malformed text cannot escape the edit boundary") {
+    val f=new Fixture("old",multiple=false,limit=3)
+    try
+      val before=f.controller.state(f.id)
+      val oversized=new NativeWindow.AccessibilityAction(f.generation,f.id,3,0,0,"oversized")
+      assert(!f.controller.accessibility(oversized));assertEquals(f.current,"old")
+      assertEquals(f.controller.state(f.id),before);assert(f.settle().fieldLabels(f.id).error.nonEmpty)
+      val malformed=new NativeWindow.AccessibilityAction(f.generation,f.id,3,0,0,"\ud800")
+      assert(!f.controller.accessibility(malformed));assertEquals(f.current,"old")
+      f.settle()
+      val valid=new NativeWindow.AccessibilityAction(f.generation,f.id,3,0,0,"new")
+      assert(f.controller.accessibility(valid));f.update();assertEquals(f.current,"new")
+      assertEquals(f.settle().fields.head.node.content.asInstanceOf[Content.Editable].error,None)
+      assertEquals(NativeApplication.liveApplications(),0)
+    finally f.close()
+  }
+  test("tightening a limit rejects oversized undo while programmatic drafts remain recoverable") {
+    val f=new Fixture("",multiple=false,limit=5)
+    try
+      f.text("12345");f.key(Key.Character('a'),Mods.Primary);f.text("x")
+      f.runtime.transact {f.mounted.update(f.field.maxLength(3))};f.update()
+      val before=f.controller.state(f.id)
+      f.key(Key.Character('z'),Mods.Primary)
+      assertEquals(f.current,"x");assertEquals(f.controller.state(f.id),before)
+      f.runtime.transact {f.value.set("external draft")};f.update()
+      assertEquals(f.current,"external draft");assert(f.settle().fieldLabels(f.id).error.nonEmpty)
+      f.key(Key.Character('a'),Mods.Primary);f.text("ok")
+      assertEquals(f.current,"ok");assertEquals(f.settle().fieldLabels(f.id).error,None)
+    finally f.close()
+  }
+
+  test("bounded refusal feedback never introduces an unpaired surrogate into rendered text") {
+    val reason="a"*511+"😀"
+    val f=new Fixture("retained",txn => UiTxn.refuse(reason)(using txn))
+    try
+      f.key(Key.Enter,Mods.Primary)
+      val field=f.controller.tree.content.asInstanceOf[Content.Editable]
+      val message=field.error.get
+      TextEditing.validate(message)
+      assert(message.length<=512)
+      assertEquals(f.current,"retained")
+      assert(f.settle().fieldLabels(f.id).error.nonEmpty)
+    finally f.close()
+  }
+
+  test("complex unsupported-glyph feedback retains the explicit paragraph resource refusal") {
+    val reason="a"+"😀"*256
+    val f=new Fixture("retained",txn => UiTxn.refuse(reason)(using txn))
+    try
+      f.key(Key.Enter,Mods.Primary)
+      val message=f.controller.tree.content.asInstanceOf[Content.Editable].error.get
+      TextEditing.validate(message)
+      val refusal=intercept[IllegalArgumentException](f.settle())
+      assert(refusal.getMessage.contains("paragraph exceeds shaping work budget"))
+      assertEquals(f.current,"retained")
+      assertEquals(f.controller.notice,Some(message))
+      // This is a bounded negative receipt, not usable complex-diagnostic qualification.
+    finally f.close()
   }

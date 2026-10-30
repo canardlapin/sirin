@@ -1,0 +1,21 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "workbenchJVM/testOnly sirin.specimen.DocumentsSuite sirin.specimen.DocumentWorkspaceSuite",
+    "desktopJVM/testOnly sirin.desktop.EditorControllerSuite sirin.desktop.FileDocumentImporterSuite sirin.desktop.PersistentWorkbenchSuite"
+  ],
+  "returncode": 1,
+  "source_hashes": {
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "0f1c63e48a7207713d70d1b1f3a8e25d43004381f448d69de9bfe6782433e661",
+    "desktop/src/test/scala/sirin/desktop/EditorControllerSuite.scala": "21273b58a9854c80f70fc46e7fe57697638a6ebe074fc2bd1c96e27b2ff432c8",
+    "specimens/workbench/src/main/scala/sirin/specimen/Documents.scala": "be07417491c7526ef2f44b3a6bb5b75646008f1fc5fdb97773d35df6cb737e40",
+    "specimens/workbench/src/test/scala/sirin/specimen/DocumentsSuite.scala": "38180477a4c5d6b58dfb676366a0cffb96ae854295e9a5457cc6bf1a41f97fa1",
+    "specimens/workbench/src/main/scala/sirin/specimen/DocumentWorkspace.scala": "28dda3fcadf13a0f377cce7777cf6b9db49fa0cf48f2584d4f0016fe37fceab7",
+    "desktop/src/main/scala/sirin/desktop/FileDocumentImporter.scala": "5fbd27b56f227a90361fdad6f364e471030f9aca723f9f21536c2e74b061a722",
+    "docs/design/decisions/2026-10-30-field-input-feedback.md": "94c0eab62a59f166ada1b560d05ff894ea01d891bf44200fa5aad98d4d0dfefb"
+  },
+  "end_utc": "2026-10-30T05:17:14.100303+00:00"
+}

@@ -77,6 +77,7 @@ object View:
     def label(text: String): TextFieldView = copy(view=view.label(text))
     def placeholder(text: String): TextFieldView = copy(view=view.placeholder(text))
     def error(message: Signal[Option[String]]): TextFieldView = copy(view=view.error(message))
+    def maxLength(units: Int): TextFieldView = copy(view=view.maxLength(units))
     def multiline: TextFieldView = copy(view=view.multiline)
     def onCommit(run: Action): TextFieldView = copy(view=view.onCommit(run))
     def onBlur(run: Action): TextFieldView = copy(view=view.onBlur(run))
@@ -102,6 +103,8 @@ trait TextFieldView extends View:
 
   /** Shown when `Some`; also sets `invalid` and `describedBy` semantics. */
   def error(message: Signal[Option[String]]): TextFieldView
+  /** Maximum committed user-input length in UTF-16 units, from 0 to 16,384. */
+  def maxLength(units: Int): TextFieldView
   def multiline: TextFieldView
   def onCommit(run: Action): TextFieldView
   def onBlur(run: Action): TextFieldView
@@ -110,10 +113,12 @@ object TextField:
   /** Edits `value`. IME composition stays inside the field until committed. */
   private[sirin] final case class Description(value: Cell[String],fieldLabel: String="",hint: String="",
       problem: Signal[Option[String]]=Signal.const(None),multiple: Boolean=false,
-      commit: UiTxn => Unit = _ => (),blur: UiTxn => Unit = _ => ()) extends TextFieldView:
+      commit: UiTxn => Unit = _ => (),blur: UiTxn => Unit = _ => (),maxUnits: Int=16384) extends TextFieldView:
+    require(maxUnits>=0 && maxUnits<=16384,"Text field limit must be between 0 and 16,384 UTF-16 units")
     def label(text: String): TextFieldView = copy(fieldLabel=text)
     def placeholder(text: String): TextFieldView = copy(hint=text)
     def error(message: Signal[Option[String]]): TextFieldView = copy(problem=message)
+    def maxLength(units: Int): TextFieldView = copy(maxUnits=units)
     def multiline: TextFieldView = copy(multiple=true)
     def onCommit(run: Action): TextFieldView = copy(commit=txn => run(using txn))
     def onBlur(run: Action): TextFieldView = copy(blur=txn => run(using txn))

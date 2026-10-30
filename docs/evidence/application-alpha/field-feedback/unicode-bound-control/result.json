@@ -1,0 +1,15 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.EditorControllerSuite"
+  ],
+  "returncode": 1,
+  "source_hashes": {
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "6300f34633f8db16ff2f9ab76fe322c691e92fedb37029f82e3b02d3be132cca",
+    "desktop/src/test/scala/sirin/desktop/EditorControllerSuite.scala": "21273b58a9854c80f70fc46e7fe57697638a6ebe074fc2bd1c96e27b2ff432c8"
+  },
+  "end_utc": "2026-10-30T05:15:38.217057+00:00"
+}

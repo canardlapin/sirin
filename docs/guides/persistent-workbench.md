@@ -64,8 +64,10 @@ The last eight sessions are retained in bounded application state.
 Document contents persist across reopening. List order remains session-local.
 Current bounds include 512 stored documents, 32 cached editors, 128 documents per
 import, three additional document views and one import view. The file format
-accepts titles of at most 256 UTF-16 units and bodies of at most 16,384; invalid
-drafts are retained and cannot save. The store uses strict UTF-8, content stamps,
+accepts titles of at most 256 UTF-16 units and bodies of at most 16,384. Title,
+search and import fields declare their input limits. Oversized user edits refuse
+as a whole and show field feedback; provisional IME stays separate until commit.
+Programmatic invalid drafts are retained and cannot save. The store uses strict UTF-8, content stamps,
 advisory writer locks and atomic replacement. Digest checks are not filesystem
 compare-and-swap against an uncooperative writer; power-loss durability remains
 unqualified.
@@ -98,7 +100,8 @@ Offscreen images are development snapshots, not owner visual approval. Native
 menus, true IME candidate interaction, VoiceOver, pointer/drag, full keyboard/focus
 and popup/modality behavior still need native client evidence. The current GPU
 frame cap is 1,048,576 physical pixels; larger surfaces need bounded streaming,
-not an enlarged cap. Emoji coverage, per-field input/diagnostic limits, viewport
-adaptation and scrolling/focus polish remain toolkit work. The long GC/event
+not an enlarged cap. Emoji coverage, viewport adaptation and scrolling/focus polish remain toolkit
+work. Field input/refusal feedback has controller and offscreen checks; actual
+IME and assistive-client delivery still need native evidence. The long GC/event
 qualification, graphics editor, inspector, clean-checkout/independent review,
 matched ScalaFX comparison and every six-part alpha exit condition remain open.

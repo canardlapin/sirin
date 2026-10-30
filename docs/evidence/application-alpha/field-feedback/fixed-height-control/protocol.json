@@ -1,0 +1,12 @@
+{
+  "mode": "fixed-height-control",
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.EditorControllerSuite"
+  ],
+  "layout_sha256": "de858da09354e95e34da56bb47b9606c3ccd81c4699d40c3e90bd554893ba3b4",
+  "test_sha256": "cf6d4e7abc2794b85943099edfd5142280d9de5c2841adb6c6e3dbf128a94f04"
+}

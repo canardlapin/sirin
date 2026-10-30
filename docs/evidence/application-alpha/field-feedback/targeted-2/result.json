@@ -1,0 +1,17 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "hostJVM/testOnly sirin.host.TextFieldContractSuite sirin.host.LayoutClippingSuite",
+    "desktopJVM/testOnly sirin.desktop.EditorControllerSuite sirin.desktop.PersistentWorkbenchSuite"
+  ],
+  "returncode": 1,
+  "source_hashes": {
+    "host/src/main/scala/sirin/host/Layout.scala": "78edf0345f1bfc1e6b3646c9ec1329abee5d99d39097e424aba23a10055e8fea",
+    "desktop/src/test/scala/sirin/desktop/EditorControllerSuite.scala": "1c84fe818f103a02fc4cfa30bbc7274a8cebb4ed02dd2da0b4c18f28fe555826",
+    "docs/design/decisions/2026-10-30-field-input-feedback.md": "3cc964861d78800e5d822a0b894b4e62327ddd67351c654478b2d3dab0837bc7"
+  },
+  "end_utc": "2026-10-30T05:06:06.218911+00:00"
+}

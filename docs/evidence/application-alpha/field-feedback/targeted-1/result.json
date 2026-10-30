@@ -1,0 +1,24 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "hostJVM/testOnly sirin.host.TextFieldContractSuite",
+    "desktopJVM/testOnly sirin.desktop.EditorControllerSuite sirin.desktop.ApplicationServicesSuite sirin.desktop.OwnerInputQueueSuite sirin.desktop.PersistentWorkbenchSuite"
+  ],
+  "returncode": 0,
+  "source_hashes": {
+    "core/src/main/scala/sirin/View.scala": "65e03975a9f8aeed32d28303c87949670af1dbefae1d669690185da3b018cd3e",
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "6300f34633f8db16ff2f9ab76fe322c691e92fedb37029f82e3b02d3be132cca",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "be4ec2157488a0e9fefff90161047bd732fea277252becf7bc73d9bd7ee2994a",
+    "desktop/src/main/scala/sirin/desktop/EditorWorkbench.scala": "3d83aabb8d850f7b794c3663670c7869bfe46787b457673ec9adaefb5e84c0ed",
+    "desktop/src/test/scala/sirin/desktop/EditorControllerSuite.scala": "c0a99c340815a0c45cfc64c501b37a60aee1efa42cfac9789930b9329ac694ff",
+    "desktop/src/test/scala/sirin/desktop/PersistentWorkbenchSuite.scala": "66d7e0ce96861d69b6b50ba89e7cb6702f96e9891fa85a3c2f3bf0cb49c89a4a",
+    "host/src/test/scala/sirin/host/TextFieldContractSuite.scala": "eae542073b3c7c93ca213fc28473257a1f8963bdfaf024242e36fd5ef5aa9f72",
+    "specimens/workbench/src/main/scala/sirin/specimen/DocumentWorkspace.scala": "e175f4cb895858d0fa1830a54ef51079a2d009bf3fe5223d9cb0c9abede6ae69",
+    "specimens/workbench/src/main/scala/sirin/specimen/Documents.scala": "5b48c2f871615cb72f042f21ac5f245e3f50f72d4baf7243e7cc5e269c31b4ca",
+    "docs/design/decisions/2026-10-30-field-input-feedback.md": "c0306594236d18c802ac077b2034891a8be9b30b433be0d56cae8ea6044c5a50"
+  },
+  "end_utc": "2026-10-30T05:05:00.584505+00:00"
+}

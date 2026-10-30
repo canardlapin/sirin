@@ -1,0 +1,17 @@
+{
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.ApplicationServicesSuite sirin.desktop.OwnerInputQueueSuite sirin.desktop.PersistentWorkbenchSuite"
+  ],
+  "returncode": 0,
+  "source_hashes": {
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "2f8426ccebff8f8253e712290dc91b2cdf03966fed50536a93bc8dd8fde7ae39",
+    "desktop/src/main/scala/sirin/desktop/OwnerInputQueue.scala": "14bc35d1c03c731a5958859328703d9161829e7932524bcc398beedd2fb16ea1",
+    "desktop/src/test/scala/sirin/desktop/ApplicationServicesSuite.scala": "42cfc33a393c5018180d7cf57c596607af89b48b3fb0b4114182fbb87ba87ffa",
+    "docs/design/decisions/2026-10-30-workspace-services.md": "f89ffa265d14b4e7bb1f17c2d484bb1dc9cbb9049e33c9c5801a3a5a0f01039d"
+  },
+  "end_utc": "2026-10-30T05:00:17.094017+00:00"
+}

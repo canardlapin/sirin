@@ -1,0 +1,64 @@
+{
+  "start_utc": "2026-10-30T05:22:09.660274+00:00",
+  "base_commit": "ddde0d46a525095d16223366b2d7079cfa7862be",
+  "commands": [
+    [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM",
+      "testNative",
+      "examples/compile"
+    ],
+    [
+      "sbt",
+      "--java-home",
+      "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+      "-J-XX:ActiveProcessorCount=4",
+      "desktopJVM/test"
+    ]
+  ],
+  "source_hashes": {
+    "core/src/main/scala/sirin/View.scala": "65e03975a9f8aeed32d28303c87949670af1dbefae1d669690185da3b018cd3e",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "be4ec2157488a0e9fefff90161047bd732fea277252becf7bc73d9bd7ee2994a",
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "0f1c63e48a7207713d70d1b1f3a8e25d43004381f448d69de9bfe6782433e661",
+    "desktop/src/main/scala/sirin/desktop/EditorWorkbench.scala": "3d83aabb8d850f7b794c3663670c7869bfe46787b457673ec9adaefb5e84c0ed",
+    "desktop/src/main/scala/sirin/desktop/FileDocumentImporter.scala": "5fbd27b56f227a90361fdad6f364e471030f9aca723f9f21536c2e74b061a722",
+    "desktop/src/main/scala/sirin/desktop/OwnerInputQueue.scala": "14bc35d1c03c731a5958859328703d9161829e7932524bcc398beedd2fb16ea1",
+    "desktop/src/test/scala/sirin/desktop/ApplicationServicesSuite.scala": "42cfc33a393c5018180d7cf57c596607af89b48b3fb0b4114182fbb87ba87ffa",
+    "desktop/src/test/scala/sirin/desktop/EditorControllerSuite.scala": "987324e8f8ada488a70ebbf34243c4137ad76f98d456b165d09f1846557fd246",
+    "desktop/src/test/scala/sirin/desktop/PersistentWorkbenchSuite.scala": "66d7e0ce96861d69b6b50ba89e7cb6702f96e9891fa85a3c2f3bf0cb49c89a4a",
+    "docs/design/decisions/2026-10-30-field-input-feedback.md": "3a6b987799781c0eb4b74cb7072c832f8fe6ee5c10aa77738c8b25fc123f52bd",
+    "docs/design/decisions/2026-10-30-workspace-services.md": "f89ffa265d14b4e7bb1f17c2d484bb1dc9cbb9049e33c9c5801a3a5a0f01039d",
+    "docs/guides/persistent-workbench.md": "63aa3c0195d6a5d10769c2c4fd8f086154709ae82eefd02454902627c5c61e7a",
+    "host/src/main/scala/sirin/host/Layout.scala": "78edf0345f1bfc1e6b3646c9ec1329abee5d99d39097e424aba23a10055e8fea",
+    "host/src/test/scala/sirin/host/TextFieldContractSuite.scala": "eae542073b3c7c93ca213fc28473257a1f8963bdfaf024242e36fd5ef5aa9f72",
+    "specimens/workbench/src/main/scala/sirin/specimen/DocumentWorkspace.scala": "28dda3fcadf13a0f377cce7777cf6b9db49fa0cf48f2584d4f0016fe37fceab7",
+    "specimens/workbench/src/main/scala/sirin/specimen/Documents.scala": "be07417491c7526ef2f44b3a6bb5b75646008f1fc5fdb97773d35df6cb737e40",
+    "specimens/workbench/src/test/scala/sirin/specimen/DocumentsSuite.scala": "38180477a4c5d6b58dfb676366a0cffb96ae854295e9a5457cc6bf1a41f97fa1"
+  },
+  "results": [
+    {
+      "command": [
+        "sbt",
+        "-J-XX:ActiveProcessorCount=4",
+        "testJVM",
+        "testNative",
+        "examples/compile"
+      ],
+      "returncode": 0,
+      "end_utc": "2026-10-30T05:23:48.481386+00:00"
+    },
+    {
+      "command": [
+        "sbt",
+        "--java-home",
+        "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+        "-J-XX:ActiveProcessorCount=4",
+        "desktopJVM/test"
+      ],
+      "returncode": 0,
+      "end_utc": "2026-10-30T05:25:03.367791+00:00"
+    }
+  ],
+  "source_mismatches": []
+}

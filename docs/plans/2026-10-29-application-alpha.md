@@ -189,3 +189,46 @@ lifecycle acceptance remain toolkit/platform work. Diagram editor, inspector,
 clean-checkout/independent authoring, matched ScalaFX comparison, visual approval,
 long GC gate and the original Linux Native failure investigation remain open.
 No numbered deliverable is closed by this checkpoint.
+
+
+## Ordered input and usable field feedback checkpoint
+
+Application quit and native menus now wait behind previously transported input on
+all live peers, including geometry-held pointer/navigation followed by text.
+Accessibility actions likewise wait behind their peer's queue. Retiring a peer
+releases this boundary; existing rendering/wake progress is preserved. This does
+not claim timestamp order between native callback sources and unpumped SDL input.
+
+Public TextFieldView.maxLength adds committed-input limits without changing
+Cell validation or global budgets. Workbench title/search/import fields apply
+those limits. Typed/pasted/IME-committed/undo/AX edits refuse atomically with
+bounded per-field feedback, preserving draft/history. Provisional IME remains
+separate; refused commits clear marked text. Error projection drives the same
+layout/paint/accessibility description and readiness comparison. Wrapped caption/
+error space uses actual resolved height instead of a fixed one-line allowance.
+
+Full checks pass 386 JVM + 386 Native + 85 desktop cases and examples compilation,
+with frozen source stability. An exact old Layout control fails the strengthened
+wrapped-diagnostic fixture; the successor passes the identical test and its image
+shows both lines. The initial too-wide fixture failure is preserved. See
+../evidence/application-alpha/field-feedback/ for sources/logs/controls/images.
+The public workbench base ddde0d4 is on main with all nine CI jobs successful
+(41005749480). These are separate claims from this successor's local checks.
+
+The prior SirinWorkbench.app candidate stays byte-identical and has not launched;
+it predates these fixes. Current client qualification ultimately needs a successor
+package. Real IME/VoiceOver/keyboard/scroll/focus/dialog/drag/lifecycle, larger
+surfaces, glyph coverage, the Native UI provider, public diagram editor, bounded
+inspector, independent authoring/ScalaFX comparison, long GC and visual acceptance
+all remain required. No numbered alpha deliverable is complete.
+
+
+Final-review successor: Unicode-safe message previews now avoid introducing an
+unpaired surrogate at a length cutoff while retaining original save errors. Final
+full checks pass 387 JVM +387 Native +87 desktop cases and examples compilation;
+the earlier386/386/85 sources/logs remain preserved. An additional repeated-
+unsupported-emoji diagnostic hits the unchanged paragraph shaping budget. Its
+failed render is retained and a separate negative regression asserts the explicit
+refusal; general complex-diagnostic rendering/recovery is still a toolkit gate,
+not a passing result inferred from green tests. All native client and remaining
+six-part acceptance conditions stay open.

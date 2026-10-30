@@ -71,3 +71,16 @@ coverage is incomplete in the current font stack. Large-surface streaming,
 viewport adaptation, scrolling/focus polish, full glyph coverage and native client
 operation remain toolkit/graphics/alpha work; do not enlarge budgets or infer
 those claims from a 1000x720@1x headless render.
+
+
+Application-global quit and native menu facts must also wait behind input already
+queued on any live peer. Moving the guard after the peer drain alone is insufficient:
+a pointer/navigation fact can be waiting for presentation, holding later text.
+Keep the quit intent pending until every live owner queue is empty, then run the
+application guard and poll native menu actions against that committed state. A
+peer likewise postpones accessibility actions behind its own pending input. This
+orders already transported facts; it does not claim a cross-source timestamp
+ordering between Cocoa callbacks and SDL events that have not been pumped yet.
+Repeated quit requests coalesce while waiting, and retirement clears obsolete
+input. Existing rendering/wake progress continues so geometry can settle; no
+busy wait, input discard, callback thread or kernel policy is introduced.

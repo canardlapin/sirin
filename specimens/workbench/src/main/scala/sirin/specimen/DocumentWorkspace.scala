@@ -80,7 +80,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
     if typed!=settled || state.pending then "Searching… Previous results remain visible."
     else state.error.fold("Search ready")(e => s"Search failed: ${message(e)}")
   }
-  private def message(error: Throwable): String=Option(error.getMessage).getOrElse(error.getClass.getSimpleName).take(512)
+  private def message(error: Throwable): String=DocumentData.message(error)
   private def nextEpoch()(using UiTxn): Long =
     selectionEpoch.update(Math.addExact(_,1L));selectionEpoch.get
   private def authority(document: WorkspaceDocument)(using UiTxn): DocumentAuthority =
@@ -208,7 +208,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
       currentImport.get.filter(_.run.running.get>0).foreach(_.cancel.dispatch(()))
       CloseDecision.Allow
     else
-      val names=dirtyDocuments.map(d => s"${d.editor.title.get.take(80)} (${d.id.value.take(8)})").mkString(", ")
+      val names=dirtyDocuments.map(d => s"${DocumentData.preview(d.editor.title.get,80)} (${d.id.value.take(8)})").mkString(", ")
       showPrompt(WorkspaceDecision.Quit,authorities(),s"Discard ${dirtyDocuments.size} unsaved drafts and quit? $names. Completed files and saves already running are retained.")
       CloseDecision.KeepOpen
   val cancelDecision=scope.action[Unit]("workspace.keep","Keep editing") { _ => prompt.set(None);searchRef.focus() }
@@ -218,7 +218,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
       case WorkspaceDecision.Quit => authorities()
       case _ => decision.authority.flatMap(token => currentAuthority(token.id))
     if current!=decision.authority then
-      val names=current.flatMap(token => documents.get(token.id)).map(_.editor.title.get.take(80)).mkString(", ")
+      val names=current.flatMap(token => documents.get(token.id)).map(document => DocumentData.preview(document.editor.title.get,80)).mkString(", ")
       prompt.set(Some(decision.copy(authority=current,message=s"Drafts changed while this decision was open: $names. Review the edits, then confirm again.")))
     else decision.decision match
       case WorkspaceDecision.CloseView(id) => views.remove(id);prompt.set(None)
@@ -257,7 +257,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
   }
   val refusalNotice: Signal[String]=Vector(open,newDocument,saveSelected,saveCopy,reloadSelected,closeDocument,confirmDecision,openView,prepareImport,showImport)
     .foldLeft(Signal.const(Vector.empty[String])) { (messages,command) =>
-      messages.zip(command.lastRefusal).map((prior,reason) => prior++reason.map(text => s"${command.label}: ${text.take(512)}"))
+      messages.zip(command.lastRefusal).map((prior,reason) => prior++reason.map(text => s"${command.label}: ${DocumentData.preview(text)}"))
     }.map(_.mkString("\n"))
   private val row=Component[DocumentSummary]("document-summary") { (_,input) =>
     val id=input.map(_.id)
@@ -275,12 +275,12 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
     case Some(pending) => Column(Text(pending.message).color(ColorRole.Danger),Row(Button(confirmDecision).ref(confirmRef),Button(cancelDecision)).spacing(8.lp)).spacing(8.lp)
   }
   private val importPanel: View=Column(Text("Import documents").style(TextStyle.Heading),
-    TextField.bind(importSource).label("Source directory").ref(importRef),Button(prepareImport),Switch(currentImport)(_.fold[View](Text("Choose a directory to review its document count."))(_.view))).spacing(8.lp)
+    TextField.bind(importSource).maxLength(2048).label("Source directory").ref(importRef),Button(prepareImport),Switch(currentImport)(_.fold[View](Text("Choose a directory to review its document count."))(_.view))).spacing(8.lp)
   val mainContent: View=Scroll(Column(
     Text("Sirin document workbench").style(TextStyle.Title),
     Row(Button(newDocument),Button(refresh),Button(openView)).spacing(8.lp),
     Row(Button(moveEditor),Button(showImport)).spacing(8.lp),
-    TextField.bind(query).label("Search titles and content").ref(searchRef),Text(searchStatus).color(ColorRole.Muted),
+    TextField.bind(query).maxLength(256).label("Search titles and content").ref(searchRef),Text(searchStatus).color(ColorRole.Muted),
     Row(Scroll(VirtualRows(rows,64.lp,2)(input => row(input))).width(200.lp).height(260.lp),
       Row(DockOutlet(leftOutlet).grow,DockOutlet(rightOutlet).grow).grow).spacing(12.lp),
     ForEach(documents)(input => Switch(input) { document =>
@@ -325,7 +325,7 @@ final class WorkspaceImport(val owner: Scope,val plan: DocumentImportPlan,import
   } { (_,result) =>
     result.outcome match
       case Outcome.Succeeded(receipt) => report.set(Some(receipt))
-      case Outcome.Failed(failure) => error.set(Some(Option(failure.getMessage).getOrElse(failure.getClass.getSimpleName).take(512)))
+      case Outcome.Failed(failure) => error.set(Some(DocumentData.message(failure)))
       case Outcome.Cancelled => ()
     channel.close()
   }

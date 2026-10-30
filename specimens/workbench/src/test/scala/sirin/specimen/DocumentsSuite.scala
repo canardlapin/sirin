@@ -103,3 +103,18 @@ class DocumentsSuite extends munit.FunSuite:
     intercept[IllegalArgumentException](DocumentId("/absolute"))
     intercept[IllegalArgumentException](DocumentStamp("missing"))
   }
+
+  test("bounded save failure previews preserve Unicode and retain the original error") {
+    val r=new HeadlessRuntime
+    try
+      val session=new Session;val model=new DocumentEditor(r.scope("document"),session)
+      val message="a"+"😀"*256
+      val failure=new IllegalStateException(message);session.failure=Some(failure)
+      ok(r.transact {model.body.set("keep draft")});ok(r.transact {model.save.dispatch(())})
+      finish(r,r.scheduler.tickets.head.id)
+      assertEquals(value(r,model.notice),Some(message.take(511)))
+      assertEquals(value(r,model.saveError),Some(failure))
+      assertEquals(failure.getMessage,message);assertEquals(value(r,model.body),"keep draft")
+      assertEquals(DocumentData.preview(message,0),"")
+    finally r.close()
+  }

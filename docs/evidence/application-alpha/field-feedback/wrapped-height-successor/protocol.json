@@ -1,0 +1,12 @@
+{
+  "mode": "wrapped-height-successor",
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/testOnly sirin.desktop.EditorControllerSuite"
+  ],
+  "layout_sha256": "78edf0345f1bfc1e6b3646c9ec1329abee5d99d39097e424aba23a10055e8fea",
+  "test_sha256": "cf6d4e7abc2794b85943099edfd5142280d9de5c2841adb6c6e3dbf128a94f04"
+}

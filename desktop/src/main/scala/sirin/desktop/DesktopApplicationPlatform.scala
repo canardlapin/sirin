@@ -52,6 +52,7 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
   private var workers=Option.empty[WorkerPool]
   private var subscription=Option.empty[Subscription]
   private var quitting=false
+  private val commands=new OwnerCommandBoundary
   private var focusRequests=Vector.empty[Long]
   private var event=new NativeApplication.Event(false,false,false,0)
   var applicationWakes=0L
@@ -119,6 +120,20 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
       case CommitResult.Failed(error) => report(error)
       case _ => ()
     result
+  private def requestQuit(): Unit =
+    quitting=true
+    val ids=capture().map(_.instance)
+    runtime.transact {
+      val decision=mounted.requestApplicationQuit()
+      if decision==CloseDecision.Allow && !application.isDisposed then ids.foreach(mounted.requestWindowClose)
+      decision
+    } match
+      case CommitResult.Committed(decision) => if decision==CloseDecision.KeepOpen || capture().nonEmpty then quitting=false
+      case CommitResult.Refused(_) => quitting=false
+      case CommitResult.Failed(error) =>
+        quitting=false
+        report(error)
+      case _ => throw new IllegalStateException("nested native quit")
   def run(): Unit =
     workers=Some(runtime.scheduler.startWorkers(2))
     subscription=Some(runtime.onActivity(() => {native.wake();()}))
@@ -126,26 +141,13 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
     while running && !application.isDisposed do
       turns+=1
       if event.wake() then applicationWakes+=1
-      if event.quit() then
-        quitting=true
-        val ids=capture().map(_.instance)
-        runtime.transact {
-          val decision=mounted.requestApplicationQuit()
-          if decision==CloseDecision.Allow && !application.isDisposed then ids.foreach(mounted.requestWindowClose)
-          decision
-        } match
-          case CommitResult.Committed(decision) => if decision==CloseDecision.KeepOpen || capture().nonEmpty then quitting=false
-          case CommitResult.Refused(_) => quitting=false
-          case CommitResult.Failed(error) =>
-            quitting=false
-            report(error)
-          case _ => throw new IllegalStateException("nested native quit")
+      if event.quit() then commands.requestQuit()
       val turn=runtime.drive(32)
       require(turn.failures.isEmpty,s"application driver failures: ${turn.failures}")
       sync()
       active.values.toVector.foreach(_.drain())
       sync()
-      menuActions()
+      commands.drain(active.values.exists(_.hasPendingInput))(() => requestQuit(),() => menuActions())
       sync()
       val attached=runtime.attachments.map(_.reference).toSet
       focusRequests=(focusRequests++runtime.takeFocusRequests()).distinct.filter(attached)
@@ -251,6 +253,7 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
       if mounted then updateInputClient()
       mounted
     }) then return
+    if pending.nonEmpty then return
     var actions=0
     var more=true
     while more && actions<128 do
@@ -275,7 +278,7 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
     val geometry=window.geometry()
     if geometry.width()<=0 || geometry.height()<=0 then return false
     val state=controller.interaction.state
-    val payload=FramePayload(captured.content.tree,geometry.logicalWidth(),geometry.logicalHeight(),geometry.width(),geometry.height(),state.scrolls,
+    val payload=FramePayload(controller.tree,geometry.logicalWidth(),geometry.logicalHeight(),geometry.width(),geometry.height(),state.scrolls,
       state.focused.filter(_ => focusActive),focusActive && state.keyboard,state.pressed.map(_.target),viewports,controller.snapshots)
     coordinator.request(payload).foreach { request => latest=Some(request);renderer.get.submit(request) }
     var changed=false
@@ -309,6 +312,7 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
         repaint=false;feedback=0;losses=0;presentations+=1;changed=true
     }
     changed || (pending.nonEmpty && controller.ready)
+  def hasPendingInput: Boolean=pending.nonEmpty
   def needsRetry: Boolean=live && repaint && current.nonEmpty
   def retire(): Unit = if live then
     live=false;window.hide();pending.clear();coordinator.retire()

@@ -9,6 +9,12 @@ final case class DocumentStamp(value: String):
 final case class DocumentData(id: DocumentId,title: String,body: String):
   require(DocumentData.problem(title,body).isEmpty,"Invalid document data")
 object DocumentData:
+  /** Bounded UI preview; never split a surrogate pair introduced by truncation. */
+  def preview(value: String,limit: Int=512): String =
+    require(limit>=0,"Negative preview limit")
+    val clipped=value.take(limit)
+    if value.length>limit && clipped.lastOption.exists(Character.isHighSurrogate) then clipped.dropRight(1) else clipped
+  def message(error: Throwable): String=preview(Option(error.getMessage).getOrElse(error.getClass.getSimpleName))
   def unicode(value: String): Boolean =
     var i=0
     while i<value.length do
@@ -76,12 +82,12 @@ final class DocumentEditor(scope: Scope,session: DocumentSession):
     else if changed then "Unsaved changes" else "Saved"
   }
   val notice=saveError.zip(save.lastRefusal).map { (error,refusal) =>
-    error.map(e => Option(e.getMessage).getOrElse(e.getClass.getSimpleName)).orElse(refusal)
+    error.map(DocumentData.message).orElse(refusal.map(DocumentData.preview(_)))
   }
   def requestClose()(using UiTxn): CloseDecision =
     if dirty.get then {closePrompt.set(true);CloseDecision.KeepOpen} else CloseDecision.Allow
   val view: View=Column(
-    TextField.bind(title).label("Title").error(titleError),
+    TextField.bind(title).maxLength(256).label("Title").error(titleError),
     TextField.bind(body).label("Document").error(bodyError).multiline.height(260.lp),
     Row(Button(save).primary,Text(status)).spacing(12.lp),
     Text(notice.map(_.getOrElse(""))).color(ColorRole.Danger)

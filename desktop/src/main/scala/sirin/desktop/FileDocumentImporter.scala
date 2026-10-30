@@ -23,7 +23,7 @@ final class FileDocumentImporter(target: DocumentRepository) extends DocumentImp
         }.attempt.flatMap { result => Work {
           val outcome=result match
             case Right(session) => DocumentImportOutcome.Created(DocumentSummary(session.initial.data.id,session.initial.data.title,session.initial.stamp))
-            case Left(error) => DocumentImportOutcome.Failed(Option(error.getMessage).getOrElse(error.getClass.getSimpleName).take(512))
+            case Left(error) => DocumentImportOutcome.Failed(DocumentData.message(error))
           if output.emit(DocumentImportRecord(entry.id,outcome))!=Offered.Accepted then throw new InterruptedException("Import delivery cancelled or closed")
           val created=if result.isRight then 1 else 0
           DocumentImportReport(report.total,report.processed+1,report.created+created,report.failed+1-created)

@@ -1,0 +1,28 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.EditorControllerSuite started
+==> X sirin.desktop.EditorControllerSuite.field limits count UTF-16, reject whole edits and render recoverable feedback 0.079s munit.FailException: desktop/src/test/scala/sirin/desktop/EditorControllerSuite.scala:276 assertion failed
+275:      val borderBottom=area.y+area.height+8
+276:      assert(borderBottom+2+labels.error.get.size.height.toDouble<=placed.bounds.y+placed.bounds.height+0.001)
+277:      assert(labels.error.nonEmpty);assert(f.controller.ready)
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.EditorControllerSuite.$init$$$anonfun$16(EditorControllerSuite.scala:276)
+sirin.desktop.EditorControllerSuite: finished 1.65s
+Test run sirin.desktop.EditorControllerSuite finished: 1 failed, 0 ignored, 19 total 1.658s
+[error] Failed: Total 19, Failed 1, Errors 0, Passed 18
+[error] Failed tests:
+[error] 	sirin.desktop.EditorControllerSuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 6 s, completed Oct 30, 2026, 1:07:22 a.m.

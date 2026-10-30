@@ -14,12 +14,39 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
   private var shown=Option.empty[(Long,LayoutResult)]
   private var drag=Option.empty[(Long,TextPosition)]
   private var refusals=0
+  private var editNotices=Map.empty[Long,String]
   def rejected: Int=refusals
   def snapshots: Map[Long,EditSnapshot]=states.view.mapValues(_.snapshot).toMap
   def state(id: Long): TextEditing=states(id)
   def focusedId: Option[Long]=interaction.focused.flatMap(_.kind match
     case TargetKind.Editor(id) => Some(id)
     case _ => None)
+  private def limitNotice(id: Long): String=s"Use at most ${captured.editors(id).description.maxUnits} UTF-16 units in this field."
+  /** The same projected field errors drive paint, readiness and accessibility. */
+  def tree: Node =
+    def project(node: Node): Node =
+      val content=node.content match
+        case Content.Editable(id,text,label,hint,multiple,error) =>
+          val problem=editNotices.get(id).orElse(error).orElse(Option.when(text.length>captured.editors(id).description.maxUnits)(limitNotice(id)))
+          Content.Editable(id,text,label,hint,multiple,problem)
+        case Content.Reference(ref,child) => Content.Reference(ref,project(child))
+        case Content.Styled(hint,child) => Content.Styled(hint,project(child))
+        case Content.Stack(horizontal,gap,alignment,children) => Content.Stack(horizontal,gap,alignment,children.map(project))
+        case Content.Scroll(id,child) => Content.Scroll(id,project(child))
+        case Content.Virtual(id,first,total,height,children) => Content.Virtual(id,first,total,height,children.map(project))
+        case content => content
+      node.copy(content=content)
+    project(captured.tree)
+  private def rejectEdit(id: Option[Long],message: String): Boolean =
+    val clipped=message.take(512)
+    val safe=if message.length>512 && clipped.lastOption.exists(Character.isHighSurrogate) then clipped.dropRight(1) else clipped
+    refusals+=1;notice=Some(safe)
+    id.filter(states.contains).foreach { field =>
+      editNotices=editNotices.updated(field,safe)
+      if states(field).snapshot.preedit.nonEmpty then
+        clearComposition();states=states.updated(field,states(field).cancel)
+    }
+    false
   private def boundaries(s: String): Vector[Int] =
     val a=analyze(s);a.graphemeBoundaries.map(o => a.source.utf16Offset(o).get.value)
   private def words(s: String,backward: Boolean): Vector[Int] =
@@ -27,6 +54,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
     (Vector(0,s.length)++a.words.filter(_.kind!=WordKind.NonWord).map(w => a.source.utf16Offset(if backward then w.range.start else w.range.end).get.value)).distinct.sorted.filter(boundaries(s).contains)
   def update(value: CapturedTree): Unit =
     captured=value
+    editNotices=editNotices.filter((id,_) => value.editors.contains(id))
     if states.exists((id,state) => !value.editors.contains(id) && state.snapshot.preedit.nonEmpty) then clearComposition()
     states=states.filter((id,_) => value.editors.contains(id))
     def values(node: Node): Vector[(Long,String)] = node.content match
@@ -39,6 +67,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
       case _ => Vector.empty
     values(value.tree).foreach { (id,text) =>
       val old=states.getOrElse(id,TextEditing(text));val next=old.sync(text,boundaries)
+      if old.snapshot.text!=text then editNotices-=id
       if old.snapshot.preedit.nonEmpty && next.snapshot.preedit.isEmpty then clearComposition()
       states=states.updated(id,next)
     }
@@ -49,7 +78,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
   def layout: Option[LayoutResult]=shown.map(_._2)
   private def placed(id: Long): Option[Placed]=shown.flatMap(_._2.fields.find(_.node.id==NodeId(Vector("editor",id))))
   def invalidatePresentation(): Unit={shown=None;drag=None}
-  def ready: Boolean=shown.exists { (_,layout) => layout.editors==snapshots && layout.root.node==captured.tree }
+  def ready: Boolean=shown.exists { (_,layout) => layout.editors==snapshots && layout.root.node==tree }
   def needsGeometry(input: HostInput): Boolean=if shown.isEmpty then true else input match
     case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move => true
     case HostInput.KeyDown(key,_,_) => Set(Key.ArrowLeft,Key.ArrowRight,Key.ArrowUp,Key.ArrowDown,Key.Home,Key.End,Key.Tab).contains(key)
@@ -82,16 +111,24 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
   private def applyState(id: Long,next: TextEditing,commit: Boolean=false): Boolean =
     captured.editors.get(id).exists { binding =>
       val old=states(id)
-      val result=runtime.transact {
-        val field=binding.description
-        UiTxn.require(field.value.get==old.snapshot.text,"text changed before edit publication")
-        if next.snapshot.text!=old.snapshot.text then field.value.set(next.snapshot.text)
-        if commit then field.commit(summon[UiTxn])
-        publishFocus()
-      }
-      result match
-        case CommitResult.Committed(_) => states=states.updated(id,next);true
-        case _ => refusals+=1;false
+      val changed=next.snapshot.text!=old.snapshot.text
+      if changed && next.snapshot.text.length>binding.description.maxUnits then rejectEdit(Some(id),limitNotice(id))
+      else
+        val result=runtime.transact {
+          val field=binding.description
+          UiTxn.require(field.value.get==old.snapshot.text,"text changed before edit publication")
+          if changed then field.value.set(next.snapshot.text)
+          if commit then field.commit(summon[UiTxn])
+          publishFocus()
+        }
+        result match
+          case CommitResult.Committed(_) =>
+            states=states.updated(id,next)
+            if changed || commit then {editNotices-=id;notice=None}
+            true
+          case CommitResult.Refused(reason) => rejectEdit(Some(id),reason)
+          case CommitResult.Failed(_) => rejectEdit(Some(id),"This edit could not be committed. Your previous text is retained.")
+          case _ => rejectEdit(Some(id),"This edit could not be committed. Your previous text is retained.")
     }
   def invoke(id: Long): Unit = captured.bindings.get(id).filter(_.enabled).foreach { action =>
     runtime.transact {action.run(summon[UiTxn]);publishFocus()};()
@@ -117,9 +154,9 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
     try dispatch(input,mods,clicks)
     catch
       case _: IllegalArgumentException =>
-        refusals+=1;notice=Some("This edit exceeds the field limit or has an invalid text range.")
+        rejectEdit(focusedId,"This edit exceeds the field limit or has an invalid text range.");()
       case _: NativeWindow.ClipboardUnavailable =>
-        refusals+=1;notice=Some("Clipboard is unavailable.")
+        rejectEdit(focusedId,"Clipboard is unavailable.");()
   def focusReference(reference: Long): Boolean =
     val before=interaction.state;val previous=focusedId
     if !interaction.focusRef(reference) then false
@@ -211,7 +248,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
       val id=action.target()
       if action.kind()==4 && captured.bindings.get(id).exists(_.enabled) then {invoke(id);true}
       else if !states.contains(id) then false
-      else action.kind() match
+      else try action.kind() match
         case 1 =>
           val before=interaction.state
           interaction.state=interaction.state.copy(focused=Some(NodeId(Vector("editor",id))),keyboard=true,pressed=None)
@@ -226,3 +263,4 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
           else applyState(id,states(id).select(EditSelection(TextPosition(start,TextAffinity.Downstream),TextPosition(end.toInt,TextAffinity.Upstream)),boundaries))
         case 3 => applyState(id,states(id).selectAll.replace(clean(id,action.value()),boundaries))
         case _ => false
+      catch case _: IllegalArgumentException => rejectEdit(Some(id),"This edit exceeds the field limit or has an invalid text range.")

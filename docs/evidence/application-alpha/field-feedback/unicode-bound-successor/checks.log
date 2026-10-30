@@ -1,0 +1,41 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21625 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 4 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.DocumentsSuite started
+sirin.specimen.DocumentsSuite: finished 0.214s
+Test run sirin.specimen.DocumentsSuite finished: 0 failed, 0 ignored, 7 total 0.226s
+Test run sirin.specimen.DocumentWorkspaceSuite started
+sirin.specimen.DocumentWorkspaceSuite: finished 1.018s
+Test run sirin.specimen.DocumentWorkspaceSuite finished: 0 failed, 0 ignored, 9 total 1.028s
+[info] Passed: Total 16, Failed 0, Errors 0, Passed 16
+[success] Total time: 6 s, completed Oct 30, 2026, 1:17:08 a.m.
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.EditorControllerSuite started
+==> X sirin.desktop.EditorControllerSuite.bounded refusal feedback never introduces an unpaired surrogate into rendered text 0.136s java.lang.IllegalArgumentException: requirement failed: paragraph exceeds shaping work budget
+    at munit.FunSuite.assert(FunSuite.scala:12)
+    at sirin.desktop.EditorControllerSuite.$init$$$anonfun$20(EditorControllerSuite.scala:341)
+sirin.desktop.EditorControllerSuite: finished 1.784s
+Test run sirin.desktop.EditorControllerSuite finished: 1 failed, 0 ignored, 20 total 1.793s
+Test run sirin.desktop.FileDocumentImporterSuite started
+sirin.desktop.FileDocumentImporterSuite: finished 0.193s
+Test run sirin.desktop.FileDocumentImporterSuite finished: 0 failed, 0 ignored, 4 total 0.193s
+Test run sirin.desktop.PersistentWorkbenchSuite started
+sirin.desktop.PersistentWorkbenchSuite: finished 0.649s
+Test run sirin.desktop.PersistentWorkbenchSuite finished: 0 failed, 0 ignored, 1 total 0.65s
+[error] Failed: Total 25, Failed 1, Errors 0, Passed 24
+[error] Failed tests:
+[error] 	sirin.desktop.EditorControllerSuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 5 s, completed Oct 30, 2026, 1:17:14 a.m.
