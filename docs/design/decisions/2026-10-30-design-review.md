@@ -130,12 +130,17 @@ borrow. Per-element loops are allowed only off hot paths, with a comment.
 
 ### D8. The presentation round trip is a known latency cost
 
-**Evidence.** The development host renders offscreen, reads back, and uploads a
-texture for presentation. The README admits this. Measured action latencies
-(p95 about 24 ms) include the round trip.
+**Evidence, corrected during the 2026-10-30 stocktake.** The reference/fallback
+path renders offscreen, reads back, and uploads a texture. The shared-device
+batch path already retains GPU frames and presents them without a full-frame
+CPU readback (`FrameWorker.scala`, `renderGpu`; `RenderedFrame.present`;
+`DesktopApplicationPlatform.scala`, shared `BatchGpu` setup). Explicit captures
+still request readback. This is not zero-copy. The earlier review's approximately
+24 ms p95 statement did not identify the path; this source-only stocktake does
+not reassign that timing or establish a new latency result.
 
 **Directive.** Latency receipts state whether they include readback/upload.
-Direct presentation is tracked under the graphics programme
+Presentation and its qualification remain tracked under the graphics programme
 (`bd-01M5ZV4M9SB36V3BJACKJXDJFW`). Responsiveness claims compared against
 ScalaFX use the direct path or state the handicap.
 

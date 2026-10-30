@@ -33,8 +33,10 @@ Sirin is a pre-release prototype. Nothing is published.
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
   pointer drag, dialogs and modality have not been checked with real clients.
   The packaged apps have not yet been launched for acceptance.
-- **Rendering.** The desktop host renders offscreen, reads back and uploads a
-  texture. That works, but costs latency. Direct presentation is not done.
+- **Rendering.** The shared-device batch path presents retained GPU frames
+  without a full-frame CPU readback. Explicit captures read pixels back; the
+  reference/fallback path still reads back and uploads. This is not a zero-copy
+  claim. Latency comparisons must identify the path they measured.
 - **Text coverage.** Complex paragraphs (for example, repeated unsupported
   emoji) can exceed the shaping budget. Such a frame is refused and the window
   shows a recovery view instead.
@@ -61,3 +63,17 @@ The goal is an empty ledger.
 | `Button` | Host interaction routing | `Element.apply`; public pointer and key handling | Alpha4, then seam migration |
 | `TextField` | `host/TextEditing.scala`, `desktop/EditorController.scala` | Public text-input and composition events, and text-range semantics for accessibility | Seam migration |
 | Menus and shortcuts | Application platform | None; these are application services, not controls | n/a |
+
+## Worktree stocktake, 2026-10-30
+
+Implementation is paused for review. All completed feature branch tips are in
+main. The two older dirty source trees match their named archive commits; both
+archives are now pushed. New unfinished element/diagram source is also committed
+and pushed as `archive/public-elements-wip-20261030` (`0413beb`), with a known
+compile failure and incomplete validation. It is deliberately outside main.
+
+Nine worktrees remain, each accounted for in the
+[worktree stocktake](plans/2026-10-30-worktree-stocktake.md). This is not a claim
+that cleanup is complete: four old clean trees retain generated artifacts; one
+holds a frozen launch candidate; another supplies the running Sirin app. The
+original checkout also owns the authoritative Mote store. D11 remains open.
