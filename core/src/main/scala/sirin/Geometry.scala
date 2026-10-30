@@ -20,6 +20,7 @@ final case class Rect(origin: Point, size: Size):
     p.x.compare(origin.x) >= 0 && p.y.compare(origin.y) >= 0 && p.x.compare(origin.x + size.width) < 0 &&
       p.y.compare(origin.y + size.height) < 0
   def center: Point = Point(origin.x + size.width / 2, origin.y + size.height / 2)
+  def translate(by: Point): Rect = copy(origin = origin + by)
 
 /** Box constraints (VISION §8): constraints go down, sizes come up. */
 final case class Constraints(minWidth: Lp, maxWidth: Lp, minHeight: Lp, maxHeight: Lp):

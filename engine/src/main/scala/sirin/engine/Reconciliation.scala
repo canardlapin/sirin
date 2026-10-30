@@ -502,15 +502,15 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
         scope.id,
         initial.pointerDelivery,
         initial.pointerCapacity,
-        (event, txn) =>
+        (event, services, txn) =>
           runtime.capability(txn) {
             runtime.ensureScope(scope)
-            description.handlers.getOrElse(description.element).pointer(event)(using txn)
+            description.handlers.getOrElse(description.element).pointer(event, services)(using txn)
           },
-        (event, txn) =>
+        (event, services, txn) =>
           runtime.capability(txn) {
             runtime.ensureScope(scope)
-            description.handlers.getOrElse(description.element).key(event)(using txn)
+            description.handlers.getOrElse(description.element).key(event, services)(using txn)
           },
         (part, action, txn) =>
           runtime.capability(txn) {
@@ -521,6 +521,11 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
           runtime.capability(txn) {
             runtime.ensureScope(scope)
             description.handlers.getOrElse(description.element).wheel(event)(using txn)
+          },
+        (event, services, txn) =>
+          runtime.capability(txn) {
+            runtime.ensureScope(scope)
+            description.handlers.getOrElse(description.element).text(event, services)(using txn)
           }
       )
     def accepts(view: View): Boolean =

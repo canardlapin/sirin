@@ -38,12 +38,13 @@ object PartId:
   def apply(n: Long): PartId = n
   extension (p: PartId) def value: Long = p
 
-/** A semantic child that a custom element exposes. */
+/** A semantic child that a custom element exposes. `text` carries text-range geometry for text roles. */
 final case class SemanticNode(
     part: PartId,
     semantics: Semantics,
     bounds: Rect,
-    actions: Set[SemanticAction]
+    actions: Set[SemanticAction],
+    text: Option[TextSemantics] = None
 )
 
 final case class SemanticTarget(ref: NodeRef, part: Option[PartId] = None)

@@ -8,16 +8,71 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
   private var bindings = Map.empty[Long, ElementBinding]
   private var capture = Option.empty[(Long, PointerButton)]
   private var shown = Map.empty[Long, Placed]
+  private var prepared = sirin.drawing.PreparedText.empty
   def captured: Option[Long] = capture.map(_._1)
   def update(value: Map[Long, ElementBinding]): Unit =
     bindings = value
     capture = capture.filter((id, _) => bindings.contains(id))
   def install(layout: LayoutResult): Unit =
     shown = layout.elements.map(p => p.node.content.asInstanceOf[Content.Custom].frame.instance -> p).toMap
+    prepared = layout.text
     capture = capture.filter((id, _) => shown.contains(id) && bindings.contains(id))
   def invalidate(): Unit = {
     capture = None
     shown = Map.empty
+    prepared = sirin.drawing.PreparedText.empty
+  }
+
+  /** Lookup in the presented frame's prepared inventory; never shapes. */
+  def presented(request: TextRequest): Option[TextLayout] = prepared.get(request)
+
+  /** The focused, presented element that currently declares text input, with its accepted placement. */
+  def textTarget: Option[(Long, Placed, TextInputRequest)] = interaction
+    .focused
+    .flatMap(
+      _.kind match
+        case TargetKind.Custom(frame) =>
+          shown
+            .get(frame.instance)
+            .filter(_ => bindings.contains(frame.instance))
+            .flatMap { p =>
+              val current = p.node.content.asInstanceOf[Content.Custom].frame
+              current
+                .textInput(Size(p.bounds.width.lp, p.bounds.height.lp), prepared)
+                .map(r => (frame.instance, p, r))
+            }
+        case _ =>
+          None
+    )
+  private def exposedText(instance: Long): Option[TextSemantics] = shown
+    .get(instance)
+    .filter(_ => bindings.contains(instance))
+    .flatMap { p =>
+      val frame = p.node.content.asInstanceOf[Content.Custom].frame
+      frame.semantics(Size(p.bounds.width.lp, p.bounds.height.lp)).iterator.flatMap(_.text).nextOption()
+    }
+  def exposesText(instance: Long): Boolean = exposedText(instance).nonEmpty
+
+  /** Delivers to a presented, still-bound element regardless of focus, e.g. to retire its composition. */
+  def deliver(instance: Long, event: TextInputEvent, services: TextEditingServices): Option[CommitResult[Boolean]] =
+    Option
+      .when(shown.contains(instance) && bindings.contains(instance))(())
+      .map(_ => runtime.transact(bindings(instance).text(event, services)))
+
+  /** Assistive requests target exposed text directly; ranges outside it refuse before dispatch. */
+  def textTo(instance: Long, event: TextInputEvent, services: TextEditingServices): Option[CommitResult[Boolean]] =
+    exposedText(instance)
+      .filter { text =>
+        event match
+          case TextInputEvent.Select(range) =>
+            range.end <= text.request.content.length
+          case _ =>
+            true
+      }
+      .flatMap(_ => deliver(instance, event, services))
+  def text(event: TextInputEvent, services: TextEditingServices): Option[CommitResult[Boolean]] = textTarget.map {
+    (id, _, _) =>
+      runtime.transact(bindings(id).text(event, services))
   }
   private def target(x: Double, y: Double): Option[Long] = interaction
     .presented
@@ -43,7 +98,12 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
         capture.nonEmpty
       case _ =>
         false
-  def pointer(input: HostInput, mods: Mods = Mods.none, clicks: Int = 1): Option[CommitResult[PointerResponse]] =
+  def pointer(
+      input: HostInput,
+      mods: Mods = Mods.none,
+      clicks: Int = 1,
+      services: TextEditingServices = TextEditingServices.unavailable
+  ): Option[CommitResult[PointerResponse]] =
     val event =
       input match
         case HostInput.Down(x, y, primary) =>
@@ -90,7 +150,10 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
             else
               frame.hit(Size(p.bounds.width.lp, p.bounds.height.lp), local)
           val result = runtime.transact {
-            bindings(id).pointer(PointerEvent(phase, local, button, mods, clicks, hit, capture.exists(_._1 == id)))
+            bindings(id).pointer(
+              PointerEvent(phase, local, button, mods, clicks, hit, capture.exists(_._1 == id)),
+              services
+            )
           }
           result match
             case CommitResult.Committed(PointerResponse.Capture) =>
@@ -123,12 +186,15 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
           )
         }
       }
-  def key(event: KeyEvent): Option[CommitResult[Boolean]] = interaction
+  def key(
+      event: KeyEvent,
+      services: TextEditingServices = TextEditingServices.unavailable
+  ): Option[CommitResult[Boolean]] = interaction
     .focused
     .flatMap(
       _.kind match
         case TargetKind.Custom(frame) if shown.contains(frame.instance) =>
-          bindings.get(frame.instance).map(binding => runtime.transact(binding.key(event)))
+          bindings.get(frame.instance).map(binding => runtime.transact(binding.key(event, services)))
         case _ =>
           None
     )

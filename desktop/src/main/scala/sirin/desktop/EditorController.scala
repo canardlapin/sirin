@@ -21,6 +21,7 @@ final class EditorController(
   private var drag = Option.empty[(Long, TextPosition)]
   private var refusals = 0
   private var editNotices = Map.empty[Long, String]
+  private var composingElement = Option.empty[Long]
   def rejected: Int = refusals
   def snapshots: Map[Long, EditSnapshot] = states.view.mapValues(_.snapshot).toMap
   def state(id: Long): TextEditing = states(id)
@@ -101,6 +102,72 @@ final class EditorController(
               .value
           )
     ).distinct.sorted.filter(boundaries(s).contains)
+  /** Effects wait for the handler's transaction; a refused or failed edit leaves the clipboard and IME alone. */
+  private final class StagedServices extends TextEditingServices:
+    var copied = Option.empty[String]
+    var cancelled = false
+    def graphemeBoundaries(text: String): Vector[Int] = boundaries(text)
+    def words(text: String): Vector[TextRange] =
+      val a = analyze(text)
+      a.words
+        .filter(_.kind != WordKind.NonWord)
+        .map(w => TextRange(a.source.utf16Offset(w.range.start).get.value, a.source.utf16Offset(w.range.end).get.value))
+    def clipboard: Option[String] =
+      try
+        Some(readClipboard())
+      catch
+        case _: NativeWindow.ClipboardUnavailable =>
+          None
+    def copy(text: String): Unit = copied = Some(text)
+    def cancelComposition(): Unit = cancelled = true
+    def presented(request: TextRequest): Option[TextLayout] = elements.presented(request)
+  private def staged[A](run: TextEditingServices => Option[CommitResult[A]]): Option[CommitResult[A]] =
+    val services = new StagedServices
+    val result = run(services)
+    result match
+      case Some(CommitResult.Committed(_)) =>
+        services.copied.foreach(writeClipboard)
+        if services.cancelled then
+          composingElement = None
+          clearComposition()
+      case _ =>
+        ()
+    result
+  def textElement: Option[(Long, Placed, TextInputRequest)] = elements.textTarget
+  def composingText: Boolean =
+    composingElement.nonEmpty || focusedId.exists(id => states(id).snapshot.preedit.nonEmpty)
+
+  /** Delivers one text-channel event; a refused composition update also retires the platform's marked text. */
+  private def elementText(event: TextInputEvent): Unit =
+    val result = staged(services => elements.text(event, services))
+    result.foreach { r =>
+      val target = textElement.map(_._1)
+      r match
+        case CommitResult.Committed(_) =>
+          event match
+            case TextInputEvent.Compose(text, _) if text.nonEmpty =>
+              composingElement = target
+            case TextInputEvent.Compose(_, _) | TextInputEvent.Commit(_) | TextInputEvent.CancelComposition =>
+              composingElement = None
+            case _ =>
+              ()
+        case _ =>
+          refusals += 1
+          notice = Some("This text input could not be committed.")
+          if composingElement.nonEmpty then
+            retireElementComposition()
+    }
+
+  /** Ends any element composition, telling the element when it is still mounted and presented. */
+  private def retireElementComposition(): Unit =
+    composingElement.foreach { id =>
+      composingElement = None
+      clearComposition()
+      elements.deliver(id, TextInputEvent.CancelComposition, TextEditingServices.unavailable)
+    }
+  private def retireMovedComposition(): Unit =
+    if composingElement.exists(id => !textElement.exists(_._1 == id)) then
+      retireElementComposition()
   def update(value: CapturedTree): Unit =
     require(
       value.elements.values.forall(_.capacity == Capacity(256)),
@@ -108,6 +175,9 @@ final class EditorController(
     )
     captured = value
     elements.update(value.elements)
+    if composingElement.exists(id => !value.elements.contains(id)) then
+      composingElement = None
+      clearComposition()
     editNotices = editNotices.filter((id, _) => value.editors.contains(id))
     if states.exists((id, state) => !value.editors.contains(id) && state.snapshot.preedit.nonEmpty) then
       clearComposition()
@@ -157,7 +227,8 @@ final class EditorController(
 
   /** Rendering is unavailable: preserve draft/history, but retire provisional input. */
   def suspendPresentation(): Boolean =
-    val composing = states.values.exists(_.snapshot.preedit.nonEmpty)
+    val composing = states.values.exists(_.snapshot.preedit.nonEmpty) || composingElement.nonEmpty
+    retireElementComposition()
     if composing then
       clearComposition()
     states = states.view.mapValues(_.cancel).toMap
@@ -177,7 +248,8 @@ final class EditorController(
       input match
         case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move | _: HostInput.Wheel =>
           true
-        case _: HostInput.KeyDown if interaction.focused.exists(_.kind.isInstanceOf[TargetKind.Custom]) =>
+        case _: HostInput.KeyDown | _: HostInput.TextInput | _: HostInput.Composition
+            if interaction.focused.exists(_.kind.isInstanceOf[TargetKind.Custom]) =>
           true
         case HostInput.KeyDown(key, _, _) =>
           Set(Key.ArrowLeft, Key.ArrowRight, Key.ArrowUp, Key.ArrowDown, Key.Home, Key.End, Key.Tab).contains(key)
@@ -188,10 +260,17 @@ final class EditorController(
   def consumesKey(input: HostInput): Boolean =
     input match
       case HostInput.KeyDown(key, mods, _) =>
-        if focusedId.exists(id => states(id).snapshot.preedit.nonEmpty) then
+        if composingText then
           true
         else if key == Key.Tab && (mods.isEmpty || mods == Mods.Shift) then
           true
+        else if textElement.nonEmpty then
+          // Printable keys belong to the text channel; the element's key handler has already declined them.
+          key match
+            case Key.Character(_) | Key.Space =>
+              !mods.has(Mods.Primary) && !mods.has(Mods.Control)
+            case _ =>
+              false
         else if focusedId.nonEmpty then
           key match
             case Key.Character(c) if mods.has(Mods.Primary) =>
@@ -307,8 +386,14 @@ final class EditorController(
   /** Called once before menu/local shortcuts; false preserves their normal fallback. */
   def handleElementKey(input: HostInput): Boolean =
     input match
+      case HostInput.KeyDown(key, _, _) if composingElement.nonEmpty =>
+        // The platform IME owns keys beneath a composition; Escape abandons it.
+        if key == Key.Escape then
+          clearComposition()
+          elementText(TextInputEvent.CancelComposition)
+        true
       case HostInput.KeyDown(key, mods, repeat) if ready && key != Key.Tab =>
-        elements.key(KeyEvent(key, mods, repeat)) match
+        staged(services => elements.key(KeyEvent(key, mods, repeat), services)) match
           case Some(CommitResult.Committed(handled)) =>
             handled
           case Some(_) =>
@@ -323,6 +408,9 @@ final class EditorController(
     try
       if !routeElementKey || !handleElementKey(input) then
         dispatch(input, mods, clicks)
+      if input == HostInput.Deactivate then
+        retireElementComposition()
+      retireMovedComposition()
     catch
       case _: IllegalArgumentException =>
         rejectEdit(focusedId, "This edit exceeds the field limit or has an invalid text range.")
@@ -368,8 +456,7 @@ final class EditorController(
       if oldFocus != focusedId && !blur(oldFocus) then
         interaction.rollbackPublication(before)
       else
-        elements
-          .pointer(input, mods, clicks)
+        staged(services => elements.pointer(input, mods, clicks, services))
           .foreach {
             case CommitResult.Committed(_) =>
               ()
@@ -397,6 +484,20 @@ final class EditorController(
           case Some(_) =>
             refusals += 1
             notice = Some("This element action could not be committed.")
+      case HostInput.TextInput(value) if textElement.nonEmpty =>
+        elementText(TextInputEvent.Commit(TextEditing.normalize(value)))
+      case HostInput.Composition(value, start, length) if textElement.nonEmpty =>
+        val (a, b) = compositionRange(value, start, length)
+        val text = TextEditing.normalize(value)
+        elementText(
+          TextInputEvent.Compose(
+            text,
+            TextRange(
+              TextEditing.normalize(value.take(value.offsetByCodePoints(0, a))).length,
+              TextEditing.normalize(value.take(value.offsetByCodePoints(0, b))).length
+            )
+          )
+        )
       case HostInput.TextInput(value) =>
         focusedId.foreach { id =>
           applyState(
@@ -409,19 +510,7 @@ final class EditorController(
         }
       case HostInput.Composition(value, start, length) =>
         focusedId.foreach { id =>
-          // SDL Cocoa reports codepoint indices; public positions are UTF-16.
-          val count = value.codePointCount(0, value.length)
-          val a = math.max(0, math.min(count, start))
-          val b = math.max(
-            a,
-            math.min(
-              count,
-              if length < 0 then
-                a
-              else
-                a + length
-            )
-          )
+          val (a, b) = compositionRange(value, start, length)
           applyState(
             id,
             states(id).mark(
@@ -599,6 +688,61 @@ final class EditorController(
           publishFocus()
         }
         ()
+  /** SDL Cocoa reports codepoint indices; public positions are UTF-16. */
+  private def compositionRange(value: String, start: Int, length: Int): (Int, Int) =
+    val count = value.codePointCount(0, value.length)
+    val a = math.max(0, math.min(count, start))
+    val b = math.max(
+      a,
+      math.min(
+        count,
+        if length < 0 then
+          a
+        else
+          a + length
+      )
+    )
+    (a, b)
+
+  /** Assistive text requests address an element's exposed text, whether or not it is focused. */
+  private def elementAccessibility(action: NativeWindow.AccessibilityAction): Boolean =
+    val id = action.target()
+    action.kind() match
+      case 1 =>
+        focusElement(id)
+      case 2 =>
+        val start = action.start()
+        val end = start.toLong + action.length()
+        end <= Int.MaxValue && start >= 0 && deliverTo(id, TextInputEvent.Select(TextRange(start, end.toInt)))
+      case 3 =>
+        deliverTo(id, TextInputEvent.Replace(TextEditing.normalize(action.value())))
+      case _ =>
+        false
+  private def deliverTo(id: Long, event: TextInputEvent): Boolean =
+    staged(services => elements.textTo(id, event, services)).exists {
+      case CommitResult.Committed(handled) =>
+        handled
+      case _ =>
+        refusals += 1
+        notice = Some("This text input could not be committed.")
+        false
+    }
+  private def focusElement(id: Long): Boolean =
+    val before = interaction.state
+    val previous = focusedId
+    interaction.state = interaction
+      .state
+      .copy(focused = Some(NodeId(Vector("element", id))), keyboard = true, pressed = None)
+    if previous.nonEmpty && !blur(previous) then {
+      interaction.rollbackPublication(before)
+      false
+    } else {
+      retireMovedComposition()
+      runtime.transact {
+        publishFocus()
+      }
+      true
+    }
   def accessibility(action: NativeWindow.AccessibilityAction): Boolean =
     if !ready || action.revision() != presentedRevision then
       false
@@ -607,7 +751,9 @@ final class EditorController(
       if action.kind() == 4 && captured.bindings.get(id).exists(_.enabled) then {
         invoke(id)
         true
-      } else if !states.contains(id) then
+      } else if elements.exposesText(id) then
+        elementAccessibility(action)
+      else if !states.contains(id) then
         false
       else
         try

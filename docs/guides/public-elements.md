@@ -67,6 +67,24 @@ it at most once. Additional constraint measurements require intrinsic=true.
 Unplaced children stay mounted but do not paint, receive input or expose semantics.
 LayoutChildren handles cannot escape their layout callback.
 
-This API is provisional. Arbitrary semantic parts have headless snapshots, but
-native accessibility transport currently covers only button activation. TextField
-composition/text ranges and real animation remain open work before API freeze.
+## Text controls
+
+An element becomes a text control by overriding `textInput`, which returns the
+caret for IME placement, together with the `text` handler. Committed text,
+composition updates, cancellation and assistive select or replace requests
+arrive there as UTF-16 `TextInputEvent` values. Keep composition as provisional
+state, separate from committed text. Override the two-argument `key` and
+`pointer` forms to reach `TextEditingServices`. These provide grapheme and word
+boundaries, the clipboard, and the layout presented for a request. Clipboard
+writes and composition cancellation happen only if your transaction commits.
+
+Expose text to assistive technology with `SemanticNode.text`. Name the request
+you paint, its origin and the selection. The host resolves it from the same
+prepared inventory, so declare that request in `textRequests`.
+`specimens/workbench/src/main/scala/demo/text/NoteField.scala` is a complete
+one-line example outside the `sirin` package.
+
+This API is provisional. Arbitrary semantic parts have headless snapshots.
+Native accessibility transport covers button activation and one text node per
+element. The TextField port and real animation remain open work before API
+freeze.

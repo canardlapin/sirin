@@ -18,30 +18,6 @@ object EditorAccessibility:
             val text = p.text.get
             val origin = layout.textOrigin(p)
             val area = layout.editorArea(p).intersect(p.clip)
-            val spans = Vector.newBuilder[Double]
-            def add(from: Int, until: Int, rect: Rect, line: Int): Unit =
-              val raw = Box(
-                origin.x.toDouble + rect.origin.x.toDouble,
-                origin.y.toDouble + rect.origin.y.toDouble,
-                math.max(1, rect.size.width.toDouble),
-                rect.size.height.toDouble
-              )
-              val box = raw.intersect(area)
-              spans ++= Vector(from.toDouble, until.toDouble, box.x, box.y, box.width, box.height, line.toDouble)
-            val stops = text.graphemeBoundaries
-            stops.foreach { o =>
-              val caret =
-                if o == snapshot.visibleSelection.head.utf16Offset then
-                  Some(layout.editorCaret(p))
-                else
-                  text.caret(TextPosition(o, TextAffinity.Downstream)).orElse(text.caretsAt(o).headOption)
-              caret.foreach(c => add(o, o, c.bounds, c.lineIndex))
-            }
-            stops
-              .zip(stops.drop(1))
-              .foreach { (a, b) =>
-                text.selection(a, b).foreach(r => add(a, b, r.bounds, r.lineIndex))
-              }
             val selection = snapshot.visibleSelection
             window.accessibilityField(
               id,
@@ -58,14 +34,51 @@ object EditorAccessibility:
               active && controller.focusedId.contains(id),
               true,
               Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
-              spans.result().toArray
+              spans(text, origin, area, snapshot.visibleSelection.head.utf16Offset, Some(layout.editorCaret(p)))
             )
           case _ =>
             ()
       }
     def buttons(p: Placed): Unit =
       p.node.content match
-        case Content.Custom(element) =>
+        case Content.Custom(element) if p.clip.width > 0 && p.clip.height > 0 =>
+          val size = Size(p.bounds.width.lp, p.bounds.height.lp)
+          element
+            .semantics(size)
+            .iterator
+            .flatMap(node => node.text.map(node -> _))
+            .nextOption()
+            .foreach { (node, text) =>
+              layout
+                .text
+                .get(text.request)
+                .foreach { shaped =>
+                  val origin = Point(
+                    (p.bounds.x + text.origin.x.toDouble).lp,
+                    (p.bounds.y + text.origin.y.toDouble).lp
+                  )
+                  val caret = shaped
+                    .caret(TextPosition(text.selection.focus, TextAffinity.Downstream))
+                    .orElse(shaped.caretsAt(text.selection.focus).headOption)
+                  window.accessibilityField(
+                    element.instance,
+                    if text.multiline then
+                      1
+                    else
+                      0
+                    ,
+                    node.semantics.name.getOrElse(""),
+                    text.request.content,
+                    node.semantics.description.getOrElse(""),
+                    text.selection.anchor,
+                    text.selection.focus - text.selection.anchor,
+                    active && controller.interaction.state.focused.contains(p.node.id),
+                    text.editable,
+                    Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
+                    spans(shaped, origin, p.clip, text.selection.focus, caret)
+                  )
+                }
+            }
           element
             .activation
             .foreach { activation =>
@@ -109,6 +122,34 @@ object EditorAccessibility:
     window.publishAccessibility()
     updateTextInput(window, controller, frame, active)
 
+  /** Caret and grapheme spans in window coordinates, clipped to `area`; `focus` uses the supplied caret. */
+  private def spans(text: TextLayout, origin: Point, area: Box, focus: Int, focusCaret: Option[TextCaret]): Array[Double] =
+    val result = Vector.newBuilder[Double]
+    def add(from: Int, until: Int, rect: Rect, line: Int): Unit =
+      val raw = Box(
+        origin.x.toDouble + rect.origin.x.toDouble,
+        origin.y.toDouble + rect.origin.y.toDouble,
+        math.max(1, rect.size.width.toDouble),
+        rect.size.height.toDouble
+      )
+      val box = raw.intersect(area)
+      result ++= Vector(from.toDouble, until.toDouble, box.x, box.y, box.width, box.height, line.toDouble)
+    val stops = text.graphemeBoundaries
+    stops.foreach { o =>
+      val caret =
+        if o == focus then
+          focusCaret
+        else
+          text.caret(TextPosition(o, TextAffinity.Downstream)).orElse(text.caretsAt(o).headOption)
+      caret.foreach(c => add(o, o, c.bounds, c.lineIndex))
+    }
+    stops
+      .zip(stops.drop(1))
+      .foreach { (a, b) =>
+        text.selection(a, b).foreach(r => add(a, b, r.bounds, r.lineIndex))
+      }
+    result.result().toArray
+
   /** Enable input immediately on focus using accepted geometry; the next frame refines the caret. */
   def updateTextInput(window: NativeWindow, controller: EditorController, frame: RenderedFrame, active: Boolean): Unit =
     val layout = frame.layout
@@ -133,5 +174,16 @@ object EditorAccessibility:
         ).intersect(area)
         window.textInput(1, rect.x, rect.y, math.max(1, rect.width), math.max(1, rect.height))
       }
-    if !active || controller.focusedId.isEmpty then
+    val element = controller.textElement.filter(_ => active && controller.focusedId.isEmpty)
+    element.foreach { (_, p, request) =>
+      val c = request.caret
+      val rect = Box(
+        p.bounds.x + c.origin.x.toDouble,
+        p.bounds.y + c.origin.y.toDouble,
+        math.max(1, c.size.width.toDouble),
+        c.size.height.toDouble
+      ).intersect(p.clip)
+      window.textInput(1, rect.x, rect.y, math.max(1, rect.width), math.max(1, rect.height))
+    }
+    if !active || (controller.focusedId.isEmpty && element.isEmpty) then
       window.textInput(0, 0, 0, 1, 1)

@@ -100,6 +100,29 @@ trait ElementHandlers:
       txn: UiTxn
   ): Boolean = false
 
+  /** Text-channel input for a focused element that declares `Element.textInput`. */
+  def text(
+      @unused
+      event: TextInputEvent,
+      @unused
+      services: TextEditingServices
+  )(using
+      @unused
+      txn: UiTxn
+  ): Boolean = false
+
+  /** Text controls override these forms to reach the clipboard, segmentation and presented text. */
+  def key(
+      event: KeyEvent,
+      @unused
+      services: TextEditingServices
+  )(using UiTxn): Boolean = key(event)
+  def pointer(
+      event: PointerEvent,
+      @unused
+      services: TextEditingServices
+  )(using UiTxn): PointerResponse = pointer(event)
+
 trait Element[L, P, H, S, A] extends ElementHandlers:
   def paint(state: P, presentation: A, size: Size, canvas: Canvas)(using Committed): Unit
   def paint(
@@ -151,6 +174,21 @@ trait Element[L, P, H, S, A] extends ElementHandlers:
       @unused
       c: Committed
   ): Option[ElementActivation] = None
+
+  /** Declared while this element, when focused, accepts text input. It shares the semantics state; `text` looks up
+    * the layouts prepared for paint, so the caret can come from presented geometry.
+    */
+  def textInput(
+      @unused
+      state: S,
+      @unused
+      size: Size,
+      @unused
+      text: TextServices
+  )(using
+      @unused
+      c: Committed
+  ): Option[TextInputRequest] = None
 
   /** Requests resolved before paint; Canvas.text performs lookup only. */
   def textRequests(

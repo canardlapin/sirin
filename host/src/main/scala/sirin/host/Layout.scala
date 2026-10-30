@@ -745,8 +745,9 @@ object Layout:
           ()
       m.node.content match
         case Content.Custom(frame) =>
-          frame
-            .textRequests(Size(m.width.lp, m.height.lp))
+          val size = Size(m.width.lp, m.height.lp)
+          // Text semantics resolve from the same inventory, so assistive geometry matches paint.
+          (frame.textRequests(size) ++ frame.semantics(size).flatMap(_.text.map(_.request)))
             .foreach { request =>
               require(prepared.contains(request) || prepared.size < 1024, "text preparation request budget exceeded")
               prepared.getOrElseUpdate(request, resolve(request))
