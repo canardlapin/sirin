@@ -1,0 +1,85 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21624 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.specimen.DocumentsSuite started
+sirin.specimen.DocumentsSuite: finished 0.151s
+Test run sirin.specimen.DocumentsSuite finished: 0 failed, 0 ignored, 6 total 0.161s
+[info] Passed: Total 6, Failed 0, Errors 0, Passed 6
+[success] Total time: 3 s, completed Oct 29, 2026, 11:24:47 p.m.
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/test-classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.FileDocumentRepositorySuite started
+==> X sirin.desktop.FileDocumentRepositorySuite.cancellation after temporary write leaves no published document or pending file 0.008s java.lang.InterruptedException: Document operation cancelled
+    at sirin.desktop.FileDocumentRepository.sirin$desktop$FileDocumentRepository$$cancelled(FileDocumentRepository.scala:20)
+    at sirin.desktop.FileDocumentRepository.sirin$desktop$FileDocumentRepository$$publish(FileDocumentRepository.scala:111)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1$$anonfun$1$$anonfun$1(FileDocumentRepository.scala:126)
+    at sirin.desktop.FileDocumentRepository.lock(FileDocumentRepository.scala:71)
+    at sirin.desktop.FileDocumentRepository.sirin$desktop$FileDocumentRepository$$withDocument(FileDocumentRepository.scala:73)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1$$anonfun$1(FileDocumentRepository.scala:127)
+    at sirin.desktop.FileDocumentRepository.lock(FileDocumentRepository.scala:71)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1(FileDocumentRepository.scala:128)
+    at sirin.Task$package$Work$.execute(Task.scala:14)
+    at sirin.desktop.FileDocumentRepositorySuite.run(FileDocumentRepositorySuite.scala:14)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$6$$anonfun$1$$anonfun$1(FileDocumentRepositorySuite.scala:113)
+    at munit.Assertions.runIntercept(Assertions.scala:223)
+    at munit.Assertions.intercept(Assertions.scala:206)
+    at munit.Assertions.intercept$(Assertions.scala:20)
+    at munit.FunSuite.intercept(FunSuite.scala:12)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$6$$anonfun$1(FileDocumentRepositorySuite.scala:113)
+    at sirin.desktop.FileDocumentRepositorySuite.fixture(FileDocumentRepositorySuite.scala:17)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$6(FileDocumentRepositorySuite.scala:106)
+==> X sirin.desktop.FileDocumentRepositorySuite.a cooperating writer's lock causes a recoverable refusal without touching the file 0.002s java.nio.channels.ClosedByInterruptException: null
+    at java.nio.channels.spi.AbstractInterruptibleChannel.end(AbstractInterruptibleChannel.java:214)
+    at sun.nio.ch.FileChannelImpl.endBlocking(FileChannelImpl.java:181)
+    at sun.nio.ch.FileChannelImpl.implWrite(FileChannelImpl.java:364)
+    at sun.nio.ch.FileChannelImpl.write(FileChannelImpl.java:335)
+    at sirin.desktop.FileDocumentRepository.sirin$desktop$FileDocumentRepository$$publish(FileDocumentRepository.scala:108)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1$$anonfun$1$$anonfun$1(FileDocumentRepository.scala:126)
+    at sirin.desktop.FileDocumentRepository.lock(FileDocumentRepository.scala:71)
+    at sirin.desktop.FileDocumentRepository.sirin$desktop$FileDocumentRepository$$withDocument(FileDocumentRepository.scala:73)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1$$anonfun$1(FileDocumentRepository.scala:127)
+    at sirin.desktop.FileDocumentRepository.lock(FileDocumentRepository.scala:71)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1(FileDocumentRepository.scala:128)
+    at sirin.Task$package$Work$.execute(Task.scala:14)
+    at sirin.desktop.FileDocumentRepositorySuite.run(FileDocumentRepositorySuite.scala:14)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$7$$anonfun$1(FileDocumentRepositorySuite.scala:119)
+    at sirin.desktop.FileDocumentRepositorySuite.fixture(FileDocumentRepositorySuite.scala:17)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$7(FileDocumentRepositorySuite.scala:118)
+==> X sirin.desktop.FileDocumentRepositorySuite.document collection budget refuses the 513th creation without deleting any document 0.002s java.nio.channels.ClosedByInterruptException: null
+    at java.nio.channels.spi.AbstractInterruptibleChannel.end(AbstractInterruptibleChannel.java:214)
+    at sun.nio.ch.FileChannelImpl.endBlocking(FileChannelImpl.java:181)
+    at sun.nio.ch.FileChannelImpl.implWrite(FileChannelImpl.java:364)
+    at sun.nio.ch.FileChannelImpl.write(FileChannelImpl.java:335)
+    at sirin.desktop.FileDocumentRepository.sirin$desktop$FileDocumentRepository$$publish(FileDocumentRepository.scala:108)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1$$anonfun$1$$anonfun$1(FileDocumentRepository.scala:126)
+    at sirin.desktop.FileDocumentRepository.lock(FileDocumentRepository.scala:71)
+    at sirin.desktop.FileDocumentRepository.sirin$desktop$FileDocumentRepository$$withDocument(FileDocumentRepository.scala:73)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1$$anonfun$1(FileDocumentRepository.scala:127)
+    at sirin.desktop.FileDocumentRepository.lock(FileDocumentRepository.scala:71)
+    at sirin.desktop.FileDocumentRepository.create$$anonfun$1(FileDocumentRepository.scala:128)
+    at sirin.Task$package$Work$.execute(Task.scala:14)
+    at sirin.desktop.FileDocumentRepositorySuite.run(FileDocumentRepositorySuite.scala:14)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$8$$anonfun$1$$anonfun$1(FileDocumentRepositorySuite.scala:131)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$8$$anonfun$1$$anonfun$adapted$1(FileDocumentRepositorySuite.scala:131)
+    at scala.collection.immutable.Range.foreach(Range.scala:192)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$8$$anonfun$1(FileDocumentRepositorySuite.scala:131)
+    at sirin.desktop.FileDocumentRepositorySuite.fixture(FileDocumentRepositorySuite.scala:17)
+    at sirin.desktop.FileDocumentRepositorySuite.$init$$$anonfun$8(FileDocumentRepositorySuite.scala:129)
+sirin.desktop.FileDocumentRepositorySuite: finished 0.239s
+Test run sirin.desktop.FileDocumentRepositorySuite finished: 3 failed, 0 ignored, 8 total 0.249s
+[error] Failed: Total 8, Failed 3, Errors 0, Passed 5
+[error] Failed tests:
+[error] 	sirin.desktop.FileDocumentRepositorySuite
+[error] (desktopJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 3 s, completed Oct 29, 2026, 11:24:50 p.m.

@@ -1,0 +1,52 @@
+{
+  "start_utc": "2026-10-30T03:27:29.504728+00:00",
+  "base_commit": "0c2ee301e2ff7528e7613a2e03382a0c427a61e0",
+  "commands": [
+    [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM",
+      "testNative",
+      "examples/compile"
+    ],
+    [
+      "sbt",
+      "--java-home",
+      "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+      "-J-XX:ActiveProcessorCount=4",
+      "desktopJVM/test"
+    ]
+  ],
+  "source_hashes": {
+    ".github/workflows/ci.yml": "0bb1b064ffeb20246e609eaadc1172d0f07685c900ea3f84ee9276d7c875da23",
+    "desktop/src/main/scala/sirin/desktop/FileDocumentRepository.scala": "74b08f90cc4b872f338999ad00dec0f2264ed2b0916eeefe6247409cad11cdfa",
+    "desktop/src/test/scala/sirin/desktop/FileDocumentRepositorySuite.scala": "6e2ed1512a04b2c0773834717b6b0143a475315d7023ee9625c98a32eae29582",
+    "docs/design/decisions/2026-10-30-document-workbench.md": "d1f202a2a755fd32be5a244397d21c9b98983c30b4c6c7acb1fa425ecfb83ca1",
+    "specimens/workbench/src/main/scala/sirin/specimen/Documents.scala": "32581afa1aa56ecd1ae2daf6887c90fabf9a250d67fbdbb7f8d106bf5d41204d",
+    "specimens/workbench/src/test/scala/sirin/specimen/DocumentsSuite.scala": "6d128d63b82a59e1c87d7d3a02ba9eddab8583cd26ca922c575fea60a3d7a96c"
+  },
+  "results": [
+    {
+      "command": [
+        "sbt",
+        "-J-XX:ActiveProcessorCount=4",
+        "testJVM",
+        "testNative",
+        "examples/compile"
+      ],
+      "returncode": 0,
+      "end_utc": "2026-10-30T03:29:48.009258+00:00"
+    },
+    {
+      "command": [
+        "sbt",
+        "--java-home",
+        "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+        "-J-XX:ActiveProcessorCount=4",
+        "desktopJVM/test"
+      ],
+      "returncode": 0,
+      "end_utc": "2026-10-30T03:30:59.919772+00:00"
+    }
+  ]
+}

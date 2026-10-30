@@ -1,0 +1,12 @@
+{
+  "kind": "tool observation summary; full stdout was not captured",
+  "returncode": 1,
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "desktopJVM/compile"
+  ],
+  "error": "ColorRole.Error is not a member of ColorRole; corrected to the existing Danger role."
+}

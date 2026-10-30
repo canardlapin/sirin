@@ -129,3 +129,30 @@ IME or VoiceOver. The original packaged launch candidate remains frozen while
 its action-time confirmation is pending. Dialogs, public programmatic quit
 services and all remaining platform/workbench/toolkit/graphics/tooling/acceptance
 requirements are still open. No six-part deliverable is closed here.
+
+
+## Persistent document implementation checkpoint (visible workflow unfinished)
+
+DocumentEditor now uses public Scope/Cell/Command/View APIs for editable title/
+body validation, committed revision-associated queued saves, dirty/error/refusal
+state and a dirty-close prompt signal. Application/document ownership is separate
+from window ownership. FileDocumentRepository provides real JVM Work-based I/O,
+strict bounded versioned files, exact Unicode reopen, per-session save baselines,
+external-change/deletion conflict detection, atomic publication, cancellation
+cleanup and explicit locks/bounds. The design and filesystem limitations are in
+../design/decisions/2026-10-30-document-workbench.md.
+
+Full checks pass 369 JVM + 369 Native + 69 desktop cases, plus authoring
+compilation. Six shared document cases and eight real filesystem cases are
+included. Exact source/logs, initial negative fixtures and reconciliation are in
+../evidence/application-alpha/documents/. These qualify the component/store
+checkpoint, not full application reopen, native filesystem delivery or power-loss
+durability. The preceding host/menu checkpoint 0c2ee30 is now on main with all nine
+CI jobs successful (40996045243).
+
+Next integrate visible collection/search/select, retained document/draft ownership
+through reorder and window/outlet changes, import/cancel, recoverable conflict/
+dirty-close dialogs and actual persistent application startup/reopen. Native
+menus/IME/VoiceOver/drag still need client receipts. Dialog/programmatic quit,
+remaining controls, public graphics editor, inspector/starter, long GC and full
+alpha comparison/visual gates remain open; no numbered deliverable is closed.

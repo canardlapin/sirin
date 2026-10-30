@@ -1,0 +1,13 @@
+{
+  "kind": "tool observation summary; full stdout was not captured",
+  "returncode": 1,
+  "command": [
+    "sbt",
+    "--java-home",
+    "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+    "-J-XX:ActiveProcessorCount=4",
+    "workbenchJVM/testOnly sirin.specimen.DocumentsSuite",
+    "desktopJVM/compile"
+  ],
+  "error": "Missing type parameter for CommitResult.Refused. Corrected fixture matches Committed(Dispatched.Refused), preserves the draft edit, and requires zero save work."
+}

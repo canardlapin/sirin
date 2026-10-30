@@ -1,0 +1,31 @@
+{
+  "files": {
+    "README.md": "b4a60bb4490610f8487e39fd7a3dd186d882925fb6ff8a8c475c683bd9c47d6f",
+    "full-checks/checks-1.log": "c94742894235d4adf6c1ce25f4f8ba35ad4d5d084401abd4387a8ed25326354e",
+    "full-checks/checks-2.log": "da739d478a383aded8459cadf40de92b648e40d020e0970eac8ff21e00024e8f",
+    "full-checks/protocol.json": "9e65fe25cfcaf204ffb24ae1035b4748fe1ec1c3347939f7a0839c5b51b39bff",
+    "full-checks/result.json": "9a68b7551668626b940e978893dfd30df77e432ca3d99dcef2834aeec7ffb174",
+    "full-checks/source/.github/workflows/ci.yml": "0bb1b064ffeb20246e609eaadc1172d0f07685c900ea3f84ee9276d7c875da23",
+    "full-checks/source/desktop/src/main/scala/sirin/desktop/FileDocumentRepository.scala": "74b08f90cc4b872f338999ad00dec0f2264ed2b0916eeefe6247409cad11cdfa",
+    "full-checks/source/desktop/src/test/scala/sirin/desktop/FileDocumentRepositorySuite.scala": "6e2ed1512a04b2c0773834717b6b0143a475315d7023ee9625c98a32eae29582",
+    "full-checks/source/docs/design/decisions/2026-10-30-document-workbench.md": "d1f202a2a755fd32be5a244397d21c9b98983c30b4c6c7acb1fa425ecfb83ca1",
+    "full-checks/source/specimens/workbench/src/main/scala/sirin/specimen/Documents.scala": "32581afa1aa56ecd1ae2daf6887c90fabf9a250d67fbdbb7f8d106bf5d41204d",
+    "full-checks/source/specimens/workbench/src/test/scala/sirin/specimen/DocumentsSuite.scala": "6d128d63b82a59e1c87d7d3a02ba9eddab8583cd26ca922c575fea60a3d7a96c",
+    "history/compilation/fixture-compilation/DocumentsSuite.scala": "95914d93b5599a5a5ab6d749b87c60c778999ce188643bca35d35f71800034cb",
+    "history/compilation/fixture-compilation/observation.json": "933f7c0a30ce925b1c2c8019c2e46b8770dbb1e0f4ea5cdc787eb9b99288d244",
+    "history/compilation/initial-compilation/Documents.scala": "070146e11e55239b37fd34fc6d4b3d666f26854cad6dc62d3974892c614ea1d3",
+    "history/compilation/initial-compilation/observation.json": "1833d00145d69871b6cd12b778033d3ba20032300ac99a92776ebf29b531f4cd",
+    "history/targeted-1/checks.log": "087494b865e16db5da78c42e57f44ebf3761f0e3615dc3ffed3a93d28b76ae1a",
+    "history/targeted-1/result.json": "23ea18416c963b728bf3a4a302086449fdd44d0e5fbc11a05aa54f7fca5e9412",
+    "history/targeted-1/source/desktop/src/main/scala/sirin/desktop/FileDocumentRepository.scala": "74b08f90cc4b872f338999ad00dec0f2264ed2b0916eeefe6247409cad11cdfa",
+    "history/targeted-1/source/desktop/src/test/scala/sirin/desktop/FileDocumentRepositorySuite.scala": "b2058e5b3deb050eca85ea028381d934f2dcd30f22a93a978d940ae611c125d3",
+    "history/targeted-1/source/docs/design/decisions/2026-10-30-document-workbench.md": "d1f202a2a755fd32be5a244397d21c9b98983c30b4c6c7acb1fa425ecfb83ca1",
+    "history/targeted-1/source/specimens/workbench/src/main/scala/sirin/specimen/Documents.scala": "32581afa1aa56ecd1ae2daf6887c90fabf9a250d67fbdbb7f8d106bf5d41204d",
+    "history/targeted-1/source/specimens/workbench/src/test/scala/sirin/specimen/DocumentsSuite.scala": "6d128d63b82a59e1c87d7d3a02ba9eddab8583cd26ca922c575fea60a3d7a96c",
+    "history/targeted-2/checks.log": "c03f38c1deb90c3bdfa38710e80b2e435ba9e3eda2fb68705ac48693a44c6630",
+    "history/targeted-2/result.json": "e2d33f91e7efc93433145824226eac8d1d56d81b0b62899566f52b94fabcabab",
+    "menu-main-ci.json": "d628c47ed1516fbc3aa31b773e3d6824304ab9e21974ae75e76608566fcc3d14",
+    "summary.json": "34972348a0630ca7cdae1628069e435082d19c84b47dd383bfb722b5b45efeb6",
+    "verify.py": "efda39519ab04eba8a9160c365493cc8f2f3979c0f93c4d4cbbcf16a63036693"
+  }
+}
