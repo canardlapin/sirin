@@ -9,6 +9,7 @@ import sirin.graphics.{WordKind,UnicodeAnalysis}
 final class EditorController(runtime: HeadlessRuntime,analyze: String => UnicodeAnalysis,
     readClipboard: () => String,writeClipboard: String => Unit,clearComposition: () => Unit):
   val interaction=new Interaction
+  val elements=new ElementInput(runtime,interaction)
   private var states=Map.empty[Long,TextEditing]
   private var captured=CapturedTree(Node(NodeId(Vector("empty")),Content.Empty),Map.empty)
   private var shown=Option.empty[(Long,LayoutResult)]
@@ -31,6 +32,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
           Content.Editable(id,text,label,hint,multiple,problem)
         case Content.Reference(ref,child) => Content.Reference(ref,project(child))
         case Content.Styled(hint,child) => Content.Styled(hint,project(child))
+        case Content.CustomLayout(frame,children) => Content.CustomLayout(frame,children.map((slot,child) => slot -> project(child)))
         case Content.Stack(horizontal,gap,alignment,children) => Content.Stack(horizontal,gap,alignment,children.map(project))
         case Content.Scroll(id,child) => Content.Scroll(id,project(child))
         case Content.Virtual(id,first,total,height,children) => Content.Virtual(id,first,total,height,children.map(project))
@@ -54,6 +56,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
     (Vector(0,s.length)++a.words.filter(_.kind!=WordKind.NonWord).map(w => a.source.utf16Offset(if backward then w.range.start else w.range.end).get.value)).distinct.sorted.filter(boundaries(s).contains)
   def update(value: CapturedTree): Unit =
     captured=value
+    elements.update(value.elements)
     editNotices=editNotices.filter((id,_) => value.editors.contains(id))
     if states.exists((id,state) => !value.editors.contains(id) && state.snapshot.preedit.nonEmpty) then clearComposition()
     states=states.filter((id,_) => value.editors.contains(id))
@@ -61,6 +64,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
       case Content.Editable(id,text,_,_,_,_) => Vector(id->text)
       case Content.Reference(_,child) => values(child)
       case Content.Styled(_,child) => values(child)
+      case Content.CustomLayout(_,children) => children.flatMap((_,child) => values(child))
       case Content.Stack(_,_,_,children) => children.flatMap(values)
       case Content.Scroll(_,child) => values(child)
       case Content.Virtual(_,_,_,_,children) => children.flatMap(values)
@@ -73,11 +77,11 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
     }
     drag=drag.filter((id,_) => states.contains(id))
   def install(revision: Long,layout: LayoutResult): Unit =
-    shown=Some((revision,layout));interaction.install(InteractionSnapshot(revision,layout),layout.scrollOffsets)
+    shown=Some((revision,layout));interaction.install(InteractionSnapshot(revision,layout),layout.scrollOffsets);elements.install(layout)
   def presentedRevision: Long=shown.fold(0L)(_._1)
   def layout: Option[LayoutResult]=shown.map(_._2)
   private def placed(id: Long): Option[Placed]=shown.flatMap(_._2.fields.find(_.node.id==NodeId(Vector("editor",id))))
-  def invalidatePresentation(): Unit={shown=None;drag=None}
+  def invalidatePresentation(): Unit={shown=None;drag=None;elements.invalidate()}
   /** Rendering is unavailable: preserve draft/history, but retire provisional input. */
   def suspendPresentation(): Boolean =
     val composing=states.values.exists(_.snapshot.preedit.nonEmpty)
@@ -89,6 +93,7 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
   def ready: Boolean=shown.exists { (_,layout) => layout.editors==snapshots && layout.root.node==tree }
   def needsGeometry(input: HostInput): Boolean=if shown.isEmpty then true else input match
     case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move => true
+    case _: HostInput.KeyDown if interaction.focused.exists(_.kind.isInstanceOf[TargetKind.Custom]) => true
     case HostInput.KeyDown(key,_,_) => Set(Key.ArrowLeft,Key.ArrowRight,Key.ArrowUp,Key.ArrowDown,Key.Home,Key.End,Key.Tab).contains(key)
     case _ => false
   /** Reserve actual editor/control keys before local or menu shortcuts. */
@@ -158,8 +163,17 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
     val normal=TextEditing.normalize(value)
     if captured.editors(id).description.multiple then normal.replace("\t","    ") else normal.replace('\n',' ').replace('\t',' ')
   var notice=Option.empty[String]
-  def handle(input: HostInput,mods: Mods=Mods.none,clicks: Int=1): Unit =
-    try dispatch(input,mods,clicks)
+  /** Called once before menu/local shortcuts; false preserves their normal fallback. */
+  def handleElementKey(input: HostInput): Boolean = input match
+    case HostInput.KeyDown(key,mods,repeat) if ready && key!=Key.Tab =>
+      elements.key(KeyEvent(key,mods,repeat)) match
+        case Some(CommitResult.Committed(handled)) => handled
+        case Some(_) => refusals+=1;notice=Some("This element action could not be committed.");true
+        case None => false
+    case _ => false
+  def handle(input: HostInput,mods: Mods=Mods.none,clicks: Int=1,routeElementKey: Boolean=true): Unit =
+    try
+      if !routeElementKey || !handleElementKey(input) then dispatch(input,mods,clicks)
     catch
       case _: IllegalArgumentException =>
         rejectEdit(focusedId,"This edit exceeds the field limit or has an invalid text range.");()
@@ -177,7 +191,25 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
       runtime.transact {publishFocus()};()
   private def dispatch(input: HostInput,mods: Mods,clicks: Int): Unit =
     val oldFocus=focusedId
+    if ready && elements.accepts(input) then
+      val before=interaction.state
+      input match
+        case _: HostInput.Down => interaction.handle(input);()
+        case _ => ()
+      if oldFocus!=focusedId && !blur(oldFocus) then interaction.rollbackPublication(before)
+      else
+        elements.pointer(input,mods,clicks).foreach {
+          case CommitResult.Committed(_) => ()
+          case _ => refusals+=1;notice=Some("This element action could not be committed.")
+        }
+        runtime.transact {publishFocus()}
+      return
     input match
+      case HostInput.Wheel(x,y,delta) if ready =>
+        elements.wheel(x,y,delta,mods) match
+          case Some(CommitResult.Committed(true)) => ()
+          case Some(CommitResult.Committed(false)) | None => interaction.handle(input);()
+          case Some(_) => refusals+=1;notice=Some("This element action could not be committed.")
       case HostInput.TextInput(value) => focusedId.foreach { id =>
         applyState(id,if states(id).snapshot.preedit.nonEmpty then states(id).commit(clean(id,value),boundaries) else states(id).replace(clean(id,value),boundaries,coalesce=true))
       }

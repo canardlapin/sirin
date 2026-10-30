@@ -5,8 +5,9 @@ import sirin as ui
 import sirin.graphics as g
 import sirin.text.ResolvedTextLayout
 
-final case class TextRequest(content: String, style: ui.TextStyle, maxWidth: ui.Lp = ui.Lp(Double.PositiveInfinity)):
-  require(!maxWidth.toDouble.isNaN && maxWidth.toDouble >= 0, "text request width must be nonnegative or positive infinity")
+/** Source-compatible bridge to the core request value. */
+type TextRequest = ui.TextRequest
+val TextRequest: ui.TextRequest.type = ui.TextRequest
 
 final case class TextPreparationLimits(
     maxRequests: Int = 1024, maxUtf16Units: Long = 1048576,

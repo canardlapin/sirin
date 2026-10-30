@@ -15,6 +15,8 @@ enum Hint:
 
 enum Content:
   case Empty
+  case Custom(frame: ElementFrame)
+  case CustomLayout(frame: LayoutFrame,children: Vector[(Slot,Node)])
   case Editable(instance: Long,value: String,label: String,placeholder: String,multiline: Boolean,error: Option[String])
   case Button(instance: Long,label: String,enabled: Boolean,busy: Boolean,primary: Boolean)
   case Reference(reference: Long,child: Node)
@@ -28,7 +30,7 @@ final case class Node(id: NodeId, content: Content)
 
 final case class Activation(enabled: Boolean,run: UiTxn => Unit)
 final case class TextBinding(description: TextField.Description)
-final case class CapturedTree(tree: Node,bindings: Map[Long,Activation],editors: Map[Long,TextBinding]=Map.empty,keys: Vector[KeyBinding]=Vector.empty)
+final case class CapturedTree(tree: Node,bindings: Map[Long,Activation],editors: Map[Long,TextBinding]=Map.empty,keys: Vector[KeyBinding]=Vector.empty,elements: Map[Long,ElementBinding]=Map.empty)
 
 /** One budget spans every window and its structure, rather than resetting per peer. */
 private[host] final class CaptureBudget(maxNodes: Int, maxTextUnits: Int):
@@ -42,7 +44,7 @@ private[host] final class CaptureBudget(maxNodes: Int, maxTextUnits: Int):
     textUnits += length
     require(textUnits <= maxTextUnits, "host text budget exceeded")
 
-/** Capture reads only declared settled inputs; no Signal or native pointer survives. */
+/** Capture reads settled inputs; worker nodes carry phase facades, never UI bindings or native pointers. */
 object CommittedTree:
   def capture(snapshot: MountedSnapshot,reader: CommittedRead,maxNodes: Int=10000): Node = captureWithBindings(snapshot,reader,maxNodes).tree
   def captureWithBindings(snapshot: MountedSnapshot,reader: CommittedRead,maxNodes: Int=10000): CapturedTree =
@@ -52,6 +54,7 @@ object CommittedTree:
     val bindings=scala.collection.mutable.Map.empty[Long,Activation]
     val editors=scala.collection.mutable.Map.empty[Long,TextBinding]
     val keys=scala.collection.mutable.ArrayBuffer.empty[KeyBinding]
+    val elements=scala.collection.mutable.Map.empty[Long,ElementBinding]
     def value[A](signal: Signal[A]): A = reader(signal) match
       case Value.Ok(v) => v
       case Value.Failed(e) => throw e
@@ -61,6 +64,12 @@ object CommittedTree:
       s match
         case MountedSnapshot.Referenced(reference,child) =>
           Node(id,Content.Reference(reference,recurse(child,"referenced")))
+        case MountedSnapshot.Custom(frame,binding) =>
+          require(!elements.contains(frame.instance),"duplicate mounted element")
+          elements(frame.instance)=binding
+          Node(NodeId(Vector("element",frame.instance)),Content.Custom(frame))
+        case MountedSnapshot.CustomLayout(frame,children) =>
+          Node(NodeId(Vector("layout",frame.instance)),Content.CustomLayout(frame,children.map((slot,child) => slot -> recurse(child,slot.name))))
         case MountedSnapshot.Control(instance,view) => view match
           case b: sirin.Button.Description =>
             val enabled=value(b.binding.enabled)
@@ -125,4 +134,4 @@ object CommittedTree:
           Node(id,Content.Virtual(instance,first,total,height.toDouble,children))
         case MountedSnapshot.Unavailable(error) => throw error
     val tree=loop(snapshot,NodeId(Vector("root")),initialDepth)
-    CapturedTree(tree,bindings.toMap,editors.toMap,keys.toVector)
+    CapturedTree(tree,bindings.toMap,editors.toMap,keys.toVector,elements.toMap)

@@ -50,3 +50,6 @@ final case class PointerEvent(
     hit: Hit,
     captured: Boolean
 )
+
+/** Logical wheel displacement at accepted local geometry; text is a separate channel. */
+final case class WheelEvent(position: Point,delta: Point,mods: Mods,hit: Hit)

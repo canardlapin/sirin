@@ -6,6 +6,8 @@ enum MountedSnapshot:
   case Empty
   case Referenced(reference: Long,child: MountedSnapshot)
   case Control(instance: Long,view: View)
+  case Custom(frame: ElementFrame,binding: ElementBinding)
+  case CustomLayout(frame: LayoutFrame,children: Vector[(sirin.Slot,MountedSnapshot)])
   case Styled(child: MountedSnapshot, decorations: Vector[Decoration])
   case Scroll(instance: Long, child: MountedSnapshot)
   case Window(instance: Long, title: Value[String], menu: MenuBar, child: MountedSnapshot,renderStatus: WindowRenderStatus=WindowRenderStatus.empty)
@@ -25,6 +27,8 @@ object MountedSnapshot:
     case (Empty, Empty) => true
     case (Referenced(i,x),Referenced(j,y)) => i==j && equality.same(x,y)
     case (Control(i,x),Control(j,y)) => i==j && x==y
+    case (Custom(x,a),Custom(y,b)) => (x eq y) && (a eq b)
+    case (CustomLayout(x,a),CustomLayout(y,b)) => (x eq y) && a.size==b.size && a.zip(b).forall((p,q) => p._1==q._1 && equality.same(p._2,q._2))
     case (Styled(x, a), Styled(y, b)) => a == b && equality.same(x, y)
     case (Window(i, t, m, x, r), Window(j, u, n, y, s)) => i == j && t == u && m == n && r==s && equality.same(x, y)
     case (Scroll(i, x), Scroll(j, y)) => i == j && equality.same(x, y)
@@ -138,6 +142,8 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
       case _ => Vector.empty
     } ++ leafDependencies(view)
   private def leafDependencies(view: View): Vector[Signal[?]] = plain(view) match
+    case p: Element.Description[?,?,?,?,?] => Vector(p.inputs.layout,p.inputs.paint,p.inputs.hit,p.inputs.semantics)
+    case p: Layout.Description[?] => p.state.toVector ++ p.children.flatMap((_,v) => directDependencies(v))
     case p: Button.Description => Vector(p.label,p.binding.enabled,p.binding.running)
     case p: Text.Description => Vector(p.content)
     case p: TextField.Description => Vector(p.value,p.problem)
@@ -227,6 +233,8 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
           case p: ForEach.Description[?, ?] => new RowsSlot(parent, p.asInstanceOf[ForEach.Description[Any, Any]], reader => requested(reader))
           case p: Switch.Plain[?] => new SwitchSlot(parent, p.asInstanceOf[Switch.Plain[Any]], None, reader => requested(reader))
           case p: Switch.Keyed[?, ?] => new SwitchSlot(parent, null, Some(p.asInstanceOf[Switch.Keyed[Any, Any]]), reader => requested(reader))
+          case p: Element.Description[?,?,?,?,?] => new ElementSlot(parent,p.asInstanceOf[Element.Description[Any,Any,Any,Any,Any]])
+          case p: Layout.Description[?] => new LayoutSlot(parent,p.asInstanceOf[Layout.Description[Any]],reader => requested(reader))
           case p: sirin.Window.Description => new WindowSlot(parent, p)
           case p: View.ScrollContent => new ScrollSlot(parent, p)
           case p: View.Stack => new StackSlot(parent, p, reader => requested(reader))
@@ -262,7 +270,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
         case (a: TextField.Description,b: TextField.Description) => !(a.value eq b.value)
         case _ => false) then false
       else next match
-        case _: sirin.Window.Description | _: View.ScrollContent => false
+        case _: Element.Description[?,?,?,?,?] | _: Layout.Description[?] | _: sirin.Window.Description | _: View.ScrollContent => false
         case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] => false
         case _ => true
     def refresh(next: View): Boolean =
@@ -273,6 +281,99 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
       case _: Button.Description | _: TextField.Description => MountedSnapshot.Control(scope.id,view)
       case _ => if view eq View.Empty then MountedSnapshot.Empty else MountedSnapshot.Leaf(view)
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = false
+
+  private val phaseGuard: PhaseGuard = new PhaseGuard:
+    def apply[A](body: => A): A = runtime.lawful(body)
+
+  private final class ElementSlot(parent: runtime.OwnedScope,initial: Element.Description[Any,Any,Any,Any,Any]) extends Slot:
+    val scope=parent.child(initial.name)
+    private var description=initial
+    private var previous=Option.empty[Vector[Any]]
+    private var frame=Option.empty[ElementFrame]
+    private var revisions=Vector.fill(5)(0L)
+    private var failure=Option.empty[Throwable]
+    private val binding=new ElementBinding(scope.id,initial.pointerDelivery,initial.pointerCapacity,
+      (event,txn) => runtime.capability(txn) { runtime.ensureScope(scope);description.element.pointer(event)(using txn) },
+      (event,txn) => runtime.capability(txn) { runtime.ensureScope(scope);description.element.key(event)(using txn) },
+      (part,action,txn) => runtime.capability(txn) { runtime.ensureScope(scope);description.element.action(part,action)(using txn) },
+      (event,txn) => runtime.capability(txn) { runtime.ensureScope(scope);description.element.wheel(event)(using txn) })
+    def accepts(view: View): Boolean = view match
+      case p: Element.Description[?,?,?,?,?] => p.name==description.name && (p.element eq description.element) &&
+        p.focusable==description.focusable && p.pointerDelivery==description.pointerDelivery && p.pointerCapacity==description.pointerCapacity
+      case _ => false
+    def refresh(view: View): Boolean =
+      if description eq view then false
+      else { change(description)(description = _)(view.asInstanceOf[Element.Description[Any,Any,Any,Any,Any]]);true }
+    def dependencies: Vector[Signal[?]] = Vector(description.inputs.layout,description.inputs.paint,description.inputs.hit,description.inputs.semantics)
+    def snapshot: MountedSnapshot = failure.fold(frame.fold[MountedSnapshot](MountedSnapshot.Empty)(MountedSnapshot.Custom(_,binding)))(MountedSnapshot.Unavailable(_))
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      val values=dependencies.map(read)
+      if values.exists(_.isEmpty) then true
+      else values.flatten.collectFirst { case Value.Failed(error) => error } match
+        case Some(error) =>
+          if failure.exists(_ eq error) then false
+          else { change(failure)(failure = _)(Some(error));true }
+        case None =>
+          val states=values.flatten.map { case Value.Ok(value) => value;case Value.Failed(error) => throw error } :+
+            runtime.lawful(description.inputs.presentation.current)
+          val changed=states.indices.map(i => previous.forall(old => !runtime.lawful {
+            if i<4 then dependencies(i).asInstanceOf[Signal[Any]].valueEquality.same(old(i),states(i)) else old(i)==states(i)
+          })).toVector
+          if !changed.contains(true) && failure.isEmpty then false
+          else
+            val next=revisions.zip(changed).map((revision,dirty) => if dirty then Math.addExact(revision,1L) else revision)
+            change(revisions)(revisions = _)(next)
+            change(previous)(previous = _)(Some(states))
+            change(frame)(frame = _)(Some(new ElementFrame(scope.id,description.name,next,description.focusable,if changed(0) || frame.isEmpty then new Object else frame.get.layoutIdentity,description.element,states,phaseGuard)))
+            change(failure)(failure = _)(None)
+            true
+
+  private final class LayoutSlot(parent: runtime.OwnedScope,initial: Layout.Description[Any],requested: Signal.Reader => View) extends Slot:
+    val scope=parent.child(initial.name)
+    private var description=initial
+    private var children=Vector.empty[(sirin.Slot,Holder)]
+    private var previous=Option.empty[Any]
+    private var revision=0L
+    private var frame=Option.empty[LayoutFrame]
+    private var failure=Option.empty[Throwable]
+    def accepts(view: View): Boolean = view match
+      case p: Layout.Description[?] => p.name==description.name && (p.policy eq description.policy)
+      case _ => false
+    def refresh(view: View): Boolean =
+      if description eq view then false
+      else { change(description)(description = _)(view.asInstanceOf[Layout.Description[Any]]);true }
+    def dependencies: Vector[Signal[?]] = description.state.toVector ++ children.flatMap((_,child) => child.dependencies)
+    def snapshot: MountedSnapshot = failure.fold(frame.fold[MountedSnapshot](MountedSnapshot.Empty)(f =>
+      MountedSnapshot.CustomLayout(f,children.map((slot,child) => slot -> child.snapshot))))(MountedSnapshot.Unavailable(_))
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      val state=description.state.fold[Option[Value[Any]]](Some(Value.Ok(runtime.lawful(description.presentation.get.current))))(read)
+      state match
+        case None => true
+        case Some(Value.Failed(error)) =>
+          if failure.exists(_ eq error) then false
+          else { change(failure)(failure = _)(Some(error));true }
+        case Some(Value.Ok(value)) =>
+          var changed=false
+          val old=children.toMap
+          val next=description.children.map { (slot,view) =>
+            val child=old.getOrElse(slot,new Holder(scope,slot.name,Some(reader => {
+              val latest=plain(requested(reader)).asInstanceOf[Layout.Description[Any]]
+              latest.children.find(_._1==slot).map(_._2).getOrElse(throw KernelError.DisposedScope)
+            })))
+            if child.sync(view,read) then changed=true
+            slot -> child
+          }
+          children.filterNot((slot,_) => next.exists(_._1==slot)).foreach((_,child) => child.retire())
+          if children!=next then { change(children)(children = _)(next);changed=true }
+          if frame.isEmpty || failure.nonEmpty || previous.forall(old => !runtime.lawful {
+            description.state.fold(old==value)(_.valueEquality.same(old,value))
+          }) then
+            change(revision)(revision = _)(Math.addExact(revision,1L))
+            change(previous)(previous = _)(Some(value))
+            change(frame)(frame = _)(Some(new LayoutFrame(scope.id,description.name,revision,value,description.policy,phaseGuard)))
+            change(failure)(failure = _)(None)
+            changed=true
+          changed
 
   private final class WindowSlot(parent: runtime.OwnedScope, initial: sirin.Window.Description) extends Slot:
     val scope = parent.child("window-content")

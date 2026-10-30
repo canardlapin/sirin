@@ -17,6 +17,7 @@ object KeyboardRouting:
         val children=node.content match
           case Content.Reference(_,child) => Vector(child)
           case Content.Styled(_,child) => Vector(child)
+          case Content.CustomLayout(_,children) => children.map(_._2)
           case Content.Stack(_,_,_,children) => children
           case Content.Scroll(_,child) => Vector(child)
           case Content.Virtual(_,_,_,_,children) => children

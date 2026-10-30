@@ -35,6 +35,7 @@ trait RenderBackend extends OwnedRenderBackend[FrameRequest,FrameOutput]
 /** Long-lived native ownership stays entirely on its dedicated Scala-created thread. */
 final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,batch: Option[sirin.render.BatchGpu]=None,editorSystemFonts: Boolean=false) extends RenderBackend:
   require(tileEdge>=32 && tileEdge<=192,"tile edge budget")
+  private val elementMeasurements=new ElementMeasureCache
   private val unicode=NativeUnicode.open()
   private val faces=scala.collection.mutable.Map.empty[TextStyle,Vector[NativeFont]]
   private val extraFaces=scala.collection.mutable.Map.empty[sirin.graphics.ResolvedFont,NativeFont]
@@ -99,7 +100,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
         (layout,target,(0L,0L,0L),"reused=true")
       case _ =>
         previousBase=None
-        val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls,payload.editors) { text =>
+        val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls,payload.editors,elementMeasurements) { text =>
           check()
           layouts.remove(text) match
             case Some(value) => layouts(text)=value;value
@@ -156,7 +157,7 @@ final class RenderSession(fontRoot: Path,captureRoot: Path,tileEdge: Int=128,bat
           case Some((prior,layout,base)) if prior==baseKey => (layout,base)
           case _ =>
             gpuBase=None
-            val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls,payload.editors) { text =>
+            val layout=sirin.host.Layout(payload.tree,payload.logicalWidth,payload.logicalHeight,payload.scrolls,payload.editors,elementMeasurements) { text =>
               check()
               layouts.remove(text) match
                 case Some(value) => layouts(text)=value;value

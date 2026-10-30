@@ -52,6 +52,9 @@ final class RecordingCanvas private (initialTarget: g.Canvas2D, initialTheme: ui
     val at = point(by)
     target.transformed(g.Affine.translation(at.x, at.y))(child => within(child)(body))
 
+  override def withTransform(t: ui.Transform2D)(body: => Unit): Unit =
+    current.target.transformed(g.Affine(t.a,t.b,t.c,t.d,t.tx,t.ty))(child => within(child)(body))
+
   private def point(value: ui.Point): g.Point = LayoutUnits.point(value)
   private def rectangle(value: ui.Rect): g.Rect = LayoutUnits.rect(value)
   private def paint(value: ui.Color): g.Paint = g.Paint.Solid(LayoutUnits.color(value))

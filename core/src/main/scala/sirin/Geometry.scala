@@ -49,3 +49,13 @@ object Color:
   def rgba(r: Int, g: Int, b: Int, a: Int = 255): Color =
     ((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff)
   extension (c: Color) def argb: Int = c
+
+/** Finite affine paint transform, composed by the standalone graphics backend. */
+final case class Transform2D(a: Double,b: Double,c: Double,d: Double,tx: Double,ty: Double):
+  require(Vector(a,b,c,d,tx,ty).forall(_.isFinite),"transform coefficients must be finite")
+  def apply(point: Point): Point = Point((a*point.x.toDouble+c*point.y.toDouble+tx).lp,(b*point.x.toDouble+d*point.y.toDouble+ty).lp)
+object Transform2D:
+  val identity: Transform2D=Transform2D(1,0,0,1,0,0)
+  def camera(origin: Point,scale: Double): Transform2D =
+    require(scale.isFinite && scale>0,"camera scale must be positive and finite")
+    Transform2D(scale,0,0,scale,origin.x.toDouble,origin.y.toDouble)

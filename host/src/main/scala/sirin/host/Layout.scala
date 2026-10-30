@@ -1,12 +1,13 @@
 package sirin.host
 
 import sirin.*
-import sirin.drawing.{PreparedText,RecordingCanvas,TextRequest}
+import sirin.drawing.{PreparedText,RecordingCanvas}
 import sirin.graphics.Drawing
 import sirin.text.ResolvedTextLayout
 
 final case class Box(x: Double, y: Double, width: Double, height: Double):
   require(Vector(x,y,width,height).forall(_.isFinite) && width>=0 && height>=0,"invalid host box")
+  def contains(px: Double,py: Double): Boolean = px>=x && py>=y && px<x+width && py<y+height
   def intersect(other: Box): Box =
     val left=math.max(x,other.x);val top=math.max(y,other.y)
     Box(left,top,math.max(0,math.min(x+width,other.x+other.width)-left),math.max(0,math.min(y+height,other.y+other.height)-top))
@@ -33,6 +34,18 @@ final case class LayoutResult(root: Placed, viewports: Vector[ViewportRequest], 
     val area=editorArea(p);val caret=editorCaret(p).bounds
     Point((area.x-math.max(0,caret.origin.x.toDouble-area.width+2)).lp,
       (area.y-math.max(0,caret.origin.y.toDouble+caret.size.height.toDouble-area.height)).lp)
+  def elements: Vector[Placed] =
+    def visit(p: Placed): Vector[Placed]=Option.when(p.node.content.isInstanceOf[Content.Custom])(p).toVector++p.children.flatMap(visit)
+    visit(root)
+  /** Same clipped geometry as paint; native semantic transport consumes these parts. */
+  def semanticParts: Vector[(Long,SemanticNode)] = elements.flatMap { p => p.node.content match
+    case Content.Custom(frame) => frame.semantics(Size(p.bounds.width.lp,p.bounds.height.lp)).map { node =>
+      val b=node.bounds
+      val clipped=Box(p.bounds.x+b.origin.x.toDouble,p.bounds.y+b.origin.y.toDouble,b.size.width.toDouble,b.size.height.toDouble).intersect(p.clip)
+      frame.instance -> node.copy(bounds=Rect(Point(clipped.x.lp,clipped.y.lp),Size(clipped.width.lp,clipped.height.lp)))
+    }
+    case _ => Vector.empty
+  }
   def fields: Vector[Placed] =
     def visit(p: Placed): Vector[Placed]=Option.when(p.node.content.isInstanceOf[Content.Editable])(p).toVector++p.children.flatMap(visit)
     visit(root)
@@ -82,6 +95,10 @@ final case class LayoutResult(root: Placed, viewports: Vector[ViewportRequest], 
           case Content.Scroll(_,_) if keyboardFocus && focus.contains(p.node.id) =>
             val b=p.bounds
             canvas.fill(Rect(Point(b.x.lp,b.y.lp),Size(2.lp,b.height.lp)),theme.color(ColorRole.Accent))
+          case Content.Custom(frame) =>
+            canvas.withOffset(Point(p.bounds.x.lp,p.bounds.y.lp)) {
+              frame.paint(Size(p.bounds.width.lp,p.bounds.height.lp),canvas)
+            }
           case Content.Label(_,_,color) => canvas.text(p.text.get,Point(p.bounds.x.lp,p.bounds.y.lp),theme.color(color))
           case _ => ()
       }
@@ -116,7 +133,7 @@ final case class LayoutResult(root: Placed, viewports: Vector[ViewportRequest], 
 /** Pure full layout reference for the first host. No incremental-layout claim. */
 object Layout:
   private final case class Measured(node: Node,width: Double,height: Double,children: Vector[(Measured,Double,Double)],text: Option[TextLayout])
-  def apply(root: Node, width: Double, height: Double, scrolls: Map[Long,Double] = Map.empty,editors: Map[Long,EditSnapshot]=Map.empty)(
+  def apply(root: Node, width: Double, height: Double, scrolls: Map[Long,Double] = Map.empty,editors: Map[Long,EditSnapshot]=Map.empty,measureCache: ElementMeasureCache=new ElementMeasureCache)(
       resolve: TextRequest => ResolvedTextLayout): LayoutResult =
     require(width.isFinite && height.isFinite && width>0 && height>0,"positive finite root size required")
     val prepared=scala.collection.mutable.LinkedHashMap.empty[TextRequest,ResolvedTextLayout]
@@ -128,9 +145,62 @@ object Layout:
       case Content.Styled(Hint.Grow,_) => true
       case Content.Styled(_,child) => grow(child)
       case _ => false
-    def measure(node: Node,w: Double,h: Double,fillWidth: Boolean = false,fillHeight: Boolean = false): Measured =
+    var measurements=0
+    def constraintsFor(w: Double,h: Double,fillWidth: Boolean,fillHeight: Boolean,minWidth: Double,minHeight: Double): Constraints =
+      Constraints((if fillWidth then w else minWidth).lp,w.lp,(if fillHeight then h else minHeight).lp,h.lp)
+    def validateConstraints(c: Constraints): Unit =
+      val low=Vector(c.minWidth.toDouble,c.minHeight.toDouble);val high=Vector(c.maxWidth.toDouble,c.maxHeight.toDouble)
+      require(low.forall(n => n.isFinite && n>=0) && high.forall(n => !n.isNaN && n>=0) && low.zip(high).forall(_<=_),"invalid custom layout constraints")
+    def validateSize(size: Size,c: Constraints): Unit =
+      val dims=Vector(size.width.toDouble,size.height.toDouble)
+      require(dims.forall(n => n.isFinite && n>=0) && size.width.compare(c.minWidth)>=0 && size.width.compare(c.maxWidth)<=0 &&
+        size.height.compare(c.minHeight)>=0 && size.height.compare(c.maxHeight)<=0,"custom size violates constraints")
+    def measure(node: Node,w: Double,h: Double,fillWidth: Boolean = false,fillHeight: Boolean = false,minWidth: Double=0,minHeight: Double=0): Measured =
+      measurements+=1
+      require(measurements<=100000,"layout measurement budget exceeded")
       def leaf(x: Double,y: Double,text: Option[TextLayout]=None) = Measured(node,if fillWidth then w else bounded(x,w),if fillHeight then h else bounded(y,h),Vector.empty,text)
-      node.content match
+      val measured=node.content match
+        case Content.Custom(frame) =>
+          val c=constraintsFor(w,h,fillWidth,fillHeight,minWidth,minHeight);validateConstraints(c)
+          val size=measureCache.measure(frame,c);validateSize(size,c)
+          Measured(node,size.width.toDouble,size.height.toDouble,Vector.empty,None)
+        case Content.CustomLayout(frame,children) =>
+          val c=constraintsFor(w,h,fillWidth,fillHeight,minWidth,minHeight);validateConstraints(c)
+          val owner=Thread.currentThread()
+          var active=true
+          val cache=scala.collection.mutable.Map.empty[(Int,Constraints),Measured]
+          val latest=scala.collection.mutable.Map.empty[Int,Measured]
+          val placed=scala.collection.mutable.LinkedHashMap.empty[Int,(Measured,Double,Double)]
+          def check(): Unit = require(active && (Thread.currentThread() eq owner),"layout children handle is closed or belongs to another thread")
+          def index(slot: Slot): Int =
+            check()
+            val i=children.indexWhere(_._1==slot);require(i>=0,"unknown layout slot");i
+          def measureNode(child: Node,c: Constraints): Measured =
+            measure(child,c.maxWidth.toDouble,c.maxHeight.toDouble,c.minWidth==c.maxWidth,c.minHeight==c.maxHeight,c.minWidth.toDouble,c.minHeight.toDouble)
+          val handle=new LayoutChildren:
+            def count: Int = {check();children.size}
+            def measure(i: Int,constraints: Constraints,intrinsic: Boolean): Size =
+              check();require(i>=0 && i<children.size,"unknown layout child");validateConstraints(constraints)
+              require(!placed.contains(i),"cannot measure a placed child")
+              require(intrinsic || !cache.keysIterator.exists((j,c) => j==i && c!=constraints),"multiple constraints require intrinsic measurement")
+              val result=cache.getOrElseUpdate((i,constraints),{
+                require(cache.size<10000,"custom child measurement budget exceeded")
+                measureChild(children(i)._2,constraints)
+              })
+              latest(i)=result
+              Size(result.width.lp,result.height.lp)
+            private def measureChild(child: Node,c: Constraints): Measured =
+              measureNode(child,c)
+            def place(i: Int,at: Point): Unit =
+              check();require(i>=0 && i<children.size && !placed.contains(i),"unknown or already placed child")
+              require(at.x.toDouble.isFinite && at.y.toDouble.isFinite,"invalid child placement")
+              val child=latest.getOrElse(i,throw new IllegalArgumentException("measure child before placement"))
+              placed(i)=(child,at.x.toDouble,at.y.toDouble)
+            def measure(slot: Slot,c: Constraints): Size = measure(index(slot),c,false)
+            def place(slot: Slot,at: Point): Unit = place(index(slot),at)
+          val size=try frame.layout(c,handle) finally active=false
+          validateSize(size,c)
+          Measured(node,size.width.toDouble,size.height.toDouble,placed.values.toVector,None)
         case Content.Empty => leaf(0,0)
         case Content.Space(size) => leaf(size,size)
         case Content.Reference(_,child) =>
@@ -217,6 +287,7 @@ object Layout:
             (c,0.0,(first+index)*rowHeight)
           }
           Measured(node,w,total*rowHeight,rows,None)
+      measured.copy(width=math.max(minWidth,measured.width),height=math.max(minHeight,measured.height))
     val measured=measure(root,width,height,true,true).copy(width=width,height=height)
     val requests=Vector.newBuilder[ViewportRequest]
     def place(m: Measured,x: Double,y: Double,ancestorClip: Box): Placed =
@@ -225,6 +296,13 @@ object Layout:
       m.node.content match
         case Content.Virtual(instance,_,_,_,_) =>
           requests+=ViewportRequest(instance,sirin.engine.RowViewport(Lp(math.max(0,clip.y-y)),Lp(clip.height)))
+        case _ => ()
+      m.node.content match
+        case Content.Custom(frame) =>
+          frame.textRequests(Size(m.width.lp,m.height.lp)).foreach { request =>
+            require(prepared.contains(request) || prepared.size<1024,"text preparation request budget exceeded")
+            prepared.getOrElseUpdate(request,resolve(request))
+          }
         case _ => ()
       val children=m.children.map((child,dx,dy) => place(child,x+dx,y+dy,clip))
       Placed(m.node,bounds,clip,children,m.text)

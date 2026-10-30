@@ -102,8 +102,8 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
       }
     case _ => None
   def hasShortcut(instance: Long,input: HostInput,controller: EditorController): Boolean=routedShortcut(instance,input,controller).nonEmpty
-  def shortcut(instance: Long,input: HostInput,controller: EditorController): Boolean =
-    routedShortcut(instance,input,controller).exists {
+  def shortcut(instance: Long,input: HostInput,controller: EditorController,allowElement: Boolean): Boolean =
+    (allowElement && controller.handleElementKey(input)) || routedShortcut(instance,input,controller).exists {
       case Left(action) => invoke(action);true
       case Right(kind) => native.standardMenu(kind);true
     }
@@ -258,9 +258,10 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
       }
       if !refresh() then return
     if !pending.drain(() => controller.ready,input => inputs.needsGeometry(input,session.hasShortcut(instance,input,controller)))((fact,input) => {
-      if !session.shortcut(instance,input,controller) then
-        if inputs.accepts(input,fact.timestamp(),geometryAt,renderRecovery.unavailable) then
-          controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()))
+      val accepts=inputs.accepts(input,fact.timestamp(),geometryAt,renderRecovery.unavailable)
+      if !session.shortcut(instance,input,controller,accepts) then
+        if accepts then
+          controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()),routeElementKey=false)
         else captured.renderStatus.current.foreach { failure =>
           runtime.transact {session.mounted.reportWindowUnappliedInputs(instance,failure.generation,1)} match
             case CommitResult.Failed(error) => throw error
