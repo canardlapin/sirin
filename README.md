@@ -47,6 +47,8 @@ native/fetch-macos.sh   # wgpu-native v29.0.1.1 and SDL3 3.4.18, checked by SHA-
 
 ## Documentation
 
+- **[Current status: what works, what is partial, what is missing](docs/STATUS.md)**
+- [Standing review directives, 2026-10-30](docs/design/decisions/2026-10-30-design-review.md)
 - [Responsive JVM host candidate and remaining gates](docs/evidence/responsive-host-20261028/README.md)
 - [Retained GPU host candidate, pixels and latency receipts](docs/evidence/gpu-host-20261028/README.md)
 - [Design direction](docs/design/VISION.md)

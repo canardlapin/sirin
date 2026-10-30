@@ -73,8 +73,16 @@ application developer building and maintaining realistic interfaces.
 One shared programming model should serve JVM and Scala Native applications.
 The JVM target lets applications retain their Java/Scala library ecosystem and
 development tools. Native-first describes delivery order; JVM desktop shipping
-requires its own host qualification. Today the JVM runs the executable headless
-kernel and tests; a working JVM desktop toolkit is still a target.
+requires its own host qualification.
+
+**Current position (2026-10-30).** Everything runnable today, including windows,
+text editing, accessibility and the workbench, runs on the JDK 25 FFM
+development host. That host is the current development and acceptance path.
+Native delivery remains the intended order, but it depends on resolving the
+Native GC safepoint stall (P0.6). Before Alpha6 acceptance, the owner decides
+the delivery order explicitly, with the P0.6 evidence in hand. Until then,
+documents must not imply that Native windowed applications work. See
+[the 2026-10-30 review](decisions/2026-10-30-design-review.md), D3.
 
 The required advantage has two parts:
 
@@ -859,6 +867,12 @@ a separate pointer-only shim integration; they never enter these Scala endpoints
     generator.
   - Shim C sources build as part of the Scala Native link, from
     `resources/scala-native/`.
+- **One shim for both hosts.** The Scala Native externs and the JVM FFM
+  bindings call the same C shim and header. Neither binding layer adds a
+  native entry point that the other cannot reach without a recorded reason.
+- **Bulk transfer.** Arrays cross the boundary with one bulk copy (`memcpy`,
+  `MemorySegment.copy` or equivalent) or a recorded borrow. Per-element copy
+  loops are allowed only off hot paths, with a comment saying why.
 - **ABI checks.** The shim exports the `sizeof` and `offsetof` of every
   struct that Scala builds, and a test compares them with the Scala layouts.
   By-value round trips go through the shim and run in CI on all three ABIs
@@ -1023,6 +1037,17 @@ geometry easy to compose. Invalid geometry, unavailable capabilities, resource
 failures, and costly transfers must be observable. Standard widgets and external
 renderers use the same supported drawing facilities. This section introduces no
 new transaction, scheduling, or lifetime semantics: those remain governed by §5.
+
+**One drawing vocabulary (2026-10-30).** The paint surface given to a custom
+`Element` exposes the complete public drawing model: paths, paints, images,
+glyphs, transforms, clips, layers and embedding a recorded `Drawing`.
+Rectangle, line and text operations remain as conveniences over the same model,
+not as a separate, smaller API. Scope names and argument order follow
+`Canvas2D` (`transformed`, `clipped`, `layer`). Logical units (`Lp`) are the
+authoring unit in both, and conversion to device units is explicit. A custom
+surface must never need to drop into a backend or private API to draw an
+ordinary curve, gradient or image. See
+[the 2026-10-30 review](decisions/2026-10-30-design-review.md), D2.
 
 `Canvas` in the authoring corpus is a provisional, deliberately partial shape,
 not the finished graphics contract. Stage 2 implements the nucleus; full graphics
@@ -1235,9 +1260,28 @@ accessible geometry coherently in the same frame. Layout presentation is an
 explicit separate channel charged to layout. A few well-defined transitions,
 not an animation language.
 
+Motion is implemented and tested within the application alpha, before the
+public API is reviewed for freezing. Timing and transaction interactions tend
+to force late API changes, so motion is not deferred past that review.
+
 **Admission rule.** A widget enters the standard library only when its
 behavior, accessibility, styling, and tests are good enough to serve as a
 reference implementation.
+
+**Public-seam rule (2026-10-30).** A standard control is built on the public
+`Element`, `LayoutPolicy` and semantics interfaces, the same ones available to
+applications. A control that still needs something those interfaces lack is
+listed in the public-seam ledger in [`docs/STATUS.md`](../STATUS.md), naming
+the missing public capability and its tracking issue. No new control adds a
+host-private hook without a ledger entry. The goal is an empty ledger, and the
+§1.1 comparison treats a non-empty ledger as a gap.
+
+The custom-element API offers two forms. The per-phase form keeps separate
+layout, paint, hit, semantic and presentation inputs for surfaces that need
+precise invalidation. A single-state form takes one input for every phase and
+invalidates all of them when it changes, so a small custom control does not
+pay for the five-way split. The authoring corpus uses both. See
+[the 2026-10-30 review](decisions/2026-10-30-design-review.md), D1, D4 and D5.
 
 ## 9. Module layout (one repository)
 
@@ -1517,6 +1561,17 @@ in §1.1 must demonstrate a clear usability and elegance advantage. Kernel laws,
 API compilation and visual regression tests are necessary evidence, but do not
 substitute for that comparison or owner approval of the actual experience.
 
+**Evidence weight (2026-10-30).** Every claim still needs evidence. The
+committed evidence note is readable: what was claimed, how it was checked, and
+the result. Raw logs, tarballs, frame captures and source snapshots over 1 MB
+stay out of git. They are kept as CI or release artifacts, or under ignored
+local paths, and the note records their hashes. [`docs/STATUS.md`](../STATUS.md)
+states in plain language what works, what is partial and what is missing, and
+every capability change updates it. Latency receipts state whether the measured
+path includes offscreen readback and texture upload. A responsiveness comparison
+with ScalaFX uses direct presentation or states that handicap. See
+[the 2026-10-30 review](decisions/2026-10-30-design-review.md), D8 and D10.
+
 **Structural performance contracts** (testable now):
 
 - With no invalidations, animations, or deadlines, the loop is parked and no
@@ -1650,6 +1705,23 @@ were all checked against their sources on 2026-10-27.
 
 **Removed.** Brain-visualization examples in the core API (Draft 1). That
 material now belongs to the downstream adapters.
+
+### Round 4: implementation and process review (2026-10-30)
+
+A source review of `main` at `1d5edcc`, recorded in
+[decisions/2026-10-30-design-review.md](decisions/2026-10-30-design-review.md).
+It adds no kernel semantics. Changes:
+
+- §1.1 states the current platform position and requires an explicit
+  delivery-order decision before Alpha6 acceptance.
+- §6.1 requires one C shim for both binding layers and bulk transfer across
+  the boundary.
+- §7.1 requires one drawing vocabulary: the custom-element paint surface
+  exposes the complete public drawing model.
+- §8 adds the public-seam rule and ledger, a single-state custom-element form,
+  and motion within the alpha.
+- §11 sets evidence weight, adds the plain-language status page, and requires
+  latency receipts to state the presentation path.
 
 ### Round 3: external design review (2026-10-27)
 
