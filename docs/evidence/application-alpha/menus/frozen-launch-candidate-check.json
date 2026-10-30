@@ -1,0 +1,11 @@
+{
+  "candidate": "/Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/package-application/SirinAlpha.app",
+  "files": {
+    "Contents/MacOS/SirinAlpha": "fb7beb3337b409a15c2eeb56d697faff3c7405fd55d37f50948b28e009599f2f",
+    "Contents/app/sirin.jar": "02d997240c47aceacc043e38632a10368eccc7aec55264af3c15fde55f1787fa",
+    "Contents/app/libsirin_desktop.dylib": "61543eb211487b135aa2df10759b4b371b45284482bdf44185dd023d40039e39",
+    "Contents/app/SirinAlpha.cfg": "efb410d5cc71b54937f6d53e77d167caeb03e6f444d9efe4a07292a9ff3d92ae"
+  },
+  "matches_frozen_candidate": true,
+  "launched": false
+}

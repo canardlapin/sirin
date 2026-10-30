@@ -52,21 +52,23 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
   private var event=new NativeApplication.Event(false,false,false,0)
   var applicationWakes=0L
   var turns=0L
+  private val menus=new ApplicationMenus(native)
+  private var menuWindow=Option.empty[Long]
   private var failures=Vector.empty[Throwable]
   def reportedFailures: Vector[Throwable]=failures
   private def report(error: Throwable): Unit =
     failures=(failures :+ error).takeRight(64)
     error.printStackTrace()
   def peers: Vector[ApplicationPeer]=active.values.toVector
-  def capture(): Vector[CapturedWindow] =
-    if application.isDisposed then Vector.empty
+  def capture(): Vector[CapturedWindow]=captureApplication().windows
+  private def captureApplication(): CapturedApplication =
+    if application.isDisposed then CapturedApplication(CapturedMenus.empty,Vector.empty)
     else runtime.withCommitted(reader => reader(mounted.snapshot) match
-      case Value.Ok(snapshot) => WindowCapture.capture(snapshot,reader)
+      case Value.Ok(snapshot) => WindowCapture.captureApplication(snapshot,reader)
       case Value.Failed(error) => throw error)
   private def sync(): Unit =
-    val windows=capture()
-    // Never silently discard declared menus while their native presenter is pending.
-    require(windows.forall(_.menu.menus.isEmpty),"native menu presentation remains unimplemented")
+    val captured=captureApplication()
+    val windows=captured.windows
     val ids=windows.map(_.instance).toSet
     active.keys.filterNot(ids).toVector.foreach { id =>
       val peer=active.remove(id).get;peer.retire();retiring+=peer
@@ -78,6 +80,35 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
           active(window.instance)=new ApplicationPeer(this,window,unicode,root)
         case None => () // Existing retiring peers still own the native capacity.
     }
+    menuWindow=active.valuesIterator.find(_.window.keyboardFocus()).map(_.instance)
+      .orElse(menuWindow.filter(active.contains)).orElse(active.lastOption.map(_._1))
+    menus.update(captured.menu,menuWindow.flatMap(id => windows.find(_.instance==id)))
+  private def invoke(action: Activation): Unit =
+    runtime.transact {action.run(summon[UiTxn])} match
+      case CommitResult.Failed(error) => report(error)
+      case _ => ()
+  def shortcut(instance: Long,input: HostInput,controller: EditorController): Boolean=input match
+    case HostInput.KeyDown(key,mods,_) if !controller.consumesKey(input) =>
+      val captured=captureApplication()
+      captured.windows.find(_.instance==instance).exists { window =>
+        val chord=Chord(key,mods)
+        val action=runtime.withCommitted(_ => KeyboardRouting.command(window.content,controller.interaction.state.focused,chord,window.menu,captured.menu))
+        action match
+          case Some(binding) => invoke(binding);true
+          case None => ApplicationMenus.standard(chord) match
+            case Some(kind) => native.standardMenu(kind);true
+            case _ => false
+      }
+    case _ => false
+  private def menuActions(): Unit =
+    var count=0
+    var more=true
+    while more && count<64 do
+      val fact=native.pollMenu()
+      if fact==null then more=false
+      else
+        // Reconcile focus, owner retirement and command state before interpreting the ID.
+        sync();menus.action(fact).foreach(invoke);count+=1
   def closeWindow(instance: Long): CommitResult[Unit]=
     val result=runtime.transact {mounted.requestWindowClose(instance)}
     result match
@@ -105,6 +136,8 @@ private[desktop] final class DesktopApplicationSession(val native: NativeApplica
       require(turn.failures.isEmpty,s"application driver failures: ${turn.failures}")
       sync()
       active.values.toVector.foreach(_.drain())
+      sync()
+      menuActions()
       sync()
       val attached=runtime.attachments.map(_.reference).toSet
       focusRequests=(focusRequests++runtime.takeFocusRequests()).distinct.filter(attached)
@@ -203,7 +236,8 @@ private[desktop] final class ApplicationPeer(session: DesktopApplicationSession,
       if controller.needsGeometry(input) && !controller.ready then consume=false
       else
         pending.dequeue()
-        controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()))
+        if !session.shortcut(instance,input,controller) then
+          controller.handle(input,if (fact.mods()&2)!=0 then Mods.Shift else Mods.none,math.max(1,fact.clicks()))
         if !refresh() then return
         updateInputClient()
     var actions=0

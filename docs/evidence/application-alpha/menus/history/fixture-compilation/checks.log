@@ -1,0 +1,24 @@
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21624 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 5 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/test-classes ...
+[error] -- [E007] Type Mismatch Error: /Users/bbuchsbaum/code/scala/sirin-alpha/host/src/test/scala/sirin/host/MenuRoutingSuite.scala:18:25 
+[error] 18 |    val m=r.mountWindows(owner,windows);owner.observe(m.snapshot)(_ => ());m
+[error]    |                         ^^^^^
+[error]    |                         Found:    (owner : sirin.Scope)
+[error]    |                         Required: r.OwnedScope
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] -- [E008] Not Found Error: /Users/bbuchsbaum/code/scala/sirin-alpha/host/src/test/scala/sirin/host/MenuRoutingSuite.scala:18:46 
+[error] 18 |    val m=r.mountWindows(owner,windows);owner.observe(m.snapshot)(_ => ());m
+[error]    |                                        ^^^^^^^^^^^^^
+[error]    |                            value observe is not a member of sirin.Scope
+[error] -- [E172] Type Error: /Users/bbuchsbaum/code/scala/sirin-alpha/host/src/test/scala/sirin/host/MenuRoutingSuite.scala:66:100 
+[error] 66 |      val save=owner.command[Unit,Unit,Int]("save","Save",WorkPolicy.download)(_ => Job((),Work {42}))((_,_) => completed.update(_+1))
+[error]    |                                                                                                    ^
+[error]    |No given instance of type scala.util.NotGiven[sirin.UiTxn] was found for parameter x$2 of method apply in object Work
+[error] three errors found
+[error] (hostJVM / Test / compileIncremental) Compilation failed
+[error] Total time: 3 s, completed Oct 29, 2026, 10:55:54 p.m.

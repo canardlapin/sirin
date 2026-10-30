@@ -54,6 +54,23 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
     case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move => true
     case HostInput.KeyDown(key,_,_) => Set(Key.ArrowLeft,Key.ArrowRight,Key.ArrowUp,Key.ArrowDown,Key.Home,Key.End,Key.Tab).contains(key)
     case _ => false
+  /** Reserve actual editor/control keys before local or menu shortcuts. */
+  def consumesKey(input: HostInput): Boolean=input match
+    case HostInput.KeyDown(key,mods,_) =>
+      if focusedId.exists(id => states(id).snapshot.preedit.nonEmpty) then true
+      else if key==Key.Tab && (mods.isEmpty || mods==Mods.Shift) then true
+      else if focusedId.nonEmpty then key match
+        case Key.Character(c) if mods.has(Mods.Primary) => "acxvz".contains(c.toLower)
+        case Key.Character(_) | Key.Space => !mods.has(Mods.Primary) && !mods.has(Mods.Control)
+        case Key.Backspace | Key.Delete | Key.ArrowLeft | Key.ArrowRight | Key.ArrowUp | Key.ArrowDown |
+            Key.Home | Key.End | Key.Enter | Key.Escape => true
+        case _ => false
+      else if !mods.isEmpty then false
+      else interaction.focused.exists(_.kind match
+        case _: TargetKind.Button => key==Key.Enter || key==Key.Space
+        case _: TargetKind.Scroll => Set(Key.ArrowDown,Key.ArrowUp,Key.PageDown,Key.PageUp,Key.Home,Key.End).contains(key)
+        case _ => false)
+    case _ => false
   private def publishFocus()(using UiTxn): Unit =
     val (direct,ancestors,keyboard)=interaction.focusReferences;runtime.publishFocus(direct,ancestors,keyboard)
   def nativeFocus(active: Boolean): Unit =
@@ -150,6 +167,10 @@ final class EditorController(runtime: HeadlessRuntime,analyze: String => Unicode
       case HostInput.Move(x,y,true) => drag.foreach { (id,anchor) => point(id,x,y).foreach { p => applyState(id,states(id).select(EditSelection(anchor,p),boundaries)) }}
       case _: HostInput.Up =>
         val decision=interaction.handle(input);drag=None;decision.activate.foreach(invoke)
+      case HostInput.KeyDown(key,_,_) if focusedId.exists(id => states(id).snapshot.preedit.nonEmpty) =>
+        // Composition owns Tab as well as editing/menu keys; Escape cancels it.
+        if key==Key.Escape then
+          val id=focusedId.get;clearComposition();applyState(id,states(id).cancel)
       case HostInput.KeyDown(Key.Tab,_,_) =>
         val before=interaction.state;interaction.handle(input)
         if oldFocus!=focusedId && !blur(oldFocus) then interaction.rollbackPublication(before)

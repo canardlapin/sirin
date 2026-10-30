@@ -28,7 +28,7 @@ final case class Node(id: NodeId, content: Content)
 
 final case class Activation(enabled: Boolean,run: UiTxn => Unit)
 final case class TextBinding(description: TextField.Description)
-final case class CapturedTree(tree: Node,bindings: Map[Long,Activation],editors: Map[Long,TextBinding]=Map.empty)
+final case class CapturedTree(tree: Node,bindings: Map[Long,Activation],editors: Map[Long,TextBinding]=Map.empty,keys: Vector[KeyBinding]=Vector.empty)
 
 /** One budget spans every window and its structure, rather than resetting per peer. */
 private[host] final class CaptureBudget(maxNodes: Int, maxTextUnits: Int):
@@ -51,6 +51,7 @@ object CommittedTree:
       budget: CaptureBudget,initialDepth: Int): CapturedTree =
     val bindings=scala.collection.mutable.Map.empty[Long,Activation]
     val editors=scala.collection.mutable.Map.empty[Long,TextBinding]
+    val keys=scala.collection.mutable.ArrayBuffer.empty[KeyBinding]
     def value[A](signal: Signal[A]): A = reader(signal) match
       case Value.Ok(v) => v
       case Value.Failed(e) => throw e
@@ -85,16 +86,29 @@ object CommittedTree:
             case Decoration.Visible(shown) => !value(shown)
             case _ => false
           } then Node(id,Content.Empty)
-          else decorations.foldLeft(recurse(child,"content")) { (node, decoration) =>
-            val hint = decoration match
-              case Decoration.Padding(x,y) => Some(Hint.Padding(x.toDouble,y.toDouble))
-              case Decoration.Width(w) => Some(Hint.Width(w.toDouble))
-              case Decoration.Height(h) => Some(Hint.Height(h.toDouble))
-              case Decoration.Grow => Some(Hint.Grow)
-              case Decoration.Visible(_) => None
-              case other => throw new UnsupportedOperationException(s"host decoration is deferred: $other")
-            hint.fold(node)(h => Node(id,Content.Styled(h,node)))
-          }
+          else
+            val captured=decorations.foldLeft(recurse(child,"content")) { (node, decoration) =>
+              val hint = decoration match
+                case Decoration.Padding(x,y) => Some(Hint.Padding(x.toDouble,y.toDouble))
+                case Decoration.Width(w) => Some(Hint.Width(w.toDouble))
+                case Decoration.Height(h) => Some(Hint.Height(h.toDouble))
+                case Decoration.Grow => Some(Hint.Grow)
+                case Decoration.Visible(_) | _: Decoration.KeyHandler | _: Decoration.Shortcut => None
+                case other => throw new UnsupportedOperationException(s"host decoration is deferred: $other")
+              hint.fold(node)(h => Node(id,Content.Styled(h,node)))
+            }
+            decorations.foreach {
+              case Decoration.KeyHandler(chord,run) => keys+=KeyBinding(captured.id,chord,Activation(true,run))
+              case shortcut @ Decoration.Shortcut(chord,_) =>
+                val binding=shortcut.shortcutBinding.get
+                val enabled=reader(binding.enabled) match
+                  case Value.Ok(value) => value
+                  case _ => false
+                keys+=KeyBinding(captured.id,chord,Activation(enabled,txn => binding.invoke()(using txn)))
+              case _ => ()
+            }
+            require(keys.size<=256,"window keyboard binding budget exceeded")
+            captured
         case MountedSnapshot.Group(children,horizontal,gap,alignment) =>
           Node(id, Content.Stack(horizontal,gap.toDouble,alignment,children.zipWithIndex.map((child,index) => recurse(child,index))))
         case MountedSnapshot.Component(identity,_,child) => loop(child,NodeId(Vector("component",identity.instance)),depth+1)
@@ -111,4 +125,4 @@ object CommittedTree:
           Node(id,Content.Virtual(instance,first,total,height.toDouble,children))
         case MountedSnapshot.Unavailable(error) => throw error
     val tree=loop(snapshot,NodeId(Vector("root")),initialDepth)
-    CapturedTree(tree,bindings.toMap,editors.toMap)
+    CapturedTree(tree,bindings.toMap,editors.toMap,keys.toVector)

@@ -330,11 +330,14 @@ lazy val desktopJVM = project.in(file("desktop"))
       require(Process(Seq("clang", "-Wall", "-Wextra", "-Werror", "-fobjc-arc", "-O2", "-c") ++ compile ++
         Seq(s"-I$v/sirin-sources/accesskit-c-0.23.1/include") ++
         Seq((baseDirectory.value / "native" / "editor_ax.m").toString, "-o", ax.toString),rootDir).! == 0,"native accessibility compilation failed")
+      val menus = target.value / "native" / "menus.o"
+      require(Process(Seq("clang", "-Wall", "-Wextra", "-Werror", "-fobjc-arc", "-O2", "-c") ++ compile ++
+        Seq((baseDirectory.value / "native" / "menus.m").toString, "-o", menus.toString),rootDir).! == 0,"native menu compilation failed")
       val command = Seq("clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-O2",
         "-Wl,-install_name,@rpath/libsirin_desktop.dylib", "-Wl,-rpath,@loader_path") ++ compile ++
         Seq(s"-I$text/include/harfbuzz", s"-I$text/include/freetype2", "-iquote", headers.toString,
           s"-I$thor/include/thorvg-1", (baseDirectory.value / "native" / "sirin_desktop.c").toString, "-o", output.toString) ++ link ++
-        Seq(ax.toString,"-framework","Cocoa", "-framework","Metal", "-framework","QuartzCore", "-framework","Security", "-framework","IOKit",
+        Seq(ax.toString,menus.toString,"-framework","Cocoa", "-framework","Metal", "-framework","QuartzCore", "-framework","Security", "-framework","IOKit",
           s"$text/lib/libharfbuzz.a", s"$text/lib/libfreetype.a", s"$thor/lib/libthorvg-1.a", combined.toString, "-lc++")
       require(Process(command, rootDir).! == 0, "desktop transport compilation failed")
       output

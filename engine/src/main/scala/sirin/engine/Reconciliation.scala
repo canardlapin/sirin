@@ -114,12 +114,17 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     case View.FieldDecoration(inner, decoration) => styles(inner) :+ decoration
     case _ => Vector.empty
   private def directDependencies(view: View): Vector[Signal[?]] =
-    styles(view).collect { case Decoration.Visible(signal) => signal } ++ leafDependencies(view)
+    styles(view).flatMap {
+      case Decoration.Visible(signal) => Vector(signal)
+      case shortcut: Decoration.Shortcut => shortcut.shortcutBinding.toVector.flatMap(b => Vector(b.enabled,b.running))
+      case _ => Vector.empty
+    } ++ leafDependencies(view)
   private def leafDependencies(view: View): Vector[Signal[?]] = plain(view) match
     case p: Button.Description => Vector(p.label,p.binding.enabled,p.binding.running)
     case p: Text.Description => Vector(p.content)
     case p: TextField.Description => Vector(p.value,p.problem)
-    case p: sirin.Window.Description => Vector(p.title) ++ directDependencies(p.content)
+    case p: sirin.Window.Description => Vector(p.title) ++ MenuBindings.dependencies(p.menu) ++ directDependencies(p.content)
+    case p: Windows.MenuDescription => MenuBindings.dependencies(p.menu)
     case p: View.ScrollContent => directDependencies(p.content)
     case p: Component.Placement[?] => Vector(p.props)
     case p: ForEach.Description[?, ?] => Vector(p.items)
@@ -261,7 +266,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     def refresh(view: View): Boolean =
       if description.eq(view) then false
       else { change(description)(description = _)(view.asInstanceOf[sirin.Window.Description]); true }
-    def dependencies: Vector[Signal[?]] = Vector(description.title) ++ child.dependencies
+    def dependencies: Vector[Signal[?]] = Vector(description.title) ++ MenuBindings.dependencies(description.menu) ++ child.dependencies
     def snapshot: MountedSnapshot = MountedSnapshot.Window(scope.id, title, description.menu, child.snapshot)
     def requestClose()(using txn: UiTxn): Unit =
       val dismiss = description.prepareDismiss match

@@ -6,6 +6,10 @@ enum MenuEntry:
   case Separator
   case Submenu(menu: Menu)
 
+  private[sirin] lazy val binding: Option[Button.Binding] = this match
+    case Item(command, _) => Some(Button.Bound(command, Signal.const(())))
+    case _ => None
+
 object MenuItem:
   /** A menu item whose label and enablement come from the command. A chord
     * given here is also an active window-wide shortcut.
@@ -19,6 +23,20 @@ final case class MenuBar(menus: Menu*)
 
 object MenuBar:
   val empty: MenuBar = MenuBar()
+
+private[sirin] object MenuBindings:
+  def dependencies(bar: MenuBar): Vector[Signal[?]] =
+    val result=Vector.newBuilder[Signal[?]]
+    var pending=bar.menus.toList.map(menu => (MenuEntry.Submenu(menu),0))
+    var count=0
+    while pending.nonEmpty do
+      val (entry,depth)=pending.head;pending=pending.tail
+      count+=1
+      require(count<=512 && depth<=32,"menu structure budget exceeded")
+      entry match
+        case MenuEntry.Submenu(menu) => pending=menu.entries.toList.map(_ -> (depth+1)):::pending
+        case _ => entry.binding.foreach(binding => result++=Vector(binding.enabled,binding.running))
+    result.result()
 
 enum CloseDecision:
   case Allow, KeepOpen
@@ -36,9 +54,14 @@ sealed trait Window:
   */
 sealed trait Windows:
   private[sirin] def view: View
+  private[sirin] def applicationMenu: MenuBar
+  /** Application-owned commands remain available with no open windows. */
+  def menuBar(menu: MenuBar): Windows
 
 object Windows:
-  private final case class Description(view: View) extends Windows
+  private[sirin] final case class MenuDescription(menu: MenuBar) extends View
+  private final case class Description(view: View,applicationMenu: MenuBar=MenuBar.empty) extends Windows:
+    def menuBar(menu: MenuBar): Windows=copy(applicationMenu=menu)
 
   def apply[K, A](source: CollectionSource[K, A])(build: (Scope, Inputs[A]) => Window)(
       using equality: Equality[A], keySchema: SchemaId[K], valueSchema: SchemaId[A]

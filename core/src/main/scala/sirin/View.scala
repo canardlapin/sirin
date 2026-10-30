@@ -33,6 +33,10 @@ enum Decoration:
   case Opacity(value: Presentation[Double])
   case Offset(value: Presentation[Point])
 
+  private[sirin] lazy val shortcutBinding: Option[Button.Binding] = this match
+    case Shortcut(_, command) => Some(Button.Bound(command, Signal.const(())))
+    case _ => None
+
 extension [V <: View](view: V)(using rebuild: ViewRebuild[V])
   def padding(all: Lp): V = rebuild(view, Decoration.Padding(all, all))
   def padding(horizontal: Lp, vertical: Lp): V = rebuild(view, Decoration.Padding(horizontal, vertical))

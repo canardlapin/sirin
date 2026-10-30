@@ -1,0 +1,59 @@
+{
+  "start_utc": "2026-10-30T02:59:46.646681+00:00",
+  "base_commit": "f908f6b895cde4152c35e831da1f378d2d1a3238",
+  "commands": [
+    [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM",
+      "testNative",
+      "examples/compile"
+    ],
+    [
+      "sbt",
+      "--java-home",
+      "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+      "-J-XX:ActiveProcessorCount=4",
+      "desktopJVM/test"
+    ]
+  ],
+  "source_hashes": {
+    ".github/workflows/ci.yml": "37bc59e08c1223e4147b5833e4c5908e2d84577ab4bce9c0689dae9ddfc8cf54",
+    "build.sbt": "7db4c61d1a7bc55149bdfa44e0f16ff28f4fdc37f11c4787077719ed4afb54f2",
+    "core/src/main/scala/sirin/App.scala": "eba5ae58bcfe05dfc1dfe81d05f6919a85171a4dea26b030c47b617d50d16add",
+    "core/src/main/scala/sirin/View.scala": "4309e2cb9d88b8c6cdb16c45d85aa08d62735bf6ed42e3b647f60df0b38e7119",
+    "desktop/native/menus.h": "8369b6d302a4250a94793ec5d9e0b3e6e881afe66655c943416ff7310f329493",
+    "desktop/native/menus.m": "4a57a9c4517d335582cfd596b1c7599a7012b3d5259ccdfbd5329570a2fb5ae0",
+    "desktop/native/sirin_desktop.c": "56719bcde737b3183ca89af0f7efe3a0d453e57fc790a9d205b1a895f6fdb4db",
+    "desktop/src/main/java/sirin/desktop/NativeApplication.java": "98621c7989087c0424400fd88cd81ba6538c543a8c902db617359351f758dce2",
+    "desktop/src/main/scala/sirin/desktop/ApplicationMenus.scala": "a9f8f8b420cb423dcc8b55e3798faf8517303214feeace035a1783d7258758f3",
+    "desktop/src/main/scala/sirin/desktop/DesktopApplicationPlatform.scala": "499a14c909d491b017b7fda9bdcab434eb7e5fc62a00fae0c17418e774563e72",
+    "desktop/src/main/scala/sirin/desktop/EditorController.scala": "6bb5a0908f4464c5fbc1217b9a7433da3a9a77b683890bf5c7b6d41cdd132253",
+    "desktop/src/main/scala/sirin/desktop/NativeInput.scala": "23511f8b28fa552353c7e68c4320a1fdfffb81a4bce64e46a164515f516c9ecb",
+    "desktop/src/test/scala/sirin/desktop/ApplicationMenusSuite.scala": "c3220287f644a727a37ac23b72e1f08b9ff4410b5cfa7274356a2efea0ed4015",
+    "desktop/src/test/scala/sirin/desktop/EditorControllerSuite.scala": "912144d26ca809e680ad718cd9db3fa42968046a34a17e92a19335d62a11b8b7",
+    "docs/design/decisions/2026-10-30-menus-shortcuts.md": "d7113992e33f332199e6a006ccda7db5b606146cd9d64258a3e9a04f2b3cb57e",
+    "engine/src/main/scala/sirin/engine/HeadlessRuntime.scala": "883af431d44ec2b1d3fba67273c1a866f0035cb77dcf3dd5409bf9674007801b",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "3632a0a50ec949d282701874dc76af3e2827907799f02995e9b9795d2493cd19",
+    "engine/src/test/scala/sirin/engine/WindowKeySafetySuite.scala": "ad7fbaba74216066147f0d92a37c039310d29516171da4c62c6dcd92ecefa4c2",
+    "engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala": "d64e90f900edbcd7a5ec1dec1457e8276c332b102096f9ad734deb29a5904039",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "290211af77d0fd430da39c1156d4e4ee807535a9cb5d2bef8aa7ec3694e7c6a3",
+    "host/src/main/scala/sirin/host/KeyboardRouting.scala": "3a1376b41a855b5b49e317a952ae9132217f80311e40946af12bb7b9ba918250",
+    "host/src/main/scala/sirin/host/MenuCapture.scala": "747eff9c51b218be4fb9548a593f668f5b6919ae3173638c9c124fd9d2538a5f",
+    "host/src/main/scala/sirin/host/WindowCapture.scala": "8019264fef652c4dbfa444542f202b3cd7b525045b6ab65681161750a45c73b6",
+    "host/src/test/scala/sirin/host/MenuRoutingSuite.scala": "353bc143741ad67121ae7fc40a2503121dfbadbc93a136ac6e68feeb0d1abf46"
+  },
+  "results": [
+    {
+      "command": [
+        "sbt",
+        "-J-XX:ActiveProcessorCount=4",
+        "testJVM",
+        "testNative",
+        "examples/compile"
+      ],
+      "returncode": 1,
+      "end_utc": "2026-10-30T03:00:14.659000+00:00"
+    }
+  ]
+}

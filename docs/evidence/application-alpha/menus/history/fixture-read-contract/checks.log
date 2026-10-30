@@ -1,0 +1,50 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21624 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 5 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.host.MenuRoutingSuite started
+==> X sirin.host.MenuRoutingSuite.presentation rejects stale revisions, owner changes and same-row replacement bindings 0.002s sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase
+    at sirin.engine.KernelError$.<clinit>(HeadlessRuntime.scala:22)
+    at sirin.engine.HeadlessRuntime.$anonfun$11(HeadlessRuntime.scala:772)
+    at scala.collection.mutable.LinkedHashMap.getOrElseUpdate(LinkedHashMap.scala:143)
+    at sirin.engine.HeadlessRuntime.attach$1(HeadlessRuntime.scala:774)
+    at sirin.engine.HeadlessRuntime.settle$$anonfun$2(HeadlessRuntime.scala:780)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.engine.HeadlessRuntime.settle(HeadlessRuntime.scala:780)
+    at sirin.engine.HeadlessRuntime.publishCandidate(HeadlessRuntime.scala:842)
+    at sirin.engine.HeadlessRuntime.publish(HeadlessRuntime.scala:834)
+    at sirin.engine.HeadlessRuntime.transact(HeadlessRuntime.scala:709)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$edit(HeadlessRuntime.scala:260)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed$$anonfun$1(HeadlessRuntime.scala:416)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$construct(HeadlessRuntime.scala:275)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed(HeadlessRuntime.scala:419)
+    at sirin.host.MenuRoutingSuite.$init$$$anonfun$1(MenuRoutingSuite.scala:27)
+==> X sirin.host.MenuRoutingSuite.menu bounds, duplicate titles and local key bounds fail explicitly 0.002s munit.FailException: intercept failed, exception 'sirin.engine.KernelError$$anon$11' is not a subtype of 'java.lang.IllegalArgumentException
+    at munit.Assertions.runIntercept(Assertions.scala:252)
+Caused by: sirin.engine.KernelError$$anon$11: mutation or undeclared read in a read-only phase
+    at sirin.engine.KernelError$.<clinit>(HeadlessRuntime.scala:22)
+    at sirin.engine.HeadlessRuntime.$anonfun$11(HeadlessRuntime.scala:772)
+    at scala.collection.mutable.LinkedHashMap.getOrElseUpdate(LinkedHashMap.scala:143)
+    at sirin.engine.HeadlessRuntime.attach$1(HeadlessRuntime.scala:774)
+    at sirin.engine.HeadlessRuntime.settle$$anonfun$2(HeadlessRuntime.scala:780)
+    at scala.collection.immutable.Vector.foreach(Vector.scala:2125)
+    at sirin.engine.HeadlessRuntime.settle(HeadlessRuntime.scala:780)
+    at sirin.engine.HeadlessRuntime.publishCandidate(HeadlessRuntime.scala:842)
+    at sirin.engine.HeadlessRuntime.publish(HeadlessRuntime.scala:834)
+    at sirin.engine.HeadlessRuntime.transact(HeadlessRuntime.scala:709)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$edit(HeadlessRuntime.scala:260)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed$$anonfun$1(HeadlessRuntime.scala:416)
+    at sirin.engine.HeadlessRuntime.sirin$engine$HeadlessRuntime$$construct(HeadlessRuntime.scala:275)
+    at sirin.engine.HeadlessRuntime$OwnedScope.keyed(HeadlessRuntime.scala:419)
+    at sirin.host.MenuRoutingSuite.$init$$$anonfun$1(MenuRoutingSuite.scala:27)
+sirin.host.MenuRoutingSuite: finished 0.217s
+Test run sirin.host.MenuRoutingSuite finished: 2 failed, 0 ignored, 10 total 0.228s
+[error] Failed: Total 10, Failed 2, Errors 0, Passed 8
+[error] Failed tests:
+[error] 	sirin.host.MenuRoutingSuite
+[error] (hostJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 4 s, completed Oct 29, 2026, 10:56:33 p.m.

@@ -104,3 +104,28 @@ owner visual approval and all original acceptance gates remain required.
 A fresh nonqualifying host screen observed 65.71/66.60% idle, still below the
 original GC gate's 80% requirement. No 600-second qualification was started and
 no thresholds or unrelated processes changed.
+
+
+## Menu and shortcut implementation checkpoint (native client receipt pending)
+
+Application-owned Windows.menuBar now keeps command dependencies live with zero
+windows. Active-window menus merge by top-level title; the JVM provider builds
+and publishes native Cocoa menus and consumes revision/ID action facts on the UI
+owner. The previous nonempty-menu refusal is removed. Local keyboard bindings
+bubble from the focused subtree, followed by window and application chords,
+after IME/focused-control editing and activation keys. Disabled matches record
+the shared command refusal. Native callbacks never execute Scala.
+
+The additive decision is ../design/decisions/2026-10-30-menus-shortcuts.md.
+Shared full checks pass 363 JVM and 363 Native cases plus authoring compilation.
+The desktop full baseline passes 60; the final native key-encoding successor
+passes the entire 61-case desktop suite. Shared sources are identical between
+those receipts. Exact sources, failed fixtures, unchanged candidate hashes and
+reconciliation are in ../evidence/application-alpha/menus/.
+
+The preceding f908f6b host checkpoint has nine successful CI jobs, including
+headless application packaging. This does not qualify actual menus, windows,
+IME or VoiceOver. The original packaged launch candidate remains frozen while
+its action-time confirmation is pending. Dialogs, public programmatic quit
+services and all remaining platform/workbench/toolkit/graphics/tooling/acceptance
+requirements are still open. No six-part deliverable is closed here.

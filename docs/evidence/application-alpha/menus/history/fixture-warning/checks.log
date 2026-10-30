@@ -1,0 +1,18 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21624 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/test-classes ...
+[warn] -- [E092] Pattern Match Unchecked Warning: /Users/bbuchsbaum/code/scala/sirin-alpha/host/src/test/scala/sirin/host/MenuRoutingSuite.scala:206:10 
+[warn] 206 |          other.isInstanceOf[AttackingKey]
+[warn]     |          ^^^^^
+[warn]     |the type test for AttackingKey cannot be checked at runtime because it's a local class
+[warn]     |
+[warn]     | longer explanation available when compiling with `-explain`
+[error] No warnings can be incurred under -Werror (or -Xfatal-warnings)
+[warn] one warning found
+[error] one error found
+[error] (hostJVM / Test / compileIncremental) Compilation failed
+[error] Total time: 3 s, completed Oct 29, 2026, 10:58:48 p.m.

@@ -17,6 +17,7 @@ class WindowLifecycleSuite extends munit.FunSuite:
   private def frames(snapshot: MountedSnapshot): Vector[MountedSnapshot.Window] = snapshot match
     case frame: MountedSnapshot.Window => Vector(frame)
     case MountedSnapshot.Component(_, _, child) => frames(child)
+    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(frames)
     case MountedSnapshot.Rows(rows) => rows.flatMap((_, child) => frames(child))
     case _ => Vector.empty
   private def windows(runtime: HeadlessRuntime, mounted: MountedView): Vector[MountedSnapshot.Window] =

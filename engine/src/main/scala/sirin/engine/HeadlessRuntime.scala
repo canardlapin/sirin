@@ -333,7 +333,8 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
   }
 
   /** Mount the public window set under existing transactional reconciliation. */
-  def mountWindows(owner: OwnedScope, windows: Windows): MountedView = mount(owner, windows.view)
+  def mountWindows(owner: OwnedScope, windows: Windows): MountedView =
+    mount(owner, Column(Windows.MenuDescription(windows.applicationMenu), windows.view))
 
   /** Names are diagnostic; explicit mount supplies static positional identity. */
   def scope(name: String): OwnedScope = edit { t => createScope(name, None, None, t) }

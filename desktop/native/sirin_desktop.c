@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <math.h>
 #include "event_queue.h"
+#include "menus.h"
 
 static _Atomic int live_requests;
 static int fault_stage;
@@ -81,6 +82,7 @@ typedef struct DesktopApp {
   pthread_t owner; int explicit_owner, count, serial; uint32_t wake_type;
   Desktop *windows[SIRIN_MAX_WINDOWS]; size_t queued_text;
   uint64_t stale_events, refused_events;
+  void *menus;
 } DesktopApp;
 struct Desktop {
   SDL_Window *window; SDL_MetalView metal;
@@ -107,9 +109,12 @@ static DesktopApp *app_create(int explicit_owner,char *error) {
   app->wake_type=SDL_RegisterEvents(1);
   if(!app->wake_type){snprintf(error,512,"SDL wake registration failed");SDL_Quit();free(app);return NULL;}
   app->owner=pthread_self();app->explicit_owner=explicit_owner;app->serial=++app_serial;
+  app->menus=sirin_menus_open(app->serial,app->wake_type);
+  if(!app->menus){snprintf(error,512,"native menu context failed");SDL_Quit();free(app);return NULL;}
   application=app;live_apps=1;return app;
 }
 static void app_destroy(DesktopApp *app) {
+  sirin_menus_close(app->menus);app->menus=NULL;
   SDL_Quit();application=NULL;live_apps=0;free(app);
 }
 int sirin_desktop_app_open(void **out,int32_t *info,char *error) {
@@ -120,6 +125,13 @@ int sirin_desktop_app_close(void *raw) {
   DesktopApp *app=raw;if(!app_owner(app) || app->count || app->queued_text)return 1;
   app_destroy(app);return 0;
 }
+int sirin_desktop_menu_event_key(int code){return sirin_menus_event_key(code);}
+int sirin_desktop_menu_begin(void *raw,int64_t revision){DesktopApp *a=raw;return app_owner(a)?sirin_menus_begin(a->menus,revision):1;}
+int sirin_desktop_menu_add(void *raw,int parent,int node,int kind,int action,const char *label,const char *key,int mods,int enabled,int busy){DesktopApp *a=raw;return app_owner(a)?sirin_menus_add(a->menus,parent,node,kind,action,label,key,mods,enabled,busy):1;}
+int sirin_desktop_menu_route(void *raw,const char *key,int mods){DesktopApp *a=raw;return app_owner(a)?sirin_menus_route(a->menus,key,mods):1;}
+int sirin_desktop_menu_publish(void *raw){DesktopApp *a=raw;return app_owner(a)?sirin_menus_publish(a->menus):1;}
+int sirin_desktop_menu_poll(void *raw,int64_t *out){DesktopApp *a=raw;return app_owner(a)?sirin_menus_poll(a->menus,out):-1;}
+int sirin_desktop_menu_standard(void *raw,int kind){DesktopApp *a=raw;return app_owner(a)?sirin_menus_standard(a->menus,kind):1;}
 int sirin_desktop_app_live(void) {return live_apps;}
 int sirin_desktop_app_wake(int serial,int wake_type) {
   SDL_Event event;SDL_zero(event);event.type=(uint32_t)wake_type;event.user.code=serial;
@@ -242,11 +254,11 @@ int sirin_desktop_close(void *raw) {
 uint64_t sirin_desktop_ticks(void) { return SDL_GetTicksNS(); }
 static int logical_key(SDL_Keycode key) {
   switch(key){
-    case SDLK_TAB:return 1;case SDLK_RETURN:return 2;case SDLK_SPACE:return 3;case SDLK_ESCAPE:return 4;
+    case SDLK_TAB:return 1;case SDLK_RETURN:case SDLK_KP_ENTER:return 2;case SDLK_SPACE:return 3;case SDLK_ESCAPE:return 4;
     case SDLK_UP:return 5;case SDLK_DOWN:return 6;case SDLK_PAGEUP:return 7;case SDLK_PAGEDOWN:return 8;
     case SDLK_HOME:return 9;case SDLK_END:return 10;
     case SDLK_LEFT:return 11;case SDLK_RIGHT:return 12;case SDLK_BACKSPACE:return 13;case SDLK_DELETE:return 14;
-    default:return key<128 ? 1000+(int)key:0;
+    default:return key>=32 && key<=65535 ? 1000+(int)key:0;
   }
 }
 static int modifiers(SDL_Keymod mods) {
@@ -292,7 +304,7 @@ int sirin_desktop_app_wait(void *raw,int timeout,int32_t *out) {
   if(e.type==SDL_EVENT_WINDOW_FOCUS_GAINED || e.type==SDL_EVENT_WINDOW_EXPOSED || e.type==SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || e.type==SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED)fact.values[0]|=2;
   if(e.type==app->wake_type)fact.values[0]|=4;
   if(e.type==SDL_EVENT_KEY_DOWN || e.type==SDL_EVENT_KEY_UP){
-    fact.values[7]=e.type==SDL_EVENT_KEY_DOWN?1:2;fact.values[8]=logical_key(e.key.key);fact.values[9]=modifiers(e.key.mod);fact.values[11]=e.key.repeat;
+    fact.values[7]=e.type==SDL_EVENT_KEY_DOWN?1:2;fact.values[8]=logical_key(e.key.scancode==SDL_SCANCODE_UNKNOWN?e.key.key:SDL_GetKeyFromScancode(e.key.scancode,SDL_KMOD_NONE,false));fact.values[9]=modifiers(e.key.mod);fact.values[11]=e.key.repeat;
   }
   if(e.type==SDL_EVENT_MOUSE_BUTTON_DOWN || e.type==SDL_EVENT_MOUSE_BUTTON_UP){
     fact.values[7]=e.type==SDL_EVENT_MOUSE_BUTTON_DOWN?3:4;fact.values[10]=e.button.button;fact.values[12]=e.button.clicks;
@@ -357,7 +369,7 @@ int sirin_desktop_inject(void *raw,int kind,int key,int mods,double x,double y,d
   SDL_Event e;SDL_zero(e);e.common.timestamp=SDL_GetTicksNS();
   if(kind==1 || kind==2){
     const SDL_Keycode keys[]={0,SDLK_TAB,SDLK_RETURN,SDLK_SPACE,SDLK_ESCAPE,SDLK_UP,SDLK_DOWN,SDLK_PAGEUP,SDLK_PAGEDOWN,SDLK_HOME,SDLK_END,SDLK_LEFT,SDLK_RIGHT,SDLK_BACKSPACE,SDLK_DELETE};
-    if(key<0 || (key>=15 && (key<1000 || key>=1128)))return 1;
+    if(key<0 || (key>=15 && (key<1000 || key>=66536)))return 1;
     e.type=kind==1?SDL_EVENT_KEY_DOWN:SDL_EVENT_KEY_UP;e.key.windowID=d->window_id;e.key.key=key>=1000 ? (SDL_Keycode)(key-1000):keys[key];
     e.key.mod=((mods&1)?SDL_KMOD_GUI:0)|((mods&2)?SDL_KMOD_SHIFT:0)|((mods&4)?SDL_KMOD_ALT:0)|((mods&8)?SDL_KMOD_CTRL:0);
   } else if(kind==3 || kind==4){

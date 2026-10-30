@@ -24,7 +24,7 @@ object NativeInput:
       case 12 => Some(Key.ArrowRight)
       case 13 => Some(Key.Backspace)
       case 14 => Some(Key.Delete)
-      case k if k>=1000 && k<1128 => Some(Key.Character((k-1000).toChar))
+      case k if k>=1000 && k<66536 => Some(Key.Character((k-1000).toChar))
       case _ => None
     event.kind() match
       case 1 => key.map(HostInput.KeyDown(_,mods,event.repeat()))

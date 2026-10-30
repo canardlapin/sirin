@@ -123,7 +123,7 @@ jobs:
           native/fetch-macos.sh --thorvg
           native/fetch-macos.sh --sirin
       - name: Headless host, editor policy and launch ownership checks
-        run: sbt -batch 'desktopJVM/testOnly sirin.desktop.NativeApplicationSuite sirin.desktop.RenderServiceSuite sirin.desktop.EditorControllerSuite sirin.desktop.NativeAbiSuite'
+        run: sbt -batch 'desktopJVM/testOnly sirin.desktop.ApplicationMenusSuite sirin.desktop.NativeApplicationSuite sirin.desktop.RenderServiceSuite sirin.desktop.EditorControllerSuite sirin.desktop.NativeAbiSuite'
       - name: Package the public application entry without launching UI
         run: sbt -batch desktopJVM/desktopApplicationPackage
       - name: Verify bundled native closure and strict signature

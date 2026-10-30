@@ -7,13 +7,13 @@ import sirin.host.*
 import sirin.graphics.unicode.NativeUnicode
 
 class EditorControllerSuite extends munit.FunSuite:
-  private class Fixture(initial: String="alpha café שלום",commit: UiTxn => Unit = _ => (),multiple: Boolean=true) extends AutoCloseable:
+  private class Fixture(initial: String="alpha café שלום",commit: UiTxn => Unit = _ => (),multiple: Boolean=true,extraField: Boolean=false) extends AutoCloseable:
     val runtime=new HeadlessRuntime;val scope=runtime.scope("editor-test")
     val value=scope.cell(initial);var clipboard="";var clears=0
     val unicode=NativeUnicode.open(65536)
     val base=TextField.bind(value).label("Document")
     val field=(if multiple then base.multiline else base).onCommit(commit(summon[UiTxn]))
-    val mounted=runtime.mount(scope,field)
+    val mounted=runtime.mount(scope,if extraField then Column(field,TextField.bind(value).label("Second")) else field)
     runtime.observe(mounted.snapshot)(_ => ())
     val controller=new EditorController(runtime,unicode.analyze(_),() => clipboard,s => clipboard=s,() => clears+=1)
     val root=Path.of("..").toAbsolutePath.normalize()
@@ -217,4 +217,38 @@ class EditorControllerSuite extends munit.FunSuite:
       f.update();assertEquals(f.current,"changed")
       f.key(Key.Character('z'),Mods.Primary);assertEquals(f.current,"draft")
     finally f.close()
+  }
+
+  test("editor and IME reserve editing keys while unknown command chords reach application routing") {
+    val f=new Fixture("draft",extraField=true)
+    try
+      def consumes(key: Key,mods: Mods=Mods.none)=f.controller.consumesKey(HostInput.KeyDown(key,mods))
+      assert(consumes(Key.Character('a'),Mods.Primary));assert(consumes(Key.Character('z'),Mods.Primary|Mods.Shift))
+      assert(consumes(Key.Character('界')));assert(consumes(Key.Backspace));assert(consumes(Key.ArrowLeft))
+      assert(!consumes(Key.Character('s'),Mods.Primary));assert(!consumes(Key.Character('k'),Mods.Control))
+      assert(consumes(Key.Tab));assert(consumes(Key.Tab,Mods.Shift));assert(!consumes(Key.Tab,Mods.Primary))
+      f.controller.handle(HostInput.Composition("未確定",3,0));f.update()
+      val focused=f.controller.interaction.state.focused
+      assert(consumes(Key.Character('s'),Mods.Primary));assert(consumes(Key.Tab,Mods.Primary))
+      f.key(Key.Tab);assertEquals(f.controller.interaction.state.focused,focused)
+      assert(f.controller.state(f.id).snapshot.preedit.nonEmpty)
+      f.key(Key.Escape);assert(f.controller.state(f.id).snapshot.preedit.isEmpty)
+      assert(!consumes(Key.Character('s'),Mods.Primary));assertEquals(f.current,"draft")
+    finally f.close()
+  }
+
+  test("button activation, focus traversal and scroll keys take precedence over shortcuts") {
+    val runtime=new HeadlessRuntime
+    try
+      val controller=new EditorController(runtime,_ => fail("no text analysis expected"),() => "",_ => (),() => ())
+      val id=NodeId(Vector("button"));val bounds=Box(0,0,100,100)
+      def focus(kind: TargetKind): Unit =
+        controller.interaction.install(InteractionSnapshot(1,Vector(Target(id,kind,bounds,bounds,true,Vector.empty,Vector.empty,Vector.empty))),Map.empty)
+        controller.interaction.state=FocusState(Some(id))
+      def key(k: Key,mods: Mods=Mods.none)=controller.consumesKey(HostInput.KeyDown(k,mods))
+      focus(TargetKind.Button(1));assert(key(Key.Enter));assert(key(Key.Space));assert(key(Key.Tab))
+      assert(!key(Key.Enter,Mods.Primary));assert(!key(Key.Character('s'),Mods.Primary))
+      focus(TargetKind.Scroll(2,500));assert(key(Key.PageDown));assert(key(Key.Home));assert(key(Key.ArrowUp))
+      assert(!key(Key.PageDown,Mods.Primary));assert(!key(Key.Character('s'),Mods.Primary))
+    finally runtime.close()
   }
