@@ -1,0 +1,616 @@
+diff --git a/core/src/main/scala/sirin/App.scala b/core/src/main/scala/sirin/App.scala
+index 8f2db19..e2f2c5d 100644
+--- a/core/src/main/scala/sirin/App.scala
++++ b/core/src/main/scala/sirin/App.scala
+@@ -1,4 +1,4 @@
+-// Provisional A-0 skeleton (VISION §4.1): public shape only, not implemented.
++// Application descriptions. Application.run still awaits the native host.
+ package sirin
+ 
+ enum MenuEntry:
+@@ -20,21 +20,77 @@ final case class MenuBar(menus: Menu*)
+ object MenuBar:
+   val empty: MenuBar = MenuBar()
+ 
+-trait Window:
++enum CloseDecision:
++  case Allow, KeepOpen
++
++sealed trait Window:
++  /** Runs transactionally before dismissal. Refusal or failure keeps the window. */
+   def onClose(run: Action): Window
++  /** KeepOpen commits prompt/error state without dismissing the window.
++    * A confirmed asynchronous close can remove its key from the window source.
++    */
++  def onCloseRequest(run: UiTxn ?=> CloseDecision): Window
+ 
+ /** Window builders run once per key mount, with independent window scopes.
+   * Source removal disposes that window, not the application/document owner.
+   */
+-trait Windows
++sealed trait Windows:
++  private[sirin] def view: View
++
+ object Windows:
+-  def apply[K, A](source: CollectionSource[K, A])(build: (Scope, Inputs[A]) => Window): Windows = ???
++  private final case class Description(view: View) extends Windows
++
++  def apply[K, A](source: CollectionSource[K, A])(build: (Scope, Inputs[A]) => Window)(
++      using equality: Equality[A], keySchema: SchemaId[K], valueSchema: SchemaId[A]
++  ): Windows =
++    val root = Component[Unit]("windows") { (owner, _) =>
++      val dismissed = owner.cell(Map.empty[K, Revision])
++      owner.on(source.changes) { changes =>
++        val removed = changes.deltas.collect { case Delta.Removed(key, _) => key }.toSet
++        dismissed.update(_.filterNot { (key, revision) => removed.contains(key) && changes.to.isAfter(revision) })
++      }
++      val pairEquality: Equality[(K, A)] = (a, b) => a._1 == b._1 && equality.same(a._2, b._2)
++      val row = Component[(K, A)]("window") { (scope, input) =>
++        val window = build(scope, Inputs.from(input.map(_._2))) match
++          case description: Window.Description => description
++        window.copy(close = Some(txn => {
++          // Resolve the key before a user action can remove its row.
++          val key = input.attempt.get(using txn) match
++            case Value.Ok(pair) => pair._1
++            case Value.Failed(_) => UiTxn.refuse("window is no longer mounted")(using txn)
++          val decision = window.close.fold(CloseDecision.Allow)(_(txn))
++          if decision == CloseDecision.Allow && source.get(key)(using txn).nonEmpty then
++            val revision = source.revision.get(using txn)
++            dismissed.update(_.updated(key, revision))(using txn)
++          decision
++        }))
++      }(using pairEquality)
++      val visible: Signal[Seq[(K, A)]] = source.keyedSnapshot.zip(dismissed).map {
++        (entries, hidden) => entries.filterNot(pair => hidden.contains(pair._1))
++      }(using (a, b) => a.size == b.size && a.zip(b).forall((x, y) => pairEquality.same(x, y)))
++      ForEach.Description(visible, (pair: (K, A)) => pair._1, input => row(input),
++        pairEquality, s"windows:${keySchema.value}:${valueSchema.value}")
++    }
++    Description(root.view)
++
+   /** Static convenience still creates keyed window ownership, not a second lifecycle. */
+-  def single(key: String)(build: Scope => Window): Windows = ???
++  def single(key: String)(build: Scope => Window): Windows =
++    val root = Component[Unit]("single-window") { (owner, _) =>
++      val source = owner.keyed(Seq(key))(identity)
++      apply(source)((scope, _) => build(scope)).view
++    }
++    Description(root.view)
+ 
+ object Window:
+-  def apply(title: String, menu: MenuBar)(content: View): Window         = ???
+-  def apply(title: Signal[String], menu: MenuBar)(content: View): Window = ???
++  private[sirin] final case class Description(title: Signal[String], menu: MenuBar,
++      content: View, close: Option[UiTxn => CloseDecision] = None) extends Window with View:
++    def onClose(run: Action): Window = onCloseRequest { run; CloseDecision.Allow }
++    def onCloseRequest(run: UiTxn ?=> CloseDecision): Window = copy(close = Some(txn => run(using txn)))
++
++  def apply(title: String, menu: MenuBar)(content: View): Window =
++    Description(Signal.const(title), menu, content)
++  def apply(title: Signal[String], menu: MenuBar)(content: View): Window =
++    Description(title, menu, content)
+ 
+ object Application:
+   /** Runs the event loop on the process main thread. `build` receives the
+diff --git a/engine/src/main/scala/sirin/engine/HeadlessRuntime.scala b/engine/src/main/scala/sirin/engine/HeadlessRuntime.scala
+index a95d958..9ca7ed2 100644
+--- a/engine/src/main/scala/sirin/engine/HeadlessRuntime.scala
++++ b/engine/src/main/scala/sirin/engine/HeadlessRuntime.scala
+@@ -332,6 +332,9 @@ final class HeadlessRuntime(val settleBudget: Int = 100, workCapacity: Int = 256
+     mounted
+   }
+ 
++  /** Mount the public window set under existing transactional reconciliation. */
++  def mountWindows(owner: OwnedScope, windows: Windows): MountedView = mount(owner, windows.view)
++
+   /** Names are diagnostic; explicit mount supplies static positional identity. */
+   def scope(name: String): OwnedScope = edit { t => createScope(name, None, None, t) }
+ 
+diff --git a/engine/src/main/scala/sirin/engine/Reconciliation.scala b/engine/src/main/scala/sirin/engine/Reconciliation.scala
+index e5244d8..eaae322 100644
+--- a/engine/src/main/scala/sirin/engine/Reconciliation.scala
++++ b/engine/src/main/scala/sirin/engine/Reconciliation.scala
+@@ -8,6 +8,7 @@ enum MountedSnapshot:
+   case Control(instance: Long,view: View)
+   case Styled(child: MountedSnapshot, decorations: Vector[Decoration])
+   case Scroll(instance: Long, child: MountedSnapshot)
++  case Window(instance: Long, title: Value[String], menu: MenuBar, child: MountedSnapshot)
+   case Outlet(reference: Long, child: MountedSnapshot)
+   case Reparented(key: GlobalKey, instance: Long, child: MountedSnapshot)
+   case VirtualRows(instance: Long, revision: Revision, first: Int, total: Int, leading: Lp, trailing: Lp, rowHeight: Lp, rows: MountedSnapshot)
+@@ -25,6 +26,7 @@ object MountedSnapshot:
+     case (Referenced(i,x),Referenced(j,y)) => i==j && equality.same(x,y)
+     case (Control(i,x),Control(j,y)) => i==j && x==y
+     case (Styled(x, a), Styled(y, b)) => a == b && equality.same(x, y)
++    case (Window(i, t, m, x), Window(j, u, n, y)) => i == j && t == u && m == n && equality.same(x, y)
+     case (Scroll(i, x), Scroll(j, y)) => i == j && equality.same(x, y)
+     case (Outlet(i, x), Outlet(j, y)) => i == j && equality.same(x, y)
+     case (Reparented(k, i, x), Reparented(l, j, y)) => k == l && i == j && equality.same(x, y)
+@@ -56,6 +58,15 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
+   }
+   private var defaultViewport = Option.empty[Cell[RowViewport]]
+   private var virtuals = Vector.empty[VirtualSlot]
++  private var windows = Vector.empty[WindowSlot]
++
++  /** A close fact targets this mounted instance, never a reusable source key. */
++  def requestWindowClose(instance: Long)(using txn: UiTxn): Unit = runtime.capability(txn) {
++    runtime.ensureScope(owner)
++    windows.find(window => window.scope.id == instance && runtime.scopeAvailable(window.scope)) match
++      case Some(window) => window.requestClose()
++      case None => UiTxn.refuse("window is no longer mounted")
++  }
+   private def hostViewport: Cell[RowViewport] = defaultViewport.getOrElse {
+     val cell = owner.cell(RowViewport.empty)
+     change(defaultViewport)(defaultViewport = _)(Some(cell))
+@@ -108,6 +119,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
+     case p: Button.Description => Vector(p.label,p.binding.enabled,p.binding.running)
+     case p: Text.Description => Vector(p.content)
+     case p: TextField.Description => Vector(p.value,p.problem)
++    case p: sirin.Window.Description => Vector(p.title) ++ directDependencies(p.content)
+     case p: View.ScrollContent => directDependencies(p.content)
+     case p: Component.Placement[?] => Vector(p.props)
+     case p: ForEach.Description[?, ?] => Vector(p.items)
+@@ -125,6 +137,8 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
+     var changed = holder.sync(desired, read)
+     val kept = virtuals.filter(v => runtime.scopeAvailable(v.scope))
+     if kept.size != virtuals.size then change(virtuals)(virtuals = _)(kept)
++    val liveWindows = windows.filter(window => runtime.scopeAvailable(window.scope))
++    if liveWindows.size != windows.size then change(windows)(windows = _)(liveWindows)
+     val next = holder.snapshot
+     val current = read(output)
+     if current.forall(v => !runtime.lawful(v match
+@@ -190,6 +204,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
+           case p: ForEach.Description[?, ?] => new RowsSlot(parent, p.asInstanceOf[ForEach.Description[Any, Any]], reader => requested(reader))
+           case p: Switch.Plain[?] => new SwitchSlot(parent, p.asInstanceOf[Switch.Plain[Any]], None, reader => requested(reader))
+           case p: Switch.Keyed[?, ?] => new SwitchSlot(parent, null, Some(p.asInstanceOf[Switch.Keyed[Any, Any]]), reader => requested(reader))
++          case p: sirin.Window.Description => new WindowSlot(parent, p)
+           case p: View.ScrollContent => new ScrollSlot(parent, p)
+           case p: View.Stack => new StackSlot(parent, p, reader => requested(reader))
+           case p: DockOutlet.Description => new OutletSlot(parent, p)
+@@ -224,7 +239,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
+         case (a: TextField.Description,b: TextField.Description) => !(a.value eq b.value)
+         case _ => false) then false
+       else next match
+-        case _: View.ScrollContent => false
++        case _: sirin.Window.Description | _: View.ScrollContent => false
+         case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] => false
+         case _ => true
+     def refresh(next: View): Boolean =
+@@ -236,6 +251,32 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
+       case _ => if view eq View.Empty then MountedSnapshot.Empty else MountedSnapshot.Leaf(view)
+     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = false
+ 
++  private final class WindowSlot(parent: runtime.OwnedScope, initial: sirin.Window.Description) extends Slot:
++    val scope = parent.child("window-content")
++    private var description = initial
++    private var title: Value[String] = Value.Ok("")
++    private val child = new Holder(scope, 0)
++    change(windows)(windows = _)(windows :+ this)
++    def accepts(view: View): Boolean = view.isInstanceOf[sirin.Window.Description]
++    def refresh(view: View): Boolean =
++      if description.eq(view) then false
++      else { change(description)(description = _)(view.asInstanceOf[sirin.Window.Description]); true }
++    def dependencies: Vector[Signal[?]] = Vector(description.title) ++ child.dependencies
++    def snapshot: MountedSnapshot = MountedSnapshot.Window(scope.id, title, description.menu, child.snapshot)
++    def requestClose()(using txn: UiTxn): Unit = description.close match
++      case Some(close) => close(txn); ()
++      case None => UiTxn.refuse("window has no close action")
++    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
++      var changed = child.sync(description.content, read)
++      read(description.title) match
++        case None => changed = true
++        case Some(value) =>
++          val next = value.asInstanceOf[Value[String]]
++          if title != next then
++            change(title)(title = _)(next)
++            changed = true
++      changed
++
+   private final class ScrollSlot(parent: runtime.OwnedScope, initial: View.ScrollContent) extends Slot:
+     val scope = parent.child("scroll")
+     private var description = initial
+diff --git a/host/src/main/scala/sirin/host/CommittedTree.scala b/host/src/main/scala/sirin/host/CommittedTree.scala
+index de42f0b..9808da6 100644
+--- a/host/src/main/scala/sirin/host/CommittedTree.scala
++++ b/host/src/main/scala/sirin/host/CommittedTree.scala
+@@ -60,6 +60,8 @@ object CommittedTree:
+             editors(instance)=TextBinding(f)
+             Node(NodeId(Vector("editor",instance)),Content.Editable(instance,text,f.fieldLabel,f.hint,f.multiple,value(f.problem)))
+           case _ => throw new UnsupportedOperationException("unsupported mounted control")
++        case MountedSnapshot.Window(_, _, _, _) =>
++          throw new IllegalArgumentException("capture each window's content separately")
+         case MountedSnapshot.Empty => Node(id, Content.Empty)
+         case MountedSnapshot.Leaf(view) => view match
+           case t: Text.Description =>
+diff --git a/engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala b/engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala
+new file mode 100644
+index 0000000..41ecf59
+--- /dev/null
++++ b/engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala
+@@ -0,0 +1,333 @@
++package sirin.engine
++
++import sirin.*
++import scala.collection.mutable
++
++object WindowLifecycleSuite:
++  final case class Item(id: Int, title: String)
++  final case class Local(scope: Scope, input: Inputs[Item], draft: Cell[String])
++
++class WindowLifecycleSuite extends munit.FunSuite:
++  import WindowLifecycleSuite.*
++
++  private def value[A](runtime: HeadlessRuntime, signal: Signal[A]): A =
++    runtime.transact { signal.get } match
++      case CommitResult.Committed(v) => v
++      case other => fail(s"read did not commit: $other")
++  private def frames(snapshot: MountedSnapshot): Vector[MountedSnapshot.Window] = snapshot match
++    case frame: MountedSnapshot.Window => Vector(frame)
++    case MountedSnapshot.Component(_, _, child) => frames(child)
++    case MountedSnapshot.Rows(rows) => rows.flatMap((_, child) => frames(child))
++    case _ => Vector.empty
++  private def windows(runtime: HeadlessRuntime, mounted: MountedView): Vector[MountedSnapshot.Window] =
++    frames(value(runtime, mounted.snapshot))
++  private def controls(snapshot: MountedSnapshot): Vector[Long] = snapshot match
++    case MountedSnapshot.Control(instance, _) => Vector(instance)
++    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(controls)
++    case MountedSnapshot.Component(_, _, child) => controls(child)
++    case _ => Vector.empty
++
++  test("public keyed windows build once and retain live inputs, drafts and control identity through replacement/reorder") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "one"), Item(2, "two")))(_.id)
++      val locals = mutable.ArrayBuffer.empty[Local]
++      val root = r.mountWindows(app, Windows(source) { (scope, input) =>
++        val draft = scope.cell("")
++        locals += Local(scope, input, draft)
++        Window(input.map(_.title), MenuBar.empty)(Column(Text(input.map(_.title)), TextField.bind(draft)))
++      })
++      val before = windows(r, root)
++      assertEquals(before.map(_.title), Vector(Value.Ok("one"), Value.Ok("two")))
++      assertEquals(r.transact {
++        locals.head.draft.set("unfinished")
++        source.replace(Item(1, "ONE"))
++        source.move(2, 0)
++      }, CommitResult.Committed(()))
++      val after = windows(r, root)
++      assertEquals(locals.size, 2)
++      assertEquals(after.map(_.instance), before.reverse.map(_.instance))
++      assertEquals(after.map(_.title), Vector(Value.Ok("two"), Value.Ok("ONE")))
++      assertEquals(after.map(f => controls(f.child)), before.reverse.map(f => controls(f.child)))
++      assertEquals(r.transact { (locals.head.input.get, locals.head.draft.get) },
++        CommitResult.Committed((Item(1, "ONE"), "unfinished")))
++    finally r.close()
++  }
++
++  test("default close retires only that window, leaving source, sibling and workspace save alive") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val document = app.child("document")
++      val text = document.cell("shared")
++      val saved = document.cell("")
++      val work = Work { "written" }
++      val save = document.command[Unit, String, String]("save", "Save", WorkPolicy.save(Capacity(1)))(
++        _ => Job(text.get, work)
++      )((snapshot, result) => if result.outcome == Outcome.Succeeded("written") then saved.set(snapshot))
++      val source = app.keyed(Seq(Item(1, "one"), Item(2, "two")))(_.id)
++      val drafts = mutable.ArrayBuffer.empty[Cell[String]]
++      var released = 0
++      val root = r.mountWindows(app, Windows(source) { (scope, input) =>
++        val draft = scope.cell("")
++        drafts += draft
++        scope.onDispose(() => released += 1)
++        Window(input.map(_.title), MenuBar.empty)(TextField.bind(draft))
++      })
++      r.transact { save.dispatch(()) }
++      val ticket = r.scheduler.tickets.head.id
++      val first = windows(r, root).head.instance
++      assertEquals(r.transact { root.requestWindowClose(first) }, CommitResult.Committed(()))
++      assertEquals(windows(r, root).map(_.title), Vector(Value.Ok("two")))
++      assertEquals(released, 1)
++      assertEquals(r.transact { source.size }, CommitResult.Committed(2))
++      assertEquals(r.transact { drafts.head.set("stale") }, CommitResult.Failed(KernelError.DisposedScope))
++      assertEquals(r.transact { drafts(1).set("still editing"); text.set("next") }, CommitResult.Committed(()))
++      assert(!r.scheduler.tickets.head.cancellationRequested)
++      r.scheduler.run(ticket)
++      assertEquals(r.scheduler.deliver(ticket), CommitResult.Committed(()))
++      assertEquals(r.transact { (saved.get, text.get) }, CommitResult.Committed(("shared", "next")))
++    finally r.close()
++  }
++
++  test("close handler refusal, defect and enclosing attempt roll back dismissal and all writes") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val mode = app.cell(0)
++      val counter = app.cell(0)
++      val root = r.mountWindows(app, Windows.single("main") { _ =>
++        Window("Main", MenuBar.empty)(View.empty).onClose {
++          counter.update(_ + 1)
++          if mode.get == 0 then UiTxn.refuse("dirty")
++          if mode.get == 1 then throw new IllegalStateException("close defect")
++        }
++      })
++      val first = windows(r, root).head.instance
++      assertEquals(r.transact { root.requestWindowClose(first) }, CommitResult.Refused("dirty"))
++      assertEquals(r.transact { counter.get }, CommitResult.Committed(0))
++      r.transact { mode.set(1) }
++      assert(r.transact { root.requestWindowClose(first) }.isInstanceOf[CommitResult.Failed[?]])
++      assertEquals(r.transact { counter.get }, CommitResult.Committed(0))
++      assertEquals(windows(r, root).map(_.instance), Vector(first))
++      r.transact { mode.set(2) }
++      assertEquals(r.transact {
++        UiTxn.attempt { root.requestWindowClose(first); UiTxn.refuse("cancel outer attempt") }
++      }, CommitResult.Committed(Attempt.Refused("cancel outer attempt")))
++      assertEquals(windows(r, root).map(_.instance), Vector(first))
++      assertEquals(r.transact { counter.get }, CommitResult.Committed(0))
++      assertEquals(r.transact { root.requestWindowClose(first) }, CommitResult.Committed(()))
++      assert(windows(r, root).isEmpty)
++      assertEquals(r.transact { counter.get }, CommitResult.Committed(1))
++      assertEquals(r.transact { root.requestWindowClose(first) }, CommitResult.Refused("window is no longer mounted"))
++    finally r.close()
++  }
++
++  test("KeepOpen commits dirty-close prompt state and preserves drafts until explicit source removal") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "document")))(_.id)
++      val prompt = app.cell(false)
++      var draft: Cell[String] = null
++      var closed = 0
++      val root = r.mountWindows(app, Windows(source) { (scope, input) =>
++        draft = scope.cell("unfinished")
++        scope.onDispose(() => closed += 1)
++        Window(input.map(_.title), MenuBar.empty)(TextField.bind(draft)).onCloseRequest {
++          prompt.set(true)
++          CloseDecision.KeepOpen
++        }
++      })
++      val original = windows(r, root).head.instance
++      assertEquals(r.transact { root.requestWindowClose(original) }, CommitResult.Committed(()))
++      assertEquals(r.transact { (prompt.get, draft.get) }, CommitResult.Committed((true, "unfinished")))
++      assertEquals(windows(r, root).map(_.instance), Vector(original))
++      assertEquals(closed, 0)
++      assertEquals(r.transact { prompt.set(false); source.remove(1) }, CommitResult.Committed(()))
++      assert(windows(r, root).isEmpty)
++      assertEquals(closed, 1)
++    finally r.close()
++  }
++
++  test("source removal inside onClose disposes the window without reading retired Inputs") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "one")))(_.id)
++      val root = r.mountWindows(app, Windows(source) { (_, input) =>
++        Window(input.map(_.title), MenuBar.empty)(View.empty).onClose(source.remove(input.get.id))
++      })
++      val id = windows(r, root).head.instance
++      assertEquals(r.transact { root.requestWindowClose(id) }, CommitResult.Committed(()))
++      assert(windows(r, root).isEmpty)
++      assertEquals(r.transact { source.size }, CommitResult.Committed(0))
++      r.drainEvents()
++      assertEquals(r.diagnostics, Vector.empty)
++    finally r.close()
++  }
++
++  test("dismissed keys stay hidden through replacement; remove/reinsert reopens a fresh instance and rejects old close facts") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "one")))(_.id)
++      var builds = 0
++      val root = r.mountWindows(app, Windows(source) { (_, input) =>
++        builds += 1
++        Window(input.map(_.title), MenuBar.empty)(View.empty)
++      })
++      val old = windows(r, root).head.instance
++      r.transact { root.requestWindowClose(old) }
++      r.transact { source.replace(Item(1, "replacement")) }
++      assert(windows(r, root).isEmpty)
++      r.transact { source.remove(1) }
++      r.transact { source.append(Item(1, "reopened")) }
++      r.drainEvents()
++      val fresh = windows(r, root).head
++      assertEquals(fresh.title, Value.Ok("reopened"))
++      assert(fresh.instance != old)
++      assertEquals(builds, 2)
++      assertEquals(r.transact { root.requestWindowClose(old) }, CommitResult.Refused("window is no longer mounted"))
++      assertEquals(windows(r, root).map(_.instance), Vector(fresh.instance))
++    finally r.close()
++  }
++
++  test("delayed removal events predating dismissal cannot reopen a newer closed window") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "old")))(_.id)
++      val root = r.mountWindows(app, Windows(source)((_, input) => Window(input.map(_.title), MenuBar.empty)(View.empty)))
++      r.transact { source.remove(1) }
++      r.transact { source.append(Item(1, "new")) }
++      val id = windows(r, root).head.instance
++      r.transact { root.requestWindowClose(id) }
++      r.drainEvents()
++      assert(windows(r, root).isEmpty)
++    finally r.close()
++  }
++
++  test("title failure stays explicit and recovery preserves window and content lifetimes") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val divisor = app.cell(1)
++      val root = r.mountWindows(app, Windows.single("main") { scope =>
++        Window(divisor.map(n => (10 / n).toString), MenuBar.empty)(TextField.bind(scope.cell("draft")))
++      })
++      val initial = windows(r, root).head
++      r.transact { divisor.set(0) }
++      val failed = windows(r, root).head
++      assert(failed.title.isInstanceOf[Value.Failed[?]])
++      assertEquals(failed.instance, initial.instance)
++      assertEquals(controls(failed.child), controls(initial.child))
++      r.transact { divisor.set(2) }
++      val recovered = windows(r, root).head
++      assertEquals(recovered.title, Value.Ok("5"))
++      assertEquals(recovered.instance, initial.instance)
++      assertEquals(controls(recovered.child), controls(initial.child))
++    finally r.close()
++  }
++
++  test("window projection preserves the declared equality including signed zero") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(0.0))(_ => 1)
++      val root = r.mountWindows(app, Windows(source) { (_, input) =>
++        Window(input.map(n => (1.0 / n).toString), MenuBar.empty)(View.empty)
++      })
++      val id = windows(r, root).head.instance
++      assertEquals(windows(r, root).head.title, Value.Ok("Infinity"))
++      r.transact { source.replace(-0.0) }
++      assertEquals(windows(r, root).head.title, Value.Ok("-Infinity"))
++      assertEquals(windows(r, root).head.instance, id)
++    finally r.close()
++  }
++
++  test("failed window construction rolls back scopes and registry; a successor can mount and close") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "one"), Item(2, "two")))(_.id)
++      var builds = 0
++      val before = r.lifetimes
++      assert(r.transact {
++        r.mountWindows(app, Windows(source) { (_, input) =>
++          builds += 1
++          if builds == 2 then throw new IllegalStateException("second builder failed")
++          Window(input.map(_.title), MenuBar.empty)(View.empty)
++        })
++      }.isInstanceOf[CommitResult.Failed[?]])
++      assertEquals(r.lifetimes, before)
++      val root = r.mountWindows(app, Windows.single("successor")(_ => Window("Successor", MenuBar.empty)(View.empty)))
++      val id = windows(r, root).head.instance
++      assertEquals(r.transact { root.requestWindowClose(id) }, CommitResult.Committed(()))
++      assert(windows(r, root).isEmpty)
++    finally r.close()
++  }
++
++  test("a structural failure after close staging restores dismissal, source and close registry") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "one")))(_.id)
++      var builds = 0
++      var rejectBuild = true
++      val root = r.mountWindows(app, Windows(source) { (_, input) =>
++        builds += 1
++        if builds > 1 && rejectBuild then throw new IllegalStateException("new window rejected")
++        Window(input.map(_.title), MenuBar.empty)(View.empty).onClose(source.append(Item(2, "two")))
++      })
++      val id = windows(r, root).head.instance
++      val before = r.lifetimes
++      assert(r.transact { root.requestWindowClose(id) }.isInstanceOf[CommitResult.Failed[?]])
++      assertEquals(windows(r, root).map(_.instance), Vector(id))
++      assertEquals(r.transact { source.size }, CommitResult.Committed(1))
++      assertEquals(r.lifetimes, before)
++      rejectBuild = false
++      assertEquals(r.transact { root.requestWindowClose(id) }, CommitResult.Committed(()))
++      assertEquals(windows(r, root).map(_.title), Vector(Value.Ok("two")))
++      assertEquals(r.transact { source.size }, CommitResult.Committed(2))
++    finally r.close()
++  }
++
++  test("a close fact for another window set cannot dispatch by coincident source key") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val first = r.mountWindows(app, Windows.single("same")(_ => Window("First", MenuBar.empty)(View.empty)))
++      val second = r.mountWindows(app, Windows.single("same")(_ => Window("Second", MenuBar.empty)(View.empty)))
++      val id = windows(r, first).head.instance
++      assertEquals(r.transact { second.requestWindowClose(id) }, CommitResult.Refused("window is no longer mounted"))
++      assertEquals(windows(r, first).size, 1)
++      assertEquals(windows(r, second).size, 1)
++    finally r.close()
++  }
++
++  test("repeated window churn and root disposal release all presentation ownership") {
++    val r = new HeadlessRuntime
++    try
++      val app = r.scope("application")
++      val source = app.keyed(Seq(Item(1, "one")))(_.id)
++      val before = r.lifetimes
++      val root = r.mountWindows(app, Windows(source) { (scope, input) =>
++        Window(input.map(_.title), MenuBar.empty)(TextField.bind(scope.cell("")))
++      })
++      val bounded = r.lifetimes
++      (2 to 40).foreach { n =>
++        val instance = windows(r, root).head.instance
++        r.transact { root.requestWindowClose(instance) }
++        r.transact { source.setAll(Seq(Item(n, n.toString))) }
++        r.drainEvents()
++        assertEquals(r.lifetimes.scopes.size, bounded.scopes.size)
++        assertEquals(r.lifetimes.cells.size, bounded.cells.size)
++        assertEquals(r.lifetimes.nodes, bounded.nodes)
++      }
++      r.transact { root.dispose() }
++      r.drainEvents()
++      assertEquals(r.lifetimes, before)
++    finally r.close()
++  }
+diff --git a/docs/design/decisions/2026-10-29-application-windows.md b/docs/design/decisions/2026-10-29-application-windows.md
+new file mode 100644
+index 0000000..4f3615a
+--- /dev/null
++++ b/docs/design/decisions/2026-10-29-application-windows.md
+@@ -0,0 +1,47 @@
++# Application alpha: keyed window lifetimes
++
++This is an explicit additive design update under VISION sections 4 and 5.2.
++The application-alpha programme remains the acceptance authority; this first
++implementation does not qualify Application.run or the native host.
++
++A Windows description is built once under the application/workspace owner.
++Its private state, observations and component descriptions belong to a mounted
++component scope. It uses the existing ForEach and Component reconciliation,
++including call-site Equality and SchemaId evidence. No second keyed reconciler,
++new transaction phase or foreign Scala callback is introduced.
++
++Each row component builds one immutable Window description and owns the window's
++local state. The Window wrapper reconciles its content and declares its live
++title dependency. Title failure is represented as Value.Failed in the window
++snapshot; content remains present. Source replacement and reorder preserve the
++window scope, child identities, drafts and live Inputs. Source removal retires
++that window without disposing the application, document or another window.
++
++A native close request is an ordinary UiTxn, routed by a mounted instance ID.
++Window.onClose supplies an optional pre-close action. An accepted action dismisses
++the key from this Windows presentation, disposing its entire row component;
++source data remains owned by the workspace. A refusal or defect rolls back the
++handler's writes and dismissal together. Source removal in the handler is valid.
++A stale instance cannot dispatch to a later window that reuses its source key.
++Window.onCloseRequest additionally returns Allow or KeepOpen. KeepOpen commits
++prompt/error state while retaining the window and all local state. A reference
++application can open a dirty-close prompt, then use a separate document command
++to save and remove the window's source key on confirmation. Thus displaying a
++prompt does not require a refusal that would roll back the prompt itself. Native
++dialog presentation and asynchronous save/confirmation wiring remain host work.
++
++Dismissed keys remain suppressed across value replacement/reorder. A committed
++Removed delta after dismissal clears that key's tombstone when the existing
++owned event driver delivers it. Remove/reinsert across revisions therefore
++reopens with fresh state after event delivery. A net remove/reinsert within one
++transaction obeys the existing collection delta law, rather than inventing a
++second window generation. Dismissal records the source revision so delayed
++Removed events from before that close cannot reopen a subsequently dismissed
++window. Tombstones and observations retire with the Windows mount.
++
++The mounted window snapshot identifies a content root for each native peer.
++Generic single-window tree capture rejects a whole window forest; a host must
++capture each window's content separately. Native peer creation, global SDL event
++routing, main-thread enforcement, menus/shortcuts/dialogs, guarded application
++quit, and a backend for Application.run remain required platform work. In
++particular, the current C transport still rejects a second native window.

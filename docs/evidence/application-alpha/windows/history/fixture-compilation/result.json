@@ -1,0 +1,10 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "engineJVM/testOnly sirin.engine.WindowLifecycleSuite"
+  ],
+  "returncode": 1,
+  "elapsed_seconds": 8.575628458,
+  "utc": "2026-10-30T00:44:10.982692+00:00"
+}

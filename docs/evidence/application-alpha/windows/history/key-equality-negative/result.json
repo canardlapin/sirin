@@ -1,0 +1,10 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "engineJVM/testOnly sirin.engine.WindowKeySafetySuite"
+  ],
+  "returncode": 1,
+  "elapsed_seconds": 17.823893165999998,
+  "scope": "Unprotected key-equality dismissal regression"
+}

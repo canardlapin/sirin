@@ -1,0 +1,306 @@
+[info] [launcher] getting org.scala-sbt sbt 1.12.14  (this may take some time)...
+[info] [launcher] getting Scala 2.12.21 (for sbt)...
+[0m[[0m[0minfo[0m] [0m[0mwelcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.13)[0m
+[0m[[0m[0minfo[0m] [0m[0mloading settings for project sirin-build from plugins.sbt...[0m
+[0m[[0m[0minfo[0m] [0m[0mloading project definition from /home/runner/work/sirin/sirin/project[0m
+[0m[[0m[0minfo[0m] [0m[0mloading settings for project root from build.sbt...[0m
+[0m[[0m[0minfo[0m] [0m[0mresolving key references (21623 settings) ...[0m
+[0m[[0m[0minfo[0m] [0m[0mset current project to root (in build file:/home/runner/work/sirin/sirin/)[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 17 Scala sources to /home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 14 Scala sources to /home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (3141 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 3348 classes and 21133 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (191 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 3320 classes and 16332 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (6038 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 96 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (10569 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (5973 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (245 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (21457 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '42583'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '42479'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '46221'.[0m
+Test run [36msirin.graphics.ImageSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '36239'.[0m
+Test run [36msirin.graphics.GeometrySuite[0m started
+Test run [36msirin.graphics.RoundedRectangleSuite[0m started
+Test run [36msirin.graphics.PreparationSuite[0m started
+[32msirin.graphics.ImageSuite[0m: finished [90m0.037s[0m
+Test run [36msirin.graphics.ImageSuite[0m finished: 0 failed, 0 ignored, 8 total [90m0.037s[0m
+[32msirin.graphics.RoundedRectangleSuite[0m: finished [90m0.019s[0m
+Test run [36msirin.graphics.RoundedRectangleSuite[0m finished: 0 failed, 0 ignored, 3 total [90m0.019s[0m
+[32msirin.graphics.GeometrySuite[0m: finished [90m0.036s[0m
+Test run [36msirin.graphics.GeometrySuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.036s[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '33177'.[0m
+Test run [36msirin.graphics.DrawingResourcesSuite[0m started
+Test run [36msirin.graphics.CurvedStrokeSuite[0m started
+Test run [36msirin.graphics.TextDataSuite[0m started
+[32msirin.graphics.DrawingResourcesSuite[0m: finished [90m0.142s[0m
+Test run [36msirin.graphics.DrawingResourcesSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.142s[0m
+Test run [36msirin.graphics.PreparationCacheSuite[0m started
+[32msirin.graphics.TextDataSuite[0m: finished [90m0.190s[0m
+Test run [36msirin.graphics.TextDataSuite[0m finished: 0 failed, 0 ignored, 4 total [90m0.190s[0m
+Test run [36msirin.graphics.DrawingSuite[0m started
+[32msirin.graphics.DrawingSuite[0m: finished [90m0.012s[0m
+Test run [36msirin.graphics.DrawingSuite[0m finished: 0 failed, 0 ignored, 10 total [90m0.012s[0m
+Test run [36msirin.graphics.ValuesSuite[0m started
+[32msirin.graphics.ValuesSuite[0m: finished [90m0.014s[0m
+Test run [36msirin.graphics.ValuesSuite[0m finished: 0 failed, 0 ignored, 7 total [90m0.014s[0m
+Test run [36msirin.graphics.StrokeBoundarySuite[0m started
+[32msirin.graphics.PreparationSuite[0m: finished [90m0.443s[0m
+Test run [36msirin.graphics.PreparationSuite[0m finished: 0 failed, 0 ignored, 8 total [90m0.443s[0m
+Test run [36msirin.graphics.StrokePreparationSuite[0m started
+[32msirin.graphics.StrokePreparationSuite[0m: finished [90m0.225s[0m
+Test run [36msirin.graphics.StrokePreparationSuite[0m finished: 0 failed, 0 ignored, 7 total [90m0.225s[0m
+preparationCancellation checks=251 work=250 elapsedNs=1281960 completedEntries=0
+[32msirin.graphics.StrokeBoundarySuite[0m: finished [90m3.829s[0m
+Test run [36msirin.graphics.StrokeBoundarySuite[0m finished: 0 failed, 0 ignored, 2 total [90m3.829s[0m
+[32msirin.graphics.PreparationCacheSuite[0m: finished [90m4.393s[0m
+Test run [36msirin.graphics.PreparationCacheSuite[0m finished: 0 failed, 0 ignored, 4 total [90m4.393s[0m
+[32msirin.graphics.CurvedStrokeSuite[0m: finished [90m6.744s[0m
+Test run [36msirin.graphics.CurvedStrokeSuite[0m finished: 0 failed, 0 ignored, 4 total [90m6.744s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 69, Failed 0, Errors 0, Passed 69[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 52 s, completed Oct 30, 2026, 12:37:11 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 16 Scala sources to /home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 4 Scala sources to /home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (2567 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 2454 classes and 17052 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (150 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 2430 classes and 13271 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (4700 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 95 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (10802 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (7852 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (211 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (19511 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '36043'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '36693'.[0m
+Test run [36msirin.TextApiSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '42525'.[0m
+[32msirin.TextApiSuite[0m: finished [90m0.011s[0m
+Test run [36msirin.TextApiSuite[0m finished: 0 failed, 0 ignored, 2 total [90m0.011s[0m
+Test run [36msirin.HandleSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '36949'.[0m
+[32msirin.HandleSuite[0m: finished [90m0.009s[0m
+Test run [36msirin.HandleSuite[0m finished: 0 failed, 0 ignored, 2 total [90m0.009s[0m
+Test run [36msirin.ViewRebuildSuite[0m started
+[32msirin.ViewRebuildSuite[0m: finished [90m0.010s[0m
+Test run [36msirin.ViewRebuildSuite[0m finished: 0 failed, 0 ignored, 1 total [90m0.010s[0m
+Test run [36msirin.AuthoringValuesSuite[0m started
+[32msirin.AuthoringValuesSuite[0m: finished [90m0.011s[0m
+Test run [36msirin.AuthoringValuesSuite[0m finished: 0 failed, 0 ignored, 4 total [90m0.011s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 9, Failed 0, Errors 0, Passed 9[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 31 s, completed Oct 30, 2026, 12:37:42 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 3 Scala sources to /home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (2182 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 2284 classes and 16001 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (106 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 2255 classes and 12368 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (3396 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 96 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (9404 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (7897 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (298 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (16722 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '38087'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '43225'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '33541'.[0m
+Test run [36msirin.text.LayoutUnitsSuite[0m started
+[32msirin.text.LayoutUnitsSuite[0m: finished [90m0.006s[0m
+Test run [36msirin.text.LayoutUnitsSuite[0m finished: 0 failed, 0 ignored, 2 total [90m0.006s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 2, Failed 0, Errors 0, Passed 2[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 23 s, completed Oct 30, 2026, 12:38:06 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 2 Scala sources to /home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (1666 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 2439 classes and 16858 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (84 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 2410 classes and 13027 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (2501 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 97 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (9487 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (7536 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (197 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (14780 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '39067'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '44647'.[0m
+Test run [36msirin.drawing.RecordingCanvasSuite[0m started
+[32msirin.drawing.RecordingCanvasSuite[0m: finished [90m0.010s[0m
+Test run [36msirin.drawing.RecordingCanvasSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.010s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 6, Failed 0, Errors 0, Passed 6[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 20 s, completed Oct 30, 2026, 12:38:25 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 14 Scala sources to /home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 9 Scala sources to /home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (3173 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 5786 classes and 29522 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (335 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 5756 classes and 22730 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (6601 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 95 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (13697 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (11298 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (290 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (27720 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '37893'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '40169'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '46577'.[0m
+Test run [36msirin.engine.TransactionSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '41367'.[0m
+Test run [36msirin.engine.HostBoundarySuite[0m started
+[32msirin.engine.HostBoundarySuite[0m: finished [90m0.021s[0m
+Test run [36msirin.engine.HostBoundarySuite[0m finished: 0 failed, 0 ignored, 4 total [90m0.021s[0m
+Test run [36msirin.engine.RetainedVirtualSuite[0m started
+Test run [36msirin.engine.FocusSuite[0m started
+[32msirin.engine.TransactionSuite[0m: finished [90m0.072s[0m
+Test run [36msirin.engine.TransactionSuite[0m finished: 0 failed, 0 ignored, 24 total [90m0.072s[0m
+[32msirin.engine.FocusSuite[0m: finished [90m0.033s[0m
+Test run [36msirin.engine.FocusSuite[0m finished: 0 failed, 0 ignored, 1 total [90m0.033s[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '42161'.[0m
+Test run [36msirin.engine.EventDeadlineSuite[0m started
+Test run [36msirin.engine.ProgressWorkerSuite[0m started
+Test run [36msirin.engine.WorkCommandSuite[0m started
+[32msirin.engine.RetainedVirtualSuite[0m: finished [90m0.278s[0m
+Test run [36msirin.engine.RetainedVirtualSuite[0m finished: 0 failed, 0 ignored, 25 total [90m0.278s[0m
+Test run [36msirin.engine.TopologyLifetimeSuite[0m started
+[32msirin.engine.TopologyLifetimeSuite[0m: finished [90m0.128s[0m
+Test run [36msirin.engine.TopologyLifetimeSuite[0m finished: 0 failed, 0 ignored, 28 total [90m0.128s[0m
+Test run [36msirin.engine.ReconciliationSuite[0m started
+[32msirin.engine.WorkCommandSuite[0m: finished [90m0.320s[0m
+Test run [36msirin.engine.WorkCommandSuite[0m finished: 0 failed, 0 ignored, 22 total [90m0.320s[0m
+[32msirin.engine.ProgressWorkerSuite[0m: finished [90m0.414s[0m
+Test run [36msirin.engine.ProgressWorkerSuite[0m finished: 0 failed, 0 ignored, 20 total [90m0.414s[0m
+[32msirin.engine.ReconciliationSuite[0m: finished [90m0.165s[0m
+Test run [36msirin.engine.ReconciliationSuite[0m finished: 0 failed, 0 ignored, 29 total [90m0.165s[0m
+[32msirin.engine.EventDeadlineSuite[0m: finished [90m0.536s[0m
+Test run [36msirin.engine.EventDeadlineSuite[0m finished: 0 failed, 0 ignored, 22 total [90m0.536s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 175, Failed 0, Errors 0, Passed 175[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 48 s, completed Oct 30, 2026, 12:39:13 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 8 Scala sources to /home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 9 Scala sources to /home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (2872 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 4240 classes and 25934 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (235 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 4173 classes and 19913 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (6264 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 97 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (12669 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (9214 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (275 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (23980 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '40353'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '42657'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '42961'.[0m
+Test run [36msirin.testkit.EventDeadlineAgreementSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '40129'.[0m
+Test run [36msirin.testkit.ReferenceAgreementSuite[0m started
+Test run [36msirin.testkit.ProgressAgreementSuite[0m started
+Test run [36msirin.testkit.LifetimeAgreementSuite[0m started
+[32msirin.testkit.ReferenceAgreementSuite[0m: finished [90m13.500s[0m
+Test run [36msirin.testkit.ReferenceAgreementSuite[0m finished: 0 failed, 0 ignored, 1 total [90m13.500s[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '34733'.[0m
+Test run [36msirin.testkit.VirtualCollectionAgreementSuite[0m started
+[32msirin.testkit.EventDeadlineAgreementSuite[0m: finished [90m14.551s[0m
+Test run [36msirin.testkit.EventDeadlineAgreementSuite[0m finished: 0 failed, 0 ignored, 1 total [90m14.551s[0m
+Test run [36msirin.testkit.LatestAgreementSuite[0m started
+[32msirin.testkit.LatestAgreementSuite[0m: finished [90m4.409s[0m
+Test run [36msirin.testkit.LatestAgreementSuite[0m finished: 0 failed, 0 ignored, 3 total [90m4.409s[0m
+Test run [36msirin.testkit.WorkAgreementSuite[0m started
+[32msirin.testkit.WorkAgreementSuite[0m: finished [90m15.661s[0m
+Test run [36msirin.testkit.WorkAgreementSuite[0m finished: 0 failed, 0 ignored, 17 total [90m15.661s[0m
+Test run [36msirin.testkit.ReconciliationAgreementSuite[0m started
+[32msirin.testkit.VirtualCollectionAgreementSuite[0m: finished [90m23.036s[0m
+Test run [36msirin.testkit.VirtualCollectionAgreementSuite[0m finished: 0 failed, 0 ignored, 1 total [90m23.036s[0m
+Test run [36msirin.testkit.ReconciliationLinuxSeedSuite[0m started
+[32msirin.testkit.ReconciliationAgreementSuite[0m: finished [90m39.193s[0m
+Test run [36msirin.testkit.ReconciliationAgreementSuite[0m finished: 0 failed, 0 ignored, 3 total [90m39.193s[0m
+[32msirin.testkit.ReconciliationLinuxSeedSuite[0m: finished [90m41.011s[0m
+Test run [36msirin.testkit.ReconciliationLinuxSeedSuite[0m finished: 0 failed, 0 ignored, 3 total [90m41.011s[0m
+[32msirin.testkit.LifetimeAgreementSuite[0m: finished [90m84.744s[0m
+Test run [36msirin.testkit.LifetimeAgreementSuite[0m finished: 0 failed, 0 ignored, 2 total [90m84.744s[0m
+[32msirin.testkit.ProgressAgreementSuite[0m: finished [90m91.313s[0m
+Test run [36msirin.testkit.ProgressAgreementSuite[0m finished: 0 failed, 0 ignored, 3 total [90m91.313s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 34, Failed 0, Errors 0, Passed 34[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 132 s (0:02:12.0), completed Oct 30, 2026, 12:41:25 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 3 Scala sources to /home/runner/work/sirin/sirin/specimens/workbench/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 2 Scala sources to /home/runner/work/sirin/sirin/specimens/workbench/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (3207 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 3490 classes and 21682 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (161 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 3452 classes and 16779 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (6196 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 96 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (12119 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (8701 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (356 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (23620 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '41323'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '33617'.[0m
+Test run [36msirin.specimen.WorkbenchSuite[0m started
+Test run [36msirin.specimen.StructuralWorkbenchSuite[0m started
+[32msirin.specimen.StructuralWorkbenchSuite[0m: finished [90m0.153s[0m
+Test run [36msirin.specimen.StructuralWorkbenchSuite[0m finished: 0 failed, 0 ignored, 1 total [90m0.153s[0m
+[32msirin.specimen.WorkbenchSuite[0m: finished [90m0.275s[0m
+Test run [36msirin.specimen.WorkbenchSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.275s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 7, Failed 0, Errors 0, Passed 7[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 29 s, completed Oct 30, 2026, 12:41:54 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 5 Scala sources to /home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mcompiling 3 Scala sources to /home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/test-classes ...[0m
+[0m[[0m[0minfo[0m] [0m[0mdone compiling[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking (multithreadingEnabled=detect) (1997 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 3690 classes and 23290 methods after classloading[0m
+[0m[[0m[0minfo[0m] [0m[0mChecking intermediate code (quick) (152 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mDiscovered 3559 classes and 17808 methods after optimization[0m
+[0m[[0m[0minfo[0m] [0m[0mOptimizing (debug mode) (5284 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mProduced 99 LLVM IR files[0m
+[0m[[0m[0minfo[0m] [0m[0mGenerating intermediate code (12620 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling to native code (8717 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mLinking with [pthread, dl, m][0m
+[0m[[0m[0minfo[0m] [0m[0mLinking native code (immix gc, none lto) (361 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mPostprocessing (0 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mTotal (22226 ms)[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/sirin-host-test' on port '42797'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/sirin-host-test' on port '44047'.[0m
+Test run [36msirin.host.InteractionSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/sirin-host-test' on port '42303'.[0m
+Test run [36msirin.host.HostSuite[0m started
+[32msirin.host.InteractionSuite[0m: finished [90m0.035s[0m
+Test run [36msirin.host.InteractionSuite[0m finished: 0 failed, 0 ignored, 9 total [90m0.035s[0m
+Test run [36msirin.host.TextEditingSuite[0m started
+[32msirin.host.HostSuite[0m: finished [90m0.042s[0m
+Test run [36msirin.host.HostSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.042s[0m
+[32msirin.host.TextEditingSuite[0m: finished [90m0.022s[0m
+Test run [36msirin.host.TextEditingSuite[0m finished: 0 failed, 0 ignored, 10 total [90m0.022s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 25, Failed 0, Errors 0, Passed 25[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 33 s, completed Oct 30, 2026, 12:42:27 AM[0m
+[0J

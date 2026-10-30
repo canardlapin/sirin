@@ -1,0 +1,12 @@
+{
+  "files": {
+    "README.md": "ad851c1842740b5ea638cafc228d8213c1fe73182bb195c1d688b512c1093c6e",
+    "attempt-1.log": "6a439fc6e9047fd206929e9f73da4a9b1989b24326b78c6334d3ac168765722f",
+    "attempt-2.log": "7e45fd7c6a23f2a1a224073919d0eb5055c060923171e0221da6e07daab7e30a",
+    "attempt-3.log": "b58e2afd5f98b29503341564cfcf2c45a9b4edbd1786e70d7b37f3e56310d71f",
+    "protocol.json": "202e3a818df31a96f5985fe9a540b9c27a574297f232cb680d50005e52ab894b",
+    "receipt.json": "7fc5a3aeaf66b34f08ecb8693972db79d8f87f1624a1e761f1e651c5802abfb2",
+    "results.json": "cc8a6b773a25e5b60eb482d1d06600d2f5961dc214aa3964b9789fc764cf9804"
+  },
+  "scope": "Diagnostic reproduction only; original cause unresolved"
+}

@@ -1,0 +1,21 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "testJVM",
+    "testNative",
+    "examples/compile"
+  ],
+  "start_utc": "2026-10-30T00:51:18.422079+00:00",
+  "base_commit": "b0facfb8fb28c05229c731065df4c5287d785874",
+  "source_hashes": {
+    "core/src/main/scala/sirin/App.scala": "fe449e4f95b1c301dc2582bf3639b62c867218f394cb9a867820787f948641be",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "f4fc1d23dc0cb70287dadfb01d534334f8b5ccb5d4bd858374a8ec26a6b79c9a",
+    "engine/src/main/scala/sirin/engine/HeadlessRuntime.scala": "18d02eed717aa835a6102a7b3e2cb6b78a4ad24be7ef324b9eb6437ce1a6dbb1",
+    "engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala": "7c096e50146d56cf4f95c76ae88bf2e69d221c6c484f003046ce9821c54387ed",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "fb7521614d4700384c4150ed6f6a9b1ec40677d35a81d563e891ee4e8c746d85",
+    "docs/design/decisions/2026-10-29-application-windows.md": "c2a075c766afe103c05a21e6fdcbd5a09996ff1386e04da88a60c9e43266db12"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 142.52349837499997
+}

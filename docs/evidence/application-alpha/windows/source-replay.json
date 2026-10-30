@@ -1,0 +1,15 @@
+{
+  "base_commit": "b0facfb8fb28c05229c731065df4c5287d785874",
+  "method": "Apply source.patch to an isolated Git index; normal index and working files untouched",
+  "matched_source_hashes": {
+    "core/src/main/scala/sirin/App.scala": "f70ffcb214354d75d58a359b045cd6f8daecafb8996b559c8fdba2ef5deb4a60",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "ea5e5254afb1c936641bdca4158090e44ef1fc176dc5e2f1bd6ce6bbee12cd59",
+    "engine/src/main/scala/sirin/engine/HeadlessRuntime.scala": "18d02eed717aa835a6102a7b3e2cb6b78a4ad24be7ef324b9eb6437ce1a6dbb1",
+    "engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala": "c6a93b4b0be42dbc937ba5b5f819c65a55c3cf645eb8412c1f4d5f811132401f",
+    "engine/src/test/scala/sirin/engine/WindowKeySafetySuite.scala": "8e0bc322bcc8efd0d0a8e12943bd21b428015188ed452940070b512b1aacdf9b",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "fb7521614d4700384c4150ed6f6a9b1ec40677d35a81d563e891ee4e8c746d85",
+    "docs/design/decisions/2026-10-29-application-windows.md": "95398e57b3455543555266c6fe93b35cb532c67a3ac83590f82ae732c9630878",
+    ".github/workflows/ci.yml": "8993e7f7b86267cf04c4b9b73d029abee98cb8c58b59277ee51e612e38838034"
+  },
+  "scope": "Source reconstruction, not a repeated build or qualification"
+}

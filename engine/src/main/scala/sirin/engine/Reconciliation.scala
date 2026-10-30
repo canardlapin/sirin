@@ -8,6 +8,7 @@ enum MountedSnapshot:
   case Control(instance: Long,view: View)
   case Styled(child: MountedSnapshot, decorations: Vector[Decoration])
   case Scroll(instance: Long, child: MountedSnapshot)
+  case Window(instance: Long, title: Value[String], menu: MenuBar, child: MountedSnapshot)
   case Outlet(reference: Long, child: MountedSnapshot)
   case Reparented(key: GlobalKey, instance: Long, child: MountedSnapshot)
   case VirtualRows(instance: Long, revision: Revision, first: Int, total: Int, leading: Lp, trailing: Lp, rowHeight: Lp, rows: MountedSnapshot)
@@ -25,6 +26,7 @@ object MountedSnapshot:
     case (Referenced(i,x),Referenced(j,y)) => i==j && equality.same(x,y)
     case (Control(i,x),Control(j,y)) => i==j && x==y
     case (Styled(x, a), Styled(y, b)) => a == b && equality.same(x, y)
+    case (Window(i, t, m, x), Window(j, u, n, y)) => i == j && t == u && m == n && equality.same(x, y)
     case (Scroll(i, x), Scroll(j, y)) => i == j && equality.same(x, y)
     case (Outlet(i, x), Outlet(j, y)) => i == j && equality.same(x, y)
     case (Reparented(k, i, x), Reparented(l, j, y)) => k == l && i == j && equality.same(x, y)
@@ -56,6 +58,15 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
   }
   private var defaultViewport = Option.empty[Cell[RowViewport]]
   private var virtuals = Vector.empty[VirtualSlot]
+  private var windows = Vector.empty[WindowSlot]
+
+  /** A close fact targets this mounted instance, never a reusable source key. */
+  def requestWindowClose(instance: Long)(using txn: UiTxn): Unit = runtime.capability(txn) {
+    runtime.ensureScope(owner)
+    windows.find(window => window.scope.id == instance && runtime.scopeAvailable(window.scope)) match
+      case Some(window) => window.requestClose()
+      case None => UiTxn.refuse("window is no longer mounted")
+  }
   private def hostViewport: Cell[RowViewport] = defaultViewport.getOrElse {
     val cell = owner.cell(RowViewport.empty)
     change(defaultViewport)(defaultViewport = _)(Some(cell))
@@ -108,6 +119,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     case p: Button.Description => Vector(p.label,p.binding.enabled,p.binding.running)
     case p: Text.Description => Vector(p.content)
     case p: TextField.Description => Vector(p.value,p.problem)
+    case p: sirin.Window.Description => Vector(p.title) ++ directDependencies(p.content)
     case p: View.ScrollContent => directDependencies(p.content)
     case p: Component.Placement[?] => Vector(p.props)
     case p: ForEach.Description[?, ?] => Vector(p.items)
@@ -125,6 +137,8 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
     var changed = holder.sync(desired, read)
     val kept = virtuals.filter(v => runtime.scopeAvailable(v.scope))
     if kept.size != virtuals.size then change(virtuals)(virtuals = _)(kept)
+    val liveWindows = windows.filter(window => runtime.scopeAvailable(window.scope))
+    if liveWindows.size != windows.size then change(windows)(windows = _)(liveWindows)
     val next = holder.snapshot
     val current = read(output)
     if current.forall(v => !runtime.lawful(v match
@@ -190,6 +204,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
           case p: ForEach.Description[?, ?] => new RowsSlot(parent, p.asInstanceOf[ForEach.Description[Any, Any]], reader => requested(reader))
           case p: Switch.Plain[?] => new SwitchSlot(parent, p.asInstanceOf[Switch.Plain[Any]], None, reader => requested(reader))
           case p: Switch.Keyed[?, ?] => new SwitchSlot(parent, null, Some(p.asInstanceOf[Switch.Keyed[Any, Any]]), reader => requested(reader))
+          case p: sirin.Window.Description => new WindowSlot(parent, p)
           case p: View.ScrollContent => new ScrollSlot(parent, p)
           case p: View.Stack => new StackSlot(parent, p, reader => requested(reader))
           case p: DockOutlet.Description => new OutletSlot(parent, p)
@@ -224,7 +239,7 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
         case (a: TextField.Description,b: TextField.Description) => !(a.value eq b.value)
         case _ => false) then false
       else next match
-        case _: View.ScrollContent => false
+        case _: sirin.Window.Description | _: View.ScrollContent => false
         case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] | _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] => false
         case _ => true
     def refresh(next: View): Boolean =
@@ -235,6 +250,35 @@ final class MountedView private[engine](val runtime: HeadlessRuntime)(val owner:
       case _: Button.Description | _: TextField.Description => MountedSnapshot.Control(scope.id,view)
       case _ => if view eq View.Empty then MountedSnapshot.Empty else MountedSnapshot.Leaf(view)
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = false
+
+  private final class WindowSlot(parent: runtime.OwnedScope, initial: sirin.Window.Description) extends Slot:
+    val scope = parent.child("window-content")
+    private var description = initial
+    private var title: Value[String] = Value.Ok("")
+    private val child = new Holder(scope, 0)
+    change(windows)(windows = _)(windows :+ this)
+    def accepts(view: View): Boolean = view.isInstanceOf[sirin.Window.Description]
+    def refresh(view: View): Boolean =
+      if description.eq(view) then false
+      else { change(description)(description = _)(view.asInstanceOf[sirin.Window.Description]); true }
+    def dependencies: Vector[Signal[?]] = Vector(description.title) ++ child.dependencies
+    def snapshot: MountedSnapshot = MountedSnapshot.Window(scope.id, title, description.menu, child.snapshot)
+    def requestClose()(using txn: UiTxn): Unit =
+      val dismiss = description.prepareDismiss match
+        case Some(prepare) => prepare(txn)
+        case None => UiTxn.refuse("window is not owned by Windows")
+      val decision = description.close.fold(CloseDecision.Allow)(_(txn))
+      if decision == CloseDecision.Allow && runtime.scopeAvailable(scope) then dismiss(txn)
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      var changed = child.sync(description.content, read)
+      read(description.title) match
+        case None => changed = true
+        case Some(value) =>
+          val next = value.asInstanceOf[Value[String]]
+          if title != next then
+            change(title)(title = _)(next)
+            changed = true
+      changed
 
   private final class ScrollSlot(parent: runtime.OwnedScope, initial: View.ScrollContent) extends Slot:
     val scope = parent.child("scroll")

@@ -1,0 +1,28 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 10 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/test-classes ...
+[error] -- [E141] Type Error: /Users/bbuchsbaum/code/scala/sirin-alpha/engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala:111:85 
+[error] 111 |      assert(r.transact { root.requestWindowClose(first) }.isInstanceOf[CommitResult.Failed])
+[error]     |                                                                        ^^^^^^^^^^^^^^^^^^^
+[error]     |           Missing type parameter for sirin.engine.CommitResult.Failed
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E141] Type Error: /Users/bbuchsbaum/code/scala/sirin-alpha/engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala:196:45 
+[error] 196 |      assert(failed.title.isInstanceOf[Value.Failed])
+[error]     |                                       ^^^^^^^^^^^^
+[error]     |                         Missing type parameter for sirin.Value.Failed
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] -- [E141] Type Error: /Users/bbuchsbaum/code/scala/sirin-alpha/engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala:236:34 
+[error] 236 |      }.isInstanceOf[CommitResult.Failed])
+[error]     |                     ^^^^^^^^^^^^^^^^^^^
+[error]     |           Missing type parameter for sirin.engine.CommitResult.Failed
+[error]     |
+[error]     | longer explanation available when compiling with `-explain`
+[error] three errors found
+[error] (engineJVM / Test / compileIncremental) Compilation failed
+[error] Total time: 5 s, completed Oct 29, 2026, 8:44:10 p.m.

@@ -1,0 +1,29 @@
+{
+  "commands": [
+    [
+      "sbt",
+      "-J-XX:ActiveProcessorCount=4",
+      "testJVM",
+      "testNative",
+      "examples/compile"
+    ],
+    [
+      "sbt",
+      "--java-home",
+      "/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/temurin-25.0.4.1+1.jdk/Contents/Home",
+      "-J-XX:ActiveProcessorCount=4",
+      "desktopJVM/test"
+    ]
+  ],
+  "start_utc": "2026-10-30T00:55:31.426800+00:00",
+  "base_commit": "b0facfb8fb28c05229c731065df4c5287d785874",
+  "source_hashes": {
+    "core/src/main/scala/sirin/App.scala": "2e6443fd5905e3e73bda5922f590f153575a93e6ee86b9b70df5808e074b8345",
+    "engine/src/main/scala/sirin/engine/Reconciliation.scala": "ea5e5254afb1c936641bdca4158090e44ef1fc176dc5e2f1bd6ce6bbee12cd59",
+    "engine/src/main/scala/sirin/engine/HeadlessRuntime.scala": "18d02eed717aa835a6102a7b3e2cb6b78a4ad24be7ef324b9eb6437ce1a6dbb1",
+    "engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala": "c6a93b4b0be42dbc937ba5b5f819c65a55c3cf645eb8412c1f4d5f811132401f",
+    "host/src/main/scala/sirin/host/CommittedTree.scala": "fb7521614d4700384c4150ed6f6a9b1ec40677d35a81d563e891ee4e8c746d85",
+    "docs/design/decisions/2026-10-29-application-windows.md": "d174ab7e9a29e4456fb4122101359378bb07ad88b8e80a6e1a3b07528ec45939"
+  },
+  "results": []
+}

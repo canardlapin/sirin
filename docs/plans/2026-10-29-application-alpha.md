@@ -45,3 +45,31 @@ Freeze the original public log and exact40-step program. Add deterministic repla
 without weakening the existing300-case randomized property. Capture the exception
 stack and identify its source; a passing rerun alone is not a fix. Linux runner
 confirmation is mandatory for closing this issue. Retain all attempted variants.
+
+
+## First implementation checkpoint (still incomplete)
+
+The exact Linux failure is frozen at b0facfb. Diagnostic run 40980659690
+completed three predeclared full Native attempts (327 cases each), including the
+exact-seed suite and frozen program. All passed; the original ClassCastException
+cause remains unresolved. Full required CI is also enabled on this alpha branch;
+its test commands and platform matrix are unchanged.
+
+Window and Windows descriptions now reuse existing Component/ForEach lifetimes,
+with live titles/content, transactional close decisions, revision-tagged dismissal
+records, and mounted-instance close routing. The explicit design is in
+../design/decisions/2026-10-29-application-windows.md. Two failing draft regressions
+exposed automatic dismissal after application disposal and key comparisons with
+UI write authority; both receive permanent tests. This is the shared model layer,
+not completion of item 1 or of the six-part programme.
+
+Next platform implementation must replace the C transport's one-window lifetime
+with an application-owned SDL lifetime and bounded global event routing. The
+application owner must survive zero open windows; closing a view cannot implicitly
+cancel workspace save jobs. Native peer IDs must map to mounted window instances,
+with late facts rejected after retirement. Capture and render each window's
+content independently using the existing host/render contracts. Implement the
+actual Application.run backend, native title updates, menus/shortcuts/dialogs and
+orderly application quit. Only then wire the complete persistent workbench into
+that public platform. Existing native qualification and all remaining items stay
+open; no UI acceptance is inferred from the headless window tests.

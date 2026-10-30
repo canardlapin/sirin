@@ -60,6 +60,8 @@ object CommittedTree:
             editors(instance)=TextBinding(f)
             Node(NodeId(Vector("editor",instance)),Content.Editable(instance,text,f.fieldLabel,f.hint,f.multiple,value(f.problem)))
           case _ => throw new UnsupportedOperationException("unsupported mounted control")
+        case MountedSnapshot.Window(_, _, _, _) =>
+          throw new IllegalArgumentException("capture each window's content separately")
         case MountedSnapshot.Empty => Node(id, Content.Empty)
         case MountedSnapshot.Leaf(view) => view match
           case t: Text.Description =>

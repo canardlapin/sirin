@@ -1,0 +1,10 @@
+{
+  "command": [
+    "sbt",
+    "-J-XX:ActiveProcessorCount=4",
+    "engineJVM/testOnly sirin.engine.WindowLifecycleSuite"
+  ],
+  "returncode": 1,
+  "elapsed_seconds": 8.419543583,
+  "scope": "Regression before application-owner close fix"
+}

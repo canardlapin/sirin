@@ -1,0 +1,16 @@
+{
+  "platform": "macOS-15.1.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "cases": {
+    "JVM": 342,
+    "Native": 342,
+    "desktop": 50
+  },
+  "window_cases_per_shared_platform": 15,
+  "scope": "Shared window descriptions and headless lifecycle only",
+  "application_run_implemented": false,
+  "native_multiwindow_qualified": false,
+  "native_ui_qualified": false,
+  "original_linux_cause_resolved": false,
+  "alpha_complete": false
+}

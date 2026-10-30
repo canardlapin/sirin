@@ -1,0 +1,33 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 1 Scala source to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.WindowLifecycleSuite started
+==> X sirin.engine.WindowLifecycleSuite.onClose can dispose the application owner without a stale default-dismissal write 0.017s munit.ComparisonFailException: engine/src/test/scala/sirin/engine/WindowLifecycleSuite.scala:320
+319:      val instance = windows(r, root).head.instance
+320:      assertEquals(r.transact { root.requestWindowClose(instance) }, CommitResult.Committed(()))
+321:      assertEquals(released, 1)
+values are not the same
+=> Obtained
+Failed(
+  error = DisposedScope()
+)
+=> Diff (- expected, + obtained)
+-Committed(
+-  value = ()
++Failed(
++  error = DisposedScope()
+ )
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.engine.WindowLifecycleSuite.$init$$$anonfun$13(WindowLifecycleSuite.scala:320)
+sirin.engine.WindowLifecycleSuite: finished 0.277s
+Test run sirin.engine.WindowLifecycleSuite finished: 1 failed, 0 ignored, 14 total 0.288s
+[error] Failed: Total 14, Failed 1, Errors 0, Passed 13
+[error] Failed tests:
+[error] 	sirin.engine.WindowLifecycleSuite
+[error] (engineJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 5 s, completed Oct 29, 2026, 8:54:45 p.m.

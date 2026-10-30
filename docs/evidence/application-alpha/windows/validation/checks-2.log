@@ -1,0 +1,155 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 25.0.4.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 17 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/text-ui/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/graphics-ui/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 3 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/specimens/workbench/.jvm/target/scala-3.7.4/classes ...
+[info] compiling 5 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/host/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 2 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/desktop/target/scala-3.7.4/classes ...
+[info] done compiling
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by scala.runtime.LazyVals$ (file:/Users/bbuchsbaum/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.7.4/scala3-library_3-3.7.4.jar)
+WARNING: Please consider reporting this to the maintainers of class scala.runtime.LazyVals$
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+Test run sirin.desktop.BenchmarkFixtureSuite started
+sirin.desktop.BenchmarkFixtureSuite: finished 0.03s
+Test run sirin.desktop.BenchmarkFixtureSuite finished: 0 failed, 0 ignored, 3 total 0.041s
+Test run sirin.graphics.desktop.CachedRendererSuite started
+sirin.graphics.desktop.CachedRendererSuite: finished 1.824s
+Test run sirin.graphics.desktop.CachedRendererSuite finished: 0 failed, 0 ignored, 8 total 1.824s
+Test run sirin.desktop.EditorControllerSuite started
+sirin.desktop.EditorControllerSuite: finished 0.617s
+Test run sirin.desktop.EditorControllerSuite finished: 0 failed, 0 ignored, 13 total 0.617s
+renderSession GPU frame retirement test
+Test run sirin.desktop.GpuFrameSuite started
+sirin.desktop.GpuFrameSuite: finished 1.233s
+Test run sirin.desktop.GpuFrameSuite finished: 0 failed, 0 ignored, 6 total 1.233s
+canvasComparison sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=2 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=3 scale=1.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(6144,0,0,0,None)
+canvasComparison sample=4 scale=1.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(6144,0,0,0,None)
+canvasComparison sample=5 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=6 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=7 scale=1.25 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(9600,0,0,0,None)
+canvasComparison sample=8 scale=1.25 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(9548,52,0,0,None)
+canvasComparison sample=9 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=10 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(13817,7,0,0,None)
+canvasComparison sample=11 scale=1.5 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(13824,0,0,0,None)
+canvasComparison sample=12 scale=1.5 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(13818,6,0,0,None)
+canvasComparison sample=13 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=14 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=false result=Comparison(24576,0,0,0,None)
+canvasComparison sample=15 scale=2.0 camera=CanvasCamera(-3.7,-2.1,1.25) edited=false result=Comparison(24561,15,0,0,None)
+canvasComparison sample=16 scale=2.0 camera=CanvasCamera(0.37,4.2,1.0) edited=true result=Comparison(24576,0,0,0,None)
+workerCancellation retireNs=594417
+renderSession retire control
+workerCancellation retireNs=33000
+renderSession retire control
+workerCancellation retireNs=26625
+renderSession retire control
+workerCancellation retireNs=19292
+renderSession retire control
+workerCancellation retireNs=23084
+renderSession retire control
+workerCancellation retireNs=32458
+renderSession retire control
+workerCancellation retireNs=19792
+renderSession retire control
+workerCancellation retireNs=19750
+renderSession retire control
+workerCancellation retireNs=12667
+renderSession retire control
+workerCancellation retireNs=21000
+renderSession retire control
+workerCancellation retireNs=13459
+renderSession retire control
+workerCancellation retireNs=22166
+renderSession retire control
+workerCancellation retireNs=19375
+renderSession retire control
+workerCancellation retireNs=16750
+renderSession retire control
+workerCancellation retireNs=6458
+renderSession retire control
+workerCancellation retireNs=11875
+renderSession retire control
+workerCancellation retireNs=16250
+renderSession retire control
+workerCancellation retireNs=47708
+renderSession retire control
+workerCancellation retireNs=8666
+renderSession retire control
+workerCancellation retireNs=9042
+renderSession retire control
+Test run sirin.desktop.RetainedCanvasSuite started
+sirin.desktop.RetainedCanvasSuite: finished 5.135s
+Test run sirin.desktop.RetainedCanvasSuite finished: 0 failed, 0 ignored, 5 total 5.135s
+tileEquivalence scale=1.0 edge=16 maxChannelError=0
+tileEquivalence scale=1.0 edge=23 maxChannelError=0
+tileEquivalence scale=1.0 edge=32 maxChannelError=0
+tileEquivalence scale=2.0 edge=16 maxChannelError=0
+tileEquivalence scale=2.0 edge=23 maxChannelError=0
+tileEquivalence scale=2.0 edge=32 maxChannelError=0
+Test run sirin.desktop.TiledRendererSuite started
+sirin.desktop.TiledRendererSuite: finished 0.606s
+Test run sirin.desktop.TiledRendererSuite finished: 0 failed, 0 ignored, 1 total 0.606s
+Test run sirin.desktop.NativeServicesSuite started
+sirin.desktop.NativeServicesSuite: finished 0.007s
+Test run sirin.desktop.NativeServicesSuite finished: 0 failed, 0 ignored, 1 total 0.007s
+Test run sirin.desktop.NativeAbiSuite started
+sirin.desktop.NativeAbiSuite: finished 0.012s
+Test run sirin.desktop.NativeAbiSuite finished: 0 failed, 0 ignored, 2 total 0.012s
+cameraPixels sample=1 scale=1.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=2 scale=1.0 camera=CanvasCamera(4.0,-3.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=5612
+cameraPixels sample=3 scale=1.0 camera=CanvasCamera(-4.0,3.0,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=5104
+cameraPixels sample=4 scale=1.0 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=5 scale=1.0 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(6144,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=6 scale=1.0 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(6139,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=7 scale=1.25 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(9107,493,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=8 scale=1.25 camera=CanvasCamera(3.2,-2.4,1.0) result=Comparison(9103,497,0,0,None) allByteWorst=21 reuse=8932
+cameraPixels sample=9 scale=1.25 camera=CanvasCamera(-3.2,2.4,1.0) result=Comparison(9180,420,0,0,None) allByteWorst=21 reuse=8288
+cameraPixels sample=10 scale=1.25 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(9570,30,0,0,None) allByteWorst=19 reuse=0
+cameraPixels sample=11 scale=1.25 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(9574,26,0,0,None) allByteWorst=32 reuse=0
+cameraPixels sample=12 scale=1.25 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(9595,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=13 scale=1.5 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=14 scale=1.5 camera=CanvasCamera(2.6666666666666665,-2.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=13020
+cameraPixels sample=15 scale=1.5 camera=CanvasCamera(-2.6666666666666665,2.0,1.0) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=12240
+cameraPixels sample=16 scale=1.5 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(13819,5,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=17 scale=1.5 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=18 scale=1.5 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(13824,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=19 scale=2.0 camera=CanvasCamera(0.0,0.0,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=20 scale=2.0 camera=CanvasCamera(2.0,-1.5,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=23500
+cameraPixels sample=21 scale=2.0 camera=CanvasCamera(-2.0,1.5,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=22448
+cameraPixels sample=22 scale=2.0 camera=CanvasCamera(0.37,2.3,1.0) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+cameraPixels sample=23 scale=2.0 camera=CanvasCamera(-8.2,-2.7,1.25) result=Comparison(24572,4,1,0,None) allByteWorst=1 reuse=0
+cameraPixels sample=24 scale=2.0 camera=CanvasCamera(1.3,0.7,0.8) result=Comparison(24576,0,0,0,None) allByteWorst=0 reuse=0
+editedPixels result=Comparison(6144,0,0,0,None) reused=5820
+densePixels sample=1 scale=1.0 zoom=1.0 result=Comparison(57600,0,0,0,None) allByteWorst=0 meshes=3
+densePixels sample=2 scale=1.0 zoom=1.25 result=Comparison(57600,0,0,0,None) allByteWorst=0 meshes=6
+densePixels sample=3 scale=1.25 zoom=1.0 result=Comparison(89938,62,0,0,None) allByteWorst=0 meshes=9
+densePixels sample=4 scale=1.25 zoom=1.25 result=Comparison(89980,20,0,0,None) allByteWorst=0 meshes=12
+densePixels sample=5 scale=1.5 zoom=1.0 result=Comparison(129500,100,0,0,None) allByteWorst=0 meshes=15
+densePixels sample=6 scale=1.5 zoom=1.25 result=Comparison(129600,0,0,0,None) allByteWorst=0 meshes=18
+densePixels sample=7 scale=2.0 zoom=1.0 result=Comparison(230400,0,0,0,None) allByteWorst=0 meshes=21
+densePixels sample=8 scale=2.0 zoom=1.25 result=Comparison(230315,85,0,0,None) allByteWorst=0 meshes=24
+Test run sirin.desktop.CameraRetentionSuite started
+sirin.desktop.CameraRetentionSuite: finished 38.525s
+Test run sirin.desktop.CameraRetentionSuite finished: 0 failed, 0 ignored, 7 total 38.525s
+renderSession test
+Test run sirin.desktop.RenderServiceSuite started
+sirin.desktop.RenderServiceSuite: finished 0.007s
+Test run sirin.desktop.RenderServiceSuite finished: 0 failed, 0 ignored, 4 total 0.007s
+[info] Passed: Total 50, Failed 0, Errors 0, Passed 50
+[success] Total time: 59 s, completed Oct 29, 2026, 9:06:58 p.m.

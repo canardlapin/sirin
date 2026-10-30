@@ -1,0 +1,183 @@
+[0m[[0m[0minfo[0m] [0m[0mwelcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.13)[0m
+[0m[[0m[0minfo[0m] [0m[0mloading settings for project sirin-build from plugins.sbt...[0m
+[0m[[0m[0minfo[0m] [0m[0mloading project definition from /home/runner/work/sirin/sirin/project[0m
+[0m[[0m[0minfo[0m] [0m[0mloading settings for project root from build.sbt...[0m
+[0m[[0m[0minfo[0m] [0m[0mresolving key references (21623 settings) ...[0m
+[0m[[0m[0minfo[0m] [0m[0mset current project to root (in build file:/home/runner/work/sirin/sirin/)[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '42973'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '39487'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '36331'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '46129'.[0m
+Test run [36msirin.graphics.StrokePreparationSuite[0m started
+Test run [36msirin.graphics.DrawingSuite[0m started
+Test run [36msirin.graphics.PreparationSuite[0m started
+Test run [36msirin.graphics.GeometrySuite[0m started
+[32msirin.graphics.DrawingSuite[0m: finished [90m0.031s[0m
+Test run [36msirin.graphics.DrawingSuite[0m finished: 0 failed, 0 ignored, 10 total [90m0.031s[0m
+[32msirin.graphics.GeometrySuite[0m: finished [90m0.040s[0m
+Test run [36msirin.graphics.GeometrySuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.040s[0m
+Test run [36msirin.graphics.DrawingResourcesSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics/.native/target/scala-3.7.4/sirin-graphics-test' on port '41683'.[0m
+Test run [36msirin.graphics.PreparationCacheSuite[0m started
+[32msirin.graphics.DrawingResourcesSuite[0m: finished [90m0.098s[0m
+Test run [36msirin.graphics.DrawingResourcesSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.098s[0m
+Test run [36msirin.graphics.CurvedStrokeSuite[0m started
+[32msirin.graphics.StrokePreparationSuite[0m: finished [90m0.283s[0m
+Test run [36msirin.graphics.StrokePreparationSuite[0m finished: 0 failed, 0 ignored, 7 total [90m0.283s[0m
+Test run [36msirin.graphics.TextDataSuite[0m started
+[32msirin.graphics.PreparationSuite[0m: finished [90m0.393s[0m
+Test run [36msirin.graphics.PreparationSuite[0m finished: 0 failed, 0 ignored, 8 total [90m0.393s[0m
+Test run [36msirin.graphics.ValuesSuite[0m started
+[32msirin.graphics.TextDataSuite[0m: finished [90m0.139s[0m
+Test run [36msirin.graphics.TextDataSuite[0m finished: 0 failed, 0 ignored, 4 total [90m0.139s[0m
+Test run [36msirin.graphics.ImageSuite[0m started
+[32msirin.graphics.ValuesSuite[0m: finished [90m0.010s[0m
+Test run [36msirin.graphics.ValuesSuite[0m finished: 0 failed, 0 ignored, 7 total [90m0.010s[0m
+Test run [36msirin.graphics.RoundedRectangleSuite[0m started
+[32msirin.graphics.ImageSuite[0m: finished [90m0.008s[0m
+Test run [36msirin.graphics.ImageSuite[0m finished: 0 failed, 0 ignored, 8 total [90m0.008s[0m
+[32msirin.graphics.RoundedRectangleSuite[0m: finished [90m0.002s[0m
+Test run [36msirin.graphics.RoundedRectangleSuite[0m finished: 0 failed, 0 ignored, 3 total [90m0.002s[0m
+Test run [36msirin.graphics.StrokeBoundarySuite[0m started
+preparationCancellation checks=251 work=250 elapsedNs=1287501 completedEntries=0
+[32msirin.graphics.PreparationCacheSuite[0m: finished [90m4.626s[0m
+Test run [36msirin.graphics.PreparationCacheSuite[0m finished: 0 failed, 0 ignored, 4 total [90m4.626s[0m
+[32msirin.graphics.StrokeBoundarySuite[0m: finished [90m5.034s[0m
+Test run [36msirin.graphics.StrokeBoundarySuite[0m finished: 0 failed, 0 ignored, 2 total [90m5.034s[0m
+[32msirin.graphics.CurvedStrokeSuite[0m: finished [90m5.368s[0m
+Test run [36msirin.graphics.CurvedStrokeSuite[0m finished: 0 failed, 0 ignored, 4 total [90m5.368s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 69, Failed 0, Errors 0, Passed 69[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 7 s, completed Oct 30, 2026, 12:44:02 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '46555'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '42963'.[0m
+Test run [36msirin.ViewRebuildSuite[0m started
+[32msirin.ViewRebuildSuite[0m: finished [90m0.003s[0m
+Test run [36msirin.ViewRebuildSuite[0m finished: 0 failed, 0 ignored, 1 total [90m0.003s[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '46809'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/core/.native/target/scala-3.7.4/sirin-core-test' on port '45841'.[0m
+Test run [36msirin.TextApiSuite[0m started
+[32msirin.TextApiSuite[0m: finished [90m0.007s[0m
+Test run [36msirin.TextApiSuite[0m finished: 0 failed, 0 ignored, 2 total [90m0.007s[0m
+Test run [36msirin.AuthoringValuesSuite[0m started
+[32msirin.AuthoringValuesSuite[0m: finished [90m0.008s[0m
+Test run [36msirin.AuthoringValuesSuite[0m finished: 0 failed, 0 ignored, 4 total [90m0.008s[0m
+Test run [36msirin.HandleSuite[0m started
+[32msirin.HandleSuite[0m: finished [90m0.005s[0m
+Test run [36msirin.HandleSuite[0m finished: 0 failed, 0 ignored, 2 total [90m0.005s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 9, Failed 0, Errors 0, Passed 9[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 1 s, completed Oct 30, 2026, 12:44:03 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '43789'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/text-ui/.native/target/scala-3.7.4/sirin-text-ui-test' on port '38729'.[0m
+Test run [36msirin.text.LayoutUnitsSuite[0m started
+[32msirin.text.LayoutUnitsSuite[0m: finished [90m0.003s[0m
+Test run [36msirin.text.LayoutUnitsSuite[0m finished: 0 failed, 0 ignored, 2 total [90m0.003s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 2, Failed 0, Errors 0, Passed 2[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 1 s, completed Oct 30, 2026, 12:44:03 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/graphics-ui/.native/target/scala-3.7.4/sirin-graphics-ui-test' on port '35637'.[0m
+Test run [36msirin.drawing.RecordingCanvasSuite[0m started
+[32msirin.drawing.RecordingCanvasSuite[0m: finished [90m0.008s[0m
+Test run [36msirin.drawing.RecordingCanvasSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.008s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 6, Failed 0, Errors 0, Passed 6[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 1 s, completed Oct 30, 2026, 12:44:04 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '44053'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '40759'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '33685'.[0m
+Test run [36msirin.engine.EventDeadlineSuite[0m started
+Test run [36msirin.engine.ProgressWorkerSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '41537'.[0m
+Test run [36msirin.engine.FocusSuite[0m started
+Test run [36msirin.engine.WorkCommandSuite[0m started
+[32msirin.engine.FocusSuite[0m: finished [90m0.021s[0m
+Test run [36msirin.engine.FocusSuite[0m finished: 0 failed, 0 ignored, 1 total [90m0.021s[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/engine/.native/target/scala-3.7.4/sirin-engine-test' on port '39281'.[0m
+Test run [36msirin.engine.TransactionSuite[0m started
+[32msirin.engine.TransactionSuite[0m: finished [90m0.053s[0m
+Test run [36msirin.engine.TransactionSuite[0m finished: 0 failed, 0 ignored, 24 total [90m0.053s[0m
+[32msirin.engine.WorkCommandSuite[0m: finished [90m0.142s[0m
+Test run [36msirin.engine.WorkCommandSuite[0m finished: 0 failed, 0 ignored, 22 total [90m0.142s[0m
+Test run [36msirin.engine.ReconciliationSuite[0m started
+Test run [36msirin.engine.HostBoundarySuite[0m started
+[32msirin.engine.HostBoundarySuite[0m: finished [90m0.004s[0m
+Test run [36msirin.engine.HostBoundarySuite[0m finished: 0 failed, 0 ignored, 4 total [90m0.004s[0m
+Test run [36msirin.engine.TopologyLifetimeSuite[0m started
+[32msirin.engine.ProgressWorkerSuite[0m: finished [90m0.256s[0m
+Test run [36msirin.engine.ProgressWorkerSuite[0m finished: 0 failed, 0 ignored, 20 total [90m0.256s[0m
+Test run [36msirin.engine.RetainedVirtualSuite[0m started
+[32msirin.engine.ReconciliationSuite[0m: finished [90m0.173s[0m
+Test run [36msirin.engine.ReconciliationSuite[0m finished: 0 failed, 0 ignored, 29 total [90m0.173s[0m
+[32msirin.engine.TopologyLifetimeSuite[0m: finished [90m0.130s[0m
+Test run [36msirin.engine.TopologyLifetimeSuite[0m finished: 0 failed, 0 ignored, 28 total [90m0.130s[0m
+[32msirin.engine.EventDeadlineSuite[0m: finished [90m0.430s[0m
+Test run [36msirin.engine.EventDeadlineSuite[0m finished: 0 failed, 0 ignored, 22 total [90m0.430s[0m
+[32msirin.engine.RetainedVirtualSuite[0m: finished [90m0.206s[0m
+Test run [36msirin.engine.RetainedVirtualSuite[0m finished: 0 failed, 0 ignored, 25 total [90m0.206s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 175, Failed 0, Errors 0, Passed 175[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 1 s, completed Oct 30, 2026, 12:44:05 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '45603'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '35597'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '38985'.[0m
+Test run [36msirin.testkit.ReconciliationLinuxSeedSuite[0m started
+Test run [36msirin.testkit.ReferenceAgreementSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '34379'.[0m
+Test run [36msirin.testkit.WorkAgreementSuite[0m started
+Test run [36msirin.testkit.ProgressAgreementSuite[0m started
+[32msirin.testkit.ReferenceAgreementSuite[0m: finished [90m9.118s[0m
+Test run [36msirin.testkit.ReferenceAgreementSuite[0m finished: 0 failed, 0 ignored, 1 total [90m9.118s[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/testkit/.native/target/scala-3.7.4/sirin-testkit-test' on port '37289'.[0m
+Test run [36msirin.testkit.LatestAgreementSuite[0m started
+[32msirin.testkit.WorkAgreementSuite[0m: finished [90m12.620s[0m
+Test run [36msirin.testkit.WorkAgreementSuite[0m finished: 0 failed, 0 ignored, 17 total [90m12.620s[0m
+Test run [36msirin.testkit.LifetimeAgreementSuite[0m started
+[32msirin.testkit.LatestAgreementSuite[0m: finished [90m3.592s[0m
+Test run [36msirin.testkit.LatestAgreementSuite[0m finished: 0 failed, 0 ignored, 3 total [90m3.592s[0m
+Test run [36msirin.testkit.EventDeadlineAgreementSuite[0m started
+[32msirin.testkit.EventDeadlineAgreementSuite[0m: finished [90m11.386s[0m
+Test run [36msirin.testkit.EventDeadlineAgreementSuite[0m finished: 0 failed, 0 ignored, 1 total [90m11.386s[0m
+Test run [36msirin.testkit.ReconciliationAgreementSuite[0m started
+[32msirin.testkit.ReconciliationLinuxSeedSuite[0m: finished [90m34.493s[0m
+Test run [36msirin.testkit.ReconciliationLinuxSeedSuite[0m finished: 0 failed, 0 ignored, 3 total [90m34.493s[0m
+Test run [36msirin.testkit.VirtualCollectionAgreementSuite[0m started
+[32msirin.testkit.ReconciliationAgreementSuite[0m: finished [90m29.046s[0m
+Test run [36msirin.testkit.ReconciliationAgreementSuite[0m finished: 0 failed, 0 ignored, 3 total [90m29.046s[0m
+[32msirin.testkit.ProgressAgreementSuite[0m: finished [90m57.644s[0m
+Test run [36msirin.testkit.ProgressAgreementSuite[0m finished: 0 failed, 0 ignored, 3 total [90m57.644s[0m
+[32msirin.testkit.VirtualCollectionAgreementSuite[0m: finished [90m23.825s[0m
+Test run [36msirin.testkit.VirtualCollectionAgreementSuite[0m finished: 0 failed, 0 ignored, 1 total [90m23.825s[0m
+[32msirin.testkit.LifetimeAgreementSuite[0m: finished [90m48.199s[0m
+Test run [36msirin.testkit.LifetimeAgreementSuite[0m finished: 0 failed, 0 ignored, 2 total [90m48.199s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 34, Failed 0, Errors 0, Passed 34[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 61 s (0:01:01.0), completed Oct 30, 2026, 12:45:06 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '34859'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '41103'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/specimens/workbench/.native/target/scala-3.7.4/sirin-workbench-specimen-test' on port '33781'.[0m
+Test run [36msirin.specimen.WorkbenchSuite[0m started
+Test run [36msirin.specimen.StructuralWorkbenchSuite[0m started
+[32msirin.specimen.StructuralWorkbenchSuite[0m: finished [90m0.111s[0m
+Test run [36msirin.specimen.StructuralWorkbenchSuite[0m finished: 0 failed, 0 ignored, 1 total [90m0.111s[0m
+[32msirin.specimen.WorkbenchSuite[0m: finished [90m0.225s[0m
+Test run [36msirin.specimen.WorkbenchSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.225s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 7, Failed 0, Errors 0, Passed 7[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 1 s, completed Oct 30, 2026, 12:45:07 AM[0m
+[0m[[0m[0minfo[0m] [0m[0mBuild skipped: No changes detected in build configuration and class path contents since last build.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/sirin-host-test' on port '35439'.[0m
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/sirin-host-test' on port '43173'.[0m
+Test run [36msirin.host.InteractionSuite[0m started
+[0m[[0m[0minfo[0m] [0m[0mStarting process '/home/runner/work/sirin/sirin/host/.native/target/scala-3.7.4/sirin-host-test' on port '42891'.[0m
+Test run [36msirin.host.HostSuite[0m started
+Test run [36msirin.host.TextEditingSuite[0m started
+[32msirin.host.InteractionSuite[0m: finished [90m0.020s[0m
+Test run [36msirin.host.InteractionSuite[0m finished: 0 failed, 0 ignored, 9 total [90m0.020s[0m
+[32msirin.host.HostSuite[0m: finished [90m0.028s[0m
+Test run [36msirin.host.HostSuite[0m finished: 0 failed, 0 ignored, 6 total [90m0.028s[0m
+[32msirin.host.TextEditingSuite[0m: finished [90m0.023s[0m
+Test run [36msirin.host.TextEditingSuite[0m finished: 0 failed, 0 ignored, 10 total [90m0.023s[0m
+[0m[[0m[0minfo[0m] [0m[0mPassed: Total 25, Failed 0, Errors 0, Passed 25[0m
+[0m[[0m[32msuccess[0m] [0m[0mTotal time: 1 s, completed Oct 30, 2026, 12:45:08 AM[0m
+[0J

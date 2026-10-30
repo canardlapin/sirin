@@ -1,0 +1,37 @@
+[info] welcome to sbt 1.12.14 (Eclipse Adoptium Java 21.0.12.1)
+[info] loading settings for project sirin-alpha-build from plugins.sbt...
+[info] loading project definition from /Users/bbuchsbaum/code/scala/sirin-alpha/project
+[info] loading settings for project root from build.sbt...
+[info] resolving key references (21623 settings) ...
+[info] set current project to root (in build file:/Users/bbuchsbaum/code/scala/sirin-alpha/)
+[info] compiling 16 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/core/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 14 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/classes ...
+[info] done compiling
+[info] compiling 11 Scala sources to /Users/bbuchsbaum/code/scala/sirin-alpha/engine/.jvm/target/scala-3.7.4/test-classes ...
+[info] done compiling
+Test run sirin.engine.WindowKeySafetySuite started
+==> X sirin.engine.WindowKeySafetySuite.automatic dismissal cannot invoke key equality with UI write authority 0.151s munit.ComparisonFailException: engine/src/test/scala/sirin/engine/WindowKeySafetySuite.scala:49
+48:        root.requestWindowClose(ids(1))
+49:      }, CommitResult.Failed(KernelError.ReadOnlyPhase))
+50:      assertEquals(r.transact { target.get }, CommitResult.Committed(0))
+values are not the same
+=> Obtained
+Committed(
+  value = ()
+)
+=> Diff (- expected, + obtained)
+-Failed(
+-  error = ReadOnlyPhase()
++Committed(
++  value = ()
+ )
+    at munit.FunSuite.assertEquals(FunSuite.scala:12)
+    at sirin.engine.WindowKeySafetySuite.$init$$$anonfun$1(WindowKeySafetySuite.scala:49)
+sirin.engine.WindowKeySafetySuite: finished 0.179s
+Test run sirin.engine.WindowKeySafetySuite finished: 1 failed, 0 ignored, 1 total 0.201s
+[error] Failed: Total 1, Failed 1, Errors 0, Passed 0
+[error] Failed tests:
+[error] 	sirin.engine.WindowKeySafetySuite
+[error] (engineJVM / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful
+[error] Total time: 14 s, completed Oct 29, 2026, 9:02:23 p.m.

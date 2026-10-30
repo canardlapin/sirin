@@ -1,0 +1,81 @@
+{
+  "run": {
+    "conclusion": "success",
+    "databaseId": 40980659690,
+    "headSha": "b0facfb8fb28c05229c731065df4c5287d785874",
+    "status": "completed",
+    "url": "https://github.com/canardlapin/sirin/actions/runs/40980659690"
+  },
+  "artifacts": {
+    "total_count": 1,
+    "artifacts": [
+      {
+        "id": 12945376030,
+        "node_id": "MDg6QXJ0aWZhY3QxMjk0NTM3NjAzMA==",
+        "name": "alpha-linux-native-reconciliation-b0facfb8fb28c05229c731065df4c5287d785874",
+        "size_in_bytes": 8170,
+        "url": "https://api.github.com/repos/canardlapin/sirin/actions/artifacts/12945376030",
+        "archive_download_url": "https://api.github.com/repos/canardlapin/sirin/actions/artifacts/12945376030/zip",
+        "expired": false,
+        "digest": "sha256:9656fbeff9efaeb6bdb51ce5a8b70237f1eec966d7a1362243758cd22d0a4530",
+        "created_at": "2026-10-30T00:45:09Z",
+        "updated_at": "2026-10-30T00:45:09Z",
+        "expires_at": "2026-11-29T00:45:08Z",
+        "workflow_run": {
+          "id": 40980659690,
+          "repository_id": 1435901458,
+          "head_repository_id": 1435901458,
+          "head_branch": "codex/application-alpha-20261029",
+          "head_sha": "b0facfb8fb28c05229c731065df4c5287d785874"
+        }
+      }
+    ]
+  },
+  "attempt_checks": [
+    {
+      "attempt": 1,
+      "distinct_cases": 327,
+      "suite_totals": [
+        69,
+        9,
+        2,
+        6,
+        175,
+        34,
+        7,
+        25
+      ]
+    },
+    {
+      "attempt": 2,
+      "distinct_cases": 327,
+      "suite_totals": [
+        69,
+        9,
+        2,
+        6,
+        175,
+        34,
+        7,
+        25
+      ]
+    },
+    {
+      "attempt": 3,
+      "distinct_cases": 327,
+      "suite_totals": [
+        69,
+        9,
+        2,
+        6,
+        175,
+        34,
+        7,
+        25
+      ]
+    }
+  ],
+  "total_case_executions": 981,
+  "source_cause_resolved": false,
+  "main_ci_repaired": false
+}

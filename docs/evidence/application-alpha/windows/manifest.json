@@ -1,0 +1,32 @@
+{
+  "base_commit": "b0facfb8fb28c05229c731065df4c5287d785874",
+  "files": {
+    "README.md": "cc6a9216ff426aa9887759fe7259827d95e3e89d625c04475733a3e217044b30",
+    "history/application-close-negative/checks.log": "423c7a4505c30c560ab1e94148eecce1ee041f87c30c138b4de566bf022278ab",
+    "history/application-close-negative/result.json": "fea16050d6a208a119f5405e09dd18b40a7c9ca01e8ba308f91706fdf2076eda",
+    "history/before-application-close-fix/checks.log": "5953011e8de364fcc13d1c10bcd344ab7564f33ac4bbb76c6f2e086114e54289",
+    "history/before-application-close-fix/protocol.json": "28df99319c5d9d224b2f919a9c80ae8f215dd1b9ac65f6453991a14b7259417a",
+    "history/before-application-close-fix/result.json": "77c2f746ea3fcd7659eda20c1a82947fc73e769ae4aad52697ac01a04f2f0228",
+    "history/before-application-close-fix/source.patch": "25b250c2ed2d66631814f32456ae9ff85a56f557d00bb4d282cce7a022203f45",
+    "history/before-key-fix/checks-1.log": "850c9313f71734330cd0d01828f90a0eb046a0ab84f67c0d75132d3cef07db58",
+    "history/before-key-fix/checks-2.log": "8359a23f5475df4db7c72bcaf3bae5bc0ee3eb5a7b9af01c4dcafcae1d9238a8",
+    "history/before-key-fix/protocol.json": "17b9fe0dce0c14dd55428ddd536240526e4cbb739d3b7643ce6797bfab33e839",
+    "history/before-key-fix/result.json": "0445e1d95093e2f8d366e74b93830cd8b3fa17ba44a2f9b40f5fd832484311aa",
+    "history/before-key-fix/source.patch": "cb95888940c02c4602b019a4d3f87a854d91d52ccb4193aa8f76986fa7080f06",
+    "history/fixture-compilation/checks.log": "6b18371bc83a9f5d0c1321e349d778ff56972c86e425a56bb37c96b814d643b6",
+    "history/fixture-compilation/result.json": "9f12f59446d86523171b07c1c089fcbc6ed2f90e91ff4c74c7d658702d1f5f3b",
+    "history/initial-full-pass/checks.log": "c6242a7124544f7b73662b2a3672808220906db9f43090b450c31459a27347de",
+    "history/initial-full-pass/protocol.json": "690b1a49409e914bf873a1e78be7abb57e46ce60728d10977fcda104939ca5c5",
+    "history/initial-full-pass/result.json": "a0761c666eae884a0a3ca38b36988a1b8405fc26d4e511c1eaed27f871f9d09b",
+    "history/key-equality-negative/checks.log": "31aaf316a8e18c7bf700a72718561c9932e0cca7316b7ee84be1565d05607ac1",
+    "history/key-equality-negative/result.json": "0ff0cc243ff08188b774be84fee8f230190023b15002122d037080011318847f",
+    "source.patch": "e1b0c8dd07d2bd99f917d3160026636e91c4bf133f694305121467c169438c8f",
+    "summary.json": "75c161032588bb278cd5ceb8862d768e616e88c98eefbc47a2ef3a13427ed047",
+    "validation/checks-1.log": "1cc0a19ea886d69c8c4f03e282cb63c172480063a803a2ec2da8539b184f54fe",
+    "validation/checks-2.log": "1232f3cb5c10503a354d67fa717499c73d1e710d570e0790a8fa6d3885965593",
+    "validation/protocol.json": "830d57c0af84bd6e79cb38d497f78bd1591887545523dfa16356a62404f2e1c0",
+    "validation/result.json": "22508efec16f607369fb976e529677a13e36a8f7de0c8d71500508d843e3073a",
+    "verify.py": "c8edac737ecdf3a19c54b380c6f1d3ea30b51058771bbda0076d213c8ea03478",
+    "source-replay.json": "d6dbf483ac5620d95ed7fee1cdfecda31d1b1fc774fa0a2cdf8a0f9f51b26657"
+  }
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "attempt": 1,
+    "start_utc": "2026-10-30T00:35:53.530773+00:00",
+    "timed_out": false,
+    "returncode": 0,
+    "elapsed_seconds": 394.069452414
+  },
+  {
+    "attempt": 2,
+    "start_utc": "2026-10-30T00:42:27.600729+00:00",
+    "timed_out": false,
+    "returncode": 0,
+    "elapsed_seconds": 81.34270249400004
+  },
+  {
+    "attempt": 3,
+    "start_utc": "2026-10-30T00:43:48.943934+00:00",
+    "timed_out": false,
+    "returncode": 0,
+    "elapsed_seconds": 79.620380291
+  }
+]
