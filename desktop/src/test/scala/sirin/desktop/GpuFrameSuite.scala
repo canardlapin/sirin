@@ -125,7 +125,9 @@ class GpuFrameSuite extends munit.FunSuite:
       try cache.render(prepared,() => {checks+=1;checks>3})
       catch case _: InterruptedException => cancelled=true
       assert(cancelled,"pending group cancellation was not observed")
-      assertEquals(gpu.stats.programs,3L);assertEquals(GpuFrame.liveFrames,0)
+      assertEquals(gpu.stats.programs, 0L)
+      assertEquals(gpu.stats.pinnedEntries, 0L)
+      assertEquals(GpuFrame.liveFrames, 0)
       val before=gpu.stats.submissions
       val frame=cache.render(prepared,() => false)
       try

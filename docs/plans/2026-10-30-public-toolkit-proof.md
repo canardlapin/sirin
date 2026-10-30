@@ -42,3 +42,24 @@ Keep formatting changes separate from behavior changes. Commit a short evidence
 note; keep raw captures, fixtures and logs outside Git with hashes. Update
 STATUS.md when capability changes, without promoting a bounded proof to alpha
 acceptance. Profile D7 on the actual application path before prioritizing copies.
+
+## Diagram tranche
+
+The first client after the seam proof is a new `demo.diagram` implementation;
+archive 0413beb remains preserved. Gesture previews are application state and do
+not mutate committed graph history. Release commits one history item; cancellation,
+focus loss and retirement discard previews. This changes no kernel transaction,
+identity, lifetime, scheduling or command policy.
+
+The original dense fixture exposed native resource admission failures. Pending
+programs now flush before their combined pinned inventory would exceed existing
+limits. A tile whose own program exceeds those limits is subdivided, with bounded
+partition metadata for subsequent reuse. Native pools, pixel limits and tile-count
+limits are unchanged. Independent reference pixels, cancellation, refusal and
+recovery checks cover this path; the C shim and ABI are unchanged.
+
+Automated public-client and packaged-image checks are a bounded Alpha4 step.
+Real pointer use, native semantic-part transport, owner visual review and the
+remaining Alpha4 acceptance criteria stay open. The next implementation step is
+the remaining public-control seam, particularly text input and composition;
+motion must still land before the alpha API freezes.

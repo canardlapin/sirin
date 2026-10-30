@@ -279,7 +279,7 @@ addCommandAlias("testAll", "; testJVM; testNative")
 lazy val workbench = crossProject(JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("specimens/workbench"))
-  .dependsOn(engine)
+  .dependsOn(engine, graphicsUI)
   .settings(name := "sirin-workbench-specimen", publish / skip := true, testDeps)
 
 // Competent JavaFX-backed authoring baseline; compile explicitly with JDK 25+.
@@ -420,3 +420,15 @@ desktopJVM / desktopWorkbenchPackage := packageDesktopImage((ThisBuild / baseDir
   (desktopJVM / target).value / "package-workbench",(desktopJVM / Runtime / fullClasspath).value.map(_.data),
   (desktopJVM / Compile / packageBin).value,(desktopJVM / desktopNativeLibrary).value,
   "SirinWorkbench","io.github.canardlapin.sirin.workbench.alpha","interactive",mainClass="sirin.desktop.PersistentWorkbench")
+
+// Public diagram specimen, with a distinct identity and no implicit UI launch.
+lazy val desktopDiagramPackage = taskKey[File]("Package the public diagram editor")
+desktopJVM / desktopDiagramPackage := packageDesktopImage(
+  (ThisBuild / baseDirectory).value,
+  file(sys.props("java.home")),
+  (desktopJVM / target).value / "package-diagram",
+  (desktopJVM / Runtime / fullClasspath).value.map(_.data),
+  (desktopJVM / Compile / packageBin).value,
+  (desktopJVM / desktopNativeLibrary).value,
+  "SirinDiagram", "io.github.canardlapin.sirin.diagram.alpha", "interactive",
+  mainClass = "sirin.desktop.DiagramWorkbench")

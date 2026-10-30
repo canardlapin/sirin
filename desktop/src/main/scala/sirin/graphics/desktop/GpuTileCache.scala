@@ -7,6 +7,8 @@ import sirin.render.{BatchGpu,BatchRetained,GpuFrame,GpuTile}
 final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
   private class Entry(val position: (Int,Int),val signature: Vector[Any],val width: Int,val height: Int,
       var tile: Option[GpuTile],var program: Option[BatchRetained])
+  private case class Split(signature: Vector[Any], vertical: Boolean)
+  private val splits = scala.collection.mutable.LinkedHashMap.empty[(Int, Int, Int, Int), Split]
   private val owner=Thread.currentThread()
   private val entries=scala.collection.mutable.LinkedHashSet.empty[Entry]
   private var current=Vector.empty[(Int,Int,GpuTile)]
@@ -24,8 +26,16 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
     case PreparedCommand.Glyphs(run,origin,color,matrix,clips) => (run.font,run.glyphs,origin,color,matrix,clips)
     case other => other
   }
+  def tileCount: Int =
+    check()
+    current.size
   def stats: String=s"entries=${entries.size} pixels=$pixels hits=$hits misses=$misses"
-  def close(): Unit={check();entries.toVector.foreach(remove);target=None;current=Vector.empty}
+  def close(): Unit =
+    check()
+    entries.toVector.foreach(remove)
+    splits.clear()
+    target = None
+    current = Vector.empty
   def frame(width: Int,height: Int): GpuFrame={check();GpuFrame(current,width,height)}
   def render(drawing: PreparedDrawing,cancelled: () => Boolean,control: PreparationControl=new PreparationControl): GpuFrame =
     check();current=Vector.empty;lastCompiled=0;lastPrepared=0
@@ -44,30 +54,82 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
       pending.clear()
     val w=drawing.target.width;val h=drawing.target.height
     require(((w+edge-1)/edge)*((h+edge-1)/edge)<=256,"GPU frame tile count")
-    for y <- 0 until h by edge;x <- 0 until w by edge do
+    var leaves = 0
+    var visits = 0
+    def renderTile(rect: Rect): Unit =
       if cancelled() then throw new InterruptedException("obsolete GPU frame")
-      val prepared=TiledRenderer.withoutEmptyMasks(
-        TiledRenderer.tile(drawing,Rect(x,y,math.min(edge,w-x),math.min(edge,h-y))),gpu.hasGlyphInk)
-      lastPrepared+=1
-      val signature=key(prepared)
-      val position=(x,y)
-      val entry=entries.find(e => e.position==position && e.signature==signature && e.tile.nonEmpty) match
-        case Some(e) => hits+=1;entries.remove(e);entries.add(e);e
-        case None =>
-          misses+=1
-          val size=prepared.target.width.toLong*prepared.target.height
-          if pending.size>=4 then flush()
-          while entries.size>=256 || pixels+size>1048576 do
-            remove(entries.find(e => !active(e)).getOrElse(throw new IllegalStateException("active GPU frame budget")))
-          val program=gpu.compile(prepared,control);lastCompiled+=1
-          val retained=gpu.retain(program,control)
-          val e=new Entry(position,signature,prepared.target.width,prepared.target.height,None,Some(retained))
-          entries.add(e);pixels+=size;pending+=e;e
-      active+=entry;output+=entry
-    if cancelled() then throw new InterruptedException("obsolete GPU frame")
-    flush()
-    current=output.result().map(e => (e.position._1,e.position._2,e.tile.get))
-    GpuFrame(current,w,h)
+      control.checkpoint()
+      visits += 1
+      require(visits <= 512, "GPU adaptive tile work budget")
+      val prepared = TiledRenderer.withoutEmptyMasks(TiledRenderer.tile(drawing, rect), gpu.hasGlyphInk)
+      lastPrepared += 1
+      val signature = key(prepared)
+      val position = (rect.x.toInt, rect.y.toInt)
+      val existing = entries.find(e => e.position == position && e.signature == signature && e.tile.nonEmpty &&
+        e.width == prepared.target.width && e.height == prepared.target.height)
+      val region = (position._1, position._2, rect.width.toInt, rect.height.toInt)
+      def divide(vertical: Boolean): Unit =
+        if vertical then
+          val half = math.floor(rect.width / 2)
+          renderTile(rect.copy(width = half))
+          renderTile(Rect(rect.x + half, rect.y, rect.width - half, rect.height))
+        else
+          val half = math.floor(rect.height / 2)
+          renderTile(rect.copy(height = half))
+          renderTile(Rect(rect.x, rect.y + half, rect.width, rect.height - half))
+      existing match
+        case Some(e) =>
+          hits += 1
+          entries.remove(e)
+          entries.add(e)
+          leaves += 1
+          require(leaves <= 256, "GPU frame tile count")
+          active += e
+          output += e
+        case None => splits.get(region).filter(_.signature == signature) match
+          case Some(split) => divide(split.vertical)
+          case None =>
+            val program = gpu.compile(prepared, control)
+            lastCompiled += 1
+            if !gpu.fits(program) && math.max(rect.width, rect.height) > 32 then
+              // Retain only bounded immutable partition metadata, never a native resource.
+              while splits.size >= 256 do splits.remove(splits.head._1)
+              val split = Split(signature, rect.width >= rect.height && rect.width > 32)
+              splits(region) = split
+              divide(split.vertical)
+            else
+              splits.remove(region)
+              require(gpu.fits(program), "GPU tile resource budget at minimum tile size")
+              leaves += 1
+              require(leaves <= 256, "GPU frame tile count")
+              misses += 1
+              val size = prepared.target.width.toLong * prepared.target.height
+              if pending.size >= 4 || (pending.nonEmpty && !gpu.canRetain(program)) then flush()
+              while entries.size >= 256 || pixels + size > 1048576 do
+                val victim = entries.find(e => !active(e))
+                  .getOrElse(throw new IllegalStateException("active GPU frame budget"))
+                remove(victim)
+              val retained = gpu.retain(program, control)
+              val e = new Entry(position, signature, prepared.target.width, prepared.target.height,
+                None, Some(retained))
+              entries.add(e)
+              pixels += size
+              pending += e
+              active += e
+              output += e
+    try
+      for y <- 0 until h by edge; x <- 0 until w by edge do
+        renderTile(Rect(x, y, math.min(edge, w - x), math.min(edge, h - y)))
+      if cancelled() then throw new InterruptedException("obsolete GPU frame")
+      flush()
+      current = output.result().map(e => (e.position._1, e.position._2, e.tile.get))
+      GpuFrame(current, w, h)
+    catch
+      case error: Throwable =>
+        // Completed immutable tiles may stay cached; incomplete programs must release their pins now.
+        pending.toVector.foreach(remove)
+        pending.clear()
+        throw error
 
 object GpuTileCache:
   /** Both inputs have already passed shared preparation and use the same target. */

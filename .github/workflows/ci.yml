@@ -122,8 +122,8 @@ jobs:
           native/fetch-macos.sh --unicode
           native/fetch-macos.sh --thorvg
           native/fetch-macos.sh --sirin
-      - name: Headless host, editor policy and launch ownership checks
-        run: sbt -batch 'desktopJVM/testOnly sirin.desktop.WindowRenderRecoverySuite sirin.desktop.FileDocumentImporterSuite sirin.desktop.OwnerInputQueueSuite sirin.desktop.ApplicationServicesSuite sirin.desktop.PersistentWorkbenchSuite sirin.desktop.FileDocumentRepositorySuite sirin.desktop.ApplicationMenusSuite sirin.desktop.NativeApplicationSuite sirin.desktop.RenderServiceSuite sirin.desktop.EditorControllerSuite sirin.desktop.NativeAbiSuite'
+      - name: Headless host, rendering, editor policy and ownership checks
+        run: sbt -batch desktopJVM/test
       - name: Package the public application entry without launching UI
         run: sbt -batch desktopJVM/desktopApplicationPackage
       - name: Package the persistent workbench without launching UI
@@ -132,3 +132,10 @@ jobs:
         run: python3 -B desktop/tools/portable-image.py desktop/target/package-workbench/SirinWorkbench.app --load-library
       - name: Verify bundled native closure and strict signature
         run: python3 -B desktop/tools/portable-image.py desktop/target/package-application/SirinAlpha.app --load-library
+
+      - name: Package the public diagram without launching UI
+        run: sbt -batch desktopJVM/desktopDiagramPackage
+      - name: Verify diagram native closure and strict signature
+        run: >-
+          python3 -B desktop/tools/portable-image.py
+          desktop/target/package-diagram/SirinDiagram.app --load-library

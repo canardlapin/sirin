@@ -439,7 +439,7 @@ final class RenderSession(
         0,
         System.nanoTime() - began,
         Thread.currentThread().getName,
-        ((frame.width + tileEdge - 1) / tileEdge) * ((frame.height + tileEdge - 1) / tileEdge),
+        gpuTiles.tileCount,
         capture,
         s"prepared=$prepared tilePrepared=${
             if unchanged then

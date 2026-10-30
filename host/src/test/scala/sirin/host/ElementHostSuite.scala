@@ -344,3 +344,29 @@ class ElementHostSuite extends munit.FunSuite:
     finally
       runtime.close()
   }
+
+  test("releasing another pointer button preserves capture until its owning button releases") {
+    val runtime = new HeadlessRuntime
+    try
+      val owner = runtime.scope("buttons")
+      val state = owner.cell(0)
+      val surface = new Surface:
+        override def pointer(event: PointerEvent)(using @unused txn: UiTxn): PointerResponse =
+          if event.phase == PointerPhase.Down then PointerResponse.Capture else PointerResponse.Handled
+      val mounted = runtime.mount(owner, element(state, surface))
+      val tree = captured(runtime, mounted)
+      val result = layout(tree)
+      val interaction = new Interaction
+      interaction.install(InteractionSnapshot(1, result), Map.empty)
+      val input = new ElementInput(runtime, interaction)
+      input.update(tree.elements)
+      input.install(result)
+      input.pointer(HostInput.Down(10, 10, primary = false))
+      val capture = input.captured
+      assert(capture.nonEmpty)
+      input.pointer(HostInput.Up(10, 10, primary = true))
+      assertEquals(input.captured, capture)
+      input.pointer(HostInput.Up(10, 10, primary = false))
+      assertEquals(input.captured, None)
+    finally runtime.close()
+  }

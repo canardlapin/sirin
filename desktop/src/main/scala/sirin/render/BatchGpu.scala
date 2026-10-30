@@ -37,6 +37,22 @@ final class BatchGpu private(private[render] var handle: Ptr[Byte],val generatio
     check()
     def field(i: Int)=BatchShim.bgpu_stat(handle,i)
     BatchGpuStats(field(0),field(1),field(2),field(3),field(4),field(5),field(6),field(7),field(8))
+  private def withinLimits(programs: Vector[BatchProgram]): Boolean =
+    val meshes = programs.iterator.flatMap(_.meshes).map(mesh => mesh.token -> mesh).toMap.values
+    val assets = programs.iterator.flatMap(_.assets).map(asset => (asset.kind, asset.token) -> asset).toMap.values
+    meshes.size <= limits.meshEntries && meshes.iterator.map(_.count.toLong).sum <= limits.meshVertices &&
+      assets.count(_.kind == 1) <= limits.imageEntries && assets.count(_.kind == 2) <= limits.glyphEntries
+
+  /** Whether one program fits the fixed per-owner inventories, without native allocation. */
+  private[sirin] def fits(program: BatchProgram): Boolean =
+    check()
+    withinLimits(Vector(program))
+
+  /** Shared resources count once; pending programs pin entries that cannot yet be evicted. */
+  private[sirin] def canRetain(program: BatchProgram): Boolean =
+    check()
+    withinLimits(children.iterator.map(_.program).toVector :+ program)
+
   def retain(program: BatchProgram,control: PreparationControl=new PreparationControl): BatchRetained =
     check();require(program.drawing.target.device eq generation,"batch device generation mismatch")
     require(program.meshes.size<=limits.meshEntries,"GPU mesh entry budget")

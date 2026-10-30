@@ -99,7 +99,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
               capture = None
             case _ =>
               ()
-          if phase == PointerPhase.Up || phase == PointerPhase.Cancel then
+          if phase == PointerPhase.Cancel || (phase == PointerPhase.Up && capture.exists(_._2 == button)) then
             capture = None
           result
         }

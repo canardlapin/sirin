@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-30, for the public-toolkit proof. This page says, in plain
+Last updated 2026-10-30, for the public diagram tranche. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -21,6 +21,12 @@ Sirin is a pre-release prototype. Nothing is published.
   shared logical units. Button now uses this public seam, including prepared
   measurement text, input activation, semantics and focus/press feedback.
   [Validation and limits](evidence/2026-10-30-public-toolkit-proof.md).
+- **Public diagram client.** Application code outside the `sirin` package uses
+  Element, named Layout, commands and the graphics adapter for curved connections,
+  gradient nodes, prepared labels, selection tools, drag/cancel, pan/zoom and bounded
+  undo/redo. Automated host and GPU checks include 512 nodes and all their labels.
+  A separate packaged entry exists; real-client acceptance remains open.
+  [Controls and limits](guides/diagram.md).
 - **Text.** Real HarfBuzz/FreeType shaping, Unicode segmentation and bidi,
   font fallback across supplied fonts, line wrapping, and caret, hit-testing
   and selection geometry.
@@ -51,8 +57,8 @@ Sirin is a pre-release prototype. Nothing is published.
 
 - `Checkbox`, `Overlay`, `Popup` and time-varying motion. Constant and mapped
   Presentation values exist; they are not animation.
-- The diagram editor, the inspector, a starter project, and the matched
-  ScalaFX comparison.
+- The inspector, a starter project, and the matched ScalaFX comparison.
+  The diagram still needs real pointer and accessibility acceptance.
 - Windows and Linux desktop hosts. Those platforms are CI-only.
 
 ## Public-seam ledger
@@ -81,5 +87,5 @@ files were moved to an external artifact directory. The original checkout owns
 the authoritative Mote store and must not be reset or cleaned. The GPU-host tree
 still supplies a running app; the editor tree retains the approved launch candidate.
 Their disposition remains in the [stocktake](plans/2026-10-30-worktree-stocktake.md).
-The three WIP archive branches remain on origin. Unfinished diagram work stays
-archived rather than being included in this proof.
+The three WIP archive branches remain on origin. The diagram archive was reference
+material; the new client was written against the accepted public seam.
