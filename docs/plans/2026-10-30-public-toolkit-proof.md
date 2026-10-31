@@ -73,6 +73,8 @@ hidden content and reduced motion. See
 preference and real-window motion review remain open.
 
 `Text`, `Row` and `Column` are on the seam; see
-`docs/design/decisions/2026-10-31-layout-controls.md`. The next implementation
-step is `Scroll`, `VirtualRows` and `DockOutlet`, which need public viewport
-feedback, row realization and retained outlet placement.
+`docs/design/decisions/2026-10-31-layout-controls.md`. `Scroll` and `VirtualRows`
+followed, through public viewport feedback (`Layout.reporting`) and live content
+(`View.live`). `DockOutlet` is kernel structure with no private host code. See
+`docs/design/decisions/2026-10-31-viewport-controls.md`. The control ledger is
+empty; real-window scrolling has not been reviewed.

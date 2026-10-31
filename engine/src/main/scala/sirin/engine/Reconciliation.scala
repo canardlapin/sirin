@@ -9,7 +9,6 @@ enum MountedSnapshot:
   case Custom(frame: ElementFrame, binding: ElementBinding)
   case CustomLayout(frame: LayoutFrame, children: Vector[(sirin.Slot, MountedSnapshot)])
   case Styled(child: MountedSnapshot, decorations: Vector[Decoration])
-  case Scroll(instance: Long, child: MountedSnapshot)
   case Window(
       instance: Long,
       title: Value[String],
@@ -27,7 +26,8 @@ enum MountedSnapshot:
       leading: Lp,
       trailing: Lp,
       rowHeight: Lp,
-      rows: MountedSnapshot
+      rows: MountedSnapshot,
+      frame: LayoutFrame
   )
 
   /** Opaque leaf description; no painting or input routing is performed. */
@@ -55,14 +55,12 @@ object MountedSnapshot:
           a == b && equality.same(x, y)
         case (Window(i, t, m, x, r), Window(j, u, n, y, s)) =>
           i == j && t == u && m == n && r == s && equality.same(x, y)
-        case (Scroll(i, x), Scroll(j, y)) =>
-          i == j && equality.same(x, y)
         case (Outlet(i, x), Outlet(j, y)) =>
           i == j && equality.same(x, y)
         case (Reparented(k, i, x), Reparented(l, j, y)) =>
           k == l && i == j && equality.same(x, y)
-        case (VirtualRows(i, r, f, t, l, e, a, x), VirtualRows(j, s, g, u, m, h, b, y)) =>
-          i == j && r == s && f == g && t == u && l == m && e == h && a == b && equality.same(x, y)
+        case (VirtualRows(i, r, f, t, l, e, a, x, p), VirtualRows(j, s, g, u, m, h, b, y, q)) =>
+          i == j && r == s && f == g && t == u && l == m && e == h && a == b && (p eq q) && equality.same(x, y)
         case (Leaf(x), Leaf(y)) =>
           x == y
         case (Component(i, x, c), Component(j, y, d)) =>
@@ -99,6 +97,7 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
     }
   private var defaultViewport = Option.empty[Cell[RowViewport]]
   private var virtuals = Vector.empty[VirtualSlot]
+  private var reporters = Vector.empty[LayoutSlot]
   private var windows = Vector.empty[WindowSlot]
 
   def requestApplicationQuit()(using txn: UiTxn): CloseDecision =
@@ -161,6 +160,21 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
           slot.viewport.set(Some(viewport))
         case None =>
           UiTxn.refuse("virtual node is no longer mounted")
+    }
+  /** A host reports what it presented of a reporting layout or virtual node, by its mounted ID. */
+  def reportViewport(instance: Long, viewport: Viewport)(using txn: UiTxn): Unit =
+    runtime.capability(txn) {
+      runtime.ensureScope(owner)
+      virtuals.find(v => v.scope.id == instance && runtime.scopeAvailable(v.scope)) match
+        case Some(slot) =>
+          val top = math.max(0, viewport.visible.origin.y.toDouble)
+          slot.viewport.set(Some(RowViewport(Lp(top), viewport.visible.size.height)))
+        case None =>
+          reporters.find(r => r.scope.id == instance && runtime.scopeAvailable(r.scope)).flatMap(_.sink) match
+            case Some(cell) =>
+              cell.set(viewport)
+            case None =>
+              UiTxn.refuse("reporting layout is no longer mounted")
     }
   def dispose()(using UiTxn): Unit = owner.dispose()
   def isDisposed: Boolean = owner.isDisposed
@@ -244,8 +258,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
         Vector(p.title) ++ MenuBindings.dependencies(p.menu) ++ directDependencies(p.content)
       case p: Windows.MenuDescription =>
         MenuBindings.dependencies(p.menu)
-      case p: View.ScrollContent =>
-        directDependencies(p.content)
+      case p: View.Live =>
+        Vector(p.content)
       case p: Component.Placement[?] =>
         Vector(p.props)
       case p: ForEach.Description[?, ?] =>
@@ -272,6 +286,9 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
     val kept = virtuals.filter(v => runtime.scopeAvailable(v.scope))
     if kept.size != virtuals.size then
       change(virtuals)(virtuals = _)(kept)
+    val reporting = reporters.filter(r => runtime.scopeAvailable(r.scope))
+    if reporting.size != reporters.size then
+      change(reporters)(reporters = _)(reporting)
     val liveWindows = windows.filter(window => runtime.scopeAvailable(window.scope))
     if liveWindows.size != windows.size then
       change(windows)(windows = _)(liveWindows)
@@ -394,8 +411,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
               new LayoutSlot(parent, p.asInstanceOf[Layout.Description[Any]], reader => requested(reader))
             case p: sirin.Window.Description =>
               new WindowSlot(parent, p)
-            case p: View.ScrollContent =>
-              new ScrollSlot(parent, p)
+            case p: View.Live =>
+              new LiveSlot(parent, p, reader => requested(reader))
             case p: DockOutlet.Description =>
               new OutletSlot(parent, p)
             case p: RetainedPlacement =>
@@ -435,7 +452,7 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
       else
         next match
           case _: Element.Description[?, ?, ?, ?, ?] | _: Layout.Description[?] | _: sirin.Window.Description |
-              _: View.ScrollContent =>
+              _: View.Live =>
             false
           case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] |
               _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] =>
@@ -625,10 +642,14 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
     private var revision = 0L
     private var frame = Option.empty[LayoutFrame]
     private var failure = Option.empty[Throwable]
+    if initial.viewport.nonEmpty then
+      change(reporters)(reporters = _)(reporters :+ this)
+    def sink: Option[Cell[Viewport]] = description.viewport
     def accepts(view: View): Boolean =
       view match
         case p: Layout.Description[?] =>
-          p.name == description.name && (p.policy eq description.policy)
+          p.name == description.name && (p.policy eq description.policy) &&
+          p.viewport.nonEmpty == description.viewport.nonEmpty
         case _ =>
           false
     def refresh(view: View): Boolean =
@@ -715,7 +736,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
                   value,
                   description.policy,
                   phaseGuard,
-                  description.presentation.filter(_ => description.state.isEmpty)
+                  description.presentation.filter(_ => description.state.isEmpty),
+                  description.viewport.nonEmpty
                 )
               )
             )
@@ -885,21 +907,57 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
             changed = true
       changed
 
-  private final class ScrollSlot(parent: runtime.OwnedScope, initial: View.ScrollContent) extends Slot:
-    val scope = parent.child("scroll")
+  /** A child described by a signal; it keeps static-child identity as its description changes. */
+  private final class LiveSlot(parent: runtime.OwnedScope, initial: View.Live, requested: Signal.Reader => View)
+      extends Slot:
+    val scope = parent.child("live")
     private var description = initial
-    private val child = new Holder(scope, 0)
-    def accepts(view: View): Boolean = view.isInstanceOf[View.ScrollContent]
+    private var failure = Option.empty[Throwable]
+    private def fresh(): Holder =
+      new Holder(
+        scope,
+        0,
+        Some { reader =>
+          plain(requested(reader)) match
+            case latest: View.Live =>
+              reader(latest.content) match
+                case Value.Ok(view) =>
+                  view
+                case Value.Failed(error) =>
+                  throw new Signal.InputFailure(error)
+            case _ =>
+              throw KernelError.DisposedScope
+        }
+      )
+    private var child = fresh()
+    def accepts(view: View): Boolean = view.isInstanceOf[View.Live]
     def refresh(view: View): Boolean =
       if description.eq(view) then
         false
       else {
-        change(description)(description = _)(view.asInstanceOf[View.ScrollContent])
+        change(description)(description = _)(view.asInstanceOf[View.Live])
         true
       }
-    def dependencies: Vector[Signal[?]] = directDependencies(description.content) ++ child.dependencies
-    def snapshot: MountedSnapshot = MountedSnapshot.Scroll(scope.id, child.snapshot)
-    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean = child.sync(description.content, read)
+    def dependencies: Vector[Signal[?]] = Vector(description.content) ++ child.dependencies
+    def snapshot: MountedSnapshot = failure.fold(child.snapshot)(MountedSnapshot.Unavailable(_))
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      read(description.content) match
+        case None =>
+          true
+        case Some(Value.Failed(error)) =>
+          if failure.exists(_ eq error) then
+            false
+          else
+            // A retired child never comes back; recovery mounts a fresh one.
+            child.retire()
+            change(child)(child = _)(fresh())
+            change(failure)(failure = _)(Some(error))
+            true
+        case Some(Value.Ok(view)) =>
+          val recovered = failure.nonEmpty
+          if recovered then
+            change(failure)(failure = _)(None)
+          child.sync(view.asInstanceOf[View], read) || recovered
 
   private final class OutletSlot(parent: runtime.OwnedScope, initial: DockOutlet.Description) extends Slot:
     val scope = parent.child("outlet")
@@ -1255,8 +1313,30 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
               throw KernelError.DisposedScope
       )
     private var metadata = Option.empty[CollectionWindow[Any, Any]]
+    private var frame = Option.empty[LayoutFrame]
+    private var revision = 0L
     private var failure = Option.empty[Throwable]
     change(virtuals)(virtuals = _)(virtuals :+ this)
+
+    /** The public row layout for the current window; a new frame only when its geometry changes. */
+    private def framed(value: CollectionWindow[Any, Any]): LayoutFrame =
+      val state = VirtualRowsLayout.State(value.first, value.total, description.rowHeight.toDouble)
+      frame.filter(f => runtime.lawful(f.sameState(state))).getOrElse {
+        change(revision)(revision = _)(Math.addExact(revision, 1L))
+        val next =
+          new LayoutFrame(
+            scope.id,
+            "virtual-rows",
+            revision,
+            state,
+            VirtualRowsLayout.policy.asInstanceOf[LayoutPolicy[Any]],
+            phaseGuard,
+            None,
+            true
+          )
+        change(frame)(frame = _)(Some(next))
+        next
+      }
     def accepts(view: View): Boolean =
       view match
         case value: VirtualRows.Description[?, ?] =>
@@ -1285,7 +1365,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
             Lp(value.first.toDouble * description.rowHeight.toDouble),
             Lp((value.total - value.first - value.entries.size).toDouble * description.rowHeight.toDouble),
             description.rowHeight,
-            rows.snapshot
+            rows.snapshot,
+            frame.get
           )
         }
       )(MountedSnapshot.Unavailable(_))
@@ -1326,9 +1407,10 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
           if !metadata.exists(m =>
               m.revision == value.revision && m.first == value.first && m.total == value.total &&
                 m.entries.size == value.entries.size
-            )
+            ) || !frame.exists(_.sameState(VirtualRowsLayout.State(value.first, value.total, description.rowHeight.toDouble)))
           then
             change(metadata)(metadata = _)(Some(value))
+            framed(value)
             changed = true
       if rows.step(read) then
         changed = true

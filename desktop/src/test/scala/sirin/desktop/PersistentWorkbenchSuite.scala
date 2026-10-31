@@ -61,7 +61,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
     )
     var serial = 0L
     var replayChecked = false
-    var viewports = Map.empty[Long, RowViewport]
+    var viewports = Map.empty[Long, Viewport]
     def frame(): CapturedApplication =
       var result = capture()
       var settled = false
@@ -79,7 +79,6 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
             720,
             1000,
             720,
-            state.scrolls,
             state.focused,
             state.keyboard,
             viewports = viewports,
@@ -91,7 +90,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
           if output.layout.viewports.exists(v => !viewports.get(v.instance).contains(v.viewport)) then
             ok(
               runtime.transact {
-                output.layout.viewports.foreach(v => mounted.setViewport(v.instance, v.viewport))
+                output.layout.viewports.foreach(v => mounted.reportViewport(v.instance, v.viewport))
               }
             )
             viewports = output.layout.viewports.map(v => v.instance -> v.viewport).toMap

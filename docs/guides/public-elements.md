@@ -74,6 +74,37 @@ whether it shows nothing, because it is empty or hidden. `Row` and `Column` are
 built on these APIs, in `core/src/main/scala/sirin/StackLayout.scala`, and
 `Text` is an element, in `core/src/main/scala/sirin/TextElement.scala`.
 
+## Viewports and wrapped content
+
+`Layout.reporting(name, state, policy, viewport)` asks the host to report what
+it presented of the layout. After each frame the host writes a `Viewport` into
+the `viewport` cell, in a transaction of its own. A `Viewport` holds three
+things, all in the layout's own coordinates:
+- the layout's size;
+- the part of it left visible after clipping;
+- the size of the box around its placed children.
+
+The host lays out again until the reports stop changing, and only then
+presents, so a report never reaches the screen paired with old layout. Write
+only presentation state from these reports: they arrive once per changed frame.
+
+A component that wraps content its caller supplies takes the content as props
+and shows it with `View.live(props)`. The live child is reconciled like a static
+child. A new description of the same kind and key updates it in place, so its
+state survives. A different kind or key remounts it.
+
+`Scroll` uses both, in `core/src/main/scala/sirin/ScrollControl.scala`:
+- a component owns the offset;
+- a reporting layout clips the content and places it at the offset;
+- a focusable element under the content handles the wheel and the keys, and
+  clamps against the last reported viewport.
+
+The wheel goes to every element under the pointer, topmost first, until one
+handles it, so the scroll still receives it over content that ignores the
+wheel. `VirtualRows` places its rows with the public policy in
+`core/src/main/scala/sirin/VirtualRowsLayout.scala`, and its realization range
+follows the reported viewport.
+
 ## Text controls
 
 An element becomes a text control by overriding `textInput`, which returns the

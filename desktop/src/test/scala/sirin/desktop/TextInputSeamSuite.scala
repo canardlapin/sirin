@@ -49,7 +49,7 @@ class TextInputSeamSuite extends munit.FunSuite:
       val state = controller.interaction.state
       val request = FrameRequest(
         generation,
-        FramePayload(controller.tree, 240, 40, 240, 40, state.scrolls, state.focused, state.keyboard)
+        FramePayload(controller.tree, 240, 40, 240, 40, state.focused, state.keyboard)
       )
       val frame = renderer.render(request, () => false).asInstanceOf[RenderedFrame]
       try

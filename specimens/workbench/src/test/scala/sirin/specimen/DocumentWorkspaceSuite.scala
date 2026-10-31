@@ -80,8 +80,7 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
         case MountedSnapshot.Branch(_,_,child) => loop(child)
         case MountedSnapshot.Outlet(_,child) => loop(child)
         case MountedSnapshot.Reparented(_,_,child) => loop(child)
-        case MountedSnapshot.Scroll(_,child) => loop(child)
-        case MountedSnapshot.VirtualRows(_,_,_,_,_,_,_,child) => loop(child)
+        case MountedSnapshot.VirtualRows(_,_,_,_,_,_,_,child,_) => loop(child)
         case _ => Vector.empty
       loop(value(r,mounted.snapshot))
     def close(): Unit=r.close()
@@ -237,7 +236,6 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
       case MountedSnapshot.Component(_,_,child) => labels(child)
       case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => labels(child))
       case MountedSnapshot.Branch(_,_,child) => labels(child)
-      case MountedSnapshot.Scroll(_,child) => labels(child)
       case MountedSnapshot.Styled(child,_) => labels(child)
       case MountedSnapshot.Referenced(_,child) => labels(child)
       case _ => Vector.empty

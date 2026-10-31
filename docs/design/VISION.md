@@ -417,6 +417,11 @@ randomized programs.
     This holds for `Row`, `Column` and every `Layout`, where a keyed child can
     move between named slots. *(2026-10-31; see
     `docs/design/decisions/2026-10-31-layout-controls.md`)*
+  - A `View.live(signal)` child is a static child whose description comes
+    from a signal. A new description of the same kind and key updates the
+    mounted child in place; a different kind or key remounts it. Components use
+    it to wrap content their callers supply. *(2026-10-31; see
+    `docs/design/decisions/2026-10-31-viewport-controls.md`)*
   - Moving a component to a new owner through ordinary reconciliation does
     not carry its state.
   - An explicit `reparent` (or portal) operation with a stable **global key**
@@ -1337,7 +1342,9 @@ per-frame Signal pins. It captures values before worker layout/preparation; work
 jobs own native services and return owned immutable pixels, layouts and viewport
 feedback tagged with the request generation. Stale jobs cannot present or change
 viewports. Virtual row snapshots carry explicit row height. Viewport feedback
-settles before presentation; a changed layout is never paired with old row ranges.
+settles before presentation; a changed layout is never paired with old row ranges. *(2026-10-31: any
+`Layout.reporting` layout receives this feedback as a public `Viewport`; virtual
+rows are one consumer.)*
 Transport activity can register a detachable wake-only callback, invoked outside
 transport locks under a read-only guard; failures are counted. Closing the runtime
 clears wake registrations before retiring work; a callback already in flight
@@ -1400,12 +1407,15 @@ Focus ownership, tab eligibility and activation eligibility are distinct. A
 focused disabled control retains focus but rejects activation and is skipped by
 Tab. Traversal is bounded in document order, reverses with Shift-Tab and wraps.
 Scroll viewports are focusable; arrows/PageUp/PageDown/Home/End and wheel input
-use their last presented bounds and clamp against committed content. Unplaced,
+use their last presented bounds and clamp against committed content. *(2026-10-31: scroll offsets are now
+component state in the public `Scroll`, clamped against the public viewport
+report; see `docs/design/decisions/2026-10-31-viewport-controls.md`.)* Unplaced,
 hidden, clipped-away or retired nodes are absent from interaction. Retained
 controls keep mounted identity and focus when moving outlets. Focus rings follow
 keyboard/programmatic modality; pointer focus has no keyboard ring. Deactivation
 clears pressed capture. NodeRef focus intents participate in transaction rollback
-and are resolved by the backend after settle; attached-ref focus/contains-focus/
+and are resolved by the backend after settle; a ref on a view that cannot take
+focus itself focuses the first focusable view inside it *(2026-10-31)*; attached-ref focus/contains-focus/
 ring signals are published transactionally. Semantic parts, popups, text editing,
 IME and native accessibility are still deferred in this bounded slice.
 

@@ -7,8 +7,8 @@ import org.scalacheck.{Gen,Prop}
 class HostSuite extends munit.ScalaCheckSuite:
   private def node(key: String,content: Content): Node = Node(NodeId(Vector(key)),content)
   private def sized(key: String,w: Double,h: Double): Node = node(key,Content.Styled(Hint.Width(w),node(key+"h",Content.Styled(Hint.Height(h),node(key+"s",Content.Space(0))))))
-  private def layout(root: Node,w: Double=100,h: Double=100,scrolls: Map[Long,Double]=Map.empty): LayoutResult =
-    sirin.host.Layout(root,w,h,scrolls)(_ => fail("spacer oracle must not request text"))
+  private def layout(root: Node,w: Double=100,h: Double=100): LayoutResult =
+    sirin.host.Layout(root,w,h)(_ => fail("spacer oracle must not request text"))
   private def ok[A](result: CommitResult[A]): A = result match
     case CommitResult.Committed(value) => value
     case other => fail(s"$other")
@@ -53,22 +53,9 @@ class HostSuite extends munit.ScalaCheckSuite:
       true
     }
   }
-  test("scroll clamping and virtual viewport feedback derive from the same placed geometry") {
-    val virtual=node("virtual",Content.Virtual(7,0,100,20,Vector.empty))
-    val root=node("scroll",Content.Scroll(3,virtual))
-    val initial=layout(root,100,80)
-    assertEquals(initial.viewports,Vector(ViewportRequest(7,RowViewport(0.lp,80.lp))))
-    val scrolled=layout(root,100,80,Map(3L->1900.0))
-    assertEquals(scrolled.viewports,Vector(ViewportRequest(7,RowViewport(1900.lp,80.lp))))
-    val end=layout(root,100,80,Map(3L->9999.0))
-    assertEquals(end.scrollOffsets(3),1920.0)
-    assertEquals(end.viewports.head.viewport,RowViewport(1920.lp,80.lp))
-    val empty=layout(node("empty",Content.Scroll(3,node("zero",Content.Virtual(7,0,0,20,Vector.empty)))),100,80)
-    assertEquals(empty.viewports.head.viewport,RowViewport(0.lp,0.lp))
-  }
   test("generation gate rejects stale, restored and retired results; unchanged empty feedback remains presentable") {
     val coordinator=new FrameCoordinator
-    val payload=FramePayload(node("empty",Content.Virtual(1,0,0,20,Vector.empty)),100,80,200,160,Map.empty)
+    val payload=FramePayload(node("empty",Content.Empty),100,80,200,160)
     val first=coordinator.request(payload).get
     assert(coordinator.accepts(first))
     assertEquals(coordinator.request(payload),None)

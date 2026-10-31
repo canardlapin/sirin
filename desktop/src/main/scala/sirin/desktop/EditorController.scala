@@ -135,7 +135,7 @@ final class EditorController(
       clearComposition()
   def install(revision: Long, layout: LayoutResult): Unit =
     shown = Some((revision, layout))
-    interaction.install(InteractionSnapshot(revision, layout), layout.scrollOffsets)
+    interaction.install(InteractionSnapshot(revision, layout))
     elements.install(layout)
     // A control that dropped its composition by itself, e.g. after external replacement, ends the platform's.
     if composingElement.exists(id => textElement.exists((target, _, request) => target == id && !request.composing))
@@ -205,8 +205,6 @@ final class EditorController(
               _.kind match
                 case _: TargetKind.Button =>
                   key == Key.Enter || key == Key.Space
-                case _: TargetKind.Scroll =>
-                  Set(Key.ArrowDown, Key.ArrowUp, Key.PageDown, Key.PageUp, Key.Home, Key.End).contains(key)
                 case _ =>
                   false
             )

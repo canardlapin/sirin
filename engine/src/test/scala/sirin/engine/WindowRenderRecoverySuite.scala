@@ -22,7 +22,6 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
     case MountedSnapshot.Component(_,_,child) => fields(child)
     case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => fields(child))
     case MountedSnapshot.Branch(_,_,child) => fields(child)
-    case MountedSnapshot.Scroll(_,child) => fields(child)
     case MountedSnapshot.Styled(child,_) => fields(child)
     case MountedSnapshot.Referenced(_,child) => fields(child)
     case _ => Vector.empty

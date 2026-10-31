@@ -28,8 +28,6 @@ enum Content:
   case Space(size: Double)
   case Stack(horizontal: Boolean, gap: Double, alignment: Alignment, children: Vector[Node])
   case Styled(hint: Hint, child: Node)
-  case Scroll(instance: Long, child: Node)
-  case Virtual(instance: Long, first: Int, total: Int, rowHeight: Double, children: Vector[Node])
 final case class Node(id: NodeId, content: Content)
 
 final case class Activation(enabled: Boolean, run: UiTxn => Unit)
@@ -186,18 +184,21 @@ object CommittedTree:
           recurse(child, s"outlet:$ref")
         case MountedSnapshot.Reparented(_, instance, child) =>
           loop(child, NodeId(Vector("retained", instance)), depth + 1)
-        case MountedSnapshot.Scroll(instance, child) =>
-          Node(NodeId(Vector("scroll", instance)), Content.Scroll(instance, recurse(child, "content")))
-        case MountedSnapshot.VirtualRows(instance, _, first, total, _, _, height, rows) =>
+        case MountedSnapshot.VirtualRows(_, _, _, _, _, _, _, rows, frame) =>
+          val layout = NodeId(Vector("layout", frame.instance))
           val children =
             rows match
               case MountedSnapshot.Rows(entries) =>
-                entries.map((key, child) => recurse(child, key))
+                entries
+                  .zipWithIndex
+                  .map { case ((key, child), index) =>
+                    Slot(index.toString) -> loop(child, layout.child(key), depth + 1)
+                  }
               case MountedSnapshot.Unavailable(error) =>
                 throw error
               case _ =>
                 Vector.empty
-          Node(id, Content.Virtual(instance, first, total, height.toDouble, children))
+          Node(layout, Content.CustomLayout(frame.presented, children))
         case MountedSnapshot.Unavailable(error) =>
           throw error
     val tree = loop(snapshot, NodeId(Vector("root")), initialDepth)

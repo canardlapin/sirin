@@ -338,7 +338,7 @@ private[desktop] final class ApplicationPeer(
   /** A text control holds focus in the presented frame. */
   def hasPresentedEditorFocus: Boolean = controller.textFocus.exists(shownFocus.contains)
   private var geometryAt = 0L
-  private var viewports = Map.empty[Long, RowViewport]
+  private var viewports = Map.empty[Long, Viewport]
   private val pending = new OwnerInputQueue[NativeWindow.Event]
   private val inputs =
     new WindowInputControllers(
@@ -556,7 +556,6 @@ private[desktop] final class ApplicationPeer(
       geometry.logicalHeight(),
       geometry.width(),
       geometry.height(),
-      state.scrolls,
       state.focused.filter(_ => focusActive),
       focusActive && state.keyboard,
       state.pressed.map(_.target),
@@ -580,7 +579,7 @@ private[desktop] final class ApplicationPeer(
           val updates = frame.layout.viewports.filter(v => !viewports.get(v.instance).contains(v.viewport))
           if updates.nonEmpty then
             runtime.transact {
-              updates.foreach(v => session.mounted.setViewport(v.instance, v.viewport))
+              updates.foreach(v => session.mounted.reportViewport(v.instance, v.viewport))
             } match
               case CommitResult.Committed(_) =>
                 ()

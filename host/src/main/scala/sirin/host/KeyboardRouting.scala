@@ -28,10 +28,6 @@ object KeyboardRouting:
               children.map(_._2)
             case Content.Stack(_, _, _, children) =>
               children
-            case Content.Scroll(_, child) =>
-              Vector(child)
-            case Content.Virtual(_, _, _, _, children) =>
-              children
             case _ =>
               Vector.empty
         children

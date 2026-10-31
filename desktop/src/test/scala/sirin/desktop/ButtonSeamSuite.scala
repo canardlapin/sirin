@@ -47,7 +47,6 @@ class ButtonSeamSuite extends munit.FunSuite:
             60,
             160,
             60,
-            state.scrolls,
             state.focused,
             state.keyboard,
             state.pressed.map(_.target)

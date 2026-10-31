@@ -6,7 +6,7 @@ import sirin.host.*
 
 class RenderServiceSuite extends munit.FunSuite:
   private val root=Node(NodeId(Vector("test")),Content.Space(0))
-  private def request(id: Long)=FrameRequest(id,FramePayload(root,10,10,10,10,Map.empty))
+  private def request(id: Long)=FrameRequest(id,FramePayload(root,10,10,10,10))
   private def layout=sirin.host.Layout(root,10,10)(_ => fail("no text"))
   test("failed session initialization is sticky and cannot be overwritten by first submission") {
     val error=new IllegalStateException("injected initialization failure")

@@ -63,7 +63,7 @@ class MotionPresentationSuite extends munit.FunSuite:
       val state = controller.interaction.state
       val request = FrameRequest(
         generation,
-        FramePayload(controller.tree, 480, 160, 480, 160, state.scrolls, state.focused, state.keyboard)
+        FramePayload(controller.tree, 480, 160, 480, 160, state.focused, state.keyboard)
       )
       val rendered = renderer.render(request, () => false).asInstanceOf[RenderedFrame]
       try

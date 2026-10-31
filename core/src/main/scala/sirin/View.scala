@@ -98,8 +98,16 @@ object View:
     def onCommit(run: Action): TextFieldView = copy(view = view.onCommit(run))
     def onBlur(run: Action): TextFieldView = copy(view = view.onBlur(run))
   private[sirin] final case class Space(size: Option[Lp]) extends View
-  private[sirin] final case class ScrollContent(content: View) extends View
+  private[sirin] final case class ScrollContent(content: View) extends View with View.Proxy:
+    lazy val body: View = ScrollControl.view(content)
+  private[sirin] final case class Live(content: Signal[View]) extends View
   def empty: View = Empty
+
+  /** A child whose description comes from a signal, so a component can wrap content its caller supplies. It is
+    * reconciled like a static child: a new description of the same kind and key updates the mounted child in place
+    * and keeps its state; a different kind or key remounts it.
+    */
+  def live(content: Signal[View]): View = Live(content)
 
 trait TextView extends View:
   def style(s: TextStyle): TextView

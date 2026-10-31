@@ -6,11 +6,13 @@ import sirin.graphics as g
 
 class LayoutClippingSuite extends munit.FunSuite:
   test("node paint uses its complete placed clip once instead of restacking ancestor rectangles") {
-    val empty=Node(NodeId(Vector("empty")),Content.Empty)
-    val id=NodeId(Vector("scroll"))
-    val child=Placed(Node(id,Content.Scroll(1,empty)),Box(20,10,100,100),Box(20,20,40,40),Vector.empty,None)
+    // The scroll surface paints its keyboard focus mark in both the base drawing and the overlay.
+    val runtime=new sirin.engine.HeadlessRuntime
+    val surface=ScrollSeam.surface(runtime)
+    val id=surface.id
+    val child=Placed(surface,Box(20,10,100,100),Box(20,20,40,40),Vector.empty,None)
     val root=Placed(Node(NodeId(Vector("root")),Content.Styled(Hint.Grow,child.node)),Box(0,0,100,100),Box(0,0,80,80),Vector(child),None)
-    val layout=LayoutResult(root,Vector.empty,PreparedText.empty,Map.empty)
+    val layout=LayoutResult(root,Vector.empty,PreparedText.empty)
     val theme=new Theme:
       def reducedMotion=true
       def color(role: ColorRole)=if role==ColorRole.Accent then Color.rgba(100,150,200) else Color.rgba(20,25,35)
@@ -24,4 +26,5 @@ class LayoutClippingSuite extends munit.FunSuite:
     for clip <- Vector(base.last.head,overlay.head.head) do
       val points=clip.path.contours.flatten
       assertEquals((points.map(_.x).min,points.map(_.y).min,points.map(_.x).max,points.map(_.y).max),(20.0,20.0,60.0,60.0))
+    runtime.close()
   }

@@ -80,7 +80,7 @@ class GpuFrameSuite extends munit.FunSuite:
     var generation=0L
     try
       for scale <- scales;pressed <- Vector(None,Some(id)) do
-        val payload=FramePayload(node,96,64,(96*scale).toInt,(64*scale).toInt,Map.empty,Some(id),true,pressed)
+        val payload=FramePayload(node,96,64,(96*scale).toInt,(64*scale).toInt,Some(id),true,pressed)
         generation+=1
         val first=session.render(FrameRequest(generation,payload),() => false).asInstanceOf[RenderedFrame]
         try
@@ -168,7 +168,7 @@ class GpuFrameSuite extends munit.FunSuite:
     val entered=new CountDownLatch(1);val release=new CountDownLatch(1)
     val ready=new java.util.concurrent.Semaphore(0)
     val node=Node(NodeId(Vector("test")),Content.Space(0))
-    def request(id: Long)=FrameRequest(id,FramePayload(node,16,16,16,16,Map.empty))
+    def request(id: Long)=FrameRequest(id,FramePayload(node,16,16,16,16))
     val service=new RenderService(FilePath.of("unused"),FilePath.of("unused"),() => ready.release(),Some(() => new RenderBackend:
       private val gpu=BatchGpu.open()
       private val retained=gpu.retain(gpu.compile(DrawingPreparation.prepare(Drawing.empty,gpu.target(16,16,1)).toOption.get))

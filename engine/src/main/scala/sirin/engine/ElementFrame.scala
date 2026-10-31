@@ -137,10 +137,13 @@ final class LayoutFrame private[engine] (
     private val state: Any,
     policy: LayoutPolicy[Any],
     guard: PhaseGuard,
-    source: Option[LayoutPresentation[Any]] = None
+    source: Option[LayoutPresentation[Any]] = None,
+    /** The host reports what it presents of this layout (`Layout.reporting`). */
+    val reportsViewport: Boolean = false
 ):
   private given Committed = new Committed {}
   private var shown = this
+  private[engine] def sameState(other: Any): Boolean = state == other
 
   /** Layout presentation sampled for the frame being presented, as for `ElementFrame.presented`. Layout is charged
     * for every changed sample.
@@ -151,7 +154,7 @@ final class LayoutFrame private[engine] (
       if sample == shown.state then
         shown
       else
-        shown = new LayoutFrame(instance, name, revision, sample, policy, guard)
+        shown = new LayoutFrame(instance, name, revision, sample, policy, guard, None, reportsViewport)
         shown
     }
   def layout(constraints: Constraints, children: LayoutChildren): Size = guard(

@@ -17,13 +17,13 @@ final case class Box(x: Double, y: Double, width: Double, height: Double):
       math.max(0, math.min(x + width, other.x + other.width) - left),
       math.max(0, math.min(y + height, other.y + other.height) - top)
     )
-final case class ViewportRequest(instance: Long, viewport: sirin.engine.RowViewport)
+/** What was presented of a reporting layout; the owner writes it back before presenting (`Layout.reporting`). */
+final case class ViewportRequest(instance: Long, viewport: Viewport)
 final case class Placed(node: Node, bounds: Box, clip: Box, children: Vector[Placed], text: Option[TextLayout])
 final case class LayoutResult(
     root: Placed,
     viewports: Vector[ViewportRequest],
-    text: PreparedText,
-    scrollOffsets: Map[Long, Double]
+    text: PreparedText
 ):
   def elements: Vector[Placed] =
     def visit(p: Placed): Vector[Placed] =
@@ -92,9 +92,6 @@ final case class LayoutResult(
                     ColorRole.Muted
                 )
               )
-            case Content.Scroll(_, _) if keyboardFocus && focus.contains(p.node.id) =>
-              val b = p.bounds
-              canvas.fill(Rect(Point(b.x.lp, b.y.lp), Size(2.lp, b.height.lp)), theme.color(ColorRole.Accent))
             case Content.Custom(frame) =>
               canvas.withOffset(Point(p.bounds.x.lp, p.bounds.y.lp)) {
                 frame.paint(
@@ -143,11 +140,6 @@ final case class LayoutResult(
                   Box(b.x, b.y, thickness, b.height),
                   Box(b.x + b.width - thickness, b.y, thickness, b.height)
                 ).foreach(r => canvas.fill(rect(r), color))
-            case Content.Scroll(_, _) if keyboard && focus.contains(p.node.id) =>
-              canvas.fill(
-                rect(Box(p.bounds.x, p.bounds.y, math.min(2, p.bounds.width), p.bounds.height)),
-                theme.color(ColorRole.Accent)
-              )
             case _ =>
               ()
         }
@@ -177,7 +169,6 @@ object Layout:
       root: Node,
       width: Double,
       height: Double,
-      scrolls: Map[Long, Double] = Map.empty,
       measureCache: ElementMeasureCache = new ElementMeasureCache,
       epochs: PhaseEpochs = PhaseEpochs()
   )(resolve: TextRequest => ResolvedTextLayout): LayoutResult =
@@ -200,7 +191,6 @@ object Layout:
         parts.map(r => r -> prepared(r)),
         documents = requests.filter(r => DocumentTextLayout.hasBreaks(r.content)).distinct.toVector
       )
-    val offsets = scala.collection.mutable.Map.empty[Long, Double]
     def bounded(value: Double, limit: Double): Double = math.max(0, math.min(value, limit))
     def grow(node: Node): Boolean =
       node.content match
@@ -255,8 +245,8 @@ object Layout:
         node: Node,
         w: Double,
         h: Double,
-        fillWidth: Boolean = false,
-        fillHeight: Boolean = false,
+        fillWidth: Boolean,
+        fillHeight: Boolean,
         minWidth: Double = 0,
         minHeight: Double = 0
     ): Measured =
@@ -541,25 +531,6 @@ object Layout:
               placed,
               None
             )
-          case Content.Scroll(instance, child) =>
-            require(h.isFinite, "scroll viewport needs a finite allocated height")
-            val c = measure(child, w, Double.PositiveInfinity)
-            val offset = math.max(0, math.min(scrolls.getOrElse(instance, 0.0), math.max(0, c.height - h)))
-            require(offset.isFinite, "invalid scroll offset")
-            offsets(instance) = offset
-            Measured(node, w, h, Vector((c, 0, -offset)), None)
-          case Content.Virtual(_, first, total, rowHeight, children) =>
-            require(
-              rowHeight.isFinite && rowHeight > 0 && total >= 0 && first >= 0 && first + children.size <= total,
-              "invalid virtual metadata"
-            )
-            val rows = children
-              .zipWithIndex
-              .map { (child, index) =>
-                val c = measure(child, w, rowHeight).copy(height = rowHeight)
-                (c, 0.0, (first + index) * rowHeight)
-              }
-            Measured(node, w, total * rowHeight, rows, None)
       measured.copy(width = math.max(minWidth, measured.width), height = math.max(minHeight, measured.height))
     val measured = measure(root, width, height, true, true).copy(width = width, height = height)
     val requests = Vector.newBuilder[ViewportRequest]
@@ -574,8 +545,20 @@ object Layout:
       val bounds = Box(x, y, m.width, m.height)
       val clip = ancestorClip.intersect(bounds)
       m.node.content match
-        case Content.Virtual(instance, _, _, _, _) =>
-          requests += ViewportRequest(instance, sirin.engine.RowViewport(Lp(math.max(0, clip.y - y)), Lp(clip.height)))
+        case Content.CustomLayout(frame, _) if frame.reportsViewport =>
+          val left = m.children.map(_._2).minOption.getOrElse(0.0)
+          val top = m.children.map(_._3).minOption.getOrElse(0.0)
+          val right = m.children.map((c, dx, _) => dx + c.width).maxOption.getOrElse(0.0)
+          val bottom = m.children.map((c, _, dy) => dy + c.height).maxOption.getOrElse(0.0)
+          requests +=
+            ViewportRequest(
+              frame.instance,
+              Viewport(
+                Size(m.width.lp, m.height.lp),
+                Rect(Point((clip.x - x).lp, (clip.y - y).lp), Size(clip.width.lp, clip.height.lp)),
+                Size((right - left).lp, (bottom - top).lp)
+              )
+            )
         case _ =>
           ()
       m.node.content match
@@ -601,6 +584,5 @@ object Layout:
     LayoutResult(
       result,
       requests.result(),
-      PreparedText.fromResolved(prepared.toVector, documents = documents.toVector),
-      offsets.toMap
+      PreparedText.fromResolved(prepared.toVector, documents = documents.toVector)
     )

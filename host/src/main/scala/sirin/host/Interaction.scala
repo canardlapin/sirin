@@ -16,7 +16,6 @@ enum HostInput:
 enum TargetKind:
   case Custom(frame: sirin.engine.ElementFrame)
   case Button(instance: Long)
-  case Scroll(instance: Long, maximum: Double)
 final case class Target(
     id: NodeId,
     kind: TargetKind,
@@ -89,20 +88,6 @@ object InteractionSnapshot:
           case Content.Button(instance, _, enabled, _, _) =>
             targets +=
               Target(p.node.id, TargetKind.Button(instance), p.bounds, p.clip, enabled, direct, ancestors, parents)
-          case Content.Scroll(instance, _) =>
-            val maximum = math.max(0, p.children.headOption.fold(0.0)(_.bounds.height) - p.bounds.height)
-            targets +=
-              Target(
-                p.node.id,
-                TargetKind.Scroll(instance, maximum),
-                p.bounds,
-                p.clip,
-                true,
-                direct,
-                ancestors,
-                parents
-              )
-            p.children.foreach(visit(_, Vector.empty, ancestors ++ direct, parents :+ p.node.id))
           case _ =>
             p.children.foreach(visit(_, Vector.empty, ancestors ++ direct, parents :+ p.node.id))
     visit(layout.root, Vector.empty, Vector.empty, Vector.empty)
@@ -114,8 +99,7 @@ final case class Press(target: NodeId, epoch: Long, origin: PressOrigin)
 final case class FocusState(
     focused: Option[NodeId] = None,
     keyboard: Boolean = false,
-    pressed: Option[Press] = None,
-    scrolls: Map[Long, Double] = Map.empty
+    pressed: Option[Press] = None
 )
 final case class InputDecision(activate: Option[Long] = None, changed: Boolean = false)
 
@@ -125,7 +109,7 @@ final class Interaction:
   var state = FocusState()
   def rollbackPublication(before: FocusState): Unit = state = before.copy(pressed = state.pressed)
   def presented: InteractionSnapshot = snapshot
-  def install(value: InteractionSnapshot, scrolls: Map[Long, Double]): Unit =
+  def install(value: InteractionSnapshot): Unit =
     val next =
       if value.targets.size == snapshot.targets.size &&
         value.targets.zip(snapshot.targets).forall((a, b) => a.sameInput(b))
@@ -137,12 +121,15 @@ final class Interaction:
     snapshot = next
     state = state.copy(
       focused = state.focused.filter(id => next.target(id).nonEmpty),
-      pressed = pressed,
-      scrolls = scrolls
+      pressed = pressed
     )
   def focused: Option[Target] = state.focused.flatMap(snapshot.target)
+  /** A ref on a view that cannot take focus itself, such as a layout, focuses the first focusable view inside it. */
   def focusRef(reference: Long): Boolean =
-    snapshot.targets.find(t => t.focusable && t.directRefs.contains(reference)) match
+    snapshot
+      .targets
+      .find(t => t.focusable && t.directRefs.contains(reference))
+      .orElse(snapshot.targets.find(t => t.focusable && t.ancestorRefs.contains(reference))) match
       case None =>
         false
       case Some(target) =>
@@ -162,17 +149,6 @@ final class Interaction:
           None
     )
   private def hit(x: Double, y: Double): Option[Target] = snapshot.targets.reverseIterator.find(_.hit(x, y))
-  private def scroll(target: Target, delta: Double, absolute: Boolean = false): Unit =
-    target.kind match
-      case TargetKind.Scroll(instance, maximum) =>
-        val next =
-          if absolute then
-            delta
-          else
-            state.scrolls.getOrElse(instance, 0.0) + delta
-        state = state.copy(scrolls = state.scrolls.updated(instance, math.max(0, math.min(maximum, next))))
-      case _ =>
-        ()
   def handle(input: HostInput): InputDecision =
     val before = state
     var activate = Option.empty[Long]
@@ -222,26 +198,6 @@ final class Interaction:
         then
           activate = activation(focused)
         state = state.copy(pressed = None)
-      case HostInput.KeyDown(key, mods, _) if mods.isEmpty =>
-        focused
-          .filter(_.kind.isInstanceOf[TargetKind.Scroll])
-          .foreach { target =>
-            key match
-              case Key.ArrowDown =>
-                scroll(target, 40)
-              case Key.ArrowUp =>
-                scroll(target, -40)
-              case Key.PageDown =>
-                scroll(target, target.bounds.height * 0.9)
-              case Key.PageUp =>
-                scroll(target, -target.bounds.height * 0.9)
-              case Key.Home =>
-                scroll(target, 0, true)
-              case Key.End =>
-                scroll(target, Double.PositiveInfinity, true)
-              case _ =>
-                ()
-          }
       case HostInput.Down(x, y, true) =>
         val target = hit(x, y)
         state = state.copy(
@@ -259,12 +215,6 @@ final class Interaction:
         then
           activate = activation(target)
         state = state.copy(pressed = None)
-      case HostInput.Wheel(x, y, delta) if delta.isFinite =>
-        snapshot
-          .targets
-          .reverseIterator
-          .find(t => t.hit(x, y) && t.kind.isInstanceOf[TargetKind.Scroll])
-          .foreach(scroll(_, -delta * 40))
       case _ =>
         ()
     InputDecision(activate, state != before)

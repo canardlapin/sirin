@@ -210,7 +210,6 @@ final class RenderSession(
                 payload.tree,
                 payload.logicalWidth,
                 payload.logicalHeight,
-                payload.scrolls,
                 elementMeasurements,
                 phaseEpochs(payload)
               ) { text =>
@@ -343,7 +342,6 @@ final class RenderSession(
                       payload.tree,
                       payload.logicalWidth,
                       payload.logicalHeight,
-                      payload.scrolls,
                       elementMeasurements,
                       phaseEpochs(payload)
                     ) { text =>

@@ -210,7 +210,7 @@ class ElementHostSuite extends munit.FunSuite:
         val tree = captured(r, mounted)
         val result = layout(tree)
         input.update(tree.elements)
-        interaction.install(InteractionSnapshot(state.hashCode.toLong, result), Map.empty)
+        interaction.install(InteractionSnapshot(state.hashCode.toLong, result))
         input.install(result)
       settle()
       interaction.handle(HostInput.Down(15, 15))
@@ -324,8 +324,7 @@ class ElementHostSuite extends munit.FunSuite:
       )
       val interaction = new Interaction
       def present(epoch: Long): Unit = interaction.install(
-        InteractionSnapshot(epoch, layout(captured(runtime, mounted))),
-        Map.empty
+        InteractionSnapshot(epoch, layout(captured(runtime, mounted)))
       )
       present(1)
       val target = interaction.presented.targets.head
@@ -357,7 +356,7 @@ class ElementHostSuite extends munit.FunSuite:
       val tree = captured(runtime, mounted)
       val result = layout(tree)
       val interaction = new Interaction
-      interaction.install(InteractionSnapshot(1, result), Map.empty)
+      interaction.install(InteractionSnapshot(1, result))
       val input = new ElementInput(runtime, interaction)
       input.update(tree.elements)
       input.install(result)

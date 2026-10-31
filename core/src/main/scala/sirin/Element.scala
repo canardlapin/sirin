@@ -324,27 +324,46 @@ trait LayoutChildren:
 trait LayoutPolicy[S]:
   def layout(state: S, constraints: Constraints, children: LayoutChildren)(using Committed): Size
 
+/** What the presented frame showed of a layout, in the layout's own coordinates: its size, the part of it left after
+  * clipping, and the size of the box around its placed children. A host reports it before presenting and lays out
+  * again until it stops changing, so a reported change never reaches the screen paired with stale layout.
+  */
+final case class Viewport(size: Size, visible: Rect, content: Size):
+  require(
+    Vector(size.width, size.height, visible.size.width, visible.size.height, content.width, content.height)
+      .forall(v => v.toDouble.isFinite && v.toDouble >= 0) &&
+      visible.origin.x.toDouble.isFinite && visible.origin.y.toDouble.isFinite,
+    "finite viewport geometry required"
+  )
+
+object Viewport:
+  val empty: Viewport =
+    val none = Size(Lp.zero, Lp.zero)
+    Viewport(none, Rect(Point.origin, none), none)
+
 object Layout:
   private[sirin] final case class Description[S](
       name: String,
       state: Option[Signal[S]],
       presentation: Option[LayoutPresentation[S]],
       policy: LayoutPolicy[S],
-      children: Vector[(Slot, View)]
+      children: Vector[(Slot, View)],
+      viewport: Option[Cell[Viewport]] = None
   ) extends View
   private def description[S](
       name: String,
       state: Option[Signal[S]],
       presentation: Option[LayoutPresentation[S]],
       policy: LayoutPolicy[S],
-      children: Vector[(Slot, View)]
+      children: Vector[(Slot, View)],
+      viewport: Option[Cell[Viewport]] = None
   ): View =
     require(name.nonEmpty && name.length <= 128, "layout name must contain 1 through 128 characters")
     require(
       children.size <= 10000 && children.map(_._1).distinct.size == children.size,
       "duplicate or excessive layout slots"
     )
-    Description(name, state, presentation, policy, children)
+    Description(name, state, presentation, policy, children, viewport)
   def apply[S](name: String, state: Signal[S], policy: LayoutPolicy[S])(children: View*): View = description(
     name,
     Some(state),
@@ -361,3 +380,17 @@ object Layout:
   )
   def presented[S](name: String, state: LayoutPresentation[S], policy: LayoutPolicy[S])(children: View*): View =
     description(name, None, Some(state), policy, children.zipWithIndex.map((v, i) => Slot(i.toString) -> v).toVector)
+
+  /** A layout whose host writes what each presented frame showed of it into `viewport`, in a transaction of its own.
+    * Scrollers read it to clamp, and collections read it to decide which rows to realize.
+    */
+  def reporting[S](name: String, state: Signal[S], policy: LayoutPolicy[S], viewport: Cell[Viewport])(
+      children: View*
+  ): View = description(
+    name,
+    Some(state),
+    None,
+    policy,
+    children.zipWithIndex.map((v, i) => Slot(i.toString) -> v).toVector,
+    Some(viewport)
+  )

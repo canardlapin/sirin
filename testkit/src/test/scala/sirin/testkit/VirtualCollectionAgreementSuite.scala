@@ -19,7 +19,7 @@ class VirtualCollectionAgreementSuite extends munit.ScalaCheckSuite:
     case Value.Failed(error) => throw error
   private def rows(s: MountedSnapshot): Vector[(Int, Long)] = s match
     case MountedSnapshot.Component(id, p: Int, _) => Vector(p -> id.instance)
-    case MountedSnapshot.VirtualRows(_, _, _, _, _, _, _, child) => rows(child)
+    case MountedSnapshot.VirtualRows(_, _, _, _, _, _, _, child, _) => rows(child)
     case MountedSnapshot.Rows(entries) => entries.flatMap((_, child) => rows(child))
     case _ => Vector.empty
   property("projection revisions, visible intervals, identity and draft lifetimes agree with full-state oracle") {

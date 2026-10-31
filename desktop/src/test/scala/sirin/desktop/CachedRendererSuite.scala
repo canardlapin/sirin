@@ -68,7 +68,7 @@ class CachedRendererSuite extends munit.FunSuite:
     val gpu=OffscreenGpu.open()
     try
       for scale <- Vector(1.0,2.0);pressed <- Vector(None,Some(id)) do
-        val payload=FramePayload(node,96,64,(96*scale).toInt,(64*scale).toInt,Map.empty,Some(id),true,pressed)
+        val payload=FramePayload(node,96,64,(96*scale).toInt,(64*scale).toInt,Some(id),true,pressed)
         val frame=session.render(FrameRequest(1,payload),() => false).asInstanceOf[RenderedFrame]
         val direct=Drawing.record { c =>
           c.draw(frame.layout.drawing(DevelopmentTheme))
@@ -87,7 +87,7 @@ class CachedRendererSuite extends munit.FunSuite:
     val root=FilePath.of("..").toAbsolutePath.normalize()
     val node=Node(NodeId(Vector("control",321)),Content.Button(321,"Run",true,false,true))
     val session=new RenderSession(root.resolve("graphics/src/test/resources/fonts"),root.resolve("desktop/target/unused"),32)
-    val payload=FramePayload(node,96,64,96,64,Map.empty)
+    val payload=FramePayload(node,96,64,96,64)
     try
       val expected=session.render(FrameRequest(1,payload),() => false).asInstanceOf[RenderedFrame].pixels.pixelsCopy
       var checks=0;var cancelled=false

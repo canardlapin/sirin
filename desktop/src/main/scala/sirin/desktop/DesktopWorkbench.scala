@@ -96,8 +96,9 @@ object DesktopWorkbench:
       def publishFocus()(using UiTxn): Unit =
         val (direct,ancestors,keyboard)=interaction.focusReferences
         runtime.publishFocus(direct,ancestors,keyboard)
-      val viewports=scala.collection.mutable.Map.empty[Long,RowViewport]
-      var bindings=capture()
+      val viewports=scala.collection.mutable.Map.empty[Long,Viewport]
+      val elements=new ElementInput(runtime,interaction)
+      var bindings=capture();elements.update(bindings.elements)
       var facts=window.waitEvent(0)
       var presentedPayload=Option.empty[FramePayload]
       var repaint=true;var running=true;var presented=0;var feedbacks=0;var feedbackChain=0
@@ -108,8 +109,13 @@ object DesktopWorkbench:
         if input==HostInput.KeyDown(Key.Escape,Mods.none,false) then running=false
         else
           val before=interaction.state
-          val decision=interaction.handle(input)
-          bindings=capture()
+          // Scrolling belongs to the public scroll element, so wheel and keys reach elements first.
+          val routed=input match
+            case HostInput.Wheel(x,y,delta) => elements.wheel(x,y,delta,Mods.none).exists(ok)
+            case HostInput.KeyDown(key,mods,repeat) if key!=Key.Tab => elements.key(KeyEvent(key,mods,repeat)).exists(ok)
+            case _ => false
+          val decision=if routed then InputDecision(changed=true) else interaction.handle(input)
+          bindings=capture();elements.update(bindings.elements);elements.update(bindings.elements)
           val action=decision.activate.flatMap(bindings.bindings.get).filter(_.enabled)
           val result=runtime.transact {
             publishFocus()
@@ -119,12 +125,12 @@ object DesktopWorkbench:
             case CommitResult.Committed(_) =>
               if decision.changed || action.nonEmpty then
                 val target=input match
-                  case HostInput.Wheel(x,y,_) => interaction.presented.targets.reverseIterator.find(t => t.kind.isInstanceOf[TargetKind.Scroll] && t.hit(x,y)).map(_.id)
+                  case HostInput.Wheel(x,y,_) => interaction.presented.targets.reverseIterator.find(t => t.element.exists(_.name=="scroll") && t.hit(x,y)).map(_.id)
                   case _ => decision.activate.flatMap(id => interaction.presented.targets.find(_.kind==TargetKind.Button(id)).map(_.id)).orElse(interaction.state.focused)
                 def label(p: Placed): Option[String] =
                   val own=Option.when(target.contains(p.node.id))(p.node.content).flatMap {
                     case Content.Button(_,text,_,_,_) => Some(text)
-                    case Content.Scroll(_,_) => Some("scroll")
+                    case Content.Custom(frame) if frame.name=="scroll" => Some("scroll")
                     case _ => None
                   }
                   own.orElse(p.children.iterator.map(label).collectFirst {case Some(value) => value})
@@ -141,7 +147,7 @@ object DesktopWorkbench:
             interaction.presented.targets.find(t => t.kind.isInstanceOf[TargetKind.Button] && t.enabled).foreach(t => interaction.state=interaction.state.copy(focused=Some(t.id),keyboard=true))
           inject(1,key)
         else if benchmarkStep<warmupSteps+200 then
-          interaction.presented.targets.find(_.kind.isInstanceOf[TargetKind.Scroll]).foreach { t =>
+          interaction.presented.targets.find(_.element.exists(_.name=="scroll")).foreach { t =>
             inject(6,x=t.clip.x+5,y=t.clip.y+5,delta=if benchmarkStep%2==0 then -1 else 1)
           }
         benchmarkStep+=1
@@ -165,7 +171,7 @@ object DesktopWorkbench:
           val positional=facts.kind()==3 || facts.kind()==4 || facts.kind()==6
           if !positional || facts.timestamp()>=lastGeometryAt then nativeInput(input,facts.timestamp())
         }
-        bindings=capture()
+        bindings=capture();elements.update(bindings.elements)
         if presentedPayload.exists(p => p.tree==bindings.tree && p.logicalWidth==facts.logicalWidth() && p.logicalHeight==facts.logicalHeight()) then
           runtime.takeFocusRequests().foreach { ref =>
             if interaction.focusRef(ref) then ok(runtime.transact {publishFocus()})
@@ -173,7 +179,7 @@ object DesktopWorkbench:
           }
         var recapture=false
         if running && facts.width()>0 && facts.height()>0 && facts.logicalWidth()>0 && facts.logicalHeight()>0 then
-          val payload=FramePayload(bindings.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),interaction.state.scrolls,
+          val payload=FramePayload(bindings.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),
             interaction.state.focused,interaction.state.keyboard,interaction.state.pressed.map(_.target),viewports.toMap)
           coordinator.request(payload).foreach { request => latestRequest=Some(request);renderer.get.submit(request) }
           renderer.get.poll().foreach {
@@ -184,7 +190,7 @@ object DesktopWorkbench:
               viewports.filterInPlace((instance,_) => active(instance))
               val changed=frame.layout.viewports.filter(v => !viewports.get(v.instance).contains(v.viewport))
               if changed.nonEmpty then
-                ok(runtime.transact {changed.foreach(v => mounted.setViewport(v.instance,v.viewport))})
+                ok(runtime.transact {changed.foreach(v => mounted.reportViewport(v.instance,v.viewport))})
                 changed.foreach(v => viewports(v.instance)=v.viewport)
                 feedbacks+=1;feedbackChain+=1;require(feedbackChain<20,"viewport feedback failed to settle")
                 recapture=true
@@ -213,7 +219,7 @@ object DesktopWorkbench:
                 println(s"startup mainToFirstPresentMs=${firstPresentationNanos/1e6} windowSetupMs=${windowSetupNanos/1e6} renderSessionSetupMs=${sessionSetupNanos/1e6}")
               presentedPayload=Some(frame.request.payload)
               val previousTargets=interaction.presented.targets
-              interaction.install(InteractionSnapshot(frame.request.generation,frame.layout),frame.layout.scrollOffsets)
+              interaction.install(InteractionSnapshot(frame.request.generation,frame.layout));elements.install(frame.layout)
               if interaction.presented.targets!=previousTargets then lastGeometryAt=NativeWindow.ticks()
               ok(runtime.transact {publishFocus()})
               recapture=true // one bounded follow-up settles focus intents and reactive focus observers
@@ -250,7 +256,7 @@ object DesktopWorkbench:
                     ok(runtime.transact {app.listRef.focus()});scenarioStage=5;recapture=true
                   case 5 => inject(1,8);scenarioStage=6
                   case 6 =>
-                    require(frame.layout.viewports.exists(_.viewport.offset.toDouble>0),"PageDown did not scroll")
+                    require(frame.layout.viewports.exists(_.viewport.visible.origin.y.toDouble>0),"PageDown did not scroll")
                     window.resize(800,600);scenarioStage=7
                   case 7 =>
                     require(frame.width<=1280 && frame.height<=800,"resize budget failed")

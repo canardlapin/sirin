@@ -77,6 +77,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
         editorSystemFonts = true
       )
     def current = capture(r, mounted).windows.head
+    var viewports = Map.empty[Long, Viewport]
     def request(): FrameRequest =
       val window = current
       router.update(window.renderStatus)
@@ -91,16 +92,31 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
             400,
             640,
             400,
-            state.scrolls,
             state.focused,
             state.keyboard,
+            viewports = viewports,
             textFocus = controller.textFocus
           )
         )
         .get
+
+    /** Scroll reports what it presented; the frame is presented once those reports have settled. */
+    def rendered(): (FrameRequest, RenderedFrame) =
+      var result = Option.empty[(FrameRequest, RenderedFrame)]
+      var rounds = 0
+      while result.isEmpty do
+        rounds += 1
+        assert(rounds < 20, "viewport feedback did not settle")
+        val req = request()
+        renderer.render(req, () => false) match
+          case frame: RenderedFrame =>
+            result = Some(req -> frame)
+          case feedback: LayoutFeedback =>
+            ok(r.transact(feedback.layout.viewports.foreach(v => mounted.reportViewport(v.instance, v.viewport))))
+            viewports = feedback.layout.viewports.map(v => v.instance -> v.viewport).toMap
+      result.get
     def present(save: Boolean = false): Unit =
-      val req = request()
-      val frame = renderer.render(req, () => false).asInstanceOf[RenderedFrame]
+      val (req, frame) = rendered()
       try
         assert(coordinator.accepts(frame.request))
         inputs.current.install(req.generation, frame.layout)
@@ -172,7 +188,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       assert(retryFocus.exists(inputs.current.focusReference))
       val other = capture(r, mounted).windows(1)
       val healthy = renderer.render(
-        FrameRequest(100, FramePayload(other.content.tree, 320, 180, 320, 180, Map.empty)),
+        FrameRequest(100, FramePayload(other.content.tree, 320, 180, 320, 180)),
         () => false
       )
       healthy.close()
@@ -212,8 +228,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
         100,
         100,
         100,
-        100,
-        Map.empty
+        100
       )
       val first = router.request(payload("old")).get
       val next = router.request(payload("current")).get

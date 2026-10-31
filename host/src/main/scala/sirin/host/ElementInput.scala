@@ -187,15 +187,25 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
           result
         }
     }
+  /** Offered to every element under the pointer, topmost first, until one handles it, so a scroller beneath its
+    * content still scrolls. One transaction covers the whole offer.
+    */
   def wheel(x: Double, y: Double, delta: Double, mods: Mods): Option[CommitResult[Boolean]] =
     require(Vector(x, y, delta).forall(_.isFinite), "invalid wheel event")
-    target(x, y)
+    val under = interaction
+      .presented
+      .targets
+      .reverseIterator
+      .filter(_.hit(x, y))
+      .flatMap(_.element.map(_.instance))
       .filter(id => shown.contains(id) && bindings.contains(id))
-      .map { id =>
-        val p = shown(id)
-        val frame = p.node.content.asInstanceOf[Content.Custom].frame
-        val local = Point((x - p.bounds.x).lp, (y - p.bounds.y).lp)
-        runtime.transact {
+      .toVector
+    Option.when(under.nonEmpty) {
+      runtime.transact {
+        under.exists { id =>
+          val p = shown(id)
+          val frame = p.node.content.asInstanceOf[Content.Custom].frame
+          val local = Point((x - p.bounds.x).lp, (y - p.bounds.y).lp)
           bindings(id).wheel(
             WheelEvent(
               local,
@@ -206,6 +216,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
           )
         }
       }
+    }
   def key(
       event: KeyEvent,
       services: TextEditingServices = TextEditingServices.unavailable

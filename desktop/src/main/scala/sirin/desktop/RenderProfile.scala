@@ -16,18 +16,17 @@ object RenderProfile:
         val scope=runtime.scope("profile");val app=new VisibleWorkbench(scope)
         runtime.transact {app.model.rows.setAll((1 to 100).map(id => sirin.specimen.Record(id,s"Record $id")))}
         val mount=runtime.mount(scope,app.view);runtime.observe(mount.snapshot)(_ => ())
-        var viewports=Map.empty[Long,RowViewport];var sequence=0L
-        var scrolls=Map.empty[Long,Double]
+        var viewports=Map.empty[Long,Viewport];var sequence=0L
         def render(focus: Option[NodeId]): RenderedFrame =
           sequence+=1
           val captured=runtime.withCommitted(reader => reader(mount.snapshot) match
             case Value.Ok(s) => CommittedTree.capture(s,reader)
             case Value.Failed(e) => throw e)
-          val request=FrameRequest(sequence,FramePayload(captured,600,360,1200,720,scrolls,focus,true,None,viewports))
+          val request=FrameRequest(sequence,FramePayload(captured,600,360,1200,720,focus,true,None,viewports))
           session.render(request,() => false) match
             case frame: RenderedFrame => frame
             case feedback: LayoutFeedback =>
-              runtime.transact {feedback.layout.viewports.foreach(v => mount.setViewport(v.instance,v.viewport))}
+              runtime.transact {feedback.layout.viewports.foreach(v => mount.reportViewport(v.instance,v.viewport))}
               viewports=feedback.layout.viewports.map(v => v.instance->v.viewport).toMap
               render(focus)
         val cold=render(None)
@@ -36,11 +35,17 @@ object RenderProfile:
           val focus=Some(targets(index%targets.size).id)
           val value=render(focus)
           println(s"profile edge=$edge phase=focus ms=${value.workerNanos/1e6} ${value.profile}")
-        val scroll = targets.collectFirst {
-          case Target(_, TargetKind.Scroll(id, _), _, _, _, _, _, _, _) => id
-        }.get
+        // Scrolling is the public scroll element's own state, so the profile scrolls it with wheel input.
+        val interaction=new Interaction;val elements=new ElementInput(runtime,interaction)
+        val scroll=targets.find(_.element.exists(_.name=="scroll")).get
+        var shown=cold
         for index <- 0 until 12 do
-          scrolls=Map(scroll->(index*40.0))
-          val value=render(None)
+          if index>0 then
+            interaction.install(InteractionSnapshot(index.toLong,shown.layout));elements.install(shown.layout)
+            elements.update(runtime.withCommitted(reader => reader(mount.snapshot) match
+              case Value.Ok(s) => CommittedTree.captureWithBindings(s,reader).elements
+              case Value.Failed(e) => throw e))
+            require(elements.wheel(scroll.clip.x+5,scroll.clip.y+5,-1,Mods.none).exists(_.isInstanceOf[CommitResult.Committed[?]]),"wheel did not scroll")
+          val value=render(None);shown=value
           println(s"profile edge=$edge phase=scroll ms=${value.workerNanos/1e6} ${value.profile}")
       finally {session.close();runtime.close()}

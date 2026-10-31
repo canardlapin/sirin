@@ -66,7 +66,6 @@ class DiagramSeamSuite extends munit.FunSuite:
           height,
           width,
           height,
-          focus.scrolls,
           focus.focused,
           focus.keyboard,
           focus.pressed.map(_.target),

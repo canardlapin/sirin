@@ -132,7 +132,7 @@ object EditorWorkbench:
         if controller.ready then {focusRequests.foreach(controller.focusReference);focusRequests=Vector.empty}
         if facts.width()>0 && facts.height()>0 then
           val state=controller.interaction.state
-          val payload=FramePayload(controller.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),state.scrolls,state.focused,state.keyboard,state.pressed.map(_.target),textFocus=controller.textFocus)
+          val payload=FramePayload(controller.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),state.focused,state.keyboard,state.pressed.map(_.target),textFocus=controller.textFocus)
           coordinator.request(payload).foreach { req => latest=Some(req);trace(s"request generation=${req.generation}");renderer.get.submit(req) }
           renderer.get.poll().foreach {
             case (_,Right(frame: RenderedFrame)) if coordinator.accepts(frame.request) => trace(s"received generation=${frame.request.generation}");current.foreach(_.close());current=Some(frame);repaint=true

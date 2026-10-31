@@ -113,7 +113,6 @@ class EditorControllerSuite extends munit.FunSuite:
           height,
           width,
           height,
-          Map.empty,
           state.focused,
           state.keyboard,
           textFocus = controller.textFocus
@@ -475,8 +474,7 @@ class EditorControllerSuite extends munit.FunSuite:
         controller
           .interaction
           .install(
-            InteractionSnapshot(1, Vector(Target(id, kind, bounds, bounds, true, Vector.empty, Vector.empty, Vector.empty))),
-            Map.empty
+            InteractionSnapshot(1, Vector(Target(id, kind, bounds, bounds, true, Vector.empty, Vector.empty, Vector.empty)))
           )
         controller.interaction.state = FocusState(Some(id))
       def key(k: Key, mods: Mods = Mods.none) = controller.consumesKey(HostInput.KeyDown(k, mods))
@@ -485,12 +483,6 @@ class EditorControllerSuite extends munit.FunSuite:
       assert(key(Key.Space))
       assert(key(Key.Tab))
       assert(!key(Key.Enter, Mods.Primary))
-      assert(!key(Key.Character('s'), Mods.Primary))
-      focus(TargetKind.Scroll(2, 500))
-      assert(key(Key.PageDown))
-      assert(key(Key.Home))
-      assert(key(Key.ArrowUp))
-      assert(!key(Key.PageDown, Mods.Primary))
       assert(!key(Key.Character('s'), Mods.Primary))
     finally
       runtime.close()

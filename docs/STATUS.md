@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-31, for the Text, Row and Column port. This page says, in plain
+Last updated 2026-10-31, for the Scroll and VirtualRows port. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -21,7 +21,10 @@ Sirin is a pre-release prototype. Nothing is published.
   shared logical units. Button now uses this public seam, including prepared
   measurement text, input activation, semantics and focus/press feedback.
   `Text`, `Row` and `Column` do too; text now exposes a label to accessibility
-  snapshots. [Port](design/decisions/2026-10-31-layout-controls.md).
+  snapshots. [Port](design/decisions/2026-10-31-layout-controls.md). `Scroll`
+  is a public composition, and `VirtualRows` places rows with a public layout
+  policy fed by public viewport feedback.
+  [Port](design/decisions/2026-10-31-viewport-controls.md).
   [Validation and limits](evidence/2026-10-30-public-toolkit-proof.md).
 - **Public text input and TextField.** Custom elements receive committed text,
   IME composition and assistive select/replace requests as UTF-16 events. They
@@ -84,13 +87,14 @@ Sirin is a pre-release prototype. Nothing is published.
 VISION §8 requires standard controls to use the same public `Element`,
 `LayoutPolicy` and semantics interfaces that applications use. Each entry below
 names a control that does not yet do that, and what public capability it lacks.
-The goal is an empty ledger. Button, TextField, Text, Row and Column have moved
-onto the public seam. Their headless interaction and rendering checks do not
+The ledger has no controls left. Button, TextField, Text, Row, Column, Scroll and
+VirtualRows use the public seam. `VirtualRows` row realization and `DockOutlet`
+placement are kernel structure, like `ForEach` and `Switch`, and have no
+private host code. The headless interaction and rendering checks do not
 constitute real-client approval.
 
 | Control | Built on | Missing public capability | Tracking |
 |---|---|---|---|
-| `Scroll`, `VirtualRows`, `DockOutlet` | Host layout and committed tree (`host/`) | Public viewport feedback, row realization and retained outlet placement | Seam migration |
 | Menus and shortcuts | Application platform | None; these are application services, not controls | n/a |
 
 ## Current direction and worktrees
