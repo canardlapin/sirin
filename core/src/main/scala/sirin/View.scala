@@ -215,10 +215,11 @@ object Button:
   def apply(command: Command[Unit, ?]): ButtonView = apply(command.label).command(command)
 
 object Checkbox:
-  def bind(value: Cell[Boolean], label: String): View = ???
+  def bind(value: Cell[Boolean], label: String): View = apply(value, Signal.const(label))(next => value.set(next))
 
   /** A controlled checkbox: the owner decides what a toggle writes. */
-  def apply(checked: Signal[Boolean], label: Signal[String])(onChange: Boolean => Action): View = ???
+  def apply(checked: Signal[Boolean], label: Signal[String])(onChange: Boolean => Action): View =
+    CheckboxElement.view(checked, label, onChange)
 
 enum Alignment:
   case Start,

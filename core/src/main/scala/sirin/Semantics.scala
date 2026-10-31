@@ -28,7 +28,9 @@ final case class Semantics(
     labelledBy: Option[SemanticTarget] = None,
     describedBy: Option[SemanticTarget] = None,
     activeDescendant: Option[SemanticTarget] = None,
-    positionInSet: Option[(Int, Int)] = None
+    positionInSet: Option[(Int, Int)] = None,
+    /** The state of a checkbox or other toggle; `None` for controls that cannot be checked. */
+    checked: Option[Boolean] = None
 )
 
 /** An identifier for a part inside a custom element (hit target or semantic node). */

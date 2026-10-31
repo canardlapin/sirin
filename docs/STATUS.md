@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-31, for the Scroll and VirtualRows port. This page says, in plain
+Last updated 2026-10-31, for Checkbox. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -24,7 +24,9 @@ Sirin is a pre-release prototype. Nothing is published.
   snapshots. [Port](design/decisions/2026-10-31-layout-controls.md). `Scroll`
   is a public composition, and `VirtualRows` places rows with a public layout
   policy fed by public viewport feedback.
-  [Port](design/decisions/2026-10-31-viewport-controls.md).
+  [Port](design/decisions/2026-10-31-viewport-controls.md). `Checkbox` is a
+  public element with checked semantics; native accessibility does not carry
+  it yet. [Evidence](evidence/2026-10-31-checkbox.md).
   [Validation and limits](evidence/2026-10-30-public-toolkit-proof.md).
 - **Public text input and TextField.** Custom elements receive committed text,
   IME composition and assistive select/replace requests as UTF-16 events. They
@@ -78,7 +80,7 @@ Sirin is a pre-release prototype. Nothing is published.
 
 ## What is missing
 
-- `Checkbox`, `Overlay` and `Popup`.
+- `Overlay` and `Popup`.
 - The inspector, a starter project, and the matched ScalaFX comparison.
   The diagram still needs real pointer and accessibility acceptance.
 - Windows and Linux desktop hosts. Those platforms are CI-only.
