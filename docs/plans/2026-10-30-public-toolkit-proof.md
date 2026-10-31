@@ -69,8 +69,9 @@ VoiceOver sessions on the port remain unqualified.
 
 Motion is implemented: scope-owned animations, retargeting, per-frame sampling,
 hidden content and reduced motion. See
-`docs/design/decisions/2026-10-30-motion.md`. Reading the macOS reduced-motion
-preference and real-window motion review remain open.
+`docs/design/decisions/2026-10-30-motion.md`. The application host follows the
+macOS Reduce Motion setting (2026-10-31). Toggling it on a real machine and
+real-window motion review remain open.
 
 `Text`, `Row` and `Column` are on the seam; see
 `docs/design/decisions/2026-10-31-layout-controls.md`. `Scroll` and `VirtualRows`

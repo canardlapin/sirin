@@ -144,3 +144,7 @@ int sirin_menus_standard(void *raw,int kind) {
  SirinMenus *s=(__bridge SirinMenus*)raw;if(!s || !NSThread.isMainThread || !s.alive)return 1;
  if(kind==1)[s quit:nil];else if(kind==2)[NSApp hide:nil];else if(kind==3)[NSApp hideOtherApplications:nil];else return 2;return 0;
 }
+// The Reduce Motion accessibility setting, read on the owner thread when asked.
+int sirin_menus_reduce_motion(void) {
+ @autoreleasepool {return NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion?1:0;}
+}

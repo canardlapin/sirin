@@ -10,4 +10,5 @@ int sirin_menus_route(void *raw,const char *key,int mods);
 int sirin_menus_publish(void *raw);
 int sirin_menus_poll(void *raw,int64_t *out);
 int sirin_menus_standard(void *raw,int kind);
+int sirin_menus_reduce_motion(void);
 #endif

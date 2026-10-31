@@ -40,7 +40,8 @@ Sirin is a pre-release prototype. Nothing is published.
   Under reduced motion, a change shows its final state in the next frame.
   `offset` moves drawing, hit testing and semantics together; `opacity` and
   element presentation are paint only. The diagram lifts dragged nodes. The
-  macOS reduced-motion preference is not read yet.
+  application host follows the macOS Reduce Motion setting; switching it on a
+  real machine has not been tried.
   [Design](design/decisions/2026-10-30-motion.md),
   [evidence](evidence/2026-10-30-motion.md).
 - **Public diagram client.** Application code outside the `sirin` package uses

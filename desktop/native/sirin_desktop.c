@@ -133,6 +133,7 @@ int sirin_desktop_menu_publish(void *raw){DesktopApp *a=raw;return app_owner(a)?
 int sirin_desktop_menu_poll(void *raw,int64_t *out){DesktopApp *a=raw;return app_owner(a)?sirin_menus_poll(a->menus,out):-1;}
 int sirin_desktop_menu_standard(void *raw,int kind){DesktopApp *a=raw;return app_owner(a)?sirin_menus_standard(a->menus,kind):1;}
 int sirin_desktop_app_live(void) {return live_apps;}
+int sirin_desktop_reduce_motion(void) {return sirin_menus_reduce_motion();}
 int sirin_desktop_app_wake(int serial,int wake_type) {
   SDL_Event event;SDL_zero(event);event.type=(uint32_t)wake_type;event.user.code=serial;
   return SDL_PushEvent(&event)?0:1;

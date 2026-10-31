@@ -78,7 +78,14 @@ private[desktop] final class DesktopApplicationSession(
     }
   )
   application.observe(mounted.snapshot)(_ => ())
-  runtime.reducedMotion = DevelopmentTheme.reducedMotion
+  followMotionPreference()
+
+  /** Reads the platform's Reduce Motion setting each loop turn, so a change applies from the next frame. */
+  private def followMotionPreference(): Unit =
+    val reduce = NativeApplication.reduceMotion()
+    if reduce != runtime.reducedMotion then
+      DevelopmentTheme.reducedMotion = reduce
+      runtime.reducedMotion = reduce
   private val root = Path.of(System.getProperty("sirin.repo", ".")).toAbsolutePath.normalize()
   private val active = scala.collection.mutable.LinkedHashMap.empty[Long, ApplicationPeer]
   private val retiring = scala.collection.mutable.ArrayBuffer.empty[ApplicationPeer]
@@ -246,6 +253,7 @@ private[desktop] final class DesktopApplicationSession(
         applicationWakes += 1
       if event.quit() then
         commands.requestQuit()
+      followMotionPreference()
       val turn = runtime.drive(32)
       require(turn.failures.isEmpty, s"application driver failures: ${turn.failures}")
       sync()

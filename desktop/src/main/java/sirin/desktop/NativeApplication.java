@@ -14,6 +14,7 @@ public final class NativeApplication implements AutoCloseable {
     private static final MethodHandle STATS = NativeWindow.bind("sirin_desktop_app_stats",JAVA_INT,ADDRESS,ADDRESS);
     private static final MethodHandle QUIT = NativeWindow.bind("sirin_desktop_app_request_quit",JAVA_INT,ADDRESS);
     private static final MethodHandle LIVE = NativeWindow.bind("sirin_desktop_app_live",JAVA_INT);
+    private static final MethodHandle REDUCE_MOTION = NativeWindow.bind("sirin_desktop_reduce_motion",JAVA_INT);
     private static final MethodHandle MENU_EVENT_KEY = NativeWindow.bind("sirin_desktop_menu_event_key",JAVA_INT,JAVA_INT);
     private static final MethodHandle MENU_BEGIN = NativeWindow.bind("sirin_desktop_menu_begin",JAVA_INT,ADDRESS,JAVA_LONG);
     private static final MethodHandle MENU_ADD = NativeWindow.bind("sirin_desktop_menu_add",JAVA_INT,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT,JAVA_INT,ADDRESS,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT);
@@ -28,6 +29,10 @@ public final class NativeApplication implements AutoCloseable {
     private boolean closed;
     public record Event(boolean found,boolean quit,boolean wake,int target) {}
     public record Stats(long windows,long queuedTextBytes,long staleEvents,long refusedEvents) {}
+    /** The macOS Reduce Motion accessibility setting, read now. */
+    public static boolean reduceMotion() {
+        try{return (int)REDUCE_MOTION.invokeExact()!=0;}catch(Throwable error){throw NativeWindow.failure(error);}
+    }
     static int menuEventKey(int code) {
         try{return (int)MENU_EVENT_KEY.invokeExact(code);}catch(Throwable error){throw NativeWindow.failure(error);}
     }
