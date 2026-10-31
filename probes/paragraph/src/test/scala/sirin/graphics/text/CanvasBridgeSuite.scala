@@ -13,6 +13,14 @@ class CanvasBridgeSuite extends munit.FunSuite:
     def color(role: ui.ColorRole): ui.Color = if role == ui.ColorRole.Selection then ui.Color.rgba(40, 80, 100, 64) else ink
     def reducedMotion: Boolean = true
   private def point(x: Double, y: Double): ui.Point = ui.Point(ui.Lp(x), ui.Lp(y))
+
+  /** A request without hard line breaks prepares one resolved paragraph, never a document. */
+  private def single(layout: ui.TextLayout): g.ParagraphLayout | g.WrappedParagraphLayout =
+    layout match
+      case value: sirin.text.ResolvedTextLayout =>
+        value.resolved
+      case other =>
+        fail(s"expected a single resolved paragraph: $other")
   private def services[A](body: (Vector[NativeFont], NativeUnicode) => A): A =
     val unicode = NativeUnicode.open()
     val roots = Vector(FilePath.of("graphics/src/test/resources/fonts"), FilePath.of("../../graphics/src/test/resources/fonts"))
@@ -56,7 +64,7 @@ class CanvasBridgeSuite extends munit.FunSuite:
       assertEquals(paint, g.Paint.Solid(g.Color.rgba8(17, 83, 241, 193)))
       run
     }
-    val expected = Vector(a, b).flatMap { request => prepared.get(request).get.resolved match
+    val expected = Vector(a, b).flatMap { request => single(prepared.get(request).get) match
       case p: g.ParagraphLayout => p.runs.map(_.resolved.run)
       case p: g.WrappedParagraphLayout => p.lines.flatMap(_.layout.runs.map(_.resolved.run))
     }
@@ -83,7 +91,7 @@ class CanvasBridgeSuite extends munit.FunSuite:
     val drawing = RecordingCanvas.record(theme, prepared)(element.paint(label, (), size, _))
     assertEquals(drawing.commands.count { case g.DrawCommand.Fill(_, _, _) => true; case _ => false }, 3)
     val glyphs = drawing.commands.collect { case g.DrawCommand.Glyphs(run, _, _) => run }
-    val original = label.resolved.asInstanceOf[g.ParagraphLayout]
+    val original = single(label).asInstanceOf[g.ParagraphLayout]
     assertEquals(glyphs.size, original.runs.size)
     assert(glyphs.zip(original.runs.map(_.resolved.run)).forall((x, y) => x eq y))
     assert(label.caret(4, ui.TextAffinity.Upstream).get.bounds != label.caret(4, ui.TextAffinity.Downstream).get.bounds)
@@ -146,5 +154,5 @@ class CanvasBridgeSuite extends munit.FunSuite:
     assertEquals(drawing.commands.last, g.DrawCommand.EndTransform)
     val glyphs = drawing.commands.collect { case g.DrawCommand.Glyphs(run, origin, _) => (run, origin) }
     assertEquals(glyphs.size, 1)
-    assertEquals(glyphs.head._2, g.Point(5.25, 6.5 + prepared.get(key).get.resolved.asInstanceOf[g.ParagraphLayout].baseline))
+    assertEquals(glyphs.head._2, g.Point(5.25, 6.5 + single(prepared.get(key).get).asInstanceOf[g.ParagraphLayout].baseline))
   }
