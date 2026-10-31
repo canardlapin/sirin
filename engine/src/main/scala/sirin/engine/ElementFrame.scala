@@ -16,10 +16,36 @@ final class ElementFrame private[engine] (
     val layoutGlobals: Set[PhaseDependency],
     val paintGlobals: Set[PhaseDependency],
     definition: Element[Any, Any, Any, Any, Any],
-    states: Vector[Any],
-    guard: PhaseGuard
+    private val states: Vector[Any],
+    guard: PhaseGuard,
+    source: Option[Presentation[Any]] = None
 ):
   private given Committed = new Committed {}
+  private var shown = this
+
+  /** This frame with its presentation input sampled for the frame being presented. Capture calls it on the owner
+    * thread; an unchanged sample returns the same frame, so caches keyed on it survive. Copies carry no source.
+    */
+  private[sirin] def presented: ElementFrame =
+    source.fold(this) { presentation =>
+      val sample = guard(presentation.current)
+      if sample == shown.states(4) then
+        shown
+      else
+        shown = new ElementFrame(
+          instance,
+          name,
+          revisions,
+          focusable,
+          layoutIdentity,
+          layoutGlobals,
+          paintGlobals,
+          definition,
+          states.updated(4, sample),
+          guard
+        )
+        shown
+    }
   def measure(constraints: Constraints): Size = guard(definition.measure(states(0), constraints))
   def measure(constraints: Constraints, text: TextServices): Size = guard(
     definition.measure(states(0), constraints, text)
@@ -108,11 +134,26 @@ final class LayoutFrame private[engine] (
     val instance: Long,
     val name: String,
     val revision: Long,
-    state: Any,
+    private val state: Any,
     policy: LayoutPolicy[Any],
-    guard: PhaseGuard
+    guard: PhaseGuard,
+    source: Option[LayoutPresentation[Any]] = None
 ):
   private given Committed = new Committed {}
+  private var shown = this
+
+  /** Layout presentation sampled for the frame being presented, as for `ElementFrame.presented`. Layout is charged
+    * for every changed sample.
+    */
+  private[sirin] def presented: LayoutFrame =
+    source.fold(this) { presentation =>
+      val sample = guard(presentation.current)
+      if sample == shown.state then
+        shown
+      else
+        shown = new LayoutFrame(instance, name, revision, sample, policy, guard)
+        shown
+    }
   def layout(constraints: Constraints, children: LayoutChildren): Size = guard(
     policy.layout(state, constraints, children)
   )

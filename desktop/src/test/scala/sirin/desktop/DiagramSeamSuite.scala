@@ -22,9 +22,10 @@ class DiagramSeamSuite extends munit.FunSuite:
       fullView: Boolean = false,
       direct: Boolean = false,
       width: Int = 800,
-      height: Int = 600
+      height: Int = 600,
+      clock: MonotonicClock = MonotonicClock.system()
   ) extends AutoCloseable:
-    val runtime = new HeadlessRuntime
+    val runtime = new HeadlessRuntime(clock = clock)
     val owner = runtime.scope("diagram")
     val editor = new DiagramEditor(owner, initial)
     val mounted = runtime.mount(owner, if fullView then editor.view else editor.surface)
@@ -46,10 +47,12 @@ class DiagramSeamSuite extends munit.FunSuite:
     def gpuStats: Option[sirin.render.BatchGpuStats] = batch.map(_.stats)
     def frame(capture: Boolean = false): LayoutResult =
       runtime.drive(128)
-      val tree = runtime.withCommitted(reader =>
-        reader(mounted.snapshot) match
-          case Value.Ok(snapshot)  => CommittedTree.captureWithBindings(snapshot, reader)
-          case Value.Failed(error) => throw error
+      val tree = runtime.present(
+        runtime.withCommitted(reader =>
+          reader(mounted.snapshot) match
+            case Value.Ok(snapshot)  => CommittedTree.captureWithBindings(snapshot, reader)
+            case Value.Failed(error) => throw error
+        )
       )
       lastTree = Some(tree)
       controller.update(tree)
@@ -145,6 +148,47 @@ class DiagramSeamSuite extends munit.FunSuite:
       assert(!value(runtime, editor.dragging))
       assertEquals(controller.elements.captured, None)
       assertEquals(value(runtime, editor.graph).nodes(1).at.x, before.nodes(1).at.x + 8.lp)
+    finally fixture.close()
+  }
+
+  test("drag lift is paint-only presentation: it animates pixels, never geometry, text or application state") {
+    val clock = new ManualClock
+    val fixture = new Fixture(clock = clock)
+    try
+      import fixture.*
+      frame()
+      input(HostInput.Down(50, 110))
+      val pressed = frame(capture = true)
+      val resting = pixels.get.pixelsCopy.toVector
+      assert(value(runtime, editor.dragging))
+      assert(runtime.animationWaitMillis >= 0, "a node drag schedules lift frames")
+      val shaped = renderer.shaped
+      val transactions = runtime.driverSnapshot.transactions
+      clock.advanceBy(scala.concurrent.duration.Duration(45, "ms"))
+      val rising = frame(capture = true)
+      val half = pixels.get.pixelsCopy.toVector
+      assertNotEquals(half, resting)
+      assertEquals(rising.semanticParts, pressed.semanticParts)
+      clock.advanceBy(scala.concurrent.duration.Duration(45, "ms"))
+      frame(capture = true)
+      val lifted = pixels.get.pixelsCopy.toVector
+      assertNotEquals(lifted, half)
+      assertEquals(runtime.animationWaitMillis, -1)
+      assertEquals(renderer.shaped, shaped, "lift does not reshape text")
+      assertEquals(runtime.driverSnapshot.transactions, transactions, "lift frames write nothing")
+      input(HostInput.Up(50, 110))
+      frame()
+      assert(!value(runtime, editor.dragging))
+      assertEquals(value(runtime, editor.graph), DiagramGraph.sample)
+      assert(runtime.animationWaitMillis >= 0, "release settles the lift with frames")
+      clock.advanceBy(scala.concurrent.duration.Duration(90, "ms"))
+      frame(capture = true)
+      assertEquals(pixels.get.pixelsCopy.toVector, resting)
+      assertEquals(runtime.animationWaitMillis, -1)
+      input(HostInput.Down(5, 5, primary = false))
+      frame()
+      assert(value(runtime, editor.dragging))
+      assertEquals(runtime.animationWaitMillis, -1, "panning does not lift nodes")
     finally fixture.close()
   }
 

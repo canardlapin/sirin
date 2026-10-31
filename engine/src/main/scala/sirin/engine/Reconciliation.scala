@@ -616,7 +616,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
                     description.inputs.paintGlobals,
                     description.element,
                     states,
-                    phaseGuard
+                    phaseGuard,
+                    Some(description.inputs.presentation)
                   )
                 )
               )
@@ -707,7 +708,17 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
             change(revision)(revision = _)(Math.addExact(revision, 1L))
             change(previous)(previous = _)(Some(value))
             change(frame)(frame = _)(
-              Some(new LayoutFrame(scope.id, description.name, revision, value, description.policy, phaseGuard))
+              Some(
+                new LayoutFrame(
+                  scope.id,
+                  description.name,
+                  revision,
+                  value,
+                  description.policy,
+                  phaseGuard,
+                  description.presentation.filter(_ => description.state.isEmpty)
+                )
+              )
             )
             change(failure)(failure = _)(None)
             changed = true

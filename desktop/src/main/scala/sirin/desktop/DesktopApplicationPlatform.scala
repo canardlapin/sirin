@@ -32,6 +32,14 @@ final class DesktopApplicationPlatform extends ApplicationPlatform:
             native.close()
 
 object DesktopApplicationPlatform:
+  /** The sooner of two event-loop waits, where -1 means none. */
+  private[desktop] def earliest(a: Int, b: Int): Int =
+    if a < 0 then
+      b
+    else if b < 0 then
+      a
+    else
+      math.min(a, b)
   /** Development acceptance hook, outside the public application model. */
   private[desktop] var observer: Option[DesktopApplicationSession => Unit] = None
   private[desktop] def services(
@@ -70,6 +78,7 @@ private[desktop] final class DesktopApplicationSession(
     }
   )
   application.observe(mounted.snapshot)(_ => ())
+  runtime.reducedMotion = DevelopmentTheme.reducedMotion
   private val root = Path.of(System.getProperty("sirin.repo", ".")).toAbsolutePath.normalize()
   private val active = scala.collection.mutable.LinkedHashMap.empty[Long, ApplicationPeer]
   private val retiring = scala.collection.mutable.ArrayBuffer.empty[ApplicationPeer]
@@ -94,13 +103,16 @@ private[desktop] final class DesktopApplicationSession(
     if application.isDisposed then
       CapturedApplication(CapturedMenus.empty, Vector.empty)
     else
-      runtime.withCommitted(reader =>
-        reader(mounted.snapshot) match
-          case Value.Ok(snapshot) =>
-            WindowCapture.captureApplication(snapshot, reader)
-          case Value.Failed(error) =>
-            throw error
-      )
+      // Every capture is one presented frame, so animations sampled here are the ones on screen.
+      runtime.present {
+        runtime.withCommitted(reader =>
+          reader(mounted.snapshot) match
+            case Value.Ok(snapshot) =>
+              WindowCapture.captureApplication(snapshot, reader)
+            case Value.Failed(error) =>
+              throw error
+        )
+      }
   private def sync(): Unit =
     val captured = captureApplication()
     val windows = captured.windows
@@ -277,7 +289,7 @@ private[desktop] final class DesktopApplicationSession(
           else if retiring.nonEmpty || active.values.exists(_.needsRetry) then
             16
           else
-            runtime.activityWaitMillis
+            DesktopApplicationPlatform.earliest(runtime.activityWaitMillis, runtime.animationWaitMillis)
         val bounded =
           if DesktopApplicationPlatform.observer.nonEmpty && (wait < 0 || wait > 100) then
             100

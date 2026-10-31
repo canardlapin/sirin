@@ -6,11 +6,12 @@ import sirin.drawing.CanvasGraphics.*
 import sirin.graphics as g
 
 /** Pure drawing/hit/semantic definition; no model or owner-side handler is retained here. */
-private[diagram] object DiagramSurface extends Element[Unit, DiagramScene, DiagramScene, DiagramScene, Unit]:
+/** The presentation input is the drag lift, 0 to 1: paint only, so it never reaches hit testing or semantics. */
+private[diagram] object DiagramSurface extends Element[Unit, DiagramScene, DiagramScene, DiagramScene, Double]:
   private val labelWidth = 108.lp
   private def visible(scene: DiagramScene, viewport: Size): Vector[DiagramNode] =
     scene.graph.nodes.filter(DiagramGeometry.visible(_, scene.camera, viewport))
-  override def textRequests(scene: DiagramScene, @unused presentation: Unit, viewport: Size)(using
+  override def textRequests(scene: DiagramScene, @unused lift: Double, viewport: Size)(using
       @unused c: Committed
   ): Seq[TextRequest] =
     visible(scene, viewport).map(node => TextRequest(node.label, TextStyle.Label, labelWidth))
@@ -40,7 +41,7 @@ private[diagram] object DiagramSurface extends Element[Unit, DiagramScene, Diagr
       }
     }
 
-  def paint(scene: DiagramScene, @unused presentation: Unit, viewport: Size, canvas: Canvas)(using Committed): Unit =
+  def paint(scene: DiagramScene, lift: Double, viewport: Size, canvas: Canvas)(using Committed): Unit =
     canvas.fill(Rect(Point.origin, viewport), canvas.theme.color(ColorRole.Surface))
     canvas.clipped(Rect(Point.origin, viewport)) { clipped =>
       clipped.transformed(Transform2D.camera(scene.camera.origin, scene.camera.scale)) { world =>
@@ -62,6 +63,12 @@ private[diagram] object DiagramSurface extends Element[Unit, DiagramScene, Diagr
             ),
             6.lp
           )
+          if lift > 0 && scene.selected(node.id) then
+            world.withOpacity(0.35 * lift) {
+              world.withOffset(Point(0.lp, (4 * lift).lp)) {
+                world.graphics.fill(path, g.Paint.Solid(g.Color.rgba8(0, 0, 0)))
+              }
+            }
           val paint = g.Paint.LinearGradient(
             g.Point(node.at.x, node.at.y),
             g.Point(node.at.x, node.at.y + DiagramGeometry.nodeSize.height),

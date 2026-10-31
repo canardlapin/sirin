@@ -1261,7 +1261,8 @@ explicit separate channel charged to layout. A few well-defined transitions,
 not an animation language.
 
 Motion is implemented and tested within the application alpha, before the
-public API is reviewed for freezing. Timing and transaction interactions tend
+public API is reviewed for freezing. The frame rule that decides what is on
+screen is in `docs/design/decisions/2026-10-30-motion.md`. Timing and transaction interactions tend
 to force late API changes, so motion is not deferred past that review.
 
 **Admission rule.** A widget enters the standard library only when its

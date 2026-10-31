@@ -106,4 +106,17 @@ undo, limits, multiline documents and refusal feedback.
 
 This API is provisional. Arbitrary semantic parts have headless snapshots.
 Native accessibility transport covers button activation and one text node per
-element. Real animation remains open work before API freeze.
+element.
+
+## Motion
+
+`scope.animate(target, transition)` returns a `Presentation[Double]` that
+follows a `Signal[Double]`. A new target continues from the current value and
+velocity. Pass the presentation to `View.offset`, which moves drawing, hit
+testing and semantics together. Pass it to `View.opacity`, or as an element's
+presentation input, for paint-only effects. The demo diagram's drag lift is an
+example of the last. Presentation is sampled once per presented frame. It is
+never a `Signal`, so it cannot feed models or semantics. Content that is not on
+screen settles at its target, and under reduced motion every change does. In
+tests, a `ManualClock` and `HeadlessRuntime.present` step frames
+deterministically.

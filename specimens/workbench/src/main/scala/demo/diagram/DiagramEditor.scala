@@ -20,6 +20,10 @@ final class DiagramEditor(scope: Scope, initial: DiagramGraph = DiagramGraph.sam
     active.fold(DiagramScene(graph, camera, selected))(_.scene)
   }
   val camera: Signal[DiagramCamera] = scene.map(_.camera)
+
+  /** Selected nodes lift while a node drag is active; panning does not lift them. */
+  val lift: Presentation[Double] =
+    scope.animate(gesture.map(active => if active.exists(!_.pan) then 1.0 else 0.0), Transition.quick)
   private val idle = dragging.map(!_)
   scope.effect(canvasRef.hasFocus) { focused =>
     if !focused && !canvasRef.hasFocus.get then cancelGesture()
@@ -196,7 +200,7 @@ final class DiagramEditor(scope: Scope, initial: DiagramGraph = DiagramGraph.sam
       scene,
       scene,
       scene,
-      Presentation.const(())
+      lift
     ),
     DiagramSurface,
     focusable = true,

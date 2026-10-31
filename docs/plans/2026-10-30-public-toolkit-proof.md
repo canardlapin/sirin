@@ -65,7 +65,11 @@ remaining Alpha4 acceptance criteria stay open.
 TextField now runs on the public seam (text input, composition, focus events,
 editing services and text-range semantics), and the host's private editor is
 gone; see `docs/design/decisions/2026-10-30-textfield-port.md`. Real IME and
-VoiceOver sessions on the port remain unqualified. The next implementation steps
-are motion, which must land before the alpha API freezes, and moving the
-remaining layout controls (`Text`, `Row`, `Column`, `Scroll`, `VirtualRows`,
-`DockOutlet`) onto the seam.
+VoiceOver sessions on the port remain unqualified.
+
+Motion is implemented: scope-owned animations, retargeting, per-frame sampling,
+hidden content and reduced motion. See
+`docs/design/decisions/2026-10-30-motion.md`. Reading the macOS reduced-motion
+preference and real-window motion review remain open. The next implementation
+step is moving the remaining layout controls (`Text`, `Row`, `Column`,
+`Scroll`, `VirtualRows`, `DockOutlet`) onto the seam.

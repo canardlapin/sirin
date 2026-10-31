@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-30, for the public diagram tranche. This page says, in plain
+Last updated 2026-10-30, for the motion tranche. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -29,6 +29,15 @@ Sirin is a pre-release prototype. Nothing is published.
   sessions have not been run on the port.
   [Seam](evidence/2026-10-30-text-input-seam.md),
   [port](evidence/2026-10-30-textfield-port.md).
+- **Motion.** `scope.animate` gives scope-owned animations on the runtime
+  clock. A new target continues from the current value and velocity. Content
+  that is not on screen settles instead of animating and schedules no frames.
+  Under reduced motion, a change shows its final state in the next frame.
+  `offset` moves drawing, hit testing and semantics together; `opacity` and
+  element presentation are paint only. The diagram lifts dragged nodes. The
+  macOS reduced-motion preference is not read yet.
+  [Design](design/decisions/2026-10-30-motion.md),
+  [evidence](evidence/2026-10-30-motion.md).
 - **Public diagram client.** Application code outside the `sirin` package uses
   Element, named Layout, commands and the graphics adapter for curved connections,
   gradient nodes, prepared labels, selection tools, drag/cancel, pan/zoom and bounded
@@ -63,8 +72,7 @@ Sirin is a pre-release prototype. Nothing is published.
 
 ## What is missing
 
-- `Checkbox`, `Overlay`, `Popup` and time-varying motion. Constant and mapped
-  Presentation values exist; they are not animation.
+- `Checkbox`, `Overlay` and `Popup`.
 - The inspector, a starter project, and the matched ScalaFX comparison.
   The diagram still needs real pointer and accessibility acceptance.
 - Windows and Linux desktop hosts. Those platforms are CI-only.

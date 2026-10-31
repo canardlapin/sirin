@@ -13,6 +13,12 @@ enum Hint:
   case Height(value: Double)
   case Grow
 
+  /** Presented translation of drawing, hit and semantic geometry; layout is unaffected. */
+  case Offset(x: Double, y: Double)
+
+  /** Isolated group opacity, paint only. */
+  case Opacity(alpha: Double)
+
 enum Content:
   case Empty
   case Custom(frame: ElementFrame)
@@ -88,11 +94,11 @@ object CommittedTree:
                 }
               )
             }
-          Node(NodeId(Vector("element", frame.instance)), Content.Custom(frame))
+          Node(NodeId(Vector("element", frame.instance)), Content.Custom(frame.presented))
         case MountedSnapshot.CustomLayout(frame, children) =>
           Node(
             NodeId(Vector("layout", frame.instance)),
-            Content.CustomLayout(frame, children.map((slot, child) => slot -> recurse(child, slot.name)))
+            Content.CustomLayout(frame.presented, children.map((slot, child) => slot -> recurse(child, slot.name)))
           )
         case MountedSnapshot.Control(instance, view) =>
           view match
@@ -143,6 +149,15 @@ object CommittedTree:
                       Some(Hint.Height(h.toDouble))
                     case Decoration.Grow =>
                       Some(Hint.Grow)
+                    case Decoration.Offset(presentation) =>
+                      val at = presentation.current
+                      val (x, y) = (at.x.toDouble, at.y.toDouble)
+                      require(x.isFinite && y.isFinite, "invalid presented offset")
+                      Option.when(x != 0 || y != 0)(Hint.Offset(x, y))
+                    case Decoration.Opacity(presentation) =>
+                      val alpha = presentation.current
+                      require(!alpha.isNaN, "invalid presented opacity")
+                      Option.when(alpha < 1)(Hint.Opacity(math.max(0, alpha)))
                     case Decoration.Visible(_) | _: Decoration.KeyHandler | _: Decoration.Shortcut =>
                       None
                     case other =>

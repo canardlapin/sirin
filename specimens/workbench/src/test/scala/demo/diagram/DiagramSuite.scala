@@ -203,7 +203,7 @@ class DiagramSuite extends munit.FunSuite:
     val graph = DiagramGraph.grid(512)
     val viewport = Size(400.lp, 200.lp)
     val scene = DiagramScene(graph, DiagramCamera(), Set(1L))
-    assertEquals(DiagramSurface.textRequests(scene, (), viewport).size, 9)
+    assertEquals(DiagramSurface.textRequests(scene, 0.0, viewport).size, 9)
     val parts = DiagramSurface.semantics(scene, viewport)
     assertEquals(parts.size, 10)
     assertEquals(parts(1).semantics.positionInSet, Some((1, 512)))
@@ -214,7 +214,7 @@ class DiagramSuite extends munit.FunSuite:
       assertEquals(DiagramSurface.hitTest(scene, viewport, Point(x.lp, y.lp)), Hit.Part(part.part))
     }
     val distant = scene.copy(camera = DiagramCamera(Point(900000.lp, 900000.lp)))
-    assertEquals(DiagramSurface.textRequests(distant, (), viewport), Nil)
+    assertEquals(DiagramSurface.textRequests(distant, 0.0, viewport), Nil)
     assertEquals(DiagramSurface.semantics(distant, viewport).size, 1)
     val overlapping = DiagramScene(
       DiagramGraph(

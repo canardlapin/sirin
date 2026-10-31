@@ -112,7 +112,7 @@ final case class LayoutResult(
             case _ =>
               ()
         }
-        p.children.foreach(paint)
+        LayoutResult.group(canvas, p)(p.children.foreach(paint))
       canvas.fill(Rect(Point.origin, Size(root.bounds.width.lp, root.bounds.height.lp)), theme.color(ColorRole.Surface))
       paint(root)
     }
@@ -153,9 +153,18 @@ final case class LayoutResult(
             case _ =>
               ()
         }
-        p.children.foreach(visit)
+        LayoutResult.group(canvas, p)(p.children.foreach(visit))
       visit(root)
     }
+
+object LayoutResult:
+  /** Children of a presented opacity node paint as one isolated group. */
+  private def group(canvas: Canvas, p: Placed)(children: => Unit): Unit =
+    p.node.content match
+      case Content.Styled(Hint.Opacity(alpha), _) =>
+        canvas.withOpacity(alpha)(children)
+      case _ =>
+        children
 
 /** Pure full layout reference for the first host. No incremental-layout claim. */
 object Layout:
@@ -373,7 +382,7 @@ object Layout:
                 require(value.isFinite && value >= 0, "invalid height")
                 val c = measure(child, w, bounded(value, h), fillWidth, true)
                 Measured(node, c.width, bounded(value, h), Vector((c, 0, 0)), None)
-              case Hint.Grow =>
+              case Hint.Grow | Hint.Offset(_, _) | Hint.Opacity(_) =>
                 val c = measure(child, w, h, fillWidth, fillHeight)
                 Measured(node, c.width, c.height, Vector((c, 0, 0)), None)
           case Content.Stack(horizontal, gap, alignment, children) =>
@@ -552,7 +561,14 @@ object Layout:
       measured.copy(width = math.max(minWidth, measured.width), height = math.max(minHeight, measured.height))
     val measured = measure(root, width, height, true, true).copy(width = width, height = height)
     val requests = Vector.newBuilder[ViewportRequest]
-    def place(m: Measured, x: Double, y: Double, ancestorClip: Box): Placed =
+    def place(m: Measured, laidX: Double, laidY: Double, ancestorClip: Box): Placed =
+      // A presented offset moves the subtree after layout, so paint, hit testing and semantics all follow it.
+      val (x, y) =
+        m.node.content match
+          case Content.Styled(Hint.Offset(dx, dy), _) =>
+            (laidX + dx, laidY + dy)
+          case _ =>
+            (laidX, laidY)
       val bounds = Box(x, y, m.width, m.height)
       val clip = ancestorClip.intersect(bounds)
       m.node.content match
@@ -570,7 +586,14 @@ object Layout:
           frame.semantics(size, elementText(painted)).flatMap(_.text.map(_.request)).foreach(prepareElementText)
         case _ =>
           ()
-      val children = m.children.map((child, dx, dy) => place(child, x + dx, y + dy, clip))
+      // An opacity group does not clip, so an offset inside it is clipped only by the views around both.
+      val inner =
+        m.node.content match
+          case Content.Styled(Hint.Opacity(_), _) =>
+            ancestorClip
+          case _ =>
+            clip
+      val children = m.children.map((child, dx, dy) => place(child, x + dx, y + dy, inner))
       Placed(m.node, bounds, clip, children, m.text)
     val result = place(measured, 0, 0, Box(0, 0, width, height))
     LayoutResult(

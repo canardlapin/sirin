@@ -15,7 +15,8 @@ New programs: `VirtualizedRows.scala`, `DockingWorkspace.scala`,
 `StreamingImport.scala`, `FailedBinding.scala`, `MultiWindowDocument.scala`,
 and `ReducedMotion.scala`. They specify later behavioral tests through source
 comments; compilation does not establish realization, lifetime, delivery,
-failure, save ordering, or motion laws.
+failure, save ordering, or motion laws. `ReducedMotion.scala` now has a
+behavioral counterpart, `desktop/src/test/scala/sirin/desktop/MotionPresentationSuite.scala`.
 
 ### Current checklist
 

@@ -37,7 +37,8 @@ final case class RenderedFrame(
   override def close(): Unit = gpuFrame.foreach(_.close())
 
 object DevelopmentTheme extends Theme:
-  def reducedMotion: Boolean = true
+  /** The platform preference is not read yet; motion stays on. */
+  def reducedMotion: Boolean = false
   def color(role: ColorRole): Color =
     role match
       case ColorRole.Surface =>

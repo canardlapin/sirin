@@ -105,7 +105,8 @@ final class HeadlessRuntime(
     workCapacity: Int = 256,
     val clock: MonotonicClock = MonotonicClock.system(),
     eventCapacity: Int = 4096,
-    traceCapacity: Int = 256
+    traceCapacity: Int = 256,
+    animationFrameNanos: Long = 16666667L
 ):
   require(settleBudget > 0, "positive settle pass budget required")
   require(eventCapacity > 0 && traceCapacity > 0, "positive event and trace capacities required")
@@ -117,6 +118,7 @@ final class HeadlessRuntime(
   private var preferProgress = true
   private val progressBindings = mutable.ArrayBuffer.empty[ProgressBinding]
   private[engine] val docking = new DockingRuntime(this)
+  private val motion = new MotionRuntime(this, animationFrameNanos)
   private val eventHub = new EventHub(this, eventCapacity)
   private val changeBindings = mutable.ArrayBuffer.empty[CommittedCollection]
   private val traceRing = mutable.Queue.empty[TraceRecord]
@@ -597,10 +599,6 @@ final class HeadlessRuntime(
         case NonFatal(error) =>
           pins -= signal
           throw error
-    private def deferred[A](feature: String): A = {
-      checkScope(this)
-      fail(KernelError.Deferred(feature))
-    }
     def keyed[K, A](initial: Seq[A])(key: A => K)(using Equality[A]): KeyedCell[K, A] =
       construct(this) {
         edit { _ =>
@@ -707,7 +705,33 @@ final class HeadlessRuntime(
           )
         }
       }
-    def animate(target: Signal[Double], transition: Transition): Presentation[Double] = deferred("animation")
+    def animate(target: Signal[Double], transition: Transition): Presentation[Double] =
+      construct(this) {
+        edit { t =>
+          checkScope(this)
+          val initial =
+            t.staged(target) match
+              case Value.Ok(value: Double) =>
+                value
+              case _ =>
+                0.0
+          val presentation = motion.create(this, initial, transition)
+          addWatch(
+            target,
+            Some(this),
+            {
+              case Value.Ok(value: Double) =>
+                motion.retarget(presentation, value)
+              case Value.Ok(_) =>
+                ()
+              case Value.Failed(error) =>
+                reported += error
+            },
+            Some(t)
+          )
+          presentation
+        }
+      }
     def reparent(key: GlobalKey, content: View): Reparentable =
       construct(this) {
         edit { _ =>
@@ -1471,6 +1495,33 @@ final class HeadlessRuntime(
       else
         ProgressDrain(0, progressBindings.filter(_.alive).map(_.snapshot.pending).sum, Vector.empty)
     WorkPump(progress, scheduler.drain(math.max(0, budget - progress.delivered)))
+
+  /** One presented frame. Animations sampled in `body` see one clock time and count as visible; an animation that a
+    * frame does not sample settles at its target. Hosts capture every window inside one call.
+    */
+  def present[A](body: => A): A =
+    control()
+    motion.present(body)
+
+  /** Wait until the next animation frame, in this runtime's clock domain: -1 means no presented motion. */
+  def animationWaitMillis: Int =
+    control()
+    motion.waitMillis
+
+  /** Presented animations still in motion after the latest frame. */
+  def activeAnimations: Int =
+    control()
+    motion.active
+
+  private[engine] def animationCount: Int = motion.count
+
+  /** The platform reduced-motion preference. Under it, transitions reach their targets without frames. */
+  def reducedMotion: Boolean =
+    control()
+    motion.reducedMotion
+  def reducedMotion_=(value: Boolean): Unit =
+    control()
+    motion.reducedMotion = value
 
   /** Backend event-loop wait in this runtime's clock domain: -1 means no deadline. */
   def activityWaitMillis: Int =
