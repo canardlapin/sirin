@@ -315,6 +315,12 @@ trait LayoutChildren:
   def measure(slot: Slot, constraints: Constraints): Size
   def place(slot: Slot, at: Point): Unit
 
+  /** The child is marked `.grow`, asking for a share of the space its siblings leave. */
+  def grows(index: Int): Boolean
+
+  /** The child shows nothing: it is empty or hidden. Stacks give it no space and no gap. */
+  def collapsed(index: Int): Boolean
+
 trait LayoutPolicy[S]:
   def layout(state: S, constraints: Constraints, children: LayoutChildren)(using Committed): Size
 

@@ -25,7 +25,6 @@ enum Content:
   case CustomLayout(frame: LayoutFrame, children: Vector[(Slot, Node)])
   case Button(instance: Long, label: String, enabled: Boolean, busy: Boolean, primary: Boolean)
   case Reference(reference: Long, child: Node)
-  case Label(text: String, style: TextStyle, color: ColorRole)
   case Space(size: Double)
   case Stack(horizontal: Boolean, gap: Double, alignment: Alignment, children: Vector[Node])
   case Styled(hint: Hint, child: Node)
@@ -119,10 +118,6 @@ object CommittedTree:
           Node(id, Content.Empty)
         case MountedSnapshot.Leaf(view) =>
           view match
-            case t: Text.Description =>
-              val text = value(t.content)
-              budget.text(text.length)
-              Node(id, Content.Label(text, t.textStyle, t.colorRole))
             case View.Space(size) =>
               Node(id, Content.Space(size.fold(0.0)(_.toDouble)))
             case _ =>
@@ -181,16 +176,6 @@ object CommittedTree:
             }
             require(keys.size <= 256, "window keyboard binding budget exceeded")
             captured
-        case MountedSnapshot.Group(children, horizontal, gap, alignment) =>
-          Node(
-            id,
-            Content.Stack(
-              horizontal,
-              gap.toDouble,
-              alignment,
-              children.zipWithIndex.map((child, index) => recurse(child, index))
-            )
-          )
         case MountedSnapshot.Component(identity, _, child) =>
           loop(child, NodeId(Vector("component", identity.instance)), depth + 1)
         case MountedSnapshot.Branch(_, instance, child) =>

@@ -86,10 +86,12 @@ class HostSuite extends munit.ScalaCheckSuite:
       val owner=r.scope("tree");val title=owner.cell("before");val shown=owner.cell(true)
       val definition=Component[Unit]("content")((_,_) => Text(title).style(TextStyle.Heading).visible(shown))
       val m=r.mount(owner,definition(()))
-      val before=captured(r,m)
-      assertEquals(before.content,Content.Label("before",TextStyle.Heading,ColorRole.OnSurface))
+      def text(node: Node): TextRequest = node.content match
+        case Content.Custom(frame) if frame.name=="text" => frame.textRequests(Size(Lp(80),Lp(20))).head
+        case other => fail(s"expected a text element: $other")
+      assertEquals(text(captured(r,m)),TextRequest("before",TextStyle.Heading,Lp(80)))
       ok(r.transact { title.set("after") })
-      assertEquals(captured(r,m).content,Content.Label("after",TextStyle.Heading,ColorRole.OnSurface))
+      assertEquals(text(captured(r,m)),TextRequest("after",TextStyle.Heading,Lp(80)))
       ok(r.transact { shown.set(false) })
       assertEquals(captured(r,m).content,Content.Empty)
     finally r.close()

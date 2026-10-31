@@ -32,12 +32,6 @@ enum MountedSnapshot:
 
   /** Opaque leaf description; no painting or input routing is performed. */
   case Leaf(view: View)
-  case Group(
-      children: Vector[MountedSnapshot],
-      horizontal: Boolean = false,
-      gap: Lp = Lp.zero,
-      alignment: Alignment = Alignment.Start
-  )
   case Component(identity: MountedIdentity, props: Any, child: MountedSnapshot)
   case Rows(entries: Vector[(Any, MountedSnapshot)])
   case Branch(key: Any, instance: Long, child: MountedSnapshot)
@@ -71,8 +65,6 @@ object MountedSnapshot:
           i == j && r == s && f == g && t == u && l == m && e == h && a == b && equality.same(x, y)
         case (Leaf(x), Leaf(y)) =>
           x == y
-        case (Group(x, h, g, a), Group(y, i, j, b)) =>
-          h == i && g == j && a == b && x.size == y.size && x.zip(y).forall((p, q) => equality.same(p, q))
         case (Component(i, x, c), Component(j, y, d)) =>
           i == j && i.definition.asInstanceOf[sirin.Component.Token[Any]].equality.same(x, y) && equality.same(c, d)
         case (Rows(x), Rows(y)) =>
@@ -248,8 +240,6 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
         p.state.toVector ++ p.children.flatMap((_, v) => directDependencies(v))
       case p: Button.Description =>
         Vector(p.label, p.binding.enabled, p.binding.running)
-      case p: Text.Description =>
-        Vector(p.content)
       case p: sirin.Window.Description =>
         Vector(p.title) ++ MenuBindings.dependencies(p.menu) ++ directDependencies(p.content)
       case p: Windows.MenuDescription =>
@@ -264,8 +254,6 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
         Vector(p.value)
       case p: Switch.Keyed[?, ?] =>
         Vector(p.value)
-      case p: View.Stack =>
-        p.children.flatMap(directDependencies)
       case p: RetainedPlacement =>
         Vector(p.outlet)
       case p: DockOutlet.Description =>
@@ -347,6 +335,9 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
     runtime.recordUndo(() => restore(old))
     restore(next)
 
+  /** Identity of an unkeyed layout child; it cannot equal an application key. */
+  private final case class SlotIdentity(slot: sirin.Slot)
+
   private final class Holder(
       val parent: runtime.OwnedScope,
       val position: Any,
@@ -405,8 +396,6 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
               new WindowSlot(parent, p)
             case p: View.ScrollContent =>
               new ScrollSlot(parent, p)
-            case p: View.Stack =>
-              new StackSlot(parent, p, reader => requested(reader))
             case p: DockOutlet.Description =>
               new OutletSlot(parent, p)
             case p: RetainedPlacement =>
@@ -449,7 +438,7 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
               _: View.ScrollContent =>
             false
           case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] |
-              _: View.Stack | _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] =>
+              _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] =>
             false
           case _ =>
             true
@@ -631,7 +620,7 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
   ) extends Slot:
     val scope = parent.child(initial.name)
     private var description = initial
-    private var children = Vector.empty[(sirin.Slot, Holder)]
+    private var children = Vector.empty[(Any, sirin.Slot, Holder)]
     private var previous = Option.empty[Any]
     private var revision = 0L
     private var frame = Option.empty[LayoutFrame]
@@ -650,11 +639,11 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
         true
       }
     def dependencies: Vector[Signal[?]] =
-      description.state.toVector ++ children.flatMap((_, child) => child.dependencies)
+      description.state.toVector ++ children.flatMap(_._3.dependencies)
     def snapshot: MountedSnapshot =
       failure.fold(
         frame.fold[MountedSnapshot](MountedSnapshot.Empty)(f =>
-          MountedSnapshot.CustomLayout(f, children.map((slot, child) => slot -> child.snapshot))
+          MountedSnapshot.CustomLayout(f, children.map(c => c._2 -> c._3.snapshot))
         )
       )(MountedSnapshot.Unavailable(_))
     def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
@@ -674,26 +663,36 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
           }
         case Some(Value.Ok(value)) =>
           var changed = false
-          val old = children.toMap
+          // A keyed child keeps its identity wherever it moves; an unkeyed child is identified by its slot.
+          val identities = description.children.map((slot, view) => keyOf(view, SlotIdentity(slot)))
+          duplicateKeys(identities)
+          val old = runtime.lawful(identities.toSet)
+          val retained = runtime.lawful(children.map(c => c._1 -> c._3).toMap)
           val next = description
             .children
-            .map { (slot, view) =>
-              val child = old.getOrElse(
-                slot,
-                new Holder(
-                  scope,
-                  slot.name,
-                  Some { reader =>
-                    val latest = plain(requested(reader)).asInstanceOf[Layout.Description[Any]]
-                    latest.children.find(_._1 == slot).map(_._2).getOrElse(throw KernelError.DisposedScope)
-                  }
+            .zip(identities)
+            .map { case ((slot, view), identity) =>
+              val child = runtime
+                .lawful(retained.get(identity))
+                .getOrElse(
+                  new Holder(
+                    scope,
+                    slot.name,
+                    Some { reader =>
+                      val latest = plain(requested(reader)).asInstanceOf[Layout.Description[Any]]
+                      latest
+                        .children
+                        .find((s, v) => sameKey(keyOf(v, SlotIdentity(s)), identity))
+                        .map(_._2)
+                        .getOrElse(throw KernelError.DisposedScope)
+                    }
+                  )
                 )
-              )
               if child.sync(view, read) then
                 changed = true
-              slot -> child
+              (identity, slot, child)
             }
-          children.filterNot((slot, _) => next.exists(_._1 == slot)).foreach((_, child) => child.retire())
+          children.filterNot(c => runtime.lawful(old(c._1))).foreach(_._3.retire())
           if children != next then {
             change(children)(children = _)(next)
             changed = true
@@ -1454,58 +1453,3 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
             changed = true
           changed
 
-  private final class StackSlot(parent: runtime.OwnedScope, initial: View.Stack, requested: Signal.Reader => View)
-      extends Slot:
-    val scope = parent.child("static-children")
-    private var description = initial
-    private var children = Vector.empty[(Any, Holder)]
-    def accepts(view: View): Boolean =
-      view match
-        case p: View.Stack =>
-          p.horizontal == description.horizontal
-        case _ =>
-          false
-    def refresh(view: View): Boolean =
-      if description.eq(view) then
-        false
-      else {
-        change(description)(v => description = v)(view.asInstanceOf[View.Stack])
-        true
-      }
-    def dependencies: Vector[Signal[?]] =
-      description.children.flatMap(directDependencies) ++ children.flatMap(_._2.dependencies)
-    def snapshot: MountedSnapshot = MountedSnapshot.Group(
-      children.map(_._2.snapshot),
-      description.horizontal,
-      description.gap.getOrElse(Lp.zero),
-      description.alignment.getOrElse(Alignment.Start)
-    )
-    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
-      val keyed = description.children.zipWithIndex.map((view, index) => keyOf(view, index) -> view)
-      duplicateKeys(keyed.map(_._1))
-      val previous = runtime.lawful(children.toMap)
-      val keys = runtime.lawful(keyed.map(_._1).toSet)
-      children.filterNot((key, _) => runtime.lawful(keys(key))).foreach(_._2.retire())
-      var changed = !runtime.lawful(children.map(_._1) == keyed.map(_._1))
-      val next = keyed.map { (key, view) =>
-        val child = runtime
-          .lawful(previous.get(key))
-          .getOrElse(
-            new Holder(
-              scope,
-              key,
-              Some { reader =>
-                val latest = plain(requested(reader)).asInstanceOf[View.Stack]
-                val entries = latest.children.zipWithIndex.map((v, i) => keyOf(v, i) -> v)
-                duplicateKeys(entries.map(_._1))
-                entries.find((k, _) => sameKey(k, key)).map(_._2).getOrElse(throw KernelError.DisposedScope)
-              }
-            )
-          )
-        if child.sync(view, read) then
-          changed = true
-        (key, child)
-      }
-      if changed then
-        change(children)(v => children = v)(next)
-      changed

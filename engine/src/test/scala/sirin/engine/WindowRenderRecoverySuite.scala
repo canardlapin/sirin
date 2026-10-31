@@ -13,12 +13,12 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
     case w: MountedSnapshot.Window => Vector(w)
     case MountedSnapshot.Component(_,_,child) => windows(child)
     case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => windows(child))
-    case MountedSnapshot.Group(children,_,_,_) => children.flatMap(windows)
+    case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => windows(child))
     case _ => Vector.empty
   /** TextField mounts as a component around its public element; the element instance is the field identity. */
   private def fields(s: MountedSnapshot): Vector[(Long,TextField.Description)]=s match
     case MountedSnapshot.Component(_,field: TextField.Description,MountedSnapshot.Custom(frame,_)) => Vector(frame.instance->field)
-    case MountedSnapshot.Group(children,_,_,_) => children.flatMap(fields)
+    case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => fields(child))
     case MountedSnapshot.Component(_,_,child) => fields(child)
     case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => fields(child))
     case MountedSnapshot.Branch(_,_,child) => fields(child)

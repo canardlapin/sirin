@@ -73,7 +73,9 @@ object View:
       horizontal: Boolean,
       gap: Option[Lp] = None,
       alignment: Option[Alignment] = None
-  ) extends StackView:
+  ) extends StackView
+      with View.Proxy:
+    lazy val body: View = StackLayout.view(this)
     def spacing(value: Lp): StackView = copy(gap = Some(value))
     def align(value: Alignment): StackView = copy(alignment = Some(value))
   private[sirin] final case class StackDecoration(view: StackView, decoration: Decoration) extends StackView:
@@ -108,7 +110,9 @@ object Text:
       content: Signal[String],
       textStyle: TextStyle = TextStyle.Body,
       colorRole: ColorRole = ColorRole.OnSurface
-  ) extends TextView:
+  ) extends TextView
+      with View.Proxy:
+    lazy val body: View = TextElement.view(this)
     def style(value: TextStyle): TextView = copy(textStyle = value)
     def color(value: ColorRole): TextView = copy(colorRole = value)
   def apply(content: String): TextView = Description(Signal.const(content))

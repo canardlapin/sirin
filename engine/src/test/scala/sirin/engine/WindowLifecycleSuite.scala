@@ -17,14 +17,14 @@ class WindowLifecycleSuite extends munit.FunSuite:
   private def frames(snapshot: MountedSnapshot): Vector[MountedSnapshot.Window] = snapshot match
     case frame: MountedSnapshot.Window => Vector(frame)
     case MountedSnapshot.Component(_, _, child) => frames(child)
-    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(frames)
+    case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => frames(child))
     case MountedSnapshot.Rows(rows) => rows.flatMap((_, child) => frames(child))
     case _ => Vector.empty
   private def windows(runtime: HeadlessRuntime, mounted: MountedView): Vector[MountedSnapshot.Window] =
     frames(value(runtime, mounted.snapshot))
   private def controls(snapshot: MountedSnapshot): Vector[Long] = snapshot match
     case MountedSnapshot.Control(instance, _) => Vector(instance)
-    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(controls)
+    case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => controls(child))
     case MountedSnapshot.Component(_, _, child) => controls(child)
     case _ => Vector.empty
 

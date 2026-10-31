@@ -22,7 +22,7 @@ class ReconciliationSuite extends munit.FunSuite:
     case Value.Failed(e) => throw e
   private def components(snapshot: MountedSnapshot): Vector[(MountedIdentity, Any)] = snapshot match
     case MountedSnapshot.Component(id, props, child) => Vector((id, props)) ++ components(child)
-    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(components)
+    case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => components(child))
     case MountedSnapshot.Rows(rows) => rows.flatMap((_, child) => components(child))
     case MountedSnapshot.Branch(_, _, child) => components(child)
     case _ => Vector.empty

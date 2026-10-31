@@ -70,6 +70,9 @@ VoiceOver sessions on the port remain unqualified.
 Motion is implemented: scope-owned animations, retargeting, per-frame sampling,
 hidden content and reduced motion. See
 `docs/design/decisions/2026-10-30-motion.md`. Reading the macOS reduced-motion
-preference and real-window motion review remain open. The next implementation
-step is moving the remaining layout controls (`Text`, `Row`, `Column`,
-`Scroll`, `VirtualRows`, `DockOutlet`) onto the seam.
+preference and real-window motion review remain open.
+
+`Text`, `Row` and `Column` are on the seam; see
+`docs/design/decisions/2026-10-31-layout-controls.md`. The next implementation
+step is `Scroll`, `VirtualRows` and `DockOutlet`, which need public viewport
+feedback, row realization and retained outlet placement.

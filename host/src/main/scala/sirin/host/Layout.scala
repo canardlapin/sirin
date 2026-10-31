@@ -107,8 +107,6 @@ final case class LayoutResult(
                   )
                 )
               }
-            case Content.Label(_, _, color) =>
-              canvas.text(p.text.get, Point(p.bounds.x.lp, p.bounds.y.lp), theme.color(color))
             case _ =>
               ()
         }
@@ -348,6 +346,14 @@ object Layout:
                   placed(i) = (child, at.x.toDouble, at.y.toDouble)
                 def measure(slot: Slot, c: Constraints): Size = measure(index(slot), c, false)
                 def place(slot: Slot, at: Point): Unit = place(index(slot), at)
+                def grows(i: Int): Boolean =
+                  check()
+                  require(i >= 0 && i < children.size, "unknown layout child")
+                  grow(children(i)._2)
+                def collapsed(i: Int): Boolean =
+                  check()
+                  require(i >= 0 && i < children.size, "unknown layout child")
+                  children(i)._2.content == Content.Empty
             val size =
               try frame.layout(c, handle)
               finally active = false
@@ -364,10 +370,6 @@ object Layout:
             val request = TextRequest(label, TextStyle.Body, Lp(math.max(0, w - 24)))
             val text = prepared.getOrElseUpdate(request, resolve(request))
             leaf(text.size.width.toDouble + 24, text.size.height.toDouble + 16, Some(text))
-          case Content.Label(text, style, _) =>
-            val request = TextRequest(text, style, Lp(w))
-            val layout = prepared.getOrElseUpdate(request, resolve(request))
-            leaf(layout.size.width.toDouble, layout.size.height.toDouble, Some(layout))
           case Content.Styled(hint, child) =>
             hint match
               case Hint.Padding(x, y) =>

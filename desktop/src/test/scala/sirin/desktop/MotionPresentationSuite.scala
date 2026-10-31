@@ -84,8 +84,8 @@ class MotionPresentationSuite extends munit.FunSuite:
             visit(child)
           case Content.Reference(_, child) =>
             visit(child)
-          case Content.Stack(_, _, _, children) =>
-            children.flatMap(visit)
+          case Content.CustomLayout(_, children) =>
+            children.flatMap((_, child) => visit(child))
           case _ =>
             Vector.empty
       visit(tree.tree)
@@ -174,6 +174,6 @@ class MotionPresentationSuite extends munit.FunSuite:
       )
       f.frame()
       assertEquals(f.runtime.animationWaitMillis, -1)
-      assertEquals(f.layout.get.semanticParts, Vector.empty)
+      assertEquals(f.layout.get.semanticParts.map(_._2.semantics), Vector(Semantics(Role.Label, Some("replaced"))))
     finally f.close()
   }

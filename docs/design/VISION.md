@@ -412,7 +412,11 @@ randomized programs.
   best effort, not an identity guarantee.
   - Keyed dynamic children (`ForEach`) never use their list index.
   - Static children are positional, and that is safe because static
-    structure does not change.
+    structure does not change. A static child marked `.keyed` is identified by
+    its key among its siblings instead, so it keeps its state when it moves.
+    This holds for `Row`, `Column` and every `Layout`, where a keyed child can
+    move between named slots. *(2026-10-31; see
+    `docs/design/decisions/2026-10-31-layout-controls.md`)*
   - Moving a component to a new owner through ordinary reconciliation does
     not carry its state.
   - An explicit `reparent` (or portal) operation with a stable **global key**

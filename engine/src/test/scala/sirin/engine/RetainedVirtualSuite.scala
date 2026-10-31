@@ -18,7 +18,7 @@ class RetainedVirtualSuite extends munit.FunSuite:
   private def visit(value: MountedSnapshot): Vector[MountedSnapshot] = value +: (value match
     case MountedSnapshot.Referenced(_,child) => visit(child)
     case MountedSnapshot.Styled(child,_) => visit(child)
-    case MountedSnapshot.Group(children, _, _, _) => children.flatMap(visit)
+    case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => visit(child))
     case MountedSnapshot.Component(_, _, child) => visit(child)
     case MountedSnapshot.Rows(rows) => rows.flatMap((_, child) => visit(child))
     case MountedSnapshot.Branch(_, _, child) => visit(child)

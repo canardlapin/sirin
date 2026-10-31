@@ -208,7 +208,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       val coordinator = new FrameCoordinator
       val router = new WindowRenderRecovery(r, mounted, current.instance, coordinator)
       def payload(text: String) = FramePayload(
-        Node(NodeId(Vector("scene")), Content.Label(text, TextStyle.Body, ColorRole.OnSurface)),
+        Node(NodeId(Vector("scene", text)), Content.Empty),
         100,
         100,
         100,

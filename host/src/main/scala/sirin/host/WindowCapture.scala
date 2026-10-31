@@ -27,7 +27,7 @@ object WindowCapture:
         case MountedSnapshot.Empty => ()
         case MountedSnapshot.Component(_,_,child) => loop(child,depth+1)
         case MountedSnapshot.Rows(rows) => rows.foreach((_,child) => loop(child,depth+1))
-        case MountedSnapshot.Group(children,_,_,_) => children.foreach(loop(_,depth+1))
+        case MountedSnapshot.CustomLayout(_,children) => children.foreach((_,child) => loop(child,depth+1))
         case MountedSnapshot.Leaf(description: Windows.MenuDescription) =>
           require(!applicationMenuSeen,"duplicate application menu declaration")
           applicationMenuSeen=true

@@ -72,7 +72,7 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
       def loop(snapshot: MountedSnapshot): Vector[Long]=snapshot match
         // TextField mounts as a component around its public element; the element instance is the field identity.
         case MountedSnapshot.Component(_,field: TextField.Description,MountedSnapshot.Custom(frame,_)) if field.value eq document.editor.body => Vector(frame.instance)
-        case MountedSnapshot.Group(children,_,_,_) => children.flatMap(loop)
+        case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => loop(child))
         case MountedSnapshot.Component(_,_,child) => loop(child)
         case MountedSnapshot.Window(_,_,_,child,_) => loop(child)
         case MountedSnapshot.Styled(child,_) => loop(child)
@@ -228,11 +228,12 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
       case w: MountedSnapshot.Window => Vector(w)
       case MountedSnapshot.Component(_,_,child) => frames(child)
       case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => frames(child))
-      case MountedSnapshot.Group(children,_,_,_) => children.flatMap(frames)
+      case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => frames(child))
       case _ => Vector.empty
     def labels(s: MountedSnapshot): Vector[String]=s match
-      case MountedSnapshot.Leaf(text: Text.Description) => Vector(value(f.r,text.content))
-      case MountedSnapshot.Group(children,_,_,_) => children.flatMap(labels)
+      case MountedSnapshot.Custom(frame,_) if frame.name=="text" =>
+        frame.textRequests(Size(Lp(1e6),Lp(1e6))).map(_.content).toVector
+      case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => labels(child))
       case MountedSnapshot.Component(_,_,child) => labels(child)
       case MountedSnapshot.Rows(rows) => rows.flatMap((_,child) => labels(child))
       case MountedSnapshot.Branch(_,_,child) => labels(child)

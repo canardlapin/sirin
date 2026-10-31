@@ -67,6 +67,13 @@ it at most once. Additional constraint measurements require intrinsic=true.
 Unplaced children stay mounted but do not paint, receive input or expose semantics.
 LayoutChildren handles cannot escape their layout callback.
 
+A child marked `.keyed` keeps its identity by key, even when it moves to another
+slot. Other children are identified by their slot. `LayoutChildren.grows(i)`
+reports whether a child was marked `.grow`. `LayoutChildren.collapsed(i)` reports
+whether it shows nothing, because it is empty or hidden. `Row` and `Column` are
+built on these APIs, in `core/src/main/scala/sirin/StackLayout.scala`, and
+`Text` is an element, in `core/src/main/scala/sirin/TextElement.scala`.
+
 ## Text controls
 
 An element becomes a text control by overriding `textInput`, which returns the

@@ -36,7 +36,7 @@ class WindowKeySafetySuite extends munit.FunSuite:
       def frames(snapshot: MountedSnapshot): Vector[Long] = snapshot match
         case MountedSnapshot.Window(id, _, _, _, _) => Vector(id)
         case MountedSnapshot.Component(_, _, child) => frames(child)
-        case MountedSnapshot.Group(children, _, _, _) => children.flatMap(frames)
+        case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => frames(child))
         case MountedSnapshot.Rows(rows) => rows.flatMap((_, child) => frames(child))
         case _ => Vector.empty
       val ids = r.transact { frames(root.snapshot.get) } match
