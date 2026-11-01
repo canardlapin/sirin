@@ -7,6 +7,7 @@ import sirin.host.*
 import sirin.graphics.unicode.NativeUnicode
 import sirin.graphics.GraphicsDeviceLost
 import sirin.render.BatchGpu
+import sirin.tooling.*
 
 /** JVM development provider. The model and host capture remain backend-neutral. */
 final class DesktopApplicationPlatform extends ApplicationPlatform:
@@ -68,16 +69,12 @@ private[desktop] final class DesktopApplicationSession(
         throw error
       case other =>
         throw new IllegalStateException(s"$other")
-  val (application, mounted) = ok(
+  val (application, mounted, inspector) = ok(
     runtime.transact {
       val owner = runtime.scope("application")
-      (
-        owner,
-        runtime.mountWindows(
-          owner,
-          build(owner, DesktopApplicationPlatform.services(runtime)(owner, () => native.requestQuit()))
-        )
-      )
+      val windows = build(owner, DesktopApplicationPlatform.services(runtime)(owner, () => native.requestQuit()))
+      val tool = Option.when(java.lang.Boolean.getBoolean("sirin.inspector"))(new DeveloperInspector(runtime)(owner))
+      (owner, runtime.mountWindows(owner, tool.fold(windows)(_.attach(windows))), tool)
     }
   )
   application.observe(mounted.snapshot)(_ => ())
@@ -295,6 +292,7 @@ private[desktop] final class DesktopApplicationSession(
           peer.finishClose()
           retiring -= peer
         }
+      if inspector.exists(_.drain(active.valuesIterator.map(_.inspect).toVector)) then recapture = true
       DesktopApplicationPlatform.observer.foreach(_(this))
       // Opening a fresh view while draining cancels the old quit intent.
       if quitting && capture().nonEmpty then
@@ -370,6 +368,7 @@ private[desktop] final class ApplicationPeer(
     )
   def controller: EditorController = inputs.current
   private var renderer = Option.empty[RenderService]
+  private var presentedGeneration = Option.empty[Long]
   var presentations = 0L
   var staleInputs = 0L
   try
@@ -388,7 +387,8 @@ private[desktop] final class ApplicationPeer(
             root.resolve(s"desktop/target/application-frames/$instance"),
             batch = Some(BatchGpu.shared(activeRenderer)),
             editorSystemFonts = true,
-            viewportProfile = sirin.graphics.desktop.GpuTileCache.Profile.Application
+            viewportProfile = sirin.graphics.desktop.GpuTileCache.Profile.Application,
+            diagnostics = session.inspector.nonEmpty
           )
         )
       )
@@ -670,10 +670,22 @@ private[desktop] final class ApplicationPeer(
           repaint = false
           feedback = 0
           losses = 0
+          presentedGeneration = Some(frame.request.generation)
           presentations += 1
           changed = true
       }
     changed || (pending.nonEmpty && controller.ready)
+  /** Copies owner-held values; worker-owned caches are represented only by frame receipt strings. */
+  def inspect: InspectedWindow =
+    val frame = current.map { value =>
+      InspectedFrame(value.request.generation, value.width, value.height, value.workerNanos, value.queueNanos,
+        value.programBytes, value.readbackBytes, value.tiles,
+        if value.gpuFrame.nonEmpty then "retained GPU" else "readback/upload",
+        InspectorData.clip(value.cacheSummary))
+    }
+    InspectedWindow(instance, InspectorData.clip(title(captured.title), 128), latest.map(_.generation),
+      presentedGeneration, controller.ready, pending.size, presentations, staleInputs, frame,
+      captured.renderStatus.recent)
   def hasPendingInput: Boolean = pending.nonEmpty
   def needsRetry: Boolean = live && repaint && current.nonEmpty
   def retire(): Unit =

@@ -267,13 +267,24 @@ lazy val probeThreads = project
 
 lazy val root = project
   .in(file("."))
-  .aggregate(graphics.jvm, graphics.native, core.jvm, core.native, textUI.jvm, textUI.native, graphicsUI.jvm, graphicsUI.native, engine.jvm, engine.native, testkit.jvm, testkit.native)
+  .aggregate(graphics.jvm, graphics.native, core.jvm, core.native, textUI.jvm, textUI.native,
+    graphicsUI.jvm, graphicsUI.native, engine.jvm, engine.native, testkit.jvm, testkit.native,
+    tooling.jvm, tooling.native)
   .settings(publish / skip := true)
 
 // Named per-platform test commands; CI calls these rather than relying on `+test`.
-addCommandAlias("testJVM", "; graphicsJVM/test; coreJVM/test; textUIJVM/test; graphicsUIJVM/test; engineJVM/test; testkitJVM/test; workbenchJVM/test; hostJVM/test")
-addCommandAlias("testNative", "; graphicsNative/test; coreNative/test; textUINative/test; graphicsUINative/test; engineNative/test; testkitNative/test; workbenchNative/test; hostNative/test")
+addCommandAlias("testJVM", "; graphicsJVM/test; coreJVM/test; textUIJVM/test; graphicsUIJVM/test; " +
+  "engineJVM/test; testkitJVM/test; workbenchJVM/test; hostJVM/test; toolingJVM/test")
+addCommandAlias("testNative", "; graphicsNative/test; coreNative/test; textUINative/test; graphicsUINative/test; " +
+  "engineNative/test; testkitNative/test; workbenchNative/test; hostNative/test; toolingNative/test")
 addCommandAlias("testAll", "; testJVM; testNative")
+
+// Shared developer tooling: copied diagnostics and a public-control browser.
+lazy val tooling = crossProject(JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("tooling"))
+  .dependsOn(engine)
+  .settings(name := "sirin-tooling", testDeps)
 
 // Executable public-API behaviour specimen; no desktop renderer required.
 lazy val workbench = crossProject(JVMPlatform, NativePlatform)
@@ -295,7 +306,7 @@ lazy val scalafxWorkbench = project
 // with sbt --java-home <jdk25> desktopJVM/test or desktopJVM/run.
 lazy val desktopNativeLibrary = taskKey[File]("Build the pointer-only desktop transport")
 lazy val desktopJVM = project.in(file("desktop"))
-  .dependsOn(host.jvm, workbench.jvm)
+  .dependsOn(host.jvm, workbench.jvm, tooling.jvm)
   .settings(
     name := "sirin-desktop-development", publish / skip := true, testDeps,
     Compile / unmanagedSources ++= {

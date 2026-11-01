@@ -28,7 +28,8 @@ final case class RenderedFrame(
     profile: String = "",
     queueNanos: Long = 0,
     sessionSetupNanos: Long = 0,
-    gpuFrame: Option[sirin.render.GpuFrame] = None
+    gpuFrame: Option[sirin.render.GpuFrame] = None,
+    cacheSummary: String = ""
 ) extends FrameOutput:
   def width: Int = gpuFrame.fold(pixels.width)(_.width)
   def height: Int = gpuFrame.fold(pixels.height)(_.height)
@@ -67,7 +68,8 @@ final class RenderSession(
     batch: Option[sirin.render.BatchGpu] = None,
     editorSystemFonts: Boolean = false,
     viewportProfile: sirin.graphics.desktop.GpuTileCache.Profile =
-      sirin.graphics.desktop.GpuTileCache.Profile.Development
+      sirin.graphics.desktop.GpuTileCache.Profile.Development,
+    diagnostics: Boolean = false
 ) extends RenderBackend:
   require(tileEdge >= 32 && tileEdge <= 192, "tile edge budget")
   private val elementMeasurements = new ElementMeasureCache
@@ -315,7 +317,8 @@ final class RenderSession(
       result.tiles,
       capture,
       s"layoutMs=${layoutNanos / 1e6} drawingMs=${drawingNanos / 1e6} base[$baseProfile] overlay[${composite
-          .lastProfile}]"
+          .lastProfile}]",
+      cacheSummary = if diagnostics then sirin.tooling.InspectorData.clip(stats) else ""
     )
   private def renderGpu(request: FrameRequest, cancelled: () => Boolean): FrameOutput =
     val began = System.nanoTime()
@@ -452,7 +455,8 @@ final class RenderSession(
             else
               gpuTiles.lastCompiled
           } submissions=${after.submissions - before.submissions} cache=${gpuTiles.stats}",
-        gpuFrame = Some(frame)
+        gpuFrame = Some(frame),
+        cacheSummary = if diagnostics then sirin.tooling.InspectorData.clip(stats) else ""
       )
     catch
       case e: Throwable =>

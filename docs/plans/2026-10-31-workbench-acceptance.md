@@ -86,8 +86,11 @@ without invalidating the base drawing cache. See
 Bounded owner-thread runtime inspection now copies scope/signal identities,
 dependencies, revisions, committed change causes, command refusals and work flags.
 A workbench regression diagnoses a disabled save through its empty-title input
-without advancing work or changing the graph. The visible inspector, full
-per-phase invalidation and render/cache diagnostics remain open. See
+without advancing work or changing the graph. The optional Developer inspector
+now provides capture, search, paging, dependency/cause navigation and copied
+render/cache receipts through an ordinary tool window. Shared lifecycle tests
+and offscreen CPU/GPU checks pass; actual packaged-window operation, complete
+per-phase invalidation and latency qualification remain open. See
 [runtime inspection](../tooling/runtime-inspection.md).
 Actual VoiceOver permission is pending; the broader acceptance outcomes stay open.
 The final part-focus package exposed a further coherent-input defect: immediate

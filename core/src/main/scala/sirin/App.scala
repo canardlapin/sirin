@@ -83,6 +83,11 @@ sealed trait Windows:
   def onQuitRequest(run: UiTxn ?=> CloseDecision): Windows
 
 object Windows:
+  /** Development hosts append tool windows while preserving the application's quit policy. */
+  private[sirin] def withTool(application: Windows, tool: Windows): Windows =
+    require(tool.quitHandler.isEmpty, "a tool cannot replace the application quit handler")
+    Description(Column(application.view, tool.view),
+      MenuBar((application.applicationMenu.menus ++ tool.applicationMenu.menus)*), application.quitHandler)
   private[sirin] final case class MenuDescription(menu: MenuBar) extends View
   private final case class Description(view: View,applicationMenu: MenuBar=MenuBar.empty,quitHandler: Option[UiTxn => CloseDecision]=None) extends Windows:
     def menuBar(menu: MenuBar): Windows=copy(applicationMenu=menu)

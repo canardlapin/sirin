@@ -400,7 +400,10 @@ walking the recorded causes. Bounded owner-thread runtime inspection copies only
 committed diagnostic metadata, never evaluates user code or advances work, and
 uses IDs separate from kernel identity. Last-value-change causes do not claim
 complete per-phase invalidation history. See
-`docs/design/decisions/2026-11-01-runtime-inspection.md`.
+`docs/design/decisions/2026-11-01-runtime-inspection.md`. The optional development
+inspector samples explicitly in an ordinary tool window, preserving application
+quit policy and copying worker diagnostics through frame results; see
+`docs/design/decisions/2026-11-01-visible-inspector.md`.
 
 A **reference evaluator** recomputes everything from scratch. Property tests
 assert that the incremental engine and the reference evaluator agree on
