@@ -38,6 +38,20 @@ class NoteStoreSuite extends munit.FunSuite:
     val bytes = Files.readAllBytes(path).toVector
     intercept[IllegalArgumentException](store.write(Note("", "", false)))
     intercept[IllegalArgumentException](store.write(Note("Title", "x" * 16385, false)))
-    intercept[java.nio.charset.MalformedInputException](store.write(Note("Title", "\ud800", false)))
+    for invalid <- Vector("\ud800", "\udc00", "\u0000", "x\ud800y") do
+      for note <- Vector(Note("Title", invalid, false), Note(invalid, "Body", false)) do
+        assert(Note.problem(note).nonEmpty)
+        intercept[IllegalArgumentException](store.write(note))
+        assertEquals(Files.readAllBytes(path).toVector, bytes)
     assertEquals(Files.readAllBytes(path).toVector, bytes)
+  }
+  test("escaped malformed UTF-16 and NUL in a properties file are refused before opening") {
+    for escaped <- Vector("\\uD800", "\\uDC00", "\\u0000") do
+      val path = Files.createTempDirectory("reviewpad-escaped-").resolve("review.note")
+      val contents = s"format=reviewpad-1\ntitle=Title\nbody=$escaped\nreviewed=false\n"
+      Files.writeString(path, contents, StandardCharsets.UTF_8)
+      val store = new NoteStore(path)
+      intercept[IllegalArgumentException](store.read())
+      intercept[IllegalArgumentException](store.write(Note.empty))
+      assertEquals(Files.readString(path), contents)
   }

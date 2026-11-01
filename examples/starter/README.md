@@ -69,6 +69,8 @@ compare-and-swap, and power-loss durability is not qualified. After a conflict,
 quit without saving and reopen the file; this starter has no merge editor.
 
 `NoteStoreSuite` tests exact Unicode/checkbox round trips, conflicting saves,
-corrupt/oversized input and invalid-edit preservation. Real-window acceptance
-must separately check editing, save/reopen, validation, dirty quit and checkbox
+corrupt/oversized input and invalid-edit preservation. Loaded text must contain
+well-formed Unicode without NUL; escaped malformed text in a properties file
+is refused before opening it. Real-window acceptance must separately check
+editing, save/reopen, validation, dirty quit and checkbox
 behavior. Building an image is not that acceptance result.

@@ -122,8 +122,13 @@ Sirin is a pre-release prototype. Nothing is published.
   the macOS/JDK25 package with a file/link manifest. The standalone ReviewPad
   starter builds outside the framework from that SDK and implements persistent
   title, notes and review status using public APIs. Its copied candidate builds,
-  passes storage regressions and packages; clean-checkout and real-window
-  acceptance are still being completed. [Starter](../examples/starter/README.md).
+  passes storage regressions and packages. A fresh framework checkout passed
+  both shared suites and produced a clean SDK; the copied consumer rebuilt from
+  it with no framework source/build directories on its compile classpath.
+  The isolated app is signed and its exact native library passes the Native ABI
+  probe. Real-window launch approval is pending.
+  [Starter](../examples/starter/README.md),
+  [build evidence](evidence/2026-11-01-public-starter.md).
 
 - **Scala Native desktop.** The kernel and tests run under Scala Native, but there is no
   qualified Scala Native application provider. Native delivery depends on the

@@ -11,8 +11,19 @@ import sirin.*
 final case class Note(title: String, body: String, reviewed: Boolean)
 object Note:
   val empty = Note("Untitled review", "", false)
+  private def validText(text: String): Boolean =
+    var index = 0
+    while index < text.length do
+      val current = text.charAt(index)
+      if current == 0 || Character.isLowSurrogate(current) then return false
+      if Character.isHighSurrogate(current) then
+        if index + 1 >= text.length || !Character.isLowSurrogate(text.charAt(index + 1)) then return false
+        index += 2
+      else index += 1
+    true
   def problem(note: Note): Option[String] =
-    if note.title.trim.isEmpty then Some("Enter a title.")
+    if !validText(note.title) || !validText(note.body) then Some("Use valid Unicode text without NUL characters.")
+    else if note.title.trim.isEmpty then Some("Enter a title.")
     else if note.title.length > 256 || note.title.exists(_.isControl) then
       Some("Use a title of at most 256 characters.")
     else if note.body.length > 16384 then Some("Keep notes within 16,384 characters.")
