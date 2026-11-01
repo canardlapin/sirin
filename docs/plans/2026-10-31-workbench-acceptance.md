@@ -12,7 +12,7 @@ result. The goal stays open until the required application evidence exists.
 | Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch and queued-save/newer-draft behavior checked in real windows, the latter with controlled storage latency; broader acceptance remains open |
 | Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | Real conflict/no-overwrite, save-copy, reload consent, partial-import receipts, zero-window draft retention and Quit consent checked; live cancellation checked in a real window with controlled storage latency |
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
-| Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Dialog/label/checkbox/custom-part transport and shared ABI checks pass; fresh-package modal AX tree verified; actual VoiceOver and remaining semantic relationships are open |
+| Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Roles, actions, relationships and collection positions have native transport checks; fresh-package modal AX tree verified; semantic-part focus and actual VoiceOver are open |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
 | Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; default and larger windows, visible decisions, resize draft retention and exact saving checked; smooth live resize and remaining appearance/display checks stay open |
 | Public authoring | A separate public consumer implements one real feature using the documented API, builds/packages from a clean checkout, and completes its workflow | Independent review and starter workflow remain incomplete |
@@ -62,12 +62,16 @@ docking, zero-window draft retention and exact saving were checked; see
 [usability evidence](../evidence/2026-10-31-workbench-visible-decisions.md).
 Native Dialog/label/Checkbox and custom-part transport now has native and
 rendered checks plus a fresh-package modal AX observation. JVM FFM and a Native
-probe reach the same v3 ABI, including bounded batches of increment, decrement,
+probe reach the same ABI, including bounded batches of increment, decrement,
 dismiss and named custom actions. Native and owner tests cover exact part/name
 dispatch, stable action IDs and rejection after disablement or retirement. See
 [action evidence](../evidence/2026-11-01-native-semantic-actions.md).
-Actual VoiceOver permission is pending; the broader
-acceptance outcomes and remaining semantic relationships stay open.
+ABI v4 adds label, description and active-descendant relationships plus collection
+positions. Resolution uses live reference identity and the exposed window tree;
+text fields describe their painted error label and clear the link with the error.
+See [relationship evidence](../evidence/2026-11-01-native-semantic-relationships.md).
+Actual VoiceOver permission is pending; the broader acceptance outcomes and
+semantic-part focus stay open.
 Packaged recovery checks now preserve exact files across external-change
 conflicts, copy/reload and partial import. Import review validity, local errors,
 readable receipts and stable navigation were repaired through public APIs.

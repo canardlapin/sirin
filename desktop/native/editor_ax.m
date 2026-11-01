@@ -103,8 +103,18 @@ static struct accesskit_tree_update *tree(void *raw) {
  for(NSDictionary *f in fields) {
   accesskit_node_id base=control_id(f);int kind=[f[@"kind"] intValue];
   struct accesskit_node *node = [nodes[f[@"id"]] pointerValue];
-  accesskit_node_set_label(node,[f[@"label"] UTF8String]);
-  accesskit_node_set_description(node,[f[@"help"] UTF8String]);
+  if([f[@"label"] length])accesskit_node_set_label(node,[f[@"label"] UTF8String]);
+  if([f[@"help"] length])accesskit_node_set_description(node,[f[@"help"] UTF8String]);
+  if([f[@"labelledBy"] longLongValue])
+   accesskit_node_push_labelled_by(node, [f[@"labelledBy"] unsignedLongLongValue] << 16);
+  if([f[@"describedBy"] longLongValue])
+   accesskit_node_push_described_by(node, [f[@"describedBy"] unsignedLongLongValue] << 16);
+  if([f[@"activeDescendant"] longLongValue])
+   accesskit_node_set_active_descendant(node, [f[@"activeDescendant"] unsignedLongLongValue] << 16);
+  if([f[@"position"] longLongValue]) {
+   accesskit_node_set_position_in_set(node, [f[@"position"] unsignedLongLongValue]);
+   accesskit_node_set_size_of_set(node, [f[@"setSize"] unsignedLongLongValue]);
+  }
   accesskit_node_set_bounds(node,ak_rect([f[@"bounds"] rectValue],scale));
   int flags = flags_for(f);
   if(flags & 4)accesskit_node_set_disabled(node);
@@ -120,6 +130,7 @@ static struct accesskit_tree_update *tree(void *raw) {
   if(f[@"checked"] && [f[@"checked"] intValue] >= 0)
    accesskit_node_set_toggled(node,[f[@"checked"] intValue] ? ACCESSKIT_TOGGLED_TRUE : ACCESSKIT_TOGGLED_FALSE);
   if(kind >= 2 && [f[@"value"] length])accesskit_node_set_value(node,[f[@"value"] UTF8String]);
+  else if(kind == 5 && [f[@"label"] length])accesskit_node_set_value(node,[f[@"label"] UTF8String]);
   if(kind < 2) {
    accesskit_node_set_value(node,[f[@"value"] UTF8String]);
    accesskit_node_add_action(node,ACCESSKIT_ACTION_SET_VALUE);
@@ -371,6 +382,29 @@ int sirin_ax_link(void *raw, int64_t id, int64_t parent, int flags) {
  }
  return 2;
 }
+int sirin_ax_relationships(void *raw, int64_t id, const int64_t *facts) {
+ SirinAccessKit *s = (__bridge SirinAccessKit*)raw;
+ if(!s || !NSThread.isMainThread || !valid_id(id) || !facts)return 1;
+ for(int index = 0; index < 3; index++)
+  if(facts[index] < 0 || (facts[index] && !valid_id(facts[index])) || facts[index] == id)return 2;
+ if(facts[3] < 0 || facts[4] < 0 || facts[3] > facts[4] || facts[4] > INT32_MAX ||
+    ((facts[3] == 0) != (facts[4] == 0)))return 2;
+ @synchronized(s) {
+  for(NSUInteger index = 0; index < s.pending.count; index++) {
+   NSDictionary *field = s.pending[index];
+   if([field[@"id"] longLongValue] != id)continue;
+   NSMutableDictionary *next = [field mutableCopy];
+   next[@"labelledBy"] = @(facts[0]);
+   next[@"describedBy"] = @(facts[1]);
+   next[@"activeDescendant"] = @(facts[2]);
+   next[@"position"] = @(facts[3]);
+   next[@"setSize"] = @(facts[4]);
+   s.pending[index] = next;
+   return 0;
+  }
+ }
+ return 2;
+}
 static BOOL valid_tree(NSArray *fields) {
  NSMutableDictionary *parents = [NSMutableDictionary new];
  for(NSDictionary *f in fields)parents[f[@"id"]] = f[@"parent"] ?: @0;
@@ -380,6 +414,20 @@ static BOOL valid_tree(NSArray *fields) {
   while(at.longLongValue != 0) {
    if(!parents[at] || ++depth > fields.count)return NO;
    at = parents[at];
+  }
+  for(NSString *key in @[@"labelledBy", @"describedBy", @"activeDescendant"]) {
+   NSNumber *target = f[key];
+   if(target.longLongValue && (!parents[target] || [target isEqual:f[@"id"]]))return NO;
+  }
+  NSNumber *target = f[@"activeDescendant"];
+  if(target.longLongValue) {
+   NSNumber *at = parents[target];
+   NSUInteger depth = 0;
+   while(at.longLongValue && ![at isEqual:f[@"id"]]) {
+    if(++depth > fields.count)return NO;
+    at = parents[at];
+   }
+   if(![at isEqual:f[@"id"]])return NO;
   }
  }
  return YES;

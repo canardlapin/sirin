@@ -15,7 +15,11 @@ class TextInputSeamSuite extends munit.FunSuite:
       case other =>
         fail(s"expected commit: $other")
 
-  private class Fixture(build: Scope => View, focusAt: Option[(Double, Double)] = Some((20, 14))) extends AutoCloseable:
+  private class Fixture(
+      build: Scope => View,
+      focusAt: Option[(Double, Double)] = Some((20, 14)),
+      height: Int = 40
+  ) extends AutoCloseable:
     val runtime = new HeadlessRuntime
     val owner = runtime.scope("text-seam")
     val unicode = NativeUnicode.open(65536)
@@ -49,7 +53,7 @@ class TextInputSeamSuite extends munit.FunSuite:
       val state = controller.interaction.state
       val request = FrameRequest(
         generation,
-        FramePayload(controller.tree, 240, 40, 240, 40, state.focused, state.keyboard)
+        FramePayload(controller.tree, 240, height, 240, height, state.focused, state.keyboard)
       )
       val frame = renderer.render(request, () => false).asInstanceOf[RenderedFrame]
       try
@@ -85,6 +89,41 @@ class TextInputSeamSuite extends munit.FunSuite:
       cell.get
     }
   )
+
+  test("a rendered text field describes its visible error and retires the link when the error clears") {
+    var error: Cell[Option[String]] = null
+    val f = new Fixture(scope => {
+      error = scope.cell(Some("Required"): Option[String])
+      TextField.bind(scope.cell("")).label("Title").placeholder("Hint").error(error)
+    }, focusAt = None, height = 160)
+    val tree = new NativeSemanticTree
+    def capture(): Vector[NativeSemanticNode] =
+      tree.capture(f.settle(), None, f.runtime.referenceIdentities)
+    def field(nodes: Vector[NativeSemanticNode]): NativeSemanticNode =
+      nodes.find(_.part.semantics.role == Role.TextInput).getOrElse(fail("missing field"))
+    try
+      val first = capture()
+      val initial = field(first)
+      val help = first.find(_.part.semantics.name.contains("Required")).getOrElse(fail("missing error"))
+      assertEquals(help.part.semantics.role, Role.Label)
+      assertEquals(initial.describedBy, help.id)
+      assertEquals(initial.part.semantics.description, Some("Required"))
+      assert(initial.part.semantics.invalid)
+      assert(help.part.bounds.origin.y.toDouble > initial.part.bounds.origin.y.toDouble)
+      ok(f.runtime.transact(error.set(None)))
+      val cleared = capture()
+      assertEquals(field(cleared).id, initial.id)
+      assertEquals(field(cleared).describedBy, 0L)
+      assertEquals(field(cleared).part.semantics.description, Some("Hint"))
+      assert(!field(cleared).part.semantics.invalid)
+      assert(!cleared.exists(_.id == help.id))
+      ok(f.runtime.transact(error.set(Some("Required"))))
+      val restored = capture()
+      assertEquals(field(restored).id, initial.id)
+      assertNotEquals(field(restored).describedBy, help.id)
+      assert(restored.exists(_.id == field(restored).describedBy))
+    finally f.close()
+  }
 
   test("committed text and codepoint-indexed composition reach a public element as UTF-16 text events") {
     val (cell, f) = note("draft")

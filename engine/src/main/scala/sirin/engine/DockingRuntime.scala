@@ -53,6 +53,9 @@ private[engine] final class DockingRuntime(val runtime: HeadlessRuntime):
     }
   def dependencies: Vector[Signal[?]] = panels.filter(_.alive).map(_.content.snapshot).toVector
   def attachments: Vector[RefAttachment] = published
+  def referenceIdentities: Vector[(NodeRef, Long)] =
+    val attached = published.map(_.reference).toSet
+    refs.iterator.filter(ref => ref.alive && attached(ref.id)).map(ref => (ref: NodeRef) -> ref.id).toVector
   private[engine] def candidateCount: Int = claims.size + requests.size
   def createRef(owner: HeadlessRuntime#OwnedScope): NodeRef =
     val ref = new RuntimeNodeRef(runtime)(owner.asInstanceOf[runtime.OwnedScope], runtime.nextInvocationId())

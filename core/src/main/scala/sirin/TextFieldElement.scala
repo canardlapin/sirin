@@ -19,9 +19,10 @@ private[sirin] object TextFieldElement:
   )
 
   /** What paint, semantics and text input depend on. */
-  private final case class Shown(snapshot: EditSnapshot, measured: Measured)
+  private final case class Shown(snapshot: EditSnapshot, measured: Measured, reference: NodeRef)
 
   private val part = PartId(0)
+  private val errorPart = PartId(1)
   private val editingKeys: Set[Key] = Set(
     Key.Backspace,
     Key.Delete,
@@ -57,14 +58,16 @@ private[sirin] object TextFieldElement:
       field: TextField.Description,
       text: String,
       problem: Option[String],
-      stored: Option[Draft]
+      stored: Option[Draft],
+      reference: NodeRef
   ): Shown =
     val draft = resolve(field, text, stored)
     val error = draft
       .notice
       .orElse(problem)
       .orElse(Option.when(text.length > field.maxUnits)(limitNotice(field.maxUnits)))
-    Shown(draft.editing.snapshot, Measured(draft.editing.snapshot.display, field.fieldLabel, field.hint, error, field.multiple))
+    Shown(draft.editing.snapshot,
+      Measured(draft.editing.snapshot.display, field.fieldLabel, field.hint, error, field.multiple), reference)
 
   private def width(c: Constraints): Lp =
     if c.maxWidth.toDouble.isFinite then
@@ -240,7 +243,8 @@ private[sirin] object TextFieldElement:
               name = Option.when(m.label.nonEmpty)(m.label),
               description = m.error.orElse(Option.when(m.hint.nonEmpty)(m.hint)),
               value = Some(m.display),
-              invalid = m.error.nonEmpty
+              invalid = m.error.nonEmpty,
+              describedBy = m.error.map(_ => SemanticTarget(shown.reference, Some(errorPart)))
             ),
             g.area(size),
             Set(SemanticAction.Focus),
@@ -253,10 +257,15 @@ private[sirin] object TextFieldElement:
               )
             )
           )
-        )
+        ) ++ g.error.toVector.map { error =>
+          val border = g.border(size)
+          SemanticNode(errorPart, Semantics(Role.Label, name = m.error),
+            Rect(Point(0.lp, border.origin.y + border.size.height + 2.lp), Size(size.width, error.size.height)),
+            Set.empty)
+        }
 
   /** Field policy over the owned draft. Every edit publishes the bound value and the draft in one transaction. */
-  private final class Handlers(props: Signal[TextField.Description], draft: Cell[Option[Draft]])
+  private final class Handlers(props: Signal[TextField.Description], draft: Cell[Option[Draft]], reference: NodeRef)
       extends ElementHandlers:
     private def current(using UiTxn): (TextField.Description, Draft) =
       val field = props.get
@@ -340,7 +349,7 @@ private[sirin] object TextFieldElement:
     ): Option[(Geometry, Size)] = services
       .presentedSize
       .flatMap { size =>
-        val m = present(field, d.editing.snapshot.text, field.problem.get, Some(d)).measured
+        val m = present(field, d.editing.snapshot.text, field.problem.get, Some(d), reference).measured
         val found = requests(m, size.width).map(services.presented)
         Option.when(found.forall(_.nonEmpty))((Geometry(m, found.flatten), size))
       }
@@ -537,14 +546,18 @@ private[sirin] object TextFieldElement:
   /** Depends on the bound cell, so binding a different cell mounts a new field even when the text is equal. */
   private val component = Component.withDeps[AnyRef, TextField.Description]("text-field") { (_, scope, props) =>
     val draft = scope.cell(Option.empty[Draft])
-    val shown = (props, props.flatMap(_.value), props.flatMap(_.problem), draft).mapN(present)
+    val reference = scope.ref()
+    val shown =
+      (props, props.flatMap(_.value), props.flatMap(_.problem), draft).mapN { (field, text, problem, stored) =>
+        present(field, text, problem, stored, reference)
+      }
     Element(
       "text-field",
       ElementInputs(shown.map(_.measured), shown, Signal.const(()), shown, Presentation.const(())),
       definition,
       focusable = true,
-      handlers = Some(Handlers(props, draft))
-    )
+      handlers = Some(Handlers(props, draft, reference))
+    ).ref(reference)
   }
 
   def view(field: TextField.Description): View = component.bind(field.value)(field)

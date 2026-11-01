@@ -33,6 +33,7 @@ final class EditorController(
           None
     )
   def tree: Node = captured.tree
+  def semanticReferences: Vector[(NodeRef, Long)] = runtime.referenceIdentities
 
   /** At most 512 UTF-16 units, never ending in half a surrogate pair. */
   private def bounded(message: String): String =

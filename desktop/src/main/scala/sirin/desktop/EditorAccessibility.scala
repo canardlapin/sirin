@@ -10,7 +10,8 @@ final class EditorAccessibility:
 
   def publish(window: NativeWindow, controller: EditorController, frame: RenderedFrame, active: Boolean = true): Unit =
     val layout = frame.layout
-    val nodes = tree.capture(layout, controller.interaction.state.focused.filter(_ => active))
+    val nodes = tree.capture(layout, controller.interaction.state.focused.filter(_ => active),
+      controller.semanticReferences)
     window.beginAccessibility(frame.request.generation)
     nodes.foreach { node =>
       val semantic = node.part.semantics
@@ -36,6 +37,8 @@ final class EditorAccessibility:
       val actions = NativeSemanticAction.declarations(node.part.actions)
       if actions.nonEmpty then
         window.accessibilityActions(node.id, actions.map(_._1).toArray, actions.map(_._2).toArray)
+      val relationships = node.relationshipFacts
+      if relationships.exists(_ != 0) then window.accessibilityRelationships(node.id, relationships)
     }
     window.publishAccessibility()
     revision = frame.request.generation

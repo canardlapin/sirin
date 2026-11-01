@@ -1594,6 +1594,10 @@ final class HeadlessRuntime(
     control()
     docking.attachments
   }
+  /** Owner-only identities of live committed attachments, for resolving presented semantic relationships. */
+  def referenceIdentities: Vector[(NodeRef, Long)] =
+    control()
+    docking.referenceIdentities
   def traces: Vector[TraceRecord] = {
     control()
     traceRing.toVector

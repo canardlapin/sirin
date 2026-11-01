@@ -263,12 +263,74 @@ static void additional_actions(void) {
  puts("Additional actions: declaration, exact names, foreign-thread queue, revision, retirement and bounds passed");
 }
 
+static void semantic_relationships(void) {
+ SirinAccessKit *s = [SirinAccessKit new];
+ s.alive = YES;
+ s.fields = @[];
+ s.pending = [NSMutableArray new];
+ s.actions = [NSMutableArray new];
+ s.scale = 1;
+ void *raw = (__bridge void*)s;
+ double bounds[] = {0, 0, 200, 40};
+ assert(sirin_ax_begin(raw, 201) == 0);
+ assert(sirin_ax_node(raw, 1, 0, 9, "", "", "", 1, -1, bounds) == 0);
+ int64_t links[] = {3, 4, 2, 0, 0};
+ assert(sirin_ax_relationships(raw, 1, links) == 0);
+ links[0] = 99;
+ assert(!valid_tree(s.pending));
+ assert(sirin_ax_node(raw, 2, 1, 10, "Second", "", "", 0, -1, bounds) == 0);
+ int64_t position[] = {0, 0, 0, 2, 100};
+ assert(sirin_ax_relationships(raw, 2, position) == 0);
+ assert(sirin_ax_node(raw, 3, 0, 5, "Collection name", "", "", 0, -1, bounds) == 0);
+ assert(sirin_ax_node(raw, 4, 0, 5, "Help text", "", "", 0, -1, bounds) == 0);
+ assert(valid_tree(s.pending));
+ s.fields = [s.pending copy];
+ struct accesskit_tree_update *update = tree(raw);
+ char *debug = accesskit_tree_update_debug(update);
+ assert(strstr(debug, "labelled_by: [#196608]") && strstr(debug, "described_by: [#262144]"));
+ assert(strstr(debug, "active_descendant: #131072"));
+ assert(strstr(debug, "position_in_set: 2") && strstr(debug, "size_of_set: 100"));
+ assert(strstr(debug, "value: \"Collection name\""));
+ assert(!strstr(debug, "label: \"\"") && !strstr(debug, "description: \"\""));
+ puts(debug);
+ accesskit_string_free(debug);
+ accesskit_tree_update_free(update);
+ int64_t invalid[] = {1, 0, 0, 0, 0};
+ assert(sirin_ax_relationships(raw, 1, invalid) == 2);
+ invalid[0] = 0;
+ invalid[3] = 0;
+ invalid[4] = 10;
+ assert(sirin_ax_relationships(raw, 2, invalid) == 2);
+ invalid[3] = 11;
+ assert(sirin_ax_relationships(raw, 2, invalid) == 2);
+ invalid[3] = 1;
+ invalid[4] = (int64_t)INT32_MAX + 1;
+ assert(sirin_ax_relationships(raw, 2, invalid) == 2);
+ assert([s.pending[1][@"position"] longLongValue] == 2);
+ int64_t sibling[] = {3, 4, 4, 0, 0};
+ assert(sirin_ax_relationships(raw, 1, sibling) == 0);
+ assert(!valid_tree(s.pending));
+ assert(sirin_ax_publish(raw) == 2);
+ assert([s.fields[0][@"activeDescendant"] longLongValue] == 2);
+ assert(sirin_ax_begin(raw, 202) == 0);
+ assert(sirin_ax_node(raw, 1, 0, 9, "", "", "", 1, -1, bounds) == 0);
+ int64_t missing[] = {3, 0, 0, 0, 0};
+ assert(sirin_ax_relationships(raw, 1, missing) == 0);
+ assert(sirin_ax_publish(raw) == 2);
+ assert(s.fields.count == 4 && [s.fields[0][@"revision"] longLongValue] == 201);
+ int64_t empty[] = {0, 0, 0, 0, 0};
+ assert(sirin_ax_relationships(raw, 1, empty) == 0);
+ assert(valid_tree(s.pending));
+ puts("Relationships: forward targets, copied facts, label values, collection positions and atomic refusal passed");
+}
+
 int main(void) {
  @autoreleasepool {
  repeated_window_class_setup();
  assert(SDL_Init(SDL_INIT_EVENTS));
  semantic_tree();
  additional_actions();
+ semantic_relationships();
  SirinAccessKit *s=[SirinAccessKit new];s.alive=YES;s.fields=@[];s.pending=[NSMutableArray new];s.actions=[NSMutableArray new];s.wakeType=SDL_RegisterEvents(1);s.scale=2;
  void *raw=(__bridge void*)s;double bounds[]={10,20,160,30};
  // a + emoji + combining cluster: UTF-16 ends 1/3/5, UTF-8 sizes 1/4/3.

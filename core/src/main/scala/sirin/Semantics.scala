@@ -28,6 +28,7 @@ final case class Semantics(
     labelledBy: Option[SemanticTarget] = None,
     describedBy: Option[SemanticTarget] = None,
     activeDescendant: Option[SemanticTarget] = None,
+    /** One-based position and total set size, including unrealized items. */
     positionInSet: Option[(Int, Int)] = None,
     /** The state of a checkbox or other toggle; `None` for controls that cannot be checked. */
     checked: Option[Boolean] = None
@@ -49,4 +50,7 @@ final case class SemanticNode(
     text: Option[TextSemantics] = None
 )
 
+/** Without a part, addresses the referenced view's first exposed semantic node. An explicit part addresses
+  * a unique custom-element part within that view. Unexposed or ambiguous targets have no native relationship.
+  */
 final case class SemanticTarget(ref: NodeRef, part: Option[PartId] = None)

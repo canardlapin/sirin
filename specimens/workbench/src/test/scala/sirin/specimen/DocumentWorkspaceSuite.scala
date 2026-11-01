@@ -71,7 +71,9 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
     def bodyIds(document: WorkspaceDocument): Vector[Long] =
       def loop(snapshot: MountedSnapshot): Vector[Long]=snapshot match
         // TextField mounts as a component around its public element; the element instance is the field identity.
-        case MountedSnapshot.Component(_,field: TextField.Description,MountedSnapshot.Custom(frame,_)) if field.value eq document.editor.body => Vector(frame.instance)
+        case MountedSnapshot.Component(_, field: TextField.Description,
+            MountedSnapshot.Referenced(_, MountedSnapshot.Custom(frame, _)))
+            if field.value eq document.editor.body => Vector(frame.instance)
         case MountedSnapshot.CustomLayout(_, children) => children.flatMap((_, child) => loop(child))
         case MountedSnapshot.Referenced(_, child) => loop(child)
         case MountedSnapshot.Popup(_, _, _, _, _, child) => loop(child)

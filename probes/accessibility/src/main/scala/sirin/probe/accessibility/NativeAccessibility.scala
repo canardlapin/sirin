@@ -15,6 +15,7 @@ object NativeAccessibility:
   def sirin_desktop_ax_link(window: Ptr[Byte], id: CLongLong, parent: CLongLong, flags: CInt): CInt = extern
   def sirin_desktop_ax_actions(window: Ptr[Byte], id: CLongLong, kinds: Ptr[CInt], lengths: Ptr[CInt],
       names: CString, count: CInt, bytes: CInt): CInt = extern
+  def sirin_desktop_ax_relationships(window: Ptr[Byte], id: CLongLong, facts: Ptr[CLongLong]): CInt = extern
   def sirin_desktop_ax_publish(window: Ptr[Byte]): CInt = extern
   def sirin_desktop_ax_poll(window: Ptr[Byte], facts: Ptr[CLongLong], text: CString, capacity: CInt): CInt = extern
 
@@ -31,13 +32,14 @@ object NativeAccessibilityProbe:
     kinds(0) = 8
     lengths(0) = 9
     val output = alloc[CChar](65537)
-    assert(sirin_desktop_ax_abi() == 3)
+    assert(sirin_desktop_ax_abi() == 4)
     assert(sirin_desktop_ax_begin(null, 17L) == 1)
     assert(sirin_desktop_ax_field(null, 1L, 0, text, text, text, 0, 0, 0, 1, bounds, null, 0) == 1)
     assert(sirin_desktop_ax_node(null, 2L, 0L, 3, text, text, text, 3, 1, bounds) == 1)
     assert(sirin_desktop_ax_link(null, 1L, 2L, 1) == 1)
     assert(sirin_desktop_ax_actions(null, 2L, kinds, lengths, text, 1, 9) == 1)
+    assert(sirin_desktop_ax_relationships(null, 2L, facts) == 1)
     assert(sirin_desktop_ax_publish(null) == 1)
     assert(sirin_desktop_ax_poll(null, facts, output, 65537) == 0)
-    println("Scala Native accessibility ABI v3: all eight shared entry points reached; invalid owners refused")
+    println("Scala Native accessibility ABI v4: all nine shared entry points reached; invalid owners refused")
   }

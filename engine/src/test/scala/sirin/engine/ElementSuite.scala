@@ -269,7 +269,8 @@ class ElementSuite extends munit.FunSuite:
                   id
                 case MountedSnapshot.Custom(frame, _) =>
                   frame.instance
-                case MountedSnapshot.Component(_, _: TextField.Description, MountedSnapshot.Custom(frame, _)) =>
+                case MountedSnapshot.Component(_, _: TextField.Description,
+                    MountedSnapshot.Referenced(_, MountedSnapshot.Custom(frame, _))) =>
                   frame.instance
                 case other =>
                   fail(s"unexpected child: $other")
@@ -285,7 +286,8 @@ class ElementSuite extends munit.FunSuite:
                   id
                 case MountedSnapshot.Custom(frame, _) =>
                   frame.instance
-                case MountedSnapshot.Component(_, _: TextField.Description, MountedSnapshot.Custom(frame, _)) =>
+                case MountedSnapshot.Component(_, _: TextField.Description,
+                    MountedSnapshot.Referenced(_, MountedSnapshot.Custom(frame, _))) =>
                   frame.instance
                 case other =>
                   fail(s"unexpected child: $other")

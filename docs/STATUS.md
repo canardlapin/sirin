@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for workbench cancellation and overlapping-save checks. This page says, in plain
+Last updated 2026-11-01, for native semantic relationships. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -92,8 +92,9 @@ Sirin is a pre-release prototype. Nothing is published.
   Packaged conflict, save-copy, reload and partial-import checks preserve exact
   files and drafts. Import errors appear in their own window; source edits or a
   new review revoke an older Start permission. Source and navigation controls
-  remain visible while receipts scroll. A live cancellation attempt completed
-  before interruption, so that acceptance check remains open. Text input now
+  remain visible while receipts scroll. The initial live cancellation attempt
+  completed before interruption; controlled-latency cancellation later passed.
+  Text input now
   survives returning from Import to the main window: the shared native shim
   stops the prior Cocoa text client before starting the next. Hidden-window and
   fresh-package keyboard handoffs, save and Quit checks pass. Closing the active
@@ -120,7 +121,7 @@ Sirin is a pre-release prototype. Nothing is published.
 - **Scala Native desktop.** The kernel and tests run under Scala Native, but there is no
   qualified Scala Native application provider. Native delivery depends on the
   open GC safepoint stall (P0.6). The delivery order is to be decided before
-  Alpha6 (VISION §1.1). A separate Native executable reaches the same eight
+  Alpha6 (VISION §1.1). A separate Native executable reaches the same nine
   accessibility ABI functions as JVM FFM, and a separate text/focus probe reaches
   four existing functions in the exact packaged library. These are binding
   checks, not a provider.
@@ -139,8 +140,16 @@ Sirin is a pre-release prototype. Nothing is published.
   Increment, decrement, dismiss and named custom actions now cross the shared
   bridge in bounded batches and dispatch to their declared part. Native checks
   cover stable action IDs, copied names, disabled/retired targets and foreign-thread
-  queueing. Relationships, collection positions and semantic-part focus remain
-  open. [Action evidence](evidence/2026-11-01-native-semantic-actions.md).
+  queueing. [Action evidence](evidence/2026-11-01-native-semantic-actions.md).
+  Label, description and active-descendant relationships now resolve within the
+  exposed window tree; hidden, clipped, foreign and modal-excluded targets are
+  omitted. Collection positions cross the same shared ABI. Text fields link
+  their visible error label through `describedBy` and retire that link when the
+  error clears. A fresh packaged window showed and cleared the title error in
+  both paint and its AX snapshot, with exact document bytes preserved. An AX
+  click still failed to focus the field where a coordinate click succeeded.
+  Semantic-part focus and actual VoiceOver remain open.
+  [Relationship evidence](evidence/2026-11-01-native-semantic-relationships.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames
   without a full-frame CPU readback. Explicit captures read pixels back; the
   reference/fallback path still reads back and uploads. This is not a zero-copy

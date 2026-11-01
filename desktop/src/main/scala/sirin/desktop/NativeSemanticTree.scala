@@ -9,8 +9,13 @@ private[desktop] final class NativeSemanticTree:
   private var ids = Map.empty[(NodeId, PartId), Long]
   private[desktop] var nodes = Vector.empty[NativeSemanticNode]
 
-  def capture(layout: LayoutResult, focused: Option[NodeId]): Vector[NativeSemanticNode] =
+  def capture(
+      layout: LayoutResult,
+      focused: Option[NodeId],
+      references: Vector[(NodeRef, Long)] = Vector.empty
+  ): Vector[NativeSemanticNode] =
     var nextIds = Map.empty[(NodeId, PartId), Long]
+    var byReference = Map.empty[Long, Vector[NativeSemanticNode]]
     val result = Vector.newBuilder[NativeSemanticNode]
     def id(key: (NodeId, PartId)): Long =
       require(!nextIds.contains(key), "duplicate native semantic part")
@@ -22,8 +27,11 @@ private[desktop] final class NativeSemanticTree:
       nextIds += key -> value
       value
     def rect(b: Box): Rect = Rect(Point(b.x.lp, b.y.lp), Size(b.width.lp, b.height.lp))
-    def visit(p: Placed, parent: Long, modal: Boolean): Unit =
+    def visit(p: Placed, parent: Long, modal: Boolean, enclosing: Vector[Long]): Unit =
       if p.clip.width > 0 && p.clip.height > 0 then
+        val attached = p.node.content match
+          case Content.Reference(reference, _) => enclosing :+ reference
+          case _ => enclosing
         val size = Size(p.bounds.width.lp, p.bounds.height.lp)
         val (parts, instance, focusable, enabled) = p.node.content match
           case Content.Custom(frame) =>
@@ -50,19 +58,45 @@ private[desktop] final class NativeSemanticTree:
               instance, Point(p.bounds.x.lp, p.bounds.y.lp), focus,
               focus && focused.contains(p.node.id), enabled, modal && part.semantics.role == Role.Dialog)
             result += node
+            attached.foreach { reference =>
+              byReference += reference -> (byReference.getOrElse(reference, Vector.empty) :+ node)
+            }
             if parts.size == 1 && instance.isEmpty then childParent = identifier
         }
-        p.children.foreach(visit(_, childParent, modal))
+        p.children.foreach(visit(_, childParent, modal, attached))
     val modalIndex = layout.layers.lastIndexWhere(_.frame.modal)
-    if layout.layers.isEmpty then visit(layout.root, 0, false)
+    if layout.layers.isEmpty then visit(layout.root, 0, false, Vector.empty)
     else
-      if modalIndex < 0 then visit(layout.root.children.head, 0, false)
-      layout.layers.drop(math.max(0, modalIndex)).foreach(layer => visit(layer.placed, 0, layer.frame.modal))
+      if modalIndex < 0 then visit(layout.root.children.head, 0, false, Vector.empty)
+      layout.layers.drop(math.max(0, modalIndex)).foreach { layer =>
+        visit(layer.placed, 0, layer.frame.modal, Vector.empty)
+      }
     val next = result.result()
     require(next.size <= 1024, "native accessibility node budget")
+    val parents = next.map(node => node.id -> node.parent).toMap
+    def descendant(target: Long, source: Long): Boolean =
+      var at = parents.getOrElse(target, 0L)
+      while at != 0 && at != source do at = parents.getOrElse(at, 0L)
+      at == source
+    def resolve(target: Option[SemanticTarget], source: Long, child: Boolean = false): Long =
+      target.flatMap { target =>
+        references.find((ref, _) => ref eq target.ref).flatMap((_, id) => byReference.get(id)).flatMap { nodes =>
+          target.part match
+            case None => nodes.headOption
+            case Some(part) =>
+              val matching = nodes.filter(node => node.instance.nonEmpty && node.part.part == part)
+              Option.when(matching.size == 1)(matching.head)
+        }.filter(node => node.id != source && (!child || descendant(node.id, source))).map(_.id)
+      }.getOrElse(0L)
+    val related = next.map { node =>
+      val semantics = node.part.semantics
+      node.copy(labelledBy = resolve(semantics.labelledBy, node.id),
+        describedBy = resolve(semantics.describedBy, node.id),
+        activeDescendant = resolve(semantics.activeDescendant, node.id, child = true))
+    }
     ids = nextIds
-    nodes = next
-    next
+    nodes = related
+    related
 
 private[desktop] final case class NativeSemanticNode(
     id: Long,
@@ -73,8 +107,15 @@ private[desktop] final case class NativeSemanticNode(
     focusable: Boolean,
     focused: Boolean,
     enabled: Boolean,
-    modal: Boolean
+    modal: Boolean,
+    labelledBy: Long = 0L,
+    describedBy: Long = 0L,
+    activeDescendant: Long = 0L
 ):
+  def relationshipFacts: Array[Long] =
+    val position = part.semantics.positionInSet.filter((at, size) => at > 0 && at <= size)
+    Array(labelledBy, describedBy, activeDescendant,
+      position.fold(0L)(_._1.toLong), position.fold(0L)(_._2.toLong))
   def kind: Int = part.text.fold(part.semantics.role match
     case Role.Button => 2
     case Role.Checkbox => 3

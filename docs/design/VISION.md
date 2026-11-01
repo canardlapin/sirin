@@ -1241,6 +1241,12 @@ stable while declared and are never reused after retirement; owner delivery
 revalidates the presentation and exact semantic part. This is transport of
 the existing action vocabulary, not a kernel dispatch change. See
 `docs/design/decisions/2026-11-01-native-semantic-actions.md`.
+Relationship publication resolves live reference identities against the accepted
+window's exposed semantic nodes, after native IDs are assigned. The owner-only
+identity snapshot is observational; attachment, lifetime and focus policy remain
+as specified in §5. Missing or excluded targets are omitted. Text-field errors
+retain their direct description and expose the painted label through
+`describedBy`. See `docs/design/decisions/2026-11-01-native-semantic-relationships.md`.
 
 **Design system.** The design aims to be restrained, typographically strong,
 and canvas-first. It defines semantic color roles, coordinated density modes,
