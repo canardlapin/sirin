@@ -47,12 +47,12 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
   private def value[A](r: HeadlessRuntime,signal: Signal[A]): A=r.read(signal) match
     case Value.Ok(result) => result
     case Value.Failed(error) => throw error
-  private class Fixture extends AutoCloseable:
+  private class Fixture(importer: DocumentImporter = new Importer) extends AutoCloseable:
     val clock=new ManualClock;val r=new HeadlessRuntime(clock=clock);val app=r.scope("application")
     val repository=new Repository;val quitRequests=app.cell(0);var generated=0
     val services=new ApplicationServices:
       val quit=app.action[Unit]("quit","Quit")(_ => quitRequests.update(_+1))
-    val model=new DocumentWorkspace(app,repository,new Importer,services,() => {generated+=1;DocumentId(s"new-$generated")})
+    val model=new DocumentWorkspace(app,repository,importer,services,() => {generated+=1;DocumentId(s"new-$generated")})
     val mounted=r.mountWindows(app,model.windows);app.observe(mounted.snapshot)(_ => ())
     ok(r.transact {mounted.setViewport(RowViewport(0.lp,200.lp))})
     def settle(): Unit =
@@ -176,6 +176,7 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
       assertEquals(value(f.r,original.editor.body),"newer original");assert(value(f.r,original.editor.dirty))
       assertEquals(f.repository.read(a).data.body,"original")
       assertEquals(f.repository.read(copy.id).data.body,"copy snapshot")
+      assertEquals(value(f.r, f.model.notice), None, "completed copy no longer reports Saving a copy")
     finally f.close()
   }
   test("reviewed import shows its denominator, complete receipts and a retained one-shot result") {
@@ -192,6 +193,62 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
       assertEquals(ok(f.r.transact {imported.start.dispatch(())}),Dispatched.Refused("command disabled"))
     finally f.close()
   }
+  test("editing an import source or starting another review invalidates the previous start permission") {
+    val f = new Fixture
+    try
+      ok(f.r.transact { f.model.importSource.set("first source") })
+      ok(f.r.transact { f.model.prepareImport.dispatch(()) })
+      f.settle()
+      val first = value(f.r, f.model.currentImport).get
+      assert(value(f.r, first.start.enabled))
+      ok(f.r.transact { f.model.importSource.set("other source") })
+      assertEquals(ok(f.r.transact { first.start.dispatch(()) }), Dispatched.Refused("command disabled"))
+      ok(f.r.transact { f.model.importSource.set("first source") })
+      assert(!value(f.r, first.start.enabled), "returning to the old text still requires a fresh review")
+      ok(f.r.transact { f.model.prepareImport.dispatch(()) })
+      f.settle()
+      val second = value(f.r, f.model.currentImport).get
+      assert(value(f.r, second.start.enabled))
+      ok(f.r.transact { f.model.prepareImport.dispatch(()) })
+      assert(!value(f.r, second.start.enabled), "pending review revokes the prior plan even with unchanged source")
+      f.settle()
+      assert(!value(f.r, second.start.enabled))
+      val current = value(f.r, f.model.currentImport).get
+      ok(f.r.transact { current.start.dispatch(()) })
+      f.settle()
+      assertEquals(value(f.r, current.report), Some(DocumentImportReport(1, 1, 1, 0)))
+      assertEquals(value(f.r, first.records), Vector.empty)
+      assertEquals(value(f.r, second.records), Vector.empty)
+    finally f.close()
+  }
+
+  test("failed import review has local feedback and cannot re-enable an older plan") {
+    class FailingImporter extends Importer:
+      var failReview = false
+      override def prepare(source: String): Work[DocumentImportPlan] =
+        if failReview then Work { throw new RuntimeException("The source directory is unavailable.") }
+        else super.prepare(source)
+    val importer = new FailingImporter
+    val f = new Fixture(importer)
+    try
+      ok(f.r.transact { f.model.importSource.set("source") })
+      ok(f.r.transact { f.model.prepareImport.dispatch(()) })
+      f.settle()
+      val prior = value(f.r, f.model.currentImport).get
+      importer.failReview = true
+      ok(f.r.transact { f.model.prepareImport.dispatch(()) })
+      f.settle()
+      assertEquals(value(f.r, f.model.importFeedback), Some("The source directory is unavailable."))
+      assertEquals(value(f.r, f.model.notice), None, "import feedback belongs to the import view")
+      assertEquals(ok(f.r.transact { prior.start.dispatch(()) }), Dispatched.Refused("command disabled"))
+      importer.failReview = false
+      ok(f.r.transact { f.model.prepareImport.dispatch(()) })
+      assertEquals(value(f.r, f.model.importFeedback), None)
+      f.settle()
+      assert(value(f.r, value(f.r, f.model.currentImport).get.start.enabled))
+    finally f.close()
+  }
+
   test("closing a dirty document invalidates stale confirmation authority before releasing its scope") {
     val f=new Fixture
     try

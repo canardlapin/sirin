@@ -29,6 +29,7 @@ enum WorkspaceDecision:
   case Reload(id: DocumentId)
   case Quit
 final case class WorkspacePrompt(decision: WorkspaceDecision,authority: Vector[DocumentAuthority],message: String,changedSinceReview: Boolean=false)
+private[specimen] final case class ImportReview(source: Versioned[String], epoch: Long)
 private[specimen] enum WorkspaceFileRequest:
   case Open(id: DocumentId,epoch: Long)
   case Create(data: DocumentData,epoch: Long)
@@ -140,6 +141,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
           case WorkspaceFileRequest.Open(id,epoch) =>
             if selectionEpoch.get==epoch && selected.get.contains(id) then install(session)
           case WorkspaceFileRequest.Create(_,epoch) =>
+            notice.set(None)
             install(session)
             if selectionEpoch.get==epoch then {selected.set(Some(session.initial.data.id));mainView()}
           case WorkspaceFileRequest.Reload(token,epoch) =>
@@ -262,25 +264,49 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
     UiTxn.require(views.size<5 && views.snapshot.get.count(_.document.nonEmpty)<3,"Close another document view first (three additional views maximum)")
     val document=requireSelected();viewSerial.update(Math.addExact(_,1L));views.append(WorkspaceView(viewSerial.get,Some(document)))
   }
-  val importSource=scope.cell("")
-  val imports=scope.cell(Vector.empty[WorkspaceImport])
-  val currentImport: Signal[Option[WorkspaceImport]]=imports.map(_.lastOption)
-  val prepareImport=scope.command[Unit,Versioned[String],DocumentImportPlan]("workspace.import.prepare","Review import",
-    WorkPolicy(Concurrency.RefuseWhileRunning,Acceptance.EveryInvocation),_ => currentImport.flatMap(_.fold(Signal.const(true))(_.run.running.map(_==0)))) { _ =>
-    val source=importSource.snapshot
-    UiTxn.require(source.value.nonEmpty && source.value.length<=2048,"Enter an import directory (at most 2048 characters)")
-    Job(source,importer.prepare(source.value))
-  } { (source,result) => result.outcome match
-    case Outcome.Succeeded(plan) if importSource.versioned.get.revision==source.revision && currentImport.get.forall(_.run.running.get==0) =>
-      val owner=scope.child("document-import")
-      val session=new WorkspaceImport(owner,plan,importer,() => refreshNow())
-      val previous=imports.get
-      if previous.size>=8 then {previous.head.owner.dispose();imports.set(previous.tail:+session)} else imports.set(previous:+session)
-    case Outcome.Succeeded(_) => notice.set(Some("The import source or active operation changed. Review the source again."))
-    case Outcome.Failed(error) => notice.set(Some(message(error)))
-    case Outcome.Cancelled => notice.set(Some("Import review cancelled."))
+  val importSource = scope.cell("")
+  private val importReviewEpoch = scope.cell(0L)
+  private val importNotice = scope.cell(Option.empty[String])
+  val imports = scope.cell(Vector.empty[WorkspaceImport])
+  val currentImport: Signal[Option[WorkspaceImport]] = imports.map(_.lastOption)
+  val prepareImport = scope.command[Unit, ImportReview, DocumentImportPlan](
+    "workspace.import.prepare",
+    "Review import",
+    WorkPolicy(Concurrency.RefuseWhileRunning, Acceptance.EveryInvocation),
+    _ => currentImport.flatMap(_.fold(Signal.const(true))(_.run.running.map(_ == 0)))
+  ) { _ =>
+    val source = importSource.snapshot
+    UiTxn.require(source.value.nonEmpty && source.value.length <= 2048,
+      "Enter an import directory (at most 2048 characters)")
+    importReviewEpoch.update(Math.addExact(_, 1L))
+    importNotice.set(None)
+    Job(ImportReview(source, importReviewEpoch.get), importer.prepare(source.value))
+  } { (request, result) =>
+    val source = request.source
+    result.outcome match
+      case Outcome.Succeeded(plan) if importSource.versioned.get.revision == source.revision &&
+          importReviewEpoch.get == request.epoch && currentImport.get.forall(_.run.running.get == 0) =>
+        val owner = scope.child("document-import")
+        val reviewCurrent = importSource.versioned.zip(importReviewEpoch).map { (current, epoch) =>
+          current.revision == source.revision && epoch == request.epoch
+        }
+        val session = new WorkspaceImport(owner, plan, importer, () => refreshNow(), reviewCurrent)
+        val previous = imports.get
+        if previous.size >= 8 then
+          previous.head.owner.dispose()
+          imports.set(previous.tail :+ session)
+        else imports.set(previous :+ session)
+      case Outcome.Succeeded(_) =>
+        importNotice.set(Some("The import source or active operation changed. Review the source again."))
+      case Outcome.Failed(error) => importNotice.set(Some(message(error)))
+      case Outcome.Cancelled => importNotice.set(Some("Import review cancelled."))
   }
-  val refusalNotice: Signal[String]=Vector(open,newDocument,saveSelected,saveCopy,reloadSelected,closeDocument,confirmDecision,openView,prepareImport,showImport)
+  val importFeedback = importNotice.zip(prepareImport.lastRefusal).map { (notice, refusal) =>
+    notice.orElse(refusal.map(DocumentData.preview(_)))
+  }
+  val refusalNotice: Signal[String] = Vector(
+    open, newDocument, saveSelected, saveCopy, reloadSelected, closeDocument, confirmDecision, openView, showImport
+  )
     .foldLeft(Signal.const(Vector.empty[String])) { (messages,command) =>
       messages.zip(command.lastRefusal).map((prior,reason) => prior++reason.map(text => s"${command.label}: ${DocumentData.preview(text)}"))
     }.map(_.mkString("\n"))
@@ -343,8 +369,16 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
         Text(operation),Row(Button(confirmDecision),Button(cancelDecision)).spacing(8.lp)).spacing(8.lp)
   }
   private val recoveryContent: View=safeDecisionPanel
-  private val importPanel: View=Column(Text("Import documents").style(TextStyle.Heading),
-    TextField.bind(importSource).maxLength(2048).label("Source directory").ref(importRef),Button(prepareImport),Switch(currentImport)(_.fold[View](Text("Choose a directory to review its document count."))(_.view))).spacing(8.lp)
+  private val importPanel: View = Column(
+    Text("Import documents").style(TextStyle.Heading),
+    TextField.bind(importSource).maxLength(2048).label("Source directory").error(importFeedback).ref(importRef),
+    Button(prepareImport),
+    Show(prepareImport.running.map(_ > 0))(Text("Reviewing the source directory…")),
+    Scroll(Switch(currentImport)(
+      _.fold[View](Text("Choose a directory to review its document count."))(_.view)
+    )).grow,
+    Button(openWorkbench)
+  ).spacing(8.lp).padding(16.lp)
   private val sidebar: View = Column(
     TextField.bind(query).maxLength(256).label("Search documents").ref(searchRef),
     Text(searchStatus).style(TextStyle.Caption).color(ColorRole.Muted),
@@ -408,7 +442,7 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
     )))(
       Switch(input) { view =>
         if view.mode == WorkspaceViewMode.Import then
-          Scroll(Column(importPanel, Button(openWorkbench)).spacing(12.lp).padding(16.lp))
+          importPanel
         else view.document.fold(mainContent) { document =>
           Column(
             document.editor.view.grow,
@@ -423,7 +457,13 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
   }.menuBar(MenuBar(Menu("File",MenuItem(newDocument,Chord.primary('n')),MenuItem(openWorkbench,Chord.primary('0')),MenuItem(refresh,Chord.primary('r')),MenuItem(showImport,Chord.primary('i')),MenuItem(services.quit,Chord.primary('q')))))
     .onQuitRequest {requestApplicationQuit()}
 
-final class WorkspaceImport(val owner: Scope,val plan: DocumentImportPlan,importer: DocumentImporter,refresh: () => Action):
+final class WorkspaceImport(
+    val owner: Scope,
+    val plan: DocumentImportPlan,
+    importer: DocumentImporter,
+    refresh: () => Action,
+    reviewCurrent: Signal[Boolean] = Signal.const(true)
+):
   val records=owner.cell(Vector.empty[DocumentImportRecord])
   val report=owner.cell(Option.empty[DocumentImportReport])
   val error=owner.cell(Option.empty[String])
@@ -437,10 +477,16 @@ final class WorkspaceImport(val owner: Scope,val plan: DocumentImportPlan,import
     UiTxn.require(valid && records.get.size<plan.entries.size && !records.get.exists(_.id==record.id),"Import receipt budget or identity exceeded")
     records.update(_:+record)
   }
-  val run=owner.command[Unit,Unit,DocumentImportReport]("import.run","Start import",WorkPolicy(Concurrency.RefuseWhileRunning,Acceptance.EveryInvocation),
-    status => started.zip(status.running).map((once,running) => !once && running==0 && plan.entries.nonEmpty)) { _ =>
-    started.set(true);Job((),importer.run(plan,channel.producer))
-  } { (_,result) =>
+  val run = owner.command[Unit, Unit, DocumentImportReport](
+    "import.run", "Start import", WorkPolicy(Concurrency.RefuseWhileRunning, Acceptance.EveryInvocation),
+    status => started.zip(status.running).zip(reviewCurrent).map { case ((once, running), current) =>
+      !once && running == 0 && current && plan.entries.nonEmpty
+    }
+  ) { _ =>
+    UiTxn.require(reviewCurrent.get, "Review the current source before starting an import")
+    started.set(true)
+    Job((), importer.run(plan, channel.producer))
+  } { (_, result) =>
     result.outcome match
       case Outcome.Succeeded(receipt) => report.set(Some(receipt))
       case Outcome.Failed(failure) => error.set(Some(DocumentData.message(failure)))
@@ -458,9 +504,30 @@ final class WorkspaceImport(val owner: Scope,val plan: DocumentImportPlan,import
     if started.get && count==0 && run.running.get==0 && !observedTerminal.get then
       observedTerminal.set(true);refresh()
   }
-  val status=records.zip(run.running).zip(channel.state).map { case ((seen,running),state) =>
-    val failed=seen.count(_.outcome.isInstanceOf[DocumentImportOutcome.Failed])
-    s"Received ${seen.size}/${plan.entries.size} receipts; $failed failed. ${if running>0 then "Import running." else state.toString} Files already written are retained; Refresh shows the current files."
+  val status = records.zip(run.running).zip(channel.state).map { case ((seen, running), state) =>
+    val failed = seen.count(_.outcome.isInstanceOf[DocumentImportOutcome.Failed])
+    val phase = if running > 0 then "Import running." else state match
+      case ChannelState.Open => "Ready to import."
+      case ChannelState.Closing(pending) => s"Finishing delivery of $pending receipts."
+      case ChannelState.Drained => "Import finished."
+      case ChannelState.Cancelled(abandoned) =>
+        s"Import cancelled; $abandoned queued receipts were not delivered."
+    s"Received ${seen.size}/${plan.entries.size} receipts; $failed failed. $phase " +
+      "Files already written are retained; Refresh shows the current files."
   }
-  val view: View=Column(Text(s"Reviewed ${plan.entries.size} documents."),Row(Button(start),Button(cancel)).spacing(8.lp),Text(status),
-    Text(error.map(_.getOrElse(""))).color(ColorRole.Danger),Text(records.map(_.takeRight(8).map(r => s"${r.id.value}: ${r.outcome}").mkString("\n")))).spacing(8.lp)
+  private val receiptText = records.map(_.takeRight(8).map { record =>
+    val title = plan.entries.find(_.id == record.id).map(_.title).getOrElse(record.id.value)
+    val outcome = record.outcome match
+      case DocumentImportOutcome.Created(_) => "Imported."
+      case DocumentImportOutcome.Failed(message) => message
+    s"${DocumentData.preview(title, 80)}: $outcome"
+  }.mkString("\n"))
+  val view: View = Column(
+    Text(s"Reviewed ${plan.entries.size} documents from ${DocumentData.preview(plan.source)}."),
+    Show(reviewCurrent.zip(started).map((current, once) => !current && !once))(
+      Text("The source or review changed. Review again before starting an import.").color(ColorRole.Danger)),
+    Row(Button(start), Button(cancel)).spacing(8.lp),
+    Text(status),
+    Show(error.map(_.nonEmpty))(Text(error.map(_.getOrElse(""))).color(ColorRole.Danger)),
+    Text(receiptText)
+  ).spacing(8.lp)

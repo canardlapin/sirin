@@ -64,12 +64,12 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
       var serial = 0L
       var replayChecked = false
       var viewports = Map.empty[Long, Viewport]
-      def frame(): CapturedApplication =
+      def frame(windowIndex: Int = 0): CapturedApplication =
         var result = capture()
         var settled = false
         var attempts = 0
         while !settled && attempts < 10 do
-          val tree = result.windows.head.content
+          val tree = result.windows(windowIndex).content
           controller.update(tree)
           serial += 1
           val state = controller.interaction.state
@@ -233,6 +233,37 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
           }
         )
         assertEquals(reopened.initial.data.body, "typed café 日本語 😀")
+        val importSource = directory.resolve("source")
+        val importRepository = new FileDocumentRepository(importSource)
+        for index <- 0 until 8 do
+          Work.execute(
+            importRepository.create(DocumentData(DocumentId(s"import-$index"), s"Import document $index", "body")),
+            new Cancellation {
+              def cancelled = false
+            }
+          )
+        ok(runtime.transact {
+          model.importSource.set(importSource.toString)
+          model.showImport.dispatch(())
+        })
+        ok(runtime.transact(model.prepareImport.dispatch(())))
+        driveUntil(value(runtime, model.currentImport).nonEmpty)
+        val imported = value(runtime, model.currentImport).get
+        ok(runtime.transact(imported.start.dispatch(())))
+        driveUntil(value(runtime, imported.records).size == 8 && value(runtime, imported.run.running) == 0)
+        frame(1)
+        assert(inside(part("Source directory", Role.TextInput)._2.bounds))
+        assert(inside(part("Open workbench", Role.Button)._2.bounds))
+        controller.handle(HostInput.Wheel(width / 2.0, height / 2.0, 1000))
+        frame(1)
+        val importField = part("Source directory", Role.TextInput)
+        assert(inside(importField._2.bounds), "source remains available after scrolling receipts")
+        assert(inside(part("Review import", Role.Button)._2.bounds))
+        assert(inside(part("Open workbench", Role.Button)._2.bounds))
+        runtime.takeFocusRequests()
+        ok(runtime.transact(model.showImport.dispatch(())))
+        assert(runtime.takeFocusRequests().exists(controller.focusReference), "Import can focus the existing window")
+        assert(controller.interaction.state.focused.contains(NodeId(Vector("element", importField._1))))
         assert(replayChecked)
         assertEquals(NativeApplication.liveApplications(), 0)
         assertEquals(NativeWindow.liveWindows(), 0)

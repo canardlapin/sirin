@@ -10,7 +10,7 @@ result. The goal stays open until the required application evidence exists.
 | Outcome | Evidence needed | Current position |
 |---|---|---|
 | Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch round trip checked in a real window; broader workflow acceptance remains open |
-| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | AccessKit and native close policy repaired; real zero-window draft retention and Quit consent checked; broader failure workflows remain open |
+| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | Real conflict/no-overwrite, save-copy, reload consent, partial-import receipts, zero-window draft retention and Quit consent checked; live cancellation remains open |
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
 | Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Dialog/label/checkbox/custom-part transport and shared ABI checks pass; fresh-package modal AX tree verified; actual VoiceOver and remaining semantic relationships are open |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
@@ -64,6 +64,14 @@ Native Dialog/label/Checkbox and custom-part transport now has native and
 rendered checks plus a fresh-package modal AX observation. JVM FFM and a Native
 probe reach the same v2 ABI. Actual VoiceOver permission is pending; the broader
 acceptance outcomes and remaining semantic relationships stay open.
+Packaged recovery checks now preserve exact files across external-change
+conflicts, copy/reload and partial import. Import review validity, local errors,
+readable receipts and stable navigation were repaired through public APIs.
+The attempted live cancellation completed too quickly to interrupt and remains
+unqualified. Keyboard input stopped having a visible effect after switching
+back from Import to main in a controlled fresh run; long sidebar titles also
+exposed row overflow. Both have open Mote issues and prevent full usability
+acceptance. See [recovery evidence](../evidence/2026-10-31-workbench-recovery.md).
 
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was

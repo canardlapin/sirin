@@ -78,6 +78,15 @@ Sirin is a pre-release prototype. Nothing is published.
   the document list, and Save stays visible at the default size. These paths
   passed fresh-package window checks and rendered regressions at two sizes.
   [Usability evidence](evidence/2026-10-31-workbench-visible-decisions.md).
+  Packaged conflict, save-copy, reload and partial-import checks preserve exact
+  files and drafts. Import errors appear in their own window; source edits or a
+  new review revoke an older Start permission. Source and navigation controls
+  remain visible while receipts scroll. A live cancellation attempt completed
+  before interruption, so that acceptance check remains open. Fresh-window
+  typing works, but typing stopped having a visible effect after returning from
+  Import to the main window; that transition remains under investigation. Long
+  titles can also overflow the fixed sidebar row height.
+  [Recovery evidence](evidence/2026-10-31-workbench-recovery.md).
   [Close-policy evidence](evidence/2026-10-31-workbench-native-close.md).
   Foreground Finder launch renders; background presentation and visual usability
   remain under investigation.
