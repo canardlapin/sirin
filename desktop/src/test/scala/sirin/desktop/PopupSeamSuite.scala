@@ -313,3 +313,27 @@ class PopupSeamSuite extends munit.FunSuite:
       unicode.close()
       runtime.close()
   }
+
+  test("a modal popup with no focusable content blocks keyboard activation of the base") {
+    val f = new Fixture
+    try
+      val open = f.owner.cell(false)
+      val presses = f.owner.cell(0)
+      val anchor = f.owner.ref()
+      val view = Column(
+        Button("Underlying action").ref(anchor).onPress(presses.update(_ + 1)),
+        Popup(open, anchor, modal = true)(Text("Please wait"))
+      )
+      ok(f.runtime.transact(f.mounted.update(view)))
+      f.frame()
+      f.click("Underlying action")
+      assertEquals(f.read(presses), 1)
+      assert(f.focused("Underlying action"))
+      ok(f.runtime.transact(open.set(true)))
+      f.frame()
+      assertEquals(f.layout.layers.size, 1)
+      assert(f.layout.layers.head.frame.modal)
+      f.key(Key.Space)
+      assertEquals(f.read(presses), 1, "a presented modal popup must block the underlying action")
+    finally f.close()
+  }

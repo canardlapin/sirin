@@ -31,6 +31,9 @@ Sirin is a pre-release prototype. Nothing is published.
   layer with placement, dismissal, focus restoration and modality.
   [Design](design/decisions/2026-10-31-overlay-popup.md),
   [evidence](evidence/2026-10-31-overlay-popup.md).
+  Modal keyboard isolation when the popup cannot take focus, and shortcut
+  bubbling from nested popups, still need fixes.
+  [Failing reproductions](evidence/2026-10-31-popup-review.md).
   [Validation and limits](evidence/2026-10-30-public-toolkit-proof.md).
 - **Public text input and TextField.** Custom elements receive committed text,
   IME composition and assistive select/replace requests as UTF-16 events. They
