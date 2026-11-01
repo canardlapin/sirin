@@ -60,6 +60,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
           case Value.Failed(error) =>
             throw error
       )
+      val nativeTree = new NativeSemanticTree
       var serial = 0L
       var replayChecked = false
       var viewports = Map.empty[Long, Viewport]
@@ -98,6 +99,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
               result = capture()
             else
               controller.install(serial, output.layout)
+              nativeTree.capture(output.layout, controller.interaction.state.focused)
               Files.createDirectories(captureRoot)
               val frozenPath = captureRoot.resolve(s"workspace-$serial.drawing")
               FrozenDrawing.save(frozenPath, request, output.layout)
@@ -174,6 +176,13 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
         frame()
         assertEquals(controller.layout.get.layers.size, 1)
         assert(controller.layout.get.layers.head.frame.modal)
+        val dialog = nativeTree.nodes.find(_.part.semantics.role == Role.Dialog).get
+        assert(dialog.modal)
+        assert(nativeTree.nodes.exists(n => n.part.semantics.role == Role.Label &&
+          n.part.semantics.name.exists(_.contains("unsaved drafts"))))
+        assert(nativeTree.nodes.filterNot(_.id == dialog.id).forall(_.parent == dialog.id))
+        assert(!nativeTree.nodes.exists(_.part.semantics.name.contains("New")))
+        val dialogIds = nativeTree.nodes.map(_.id)
         assert(inside(part("Close this view?", Role.Dialog)._2.bounds))
         val keep = part("Keep editing", Role.Button)
         assert(inside(keep._2.bounds))
@@ -193,6 +202,8 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
         controller.handle(HostInput.KeyUp(Key.Escape, Mods.none))
         val after = frame()
         assertEquals(value(runtime, model.prompt), None)
+        assert(!nativeTree.nodes.exists(n => dialogIds.contains(n.id)))
+        assert(nativeTree.nodes.exists(_.part.semantics.name.contains("New")))
         assert(controller.layout.get.layers.isEmpty)
         assertEquals(value(runtime, document.editor.body), "typed café 日本語 😀")
         assert(controller.interaction.state.focused.contains(NodeId(Vector("element", field))))

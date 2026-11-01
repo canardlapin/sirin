@@ -3,104 +3,66 @@ package sirin.desktop
 import sirin.*
 import sirin.host.*
 
-/** Main-thread native snapshot, copied only from the accepted presented layout. */
-object EditorAccessibility:
+/** Window-owned publication and action addresses from the accepted presentation only. */
+final class EditorAccessibility:
+  private val tree = new NativeSemanticTree
+  private var revision = 0L
+
   def publish(window: NativeWindow, controller: EditorController, frame: RenderedFrame, active: Boolean = true): Unit =
     val layout = frame.layout
+    val nodes = tree.capture(layout, controller.interaction.state.focused.filter(_ => active))
     window.beginAccessibility(frame.request.generation)
-    def buttons(p: Placed): Unit =
-      p.node.content match
-        case Content.Custom(element) if p.clip.width > 0 && p.clip.height > 0 =>
-          val size = Size(p.bounds.width.lp, p.bounds.height.lp)
-          element
-            .semantics(size, layout.text)
-            .iterator
-            .flatMap(node => node.text.map(node -> _))
-            .nextOption()
-            .foreach { (node, text) =>
-              layout
-                .text
-                .get(text.request)
-                .foreach { shaped =>
-                  val origin = Point(
-                    (p.bounds.x + text.origin.x.toDouble).lp,
-                    (p.bounds.y + text.origin.y.toDouble).lp
-                  )
-                  val caret = shaped
-                    .caret(TextPosition(text.selection.focus, TextAffinity.Downstream))
-                    .orElse(shaped.caretsAt(text.selection.focus).headOption)
-                  // Spans outside the text node, such as text scrolled out of a field, are clipped away.
-                  val b = node.bounds
-                  val area = Box(
-                    p.bounds.x + b.origin.x.toDouble,
-                    p.bounds.y + b.origin.y.toDouble,
-                    b.size.width.toDouble,
-                    b.size.height.toDouble
-                  ).intersect(p.clip)
-                  window.accessibilityField(
-                    element.instance,
-                    if text.multiline then
-                      1
-                    else
-                      0
-                    ,
-                    node.semantics.name.getOrElse(""),
-                    text.request.content,
-                    node.semantics.description.getOrElse(""),
-                    text.selection.anchor,
-                    text.selection.focus - text.selection.anchor,
-                    active && controller.interaction.state.focused.contains(p.node.id),
-                    text.editable,
-                    Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
-                    spans(shaped, origin, area, text.selection.focus, caret)
-                  )
-                }
-            }
-          element
-            .activation
-            .foreach { activation =>
-              element
-                .semantics(Size(p.bounds.width.lp, p.bounds.height.lp), layout.text)
-                .find(node => node.part == activation.part && node.semantics.role == Role.Button)
-                .foreach { node =>
-                  window.accessibilityField(
-                    element.instance,
-                    2,
-                    node.semantics.name.getOrElse(""),
-                    "",
-                    "",
-                    0,
-                    0,
-                    active && controller.interaction.state.focused.contains(p.node.id),
-                    activation.enabled,
-                    Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
-                    Array.emptyDoubleArray
-                  )
-                }
-            }
-        case Content.Button(id, label, enabled, _, _) =>
-          window.accessibilityField(
-            id,
-            2,
-            label,
-            "",
-            "",
-            0,
-            0,
-            active && controller.interaction.state.focused.contains(p.node.id),
-            enabled,
-            Array(p.clip.x, p.clip.y, p.clip.width, p.clip.height),
-            Array.emptyDoubleArray
-          )
-        case _ =>
-          ()
-      p.children.foreach(buttons)
-    buttons(layout.root)
+    nodes.foreach { node =>
+      val semantic = node.part.semantics
+      val b = node.part.bounds
+      val area = Box(b.origin.x.toDouble, b.origin.y.toDouble, b.size.width.toDouble, b.size.height.toDouble)
+      val bounds = Array(area.x, area.y, area.width, area.height)
+      node.part.text match
+        case Some(text) =>
+          val shaped = layout.text.get(text.request).getOrElse(
+            throw new IllegalStateException("accessibility text was not prepared"))
+          val origin = node.origin + text.origin
+          val caret = shaped.caret(TextPosition(text.selection.focus, TextAffinity.Downstream))
+            .orElse(shaped.caretsAt(text.selection.focus).headOption)
+          window.accessibilityField(node.id, node.kind, semantic.name.getOrElse(""), text.request.content,
+            semantic.description.getOrElse(""), text.selection.anchor,
+            text.selection.focus - text.selection.anchor, node.focused, node.enabled && text.editable, bounds,
+            EditorAccessibility.spans(shaped, origin, area, text.selection.focus, caret))
+          window.accessibilityLink(node.id, node.parent, node.flags | (if text.editable then 0 else 4))
+        case None =>
+          window.accessibilityNode(node.id, node.parent, node.kind, semantic.name.getOrElse(""),
+            semantic.value.getOrElse(""), semantic.description.getOrElse(""), node.flags,
+            semantic.checked.fold(-1)(value => if value then 1 else 0), bounds)
+    }
     window.publishAccessibility()
-    updateTextInput(window, controller, active)
+    revision = frame.request.generation
+    EditorAccessibility.updateTextInput(window, controller, active)
 
+  def handle(controller: EditorController, action: NativeWindow.AccessibilityAction): Boolean =
+    if action.revision() != revision then false
+    else tree.nodes.find(_.id == action.target()).exists { node =>
+      node.instance.exists { instance =>
+        if !node.enabled then false
+        else action.kind() match
+          case 1 if node.focusable => controller.accessibilityFocus(instance, revision)
+          case 4 if node.part.actions(SemanticAction.Activate) =>
+            controller.accessibilityActivate(instance, node.part.part, revision)
+          case 2 | 3 if node.part.text.exists(_.editable) =>
+            controller.accessibility(new NativeWindow.AccessibilityAction(
+              revision, instance, action.kind(), action.start(), action.length(), action.value()))
+          case _ => false
+      }
+    }
+
+object EditorAccessibility:
   /** Caret and grapheme spans in window coordinates, clipped to `area`; `focus` uses the supplied caret. */
-  private def spans(text: TextLayout, origin: Point, area: Box, focus: Int, focusCaret: Option[TextCaret]): Array[Double] =
+  private[desktop] def spans(
+      text: TextLayout,
+      origin: Point,
+      area: Box,
+      focus: Int,
+      focusCaret: Option[TextCaret]
+  ): Array[Double] =
     val result = Vector.newBuilder[Double]
     def add(from: Int, until: Int, rect: Rect, line: Int): Unit =
       val raw = Box(

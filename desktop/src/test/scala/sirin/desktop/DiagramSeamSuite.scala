@@ -226,6 +226,12 @@ class DiagramSeamSuite extends munit.FunSuite:
       val layout = frame(capture = true)
       val parts = layout.semanticParts.filter(_._2.semantics.role == Role.GraphicNode)
       assertEquals(parts.size, 512)
+      val nativeTree = new NativeSemanticTree
+      val nativeParts = nativeTree.capture(layout, None).filter(_.part.semantics.role == Role.GraphicNode)
+      assertEquals(nativeParts.size, 512)
+      assertEquals(nativeParts.map(_.id).distinct.size, 512)
+      assertEquals(nativeParts.map(_.part.part).distinct.size, 512)
+      assert(nativeParts.forall(node => node.instance.nonEmpty && (node.flags & 2) != 0))
       assertEquals(layout.text.requests.size, 512)
       assertEquals(value(runtime, editor.graph).edges.size, 511)
       assert(tileCount > 35 && tileCount <= 256)
@@ -240,6 +246,26 @@ class DiagramSeamSuite extends munit.FunSuite:
       val zoomed = frame()
       assert(zoomed.text.requests.size < 512)
       assert(zoomed.semanticParts.size < layout.semanticParts.size)
+    finally fixture.close()
+  }
+
+  test("native custom-part identities and activation stay tied to the presented diagram") {
+    val fixture = new Fixture()
+    try
+      import fixture.*
+      val layout = frame()
+      val addressBook = new NativeSemanticTree
+      val nodes = addressBook.capture(layout, None).filter(_.part.semantics.role == Role.GraphicNode)
+      assert(nodes.size >= 2)
+      val target = nodes(1)
+      val revision = controller.interaction.presented.epoch
+      assert(!controller.accessibilityActivate(target.instance.get, target.part.part, revision - 1))
+      assert(controller.accessibilityActivate(target.instance.get, target.part.part, revision))
+      val updated = addressBook.capture(frame(), controller.interaction.state.focused)
+      val selected = updated.find(_.id == target.id).get
+      assertEquals(selected.part.semantics.selected, Some(true))
+      assertEquals(selected.part.part, target.part.part)
+      assertEquals(selected.instance, target.instance)
     finally fixture.close()
   }
 

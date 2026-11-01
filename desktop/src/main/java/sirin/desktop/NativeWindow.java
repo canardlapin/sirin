@@ -39,6 +39,10 @@ public final class NativeWindow implements AutoCloseable {
     private static final MethodHandle CLIPBOARD = bind("sirin_desktop_clipboard",JAVA_INT,ADDRESS,JAVA_INT,ADDRESS,JAVA_INT);
     private static final MethodHandle AX_BEGIN = bind("sirin_desktop_ax_begin",JAVA_INT,ADDRESS,JAVA_LONG);
     private static final MethodHandle AX_FIELD = bind("sirin_desktop_ax_field",JAVA_INT,ADDRESS,JAVA_LONG,JAVA_INT,ADDRESS,ADDRESS,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT,JAVA_INT,ADDRESS,ADDRESS,JAVA_INT);
+    private static final MethodHandle AX_NODE = bind("sirin_desktop_ax_node", JAVA_INT,
+        ADDRESS, JAVA_LONG, JAVA_LONG, JAVA_INT, ADDRESS, ADDRESS, ADDRESS, JAVA_INT, JAVA_INT, ADDRESS);
+    private static final MethodHandle AX_LINK = bind("sirin_desktop_ax_link", JAVA_INT,
+        ADDRESS, JAVA_LONG, JAVA_LONG, JAVA_INT);
     private static final MethodHandle AX_PUBLISH = bind("sirin_desktop_ax_publish",JAVA_INT,ADDRESS);
     private static final MethodHandle AX_POLL = bind("sirin_desktop_ax_poll",JAVA_INT,ADDRESS,ADDRESS,ADDRESS,JAVA_INT);
     private static final MethodHandle IME_CONTROL = bind("sirin_desktop_ime_control",JAVA_INT,ADDRESS,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT);
@@ -249,6 +253,43 @@ public final class NativeWindow implements AutoCloseable {
             MemorySegment b=a.allocateFrom(JAVA_DOUBLE,bounds),g=a.allocateFrom(JAVA_DOUBLE,spans);
             accepted((int)AX_FIELD.invokeExact(handle,id,kind,a.allocateFrom(label),a.allocateFrom(value),a.allocateFrom(help),start,length,focused?1:0,enabled?1:0,b,g,spans.length/7));
         }catch(Throwable e){throw failure(e);}
+    }
+    public void accessibilityNode(long id, long parent, int kind, String label, String value,
+                                  String help, int flags, int checked, double[] bounds) {
+        checkOwner();
+        if (bounds.length != 4) throw new IllegalArgumentException("AX geometry");
+        try (Arena arena = Arena.ofConfined()) {
+            MemorySegment rect = arena.allocateFrom(JAVA_DOUBLE, bounds);
+            accepted((int)AX_NODE.invokeExact(handle, id, parent, kind, arena.allocateFrom(label),
+                arena.allocateFrom(value), arena.allocateFrom(help), flags, checked, rect));
+        } catch (Throwable error) { throw failure(error); }
+    }
+    public void accessibilityLink(long id, long parent, int flags) {
+        checkOwner();
+        try { accepted((int)AX_LINK.invokeExact(handle, id, parent, flags)); }
+        catch (Throwable error) { throw failure(error); }
+    }
+    /** Shared ABI is callable without creating an application or window. */
+    public static int accessibilityAbi() {
+        try { return (int)bind("sirin_desktop_ax_abi", JAVA_INT).invokeExact(); }
+        catch (Throwable error) { throw failure(error); }
+    }
+    public static void verifyAccessibilityAbi() {
+        if (accessibilityAbi() != 2) throw new IllegalStateException("AX ABI version");
+        try (Arena arena = Arena.ofConfined()) {
+            MemorySegment text = arena.allocateFrom("ABI probe");
+            MemorySegment bounds = arena.allocate(JAVA_DOUBLE, 4);
+            MemorySegment facts = arena.allocate(JAVA_LONG, 5);
+            MemorySegment output = arena.allocate(65537);
+            MemorySegment none = MemorySegment.NULL;
+            if ((int)AX_BEGIN.invokeExact(none, 17L) != 1 ||
+                (int)AX_FIELD.invokeExact(none, 1L, 0, text, text, text, 0, 0, 0, 1, bounds, none, 0) != 1 ||
+                (int)AX_NODE.invokeExact(none, 2L, 0L, 3, text, text, text, 3, 1, bounds) != 1 ||
+                (int)AX_LINK.invokeExact(none, 1L, 2L, 1) != 1 ||
+                (int)AX_PUBLISH.invokeExact(none) != 1 ||
+                (int)AX_POLL.invokeExact(none, facts, output, 65537) != 0)
+                throw new IllegalStateException("AX invalid-owner contract");
+        } catch (Throwable error) { throw failure(error); }
     }
     public void publishAccessibility(){checkOwner();try{accepted((int)AX_PUBLISH.invokeExact(handle));}catch(Throwable e){throw failure(e);}}
     /** Selection facts use an anchor and signed UTF-16 extent, preserving direction. */

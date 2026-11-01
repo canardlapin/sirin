@@ -25,8 +25,9 @@ Sirin is a pre-release prototype. Nothing is published.
   is a public composition, and `VirtualRows` places rows with a public layout
   policy fed by public viewport feedback.
   [Port](design/decisions/2026-10-31-viewport-controls.md). `Checkbox` is a
-  public element with checked semantics; native accessibility does not carry
-  it yet. [Evidence](evidence/2026-10-31-checkbox.md). `Overlay` is a public
+  public element with checked semantics. The native bridge now carries its
+  role, state and activation. [Control evidence](evidence/2026-10-31-checkbox.md),
+  [native transport](evidence/2026-10-31-native-semantic-tree.md). `Overlay` is a public
   layout. `Popup` is mounted under its originator and shown in a window overlay
   layer with placement, dismissal, focus restoration and modality.
   [Design](design/decisions/2026-10-31-overlay-popup.md),
@@ -87,11 +88,16 @@ Sirin is a pre-release prototype. Nothing is published.
 - **Scala Native desktop.** The kernel and tests run under Scala Native, but there is no
   qualified Scala Native application provider. Native delivery depends on the
   open GC safepoint stall (P0.6). The delivery order is to be decided before
-  Alpha6 (VISION §1.1).
+  Alpha6 (VISION §1.1). A separate Native executable reaches the same seven
+  accessibility ABI functions as JVM FFM; that is a binding check, not a provider.
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
   physical pointer drag and trackpad behavior remain unqualified. Packaged
   workbench modal decisions have been exercised with synthetic pointer and
-  keyboard input. Native Dialog/Checkbox publication and VoiceOver remain open.
+  keyboard input. Native Dialog, label and Checkbox transport is implemented;
+  the fresh workbench exposes a dialog with explanatory text and excludes
+  background document controls from the modal AX tree. Native actions for text,
+  buttons and custom parts are checked. Actual VoiceOver remains unqualified.
+  [Transport evidence](evidence/2026-10-31-native-semantic-tree.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames
   without a full-frame CPU readback. Explicit captures read pixels back; the
   reference/fallback path still reads back and uploads. This is not a zero-copy

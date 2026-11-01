@@ -23,7 +23,8 @@ class CheckboxSeamSuite extends munit.FunSuite:
     val mounted = runtime.mount(owner, view(owner))
     owner.observe(mounted.snapshot)(_ => ())
     val controller = new EditorController(runtime, unicode.analyze(_), () => "", _ => (), () => ())
-    private var serial = 0L
+    var serial = 0L
+    val nativeTree = new NativeSemanticTree
     var captured = CapturedTree(Node(NodeId(Vector("empty")), Content.Empty), Map.empty)
 
     /** Renders one frame and returns its checkbox semantics and pixels. */
@@ -45,6 +46,7 @@ class CheckboxSeamSuite extends munit.FunSuite:
       val rendered = renderer.render(request, () => false).asInstanceOf[RenderedFrame]
       try
         controller.install(serial, rendered.layout)
+        nativeTree.capture(rendered.layout, controller.interaction.state.focused)
         save.foreach(name => FrameWorker.save(rendered.pixels, Path.of("target/checkbox-seam").resolve(name)))
         val parts = rendered.layout.semanticParts.map(_._2)
         assertEquals(parts.size, 1)
@@ -68,12 +70,18 @@ class CheckboxSeamSuite extends munit.FunSuite:
       assertEquals(start.role, Role.Checkbox)
       assertEquals(start.name, Some("Send me the newsletter"))
       assertEquals(start.checked, Some(false))
+      assertEquals(f.nativeTree.nodes.head.kind, 3)
+      assertEquals(f.nativeTree.nodes.head.part.semantics.checked, Some(false))
+      assertEquals(f.nativeTree.nodes.head.flags & 3, 3)
+      val nativeId = f.nativeTree.nodes.head.id
       val shaped = f.renderer.shaped
       f.controller.handle(HostInput.Down(8, 20))
       f.controller.handle(HostInput.Up(8, 20))
       assert(f.read(value.get))
       val (on, checked) = f.frame(Some("checked.png"))
       assertEquals(on.checked, Some(true))
+      assertEquals(f.nativeTree.nodes.head.id, nativeId)
+      assertEquals(f.nativeTree.nodes.head.part.semantics.checked, Some(true))
       assert(!java.util.Arrays.equals(unchecked, checked), "the checked box paints differently")
       assertEquals(f.renderer.shaped, shaped, "toggling does not reshape the label")
       f.controller.handle(HostInput.KeyDown(Key.Space, Mods.none))
@@ -84,7 +92,10 @@ class CheckboxSeamSuite extends munit.FunSuite:
       assertEquals(off.checked, Some(false))
       assert(!java.util.Arrays.equals(unchecked, focused), "keyboard focus adds a ring to the unchecked box")
       val instance = f.captured.elements.keys.head
-      ok(f.runtime.transact(f.captured.bindings(instance).run(summon[UiTxn])))
+      assert(!f.controller.accessibilityActivate(instance, PartId(0), f.serial - 1))
+      assert(!f.read(value.get), "stale native action does not toggle")
+      assert(f.controller.accessibilityFocus(instance, f.serial))
+      assert(f.controller.accessibilityActivate(instance, PartId(0), f.serial))
       assert(f.read(value.get), "assistive Activate toggles")
     finally f.close()
   }

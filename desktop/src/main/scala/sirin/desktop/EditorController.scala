@@ -575,6 +575,18 @@ final class EditorController(
         reject("This text input could not be committed.")
         false
     }
+  def accessibilityFocus(instance: Long, revision: Long): Boolean =
+    ready && revision == presentedRevision && focusElement(instance)
+
+  def accessibilityActivate(instance: Long, part: PartId, revision: Long): Boolean =
+    if !ready || revision != presentedRevision || !interaction.accepts(instance) then false
+    else if captured.elements.contains(instance) then
+      elements.action(instance, part, SemanticAction.Activate).contains(CommitResult.Committed(true))
+    else if captured.bindings.get(instance).exists(_.enabled) then
+      invoke(instance)
+      true
+    else false
+
   def accessibility(action: NativeWindow.AccessibilityAction): Boolean =
     if !ready || action.revision() != presentedRevision then
       false

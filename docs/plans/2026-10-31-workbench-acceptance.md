@@ -12,7 +12,7 @@ result. The goal stays open until the required application evidence exists.
 | Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch round trip checked in a real window; broader workflow acceptance remains open |
 | Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | AccessKit and native close policy repaired; real zero-window draft retention and Quit consent checked; broader failure workflows remain open |
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
-| Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Native publication currently handles buttons and text fields only |
+| Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Dialog/label/checkbox/custom-part transport and shared ABI checks pass; fresh-package modal AX tree verified; actual VoiceOver and remaining semantic relationships are open |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
 | Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; default-size editor and visible decisions checked; large-window acceptance remains open |
 | Public authoring | A separate public consumer implements one real feature using the documented API, builds/packages from a clean checkout, and completes its workflow | Independent review and starter workflow remain incomplete |
@@ -60,7 +60,10 @@ consent. Decisions now use a visible modal popup, and the editor uses the availa
 pane width and height. Fresh-package dirty-close/quit, focus restoration,
 docking, zero-window draft retention and exact saving were checked; see
 [usability evidence](../evidence/2026-10-31-workbench-visible-decisions.md).
-Native accessibility transport and the broader acceptance outcomes remain open.
+Native Dialog/label/Checkbox and custom-part transport now has native and
+rendered checks plus a fresh-package modal AX observation. JVM FFM and a Native
+probe reach the same v2 ABI. Actual VoiceOver permission is pending; the broader
+acceptance outcomes and remaining semantic relationships stay open.
 
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was

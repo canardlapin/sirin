@@ -3,6 +3,7 @@
 #include "accesskit.h"
 #include <stdint.h>
 #include <math.h>
+#include "accessibility.h"
 
 // AccessKit alone implements the platform accessibility objects. This object
 // owns immutable copied snapshots and a bounded action queue; no managed
@@ -42,27 +43,61 @@ static BOOL offset_for(NSDictionary *f,accesskit_text_position pos,NSUInteger *o
  *offset=pos.character_index ? NSMaxRange(r):r.location;return YES;
 }
 static accesskit_rect ak_rect(NSRect r,double scale) {return (accesskit_rect){r.origin.x*scale,r.origin.y*scale,NSMaxX(r)*scale,NSMaxY(r)*scale};}
+static accesskit_role role_for(int kind) {
+ static const accesskit_role roles[] = {
+  ACCESSKIT_ROLE_TEXT_INPUT, ACCESSKIT_ROLE_MULTILINE_TEXT_INPUT, ACCESSKIT_ROLE_BUTTON,
+  ACCESSKIT_ROLE_CHECK_BOX, ACCESSKIT_ROLE_DIALOG, ACCESSKIT_ROLE_LABEL, ACCESSKIT_ROLE_GROUP,
+  ACCESSKIT_ROLE_STATUS, ACCESSKIT_ROLE_ALERT, ACCESSKIT_ROLE_LIST, ACCESSKIT_ROLE_LIST_ITEM,
+  ACCESSKIT_ROLE_FORM, ACCESSKIT_ROLE_MENU, ACCESSKIT_ROLE_MENU_ITEM, ACCESSKIT_ROLE_TOOLBAR,
+  ACCESSKIT_ROLE_CANVAS, ACCESSKIT_ROLE_GRAPHICS_OBJECT
+ };
+ return roles[kind];
+}
+static int flags_for(NSDictionary *f) {
+ if(f[@"flags"])return [f[@"flags"] intValue];
+ return 1 | ([f[@"kind"] intValue] == 2 ? 2 : 0) |
+   ([f[@"enabled"] boolValue] ? 0 : 4) | ([f[@"focused"] boolValue] ? 8 : 0);
+}
 static struct accesskit_tree_update *tree(void *raw) {
  @autoreleasepool {
  SirinAccessKit *s=(__bridge SirinAccessKit*)raw;NSArray *fields;double scale;
  @synchronized(s){fields=s.alive ? s.fields:@[];scale=s.scale>0 ? s.scale:1;}
- accesskit_node_id focus=0;for(NSDictionary *f in fields)if([f[@"focused"] boolValue])focus=control_id(f);
+ accesskit_node_id focus=0;for(NSDictionary *f in fields)if(flags_for(f) & 8)focus=control_id(f);
  struct accesskit_tree_update *update=accesskit_tree_update_with_focus(focus);
  struct accesskit_tree_info *info=accesskit_tree_info_new(0);
  accesskit_tree_info_set_toolkit_name(info,"Sirin");accesskit_tree_update_set_tree_info(update,info);
  struct accesskit_node *root=accesskit_node_new(ACCESSKIT_ROLE_WINDOW);
  accesskit_node_set_label(root,"Sirin editable workbench");
+ NSMutableDictionary *nodes = [NSMutableDictionary new];
+ for(NSDictionary *f in fields) {
+  struct accesskit_node *node = accesskit_node_new(role_for([f[@"kind"] intValue]));
+  nodes[f[@"id"]] = [NSValue valueWithPointer:node];
+ }
+ // Complete parent links before pushing any owned node into the update.
+ for(NSDictionary *f in fields) {
+  struct accesskit_node *parent = [nodes[f[@"parent"]] pointerValue];
+  accesskit_node_push_child(parent ? parent : root,control_id(f));
+ }
  for(NSDictionary *f in fields) {
   accesskit_node_id base=control_id(f);int kind=[f[@"kind"] intValue];
-  struct accesskit_node *node=accesskit_node_new(kind==2 ? ACCESSKIT_ROLE_BUTTON:kind==1 ? ACCESSKIT_ROLE_MULTILINE_TEXT_INPUT:ACCESSKIT_ROLE_TEXT_INPUT);
-  accesskit_node_push_child(root,base);
+  struct accesskit_node *node = [nodes[f[@"id"]] pointerValue];
   accesskit_node_set_label(node,[f[@"label"] UTF8String]);
   accesskit_node_set_description(node,[f[@"help"] UTF8String]);
   accesskit_node_set_bounds(node,ak_rect([f[@"bounds"] rectValue],scale));
-  if(![f[@"enabled"] boolValue])accesskit_node_set_disabled(node);
-  accesskit_node_add_action(node,ACCESSKIT_ACTION_FOCUS);
-  if(kind==2)accesskit_node_add_action(node,ACCESSKIT_ACTION_CLICK);
-  else {
+  int flags = flags_for(f);
+  if(flags & 4)accesskit_node_set_disabled(node);
+  if(flags & 1)accesskit_node_add_action(node,ACCESSKIT_ACTION_FOCUS);
+  if(flags & 2)accesskit_node_add_action(node,ACCESSKIT_ACTION_CLICK);
+  if(flags & 16)accesskit_node_set_modal(node);
+  if(flags & 32)accesskit_node_set_invalid(node,ACCESSKIT_INVALID_TRUE);
+  if(flags & 64)accesskit_node_set_busy(node);
+  if(flags & 256)accesskit_node_set_selected(node,(flags & 128) != 0);
+  if(flags & 512)accesskit_node_set_live(node,ACCESSKIT_LIVE_POLITE);
+  if(flags & 1024)accesskit_node_set_live(node,ACCESSKIT_LIVE_ASSERTIVE);
+  if(f[@"checked"] && [f[@"checked"] intValue] >= 0)
+   accesskit_node_set_toggled(node,[f[@"checked"] intValue] ? ACCESSKIT_TOGGLED_TRUE : ACCESSKIT_TOGGLED_FALSE);
+  if(kind >= 2 && [f[@"value"] length])accesskit_node_set_value(node,[f[@"value"] UTF8String]);
+  if(kind < 2) {
    accesskit_node_set_value(node,[f[@"value"] UTF8String]);
    accesskit_node_add_action(node,ACCESSKIT_ACTION_SET_VALUE);
    if([f[@"rich"] boolValue])accesskit_node_add_action(node,ACCESSKIT_ACTION_SET_TEXT_SELECTION);
@@ -94,17 +129,18 @@ static void action(const struct accesskit_action_request *request,void *raw) {
  SirinAccessKit *s=(__bridge SirinAccessKit*)raw;BOOL wake=NO;
  @synchronized(s) {
   NSDictionary *f=nil;for(NSDictionary *candidate in s.fields)if(control_id(candidate)==request->target_node){f=candidate;break;}
-  if(s.alive && f && [f[@"enabled"] boolValue]) {
+  if(s.alive && f && !(flags_for(f) & 4)) {
    int kind=0;NSInteger start=0,length=0;NSString *value=@"";
    switch(request->action) {
-    case ACCESSKIT_ACTION_FOCUS:kind=1;break;
-    case ACCESSKIT_ACTION_CLICK:if([f[@"kind"] intValue]==2)kind=4;break;
+    case ACCESSKIT_ACTION_FOCUS:if(flags_for(f) & 1)kind=1;break;
+    case ACCESSKIT_ACTION_CLICK:if(flags_for(f) & 2)kind=4;break;
     case ACCESSKIT_ACTION_SET_VALUE:
-     if([f[@"kind"] intValue]!=2 && request->data.has_value && request->data.value.tag==ACCESSKIT_ACTION_DATA_VALUE) {
+     if([f[@"kind"] intValue]<2 && request->data.has_value && request->data.value.tag==ACCESSKIT_ACTION_DATA_VALUE) {
       value=[NSString stringWithUTF8String:request->data.value.value];kind=value ? 3:0;
      }break;
     case ACCESSKIT_ACTION_SET_TEXT_SELECTION:
-     if([f[@"kind"] intValue]!=2 && [f[@"rich"] boolValue] && request->data.has_value && request->data.value.tag==ACCESSKIT_ACTION_DATA_SET_TEXT_SELECTION) {
+     if([f[@"kind"] intValue] < 2 && [f[@"rich"] boolValue] && request->data.has_value &&
+        request->data.value.tag == ACCESSKIT_ACTION_DATA_SET_TEXT_SELECTION) {
       accesskit_text_selection selection=request->data.value.set_text_selection;NSUInteger a,b;
       if(offset_for(f,selection.anchor,&a) && offset_for(f,selection.focus,&b)){start=(NSInteger)a;length=(NSInteger)b-(NSInteger)a;kind=2;}
      }break;
@@ -158,7 +194,12 @@ int sirin_ax_begin(void *raw,int64_t revision) {
 }
 int sirin_ax_field(void *raw,int64_t identifier,int kind,const char *label,const char *value,const char *help,int start,int length,int focused,int enabled,const double *bounds,const double *spans,int count) {
  SirinAccessKit *s=(__bridge SirinAccessKit*)raw;
- if(!s || !NSThread.isMainThread || identifier<=0 || (uint64_t)identifier>UINT64_MAX>>16 || kind<0 || kind>2 || count<0 || count>65536 || (count && !spans) || s.pending.count>=64 || !bounds || !label || !value || !help)return 1;
+ if(!s || !NSThread.isMainThread || identifier <= 0 || (uint64_t)identifier > UINT64_MAX >> 16 ||
+    kind < 0 || kind > 2 || count < 0 || count > 65536 || (count && !spans) ||
+    s.pending.count >= 1024 || !bounds || !label || !value || !help)return 1;
+ NSUInteger legacyCount = 0;
+ for(NSDictionary *field in s.pending)if(field[@"runs"])legacyCount++;
+ if(legacyCount >= 64)return 1;
  NSString *v=[NSString stringWithUTF8String:value],*l=[NSString stringWithUTF8String:label],*h=[NSString stringWithUTF8String:help];
  if(!v || !l || !h || v.length>16384 || start<0 || (NSUInteger)start>v.length || (int64_t)start+length<0 || (uint64_t)((int64_t)start+length)>v.length)return 2;
  for(int i=0;i<4;i++)if(!isfinite(bounds[i]) || (i>=2 && bounds[i]<0))return 2;
@@ -194,9 +235,64 @@ int sirin_ax_field(void *raw,int64_t identifier,int kind,const char *label,const
   [s.pending addObject:@{@"id":@(identifier),@"kind":@(kind),@"label":l,@"value":v,@"help":h,@"anchor":@(start),@"head":@(start+length),@"focused":@(focused),@"enabled":@(enabled),@"bounds":[NSValue valueWithRect:NSMakeRect(bounds[0],bounds[1],bounds[2],bounds[3])],@"runs":[runs copy],@"rich":@(rich),@"revision":@(s.revision)}];
  }return 0;
 }
+static BOOL valid_id(int64_t id) { return id > 0 && (uint64_t)id <= UINT64_MAX >> 16; }
+static BOOL valid_flags(int flags) { return flags >= 0 && flags <= 2047 && (flags & 1536) != 1536; }
+int sirin_ax_node(void *raw, int64_t id, int64_t parent, int kind,
+    const char *label, const char *value, const char *help, int flags, int checked, const double *bounds) {
+ SirinAccessKit *s = (__bridge SirinAccessKit*)raw;
+ if(!s || !NSThread.isMainThread || !valid_id(id) || parent < 0 || parent == id ||
+    (parent && !valid_id(parent)) || kind < 2 || kind > 16 || !valid_flags(flags) ||
+    checked < -1 || checked > 1 || s.pending.count >= 1024 || !bounds || !label || !value || !help)return 1;
+ NSString *l = [NSString stringWithUTF8String:label];
+ NSString *v = [NSString stringWithUTF8String:value];
+ NSString *h = [NSString stringWithUTF8String:help];
+ if(!l || !v || !h || l.length > 16384 || v.length > 16384 || h.length > 16384)return 2;
+ for(int i = 0; i < 4; i++)if(!isfinite(bounds[i]) || (i >= 2 && bounds[i] < 0))return 2;
+ @synchronized(s) {
+  for(NSDictionary *f in s.pending)if([f[@"id"] longLongValue] == id)return 2;
+  [s.pending addObject:@{@"id":@(id), @"parent":@(parent), @"kind":@(kind), @"label":l,
+    @"value":v, @"help":h, @"flags":@(flags), @"checked":@(checked), @"revision":@(s.revision),
+    @"bounds":[NSValue valueWithRect:NSMakeRect(bounds[0],bounds[1],bounds[2],bounds[3])]}];
+ }
+ return 0;
+}
+int sirin_ax_link(void *raw, int64_t id, int64_t parent, int flags) {
+ SirinAccessKit *s = (__bridge SirinAccessKit*)raw;
+ if(!s || !NSThread.isMainThread || !valid_id(id) || parent < 0 || parent == id ||
+    (parent && !valid_id(parent)) || !valid_flags(flags))return 1;
+ @synchronized(s) {
+  for(NSUInteger i = 0; i < s.pending.count; i++) {
+   NSDictionary *f = s.pending[i];
+   if([f[@"id"] longLongValue] != id)continue;
+   NSMutableDictionary *next = [f mutableCopy];
+   next[@"parent"] = @(parent);
+   next[@"flags"] = @(flags);
+   s.pending[i] = next;
+   return 0;
+  }
+ }
+ return 2;
+}
+static BOOL valid_tree(NSArray *fields) {
+ NSMutableDictionary *parents = [NSMutableDictionary new];
+ for(NSDictionary *f in fields)parents[f[@"id"]] = f[@"parent"] ?: @0;
+ for(NSDictionary *f in fields) {
+  NSNumber *at = f[@"id"];
+  NSUInteger depth = 0;
+  while(at.longLongValue != 0) {
+   if(!parents[at] || ++depth > fields.count)return NO;
+   at = parents[at];
+  }
+ }
+ return YES;
+}
 int sirin_ax_publish(void *raw) {
  SirinAccessKit *s=(__bridge SirinAccessKit*)raw;if(!s || !NSThread.isMainThread)return 1;
- @synchronized(s){s.fields=[s.pending copy];s.scale=s.window.backingScaleFactor;}
+ @synchronized(s) {
+  if(!valid_tree(s.pending))return 2;
+  s.fields = [s.pending copy];
+  s.scale = s.window.backingScaleFactor;
+ }
  struct accesskit_macos_queued_events *events=accesskit_macos_subclassing_adapter_update_if_active(s.adapter,tree,raw);
  if(events)accesskit_macos_queued_events_raise(events);
  events=accesskit_macos_subclassing_adapter_update_view_focus_state(s.adapter,s.window.isKeyWindow);

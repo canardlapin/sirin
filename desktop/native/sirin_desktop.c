@@ -7,6 +7,7 @@
 #include <math.h>
 #include "event_queue.h"
 #include "menus.h"
+#include "accessibility.h"
 
 static _Atomic int live_requests;
 static int fault_stage;
@@ -72,6 +73,8 @@ void *sirin_ax_open(SDL_Window*,uint32_t);
 void sirin_ax_close(void*);
 int sirin_ax_begin(void*,int64_t);
 int sirin_ax_field(void*,int64_t,int,const char*,const char*,const char*,int,int,int,int,const double*,const double*,int);
+int sirin_ax_node(void*,int64_t,int64_t,int,const char*,const char*,const char*,int,int,const double*);
+int sirin_ax_link(void*,int64_t,int64_t,int);
 int sirin_ax_publish(void*);
 int sirin_ax_poll(void*,int64_t*,char*,int);
 int sirin_editor_ime_control(void*,const char*,int,int,int);
@@ -579,6 +582,16 @@ int sirin_desktop_clipboard(void *raw,int write,char *text,int capacity){
  if(write)return SDL_SetClipboardText(text) ? 0:1;
  char *value=SDL_GetClipboardText();if(!value)return 1;size_t length=strlen(value);
  if(length>=(size_t)capacity){SDL_free(value);return 2;}memcpy(text,value,length+1);SDL_free(value);return 0;
+}
+int sirin_desktop_ax_abi(void) { return 2; }
+int sirin_desktop_ax_node(void *raw, int64_t id, int64_t parent, int kind,
+    const char *label, const char *value, const char *help, int flags, int checked, const double *bounds) {
+ Desktop *d = raw;
+ return owner(d) ? sirin_ax_node(d->accessibility,id,parent,kind,label,value,help,flags,checked,bounds) : 1;
+}
+int sirin_desktop_ax_link(void *raw, int64_t id, int64_t parent, int flags) {
+ Desktop *d = raw;
+ return owner(d) ? sirin_ax_link(d->accessibility,id,parent,flags) : 1;
 }
 int sirin_desktop_ax_begin(void *raw,int64_t revision){Desktop *d=raw;if(!owner(d))return 1;if(!d->accessibility)d->accessibility=sirin_ax_open(d->window,d->wake_type);return sirin_ax_begin(d->accessibility,revision);}
 int sirin_desktop_ax_field(void *raw,int64_t id,int kind,const char *label,const char *value,const char *help,int start,int length,int focused,int enabled,const double *bounds,const double *spans,int count){Desktop *d=raw;return owner(d) ? sirin_ax_field(d->accessibility,id,kind,label,value,help,start,length,focused,enabled,bounds,spans,count):1;}

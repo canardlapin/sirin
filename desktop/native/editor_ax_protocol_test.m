@@ -29,10 +29,89 @@ static void *foreign_focus(void *raw) {
  accesskit_action_request request={0};request.target_node=7ULL<<16;request.action=ACCESSKIT_ACTION_FOCUS;
  action(&request,raw);return NULL;
 }
+static void semantic_tree(void) {
+ SirinAccessKit *s = [SirinAccessKit new];
+ s.alive = YES;
+ s.fields = @[];
+ s.pending = [NSMutableArray new];
+ s.actions = [NSMutableArray new];
+ s.wakeType = SDL_RegisterEvents(1);
+ s.scale = 1;
+ void *raw = (__bridge void*)s;
+ double bounds[] = {0, 0, 200, 100};
+ assert(sirin_ax_begin(raw, 81) == 0);
+ assert(sirin_ax_node(raw, 1, 0, 4, "Confirm", "", "Review changes", 16, -1, bounds) == 0);
+ assert(sirin_ax_node(raw, 2, 1, 5, "Changes stay in memory", "", "", 0, -1, bounds) == 0);
+ assert(sirin_ax_node(raw, 3, 1, 3, "Remember", "", "", 1 | 2 | 8, 1, bounds) == 0);
+ assert(sirin_ax_node(raw, 4, 1, 2, "Unavailable", "", "", 1 | 2 | 4, -1, bounds) == 0);
+ assert(valid_tree(s.pending));
+ assert(sirin_ax_node(raw, 3, 1, 3, "Duplicate", "", "", 3, 0, bounds) == 2);
+ assert(sirin_ax_node(raw, 5, 5, 6, "Cycle", "", "", 0, -1, bounds) == 1);
+ s.fields = [s.pending copy];
+ struct accesskit_tree_update *update = tree(raw);
+ char *debug = accesskit_tree_update_debug(update);
+ assert(strstr(debug, "role: Dialog") && strstr(debug, "modal: true"));
+ assert(strstr(debug, "children: [#131072, #196608, #262144]"));
+ assert(strstr(debug, "role: Label") && strstr(debug, "Changes stay in memory"));
+ assert(strstr(debug, "role: CheckBox") && strstr(debug, "toggled: True"));
+ assert(strstr(debug, "focus: #196608"));
+ puts(debug);
+ accesskit_string_free(debug);
+ accesskit_tree_update_free(update);
+ accesskit_action_request request = {0};
+ request.target_node = 3ULL << 16;
+ request.action = ACCESSKIT_ACTION_CLICK;
+ action(&request, raw);
+ int64_t facts[5];
+ char text[65537];
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1);
+ assert(facts[0] == 81 && facts[1] == 3 && facts[2] == 4);
+ request.action = ACCESSKIT_ACTION_SET_VALUE;
+ request.data.has_value = true;
+ request.data.value.tag = ACCESSKIT_ACTION_DATA_VALUE;
+ request.data.value.value = "invalid toggle shortcut";
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == -2);
+ request.target_node = 4ULL << 16;
+ request.action = ACCESSKIT_ACTION_CLICK;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 0);
+ request.target_node = 2ULL << 16;
+ request.action = ACCESSKIT_ACTION_FOCUS;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == -2);
+ assert(sirin_ax_link(raw, 1, 3, 16) == 0);
+ assert(!valid_tree(s.pending));
+ assert(sirin_ax_publish(raw) == 2);
+ assert(s.fields.count == 4 && [s.fields[0][@"parent"] longLongValue] == 0);
+ assert(sirin_ax_link(raw, 1, 99, 16) == 0);
+ assert(!valid_tree(s.pending));
+ assert(sirin_ax_link(raw, 1, 0, 16) == 0);
+ assert(valid_tree(s.pending));
+ assert(sirin_ax_begin(raw, 82) == 0);
+ assert(sirin_ax_node(raw, 3, 0, 3, "Remember", "", "", 3, 0, bounds) == 0);
+ s.fields = [s.pending copy];
+ update = tree(raw);
+ debug = accesskit_tree_update_debug(update);
+ assert(strstr(debug, "toggled: False"));
+ accesskit_string_free(debug);
+ accesskit_tree_update_free(update);
+ assert(sirin_ax_begin(raw, 83) == 0);
+ for(int i = 1; i <= 1024; i++)
+  assert(sirin_ax_node(raw, i, 0, 5, "Label", "", "", 0, -1, bounds) == 0);
+ assert(sirin_ax_node(raw, 1025, 0, 5, "Overflow", "", "", 0, -1, bounds) == 1);
+ assert(sirin_ax_begin(raw, 84) == 0);
+ for(int i = 1; i <= 64; i++)
+  assert(sirin_ax_field(raw, i, 2, "Button", "", "", 0, 0, 0, 1, bounds, NULL, 0) == 0);
+ assert(sirin_ax_field(raw, 65, 2, "Overflow", "", "", 0, 0, 0, 1, bounds, NULL, 0) == 1);
+ puts("Semantic tree: dialog hierarchy, labels, checkbox state/actions, refusals and atomic validation passed");
+}
+
 int main(void) {
  @autoreleasepool {
  repeated_window_class_setup();
  assert(SDL_Init(SDL_INIT_EVENTS));
+ semantic_tree();
  SirinAccessKit *s=[SirinAccessKit new];s.alive=YES;s.fields=@[];s.pending=[NSMutableArray new];s.actions=[NSMutableArray new];s.wakeType=SDL_RegisterEvents(1);s.scale=2;
  void *raw=(__bridge void*)s;double bounds[]={10,20,160,30};
  // a + emoji + combining cluster: UTF-16 ends 1/3/5, UTF-8 sizes 1/4/3.

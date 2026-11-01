@@ -331,6 +331,7 @@ private[desktop] final class ApplicationPeer(
       case Value.Failed(_) =>
         "Window — title unavailable"
   val window = new NativeWindow(title(initial.title), 640, 400)
+  private val accessibility = new EditorAccessibility
   private var captured = initial
   private var activeRenderer = java.lang.foreign.MemorySegment.NULL
   private val coordinator = new FrameCoordinator
@@ -526,7 +527,7 @@ private[desktop] final class ApplicationPeer(
       if action == null then
         more = false
       else
-        controller.accessibility(action)
+        accessibility.handle(controller, action)
         if !refresh() then
           return
         actions += 1
@@ -646,7 +647,7 @@ private[desktop] final class ApplicationPeer(
           shownFocus = frame.request.payload.focus
           if oldTargets != controller.interaction.presented.targets then
             geometryAt = NativeWindow.ticks()
-          EditorAccessibility.publish(window, controller, frame, focusActive)
+          accessibility.publish(window, controller, frame, focusActive)
           repaint = false
           feedback = 0
           losses = 0

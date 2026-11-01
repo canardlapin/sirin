@@ -432,3 +432,19 @@ desktopJVM / desktopDiagramPackage := packageDesktopImage(
   (desktopJVM / desktopNativeLibrary).value,
   "SirinDiagram", "io.github.canardlapin.sirin.diagram.alpha", "interactive",
   mainClass = "sirin.desktop.DiagramWorkbench")
+
+// Explicit macOS ABI probe. It does not claim a Scala Native application provider.
+lazy val probeAccessibilityNative = project
+  .in(file("probes/accessibility"))
+  .enablePlugins(ScalaNativePlugin)
+  .settings(
+    name := "sirin-accessibility-abi-probe",
+    Compile / mainClass := Some("sirin.probe.accessibility.NativeAccessibilityProbe"),
+    nativeConfig := {
+      val config = nativeConfig.value
+      val library = (ThisBuild / baseDirectory).value / "desktop" / "target" / "native"
+      config.withLinkingOptions(config.linkingOptions ++ Seq(
+        "-L" + library.toString, "-lsirin_desktop", "-Wl,-rpath," + library.toString))
+    },
+    Compile / nativeLink := ((Compile / nativeLink) dependsOn (desktopJVM / desktopNativeLibrary)).value
+  )

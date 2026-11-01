@@ -45,6 +45,7 @@ object EditorWorkbench:
     var current=Option.empty[RenderedFrame]
     val coordinator=new FrameCoordinator
     val controller=new EditorController(runtime,unicode.analyze(_),() => window.clipboard(),window.clipboard(_),() => window.textInput(2,0,0,1,1))
+    val accessibility = new EditorAccessibility
     val pending=scala.collection.mutable.Queue.empty[(HostInput,Mods,Int)]
     var latest=Option.empty[FrameRequest]
     var activeRenderer=java.lang.foreign.MemorySegment.NULL
@@ -125,7 +126,7 @@ object EditorWorkbench:
           tree=refresh()
         var action=window.pollAccessibility()
         while action!=null do
-          val accepted=controller.accessibility(action)
+          val accepted=accessibility.handle(controller, action)
           trace(s"ax kind=${action.kind()} revision=${action.revision()} shown=${controller.presentedRevision} readyAfter=${controller.ready} accepted=$accepted")
           lastEditor=controller.focusedElement.orElse(lastEditor);tree=refresh();action=window.pollAccessibility()
         focusRequests++=runtime.takeFocusRequests()
@@ -146,7 +147,7 @@ object EditorWorkbench:
               repaint=false;presentations+=1;recapture=true;consecutiveLosses=0
               controller.install(frame.request.generation,frame.layout)
               trace(s"present generation=${frame.request.generation} ready=${controller.ready} sameTree=${frame.layout.root.node==tree.tree}")
-              EditorAccessibility.publish(window,controller,frame)
+              accessibility.publish(window,controller,frame)
               if scripted then
                 println(s"editorStage=$scenario generation=${frame.request.generation}")
                 val docId=frame.layout.semanticParts.find(_._2.semantics.name.contains("Document")).get._1
