@@ -71,3 +71,7 @@ Raw logs are local under `/private/tmp/`; they are not committed.
 | `sirin-popup-review-modal-keyboard.log` | `48e61ab1f6bc54fdb4d4a7cb4f4f1eb643a34b22c7abfaed1cb5cc3acb0404d1` |
 
 Review task: `bd-01M6ADQZCK9M9PKHZ4Q12SDRJV`.
+
+The owner subsequently resumed implementation. See the
+[repair successor](2026-10-31-popup-input-repair.md); the failures above remain
+the historical result for `149a836`.

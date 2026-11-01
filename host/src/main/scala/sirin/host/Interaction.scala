@@ -76,13 +76,16 @@ final case class InteractionSnapshot(epoch: Long, targets: Vector[Target], popup
       popups.drop(modal).map(p => Some(p.instance))
   def topmost: Option[PopupLayer] = popups.lastOption
 
+  /** Modality restricts input independently of whether the current focus can move. */
+  def accepts(target: Target): Boolean = active.contains(target.layer)
+
   /** Whether a target at this point takes input: its layer is active and no popup above that layer covers the point.
     * A popup is opaque to input across its whole surface, padding included.
     */
   def receives(target: Target, x: Double, y: Double): Boolean =
     val index = target.layer.fold(-1)(id => popups.indexWhere(_.instance == id))
     val cover = popups.lastIndexWhere(_.bounds.contains(x, y))
-    active.contains(target.layer) && index >= cover && target.hit(x, y)
+    accepts(target) && index >= cover && target.hit(x, y)
 object InteractionSnapshot:
   def apply(epoch: Long, layout: LayoutResult): InteractionSnapshot =
     val targets = Vector.newBuilder[Target]
@@ -155,7 +158,7 @@ final class Interaction:
   def presented: InteractionSnapshot = snapshot
   def install(value: InteractionSnapshot): Unit =
     val next =
-      if value.targets.size == snapshot.targets.size &&
+      if value.popups == snapshot.popups && value.targets.size == snapshot.targets.size &&
         value.targets.zip(snapshot.targets).forall((a, b) => a.sameInput(b))
       then
         value.copy(epoch = snapshot.epoch)
@@ -168,12 +171,23 @@ final class Interaction:
       pressed = pressed
     )
   def focused: Option[Target] = state.focused.flatMap(snapshot.target)
+  def inputFocus: Option[Target] = focused.filter(snapshot.accepts)
+  def accepts(instance: Long): Boolean = snapshot.targets.exists { target =>
+    val matches = target.kind match
+      case TargetKind.Button(id) =>
+        id == instance
+      case TargetKind.Custom(frame) =>
+        frame.instance == instance
+    matches && snapshot.accepts(target)
+  }
   /** A ref on a view that cannot take focus itself, such as a layout, focuses the first focusable view inside it. */
   def focusRef(reference: Long): Boolean =
     snapshot
       .targets
-      .find(t => t.focusable && t.directRefs.contains(reference))
-      .orElse(snapshot.targets.find(t => t.focusable && t.ancestorRefs.contains(reference))) match
+      .find(t => t.focusable && snapshot.accepts(t) && t.directRefs.contains(reference))
+      .orElse(snapshot.targets.find(t =>
+        t.focusable && snapshot.accepts(t) && t.ancestorRefs.contains(reference)
+      )) match
       case None =>
         false
       case Some(target) =>
@@ -203,7 +217,7 @@ final class Interaction:
       case HostInput.KeyDown(Key.Tab, mods, _) if mods.isEmpty || mods == Mods.Shift =>
         // Focus inside a popup stays inside it; a modal popup also holds focus that starts outside it.
         val scope =
-          focused.map(_.layer).filter(_.nonEmpty).getOrElse(snapshot.active.headOption.flatten)
+          inputFocus.map(_.layer).filter(_.nonEmpty).getOrElse(snapshot.active.headOption.flatten)
         val active = snapshot.active.toSet
         val all = snapshot
           .targets
@@ -235,11 +249,11 @@ final class Interaction:
           next.foreach(t => state = state.copy(focused = Some(t.id), keyboard = true, pressed = None))
       case HostInput.KeyDown(Key.Enter, mods, false) if mods.isEmpty =>
         state = state.copy(keyboard = true)
-        activate = activation(focused)
+        activate = activation(inputFocus)
       case HostInput.KeyDown(Key.Space, mods, false) if mods.isEmpty =>
         state = state.copy(
           keyboard = true,
-          pressed = focused.filter(_.enabled).map(t => Press(t.id, snapshot.epoch, PressOrigin.Space))
+          pressed = inputFocus.filter(_.enabled).map(t => Press(t.id, snapshot.epoch, PressOrigin.Space))
         )
       case HostInput.KeyUp(Key.Space, mods) =>
         if mods.isEmpty &&
@@ -247,7 +261,7 @@ final class Interaction:
             .pressed
             .exists(p => p.origin == PressOrigin.Space && state.focused.contains(p.target) && p.epoch == snapshot.epoch)
         then
-          activate = activation(focused)
+          activate = activation(inputFocus)
         state = state.copy(pressed = None)
       case HostInput.Down(x, y, true) =>
         val target = hit(x, y)

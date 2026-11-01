@@ -138,6 +138,7 @@ final class EditorController(
     interaction.install(InteractionSnapshot(revision, layout))
     elements.install(layout)
     followPopups()
+    retireMovedComposition()
     // A control that dropped its composition by itself, e.g. after external replacement, ends the platform's.
     if composingElement.exists(id => textElement.exists((target, _, request) => target == id && !request.composing))
     then
@@ -201,7 +202,7 @@ final class EditorController(
           false
         else
           interaction
-            .focused
+            .inputFocus
             .exists(
               _.kind match
                 case _: TargetKind.Button =>
@@ -225,7 +226,7 @@ final class EditorController(
   def invoke(id: Long): Unit = captured
     .bindings
     .get(id)
-    .filter(_.enabled)
+    .filter(action => action.enabled && interaction.accepts(id))
     .foreach { action =>
       runtime.transact {
         action.run(summon[UiTxn])
@@ -317,7 +318,7 @@ final class EditorController(
 
   /** Focus on a presented, focusable target, through the ordinary element focus events. */
   private def focusTarget(id: NodeId, keyboard: Boolean): Boolean =
-    if !interaction.presented.target(id).exists(_.focusable) then
+    if !interaction.presented.target(id).exists(t => t.focusable && interaction.presented.accepts(t)) then
       false
     else
       val before = interaction.state
@@ -430,7 +431,7 @@ final class EditorController(
 
   /** Keyboard focus on a presented element, as Tab or an assistive focus request would give it. */
   def focusElement(id: Long): Boolean =
-    if !elements.shownElement(id) then
+    if !elements.shownElement(id) || !interaction.accepts(id) then
       false
     else
       val before = interaction.state
@@ -579,7 +580,7 @@ final class EditorController(
       false
     else
       val id = action.target()
-      if action.kind() == 4 && captured.bindings.get(id).exists(_.enabled) then {
+      if action.kind() == 4 && interaction.accepts(id) && captured.bindings.get(id).exists(_.enabled) then {
         invoke(id)
         true
       } else if elements.exposesText(id) then

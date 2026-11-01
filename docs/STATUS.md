@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-31, for Overlay and Popup. This page says, in plain
+Last updated 2026-10-31, for popup input repairs. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -31,9 +31,9 @@ Sirin is a pre-release prototype. Nothing is published.
   layer with placement, dismissal, focus restoration and modality.
   [Design](design/decisions/2026-10-31-overlay-popup.md),
   [evidence](evidence/2026-10-31-overlay-popup.md).
-  Modal keyboard isolation when the popup cannot take focus, and shortcut
-  bubbling from nested popups, still need fixes.
-  [Failing reproductions](evidence/2026-10-31-popup-review.md).
+  Modal input isolation also holds when focus cannot move; nested popups bubble
+  shortcuts through their parent anchors. Shared JVM/Native and desktop checks
+  pass. [Repair evidence](evidence/2026-10-31-popup-input-repair.md).
   [Validation and limits](evidence/2026-10-30-public-toolkit-proof.md).
 - **Public text input and TextField.** Custom elements receive committed text,
   IME composition and assistive select/replace requests as UTF-16 events. They
@@ -112,6 +112,9 @@ Implementation resumed after the owner approved the course correction. Prove
 public toolkit authoring first, then application quality and independent authoring,
 with the Native GC/delivery decision kept explicit. See the
 [execution sequence](plans/2026-10-30-public-toolkit-proof.md).
+The active [workbench acceptance tranche](plans/2026-10-31-workbench-acceptance.md)
+requires real application workflows and keeps Scala Native runtime and delivery
+work explicit.
 
 Four obsolete clean worktrees and their branches were removed after all generated
 files were moved to an external artifact directory. The original checkout owns

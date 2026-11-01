@@ -17,6 +17,9 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
     shown = layout.elements.map(p => p.node.content.asInstanceOf[Content.Custom].frame.instance -> p).toMap
     prepared = layout.text
     capture = capture.filter((id, _) => shown.contains(id) && bindings.contains(id))
+    if capture.exists((id, _) => !interaction.accepts(id)) then
+      pointer(HostInput.Deactivate)
+      capture = None
   def invalidate(): Unit = {
     capture = None
     shown = Map.empty
@@ -43,7 +46,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
 
   /** The focused, presented element that currently declares text input, with its accepted placement. */
   def textTarget: Option[(Long, Placed, TextInputRequest)] = interaction
-    .focused
+    .inputFocus
     .flatMap(
       _.kind match
         case TargetKind.Custom(frame) =>
@@ -82,6 +85,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
   /** Assistive requests target exposed text directly; ranges outside it refuse before dispatch. */
   def textTo(instance: Long, event: TextInputEvent, services: TextEditingServices): Option[CommitResult[Boolean]] =
     exposedText(instance)
+      .filter(_ => interaction.accepts(instance))
       .filter { text =>
         event match
           case TextInputEvent.Select(range) =>
@@ -160,6 +164,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
       val recipient = capture.map(_._1).orElse(target(x, y))
       recipient
         .filter(id => shown.contains(id) && bindings.contains(id))
+        .filter(id => phase == PointerPhase.Cancel || interaction.accepts(id))
         .map { id =>
           val p = shown(id)
           val frame = p.node.content.asInstanceOf[Content.Custom].frame
@@ -221,7 +226,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
       event: KeyEvent,
       services: TextEditingServices = TextEditingServices.unavailable
   ): Option[CommitResult[Boolean]] = interaction
-    .focused
+    .inputFocus
     .flatMap(
       _.kind match
         case TargetKind.Custom(frame) if shown.contains(frame.instance) =>
@@ -233,6 +238,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
     )
   def action(instance: Long, part: PartId, action: SemanticAction): Option[CommitResult[Boolean]] = shown
     .get(instance)
+    .filter(_ => interaction.accepts(instance))
     .flatMap { p =>
       val frame = p.node.content.asInstanceOf[Content.Custom].frame
       Option

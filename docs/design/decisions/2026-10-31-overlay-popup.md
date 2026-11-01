@@ -92,7 +92,11 @@ nothing.
 **D9. Modality.** While a modal popup is presented:
 - pointer input beneath it does not reach the base;
 - Tab stays inside it;
-- the base's elements receive no keys, because focus is inside the popup.
+- the base's elements receive no keys or text input. Input eligibility follows
+  the presented modal layer even when the popup has no focusable content or a
+  `Lost` veto prevents moving focus. Stored focus may remain beneath the modal,
+  but it receives no input until the modal closes. Programmatic and assistive
+  focus/action requests beneath it are refused as well.
 
 Window menu commands and their shortcuts still work, since they are window
 commands, not base content. A modal popup does not dim the base. That is left
@@ -128,6 +132,10 @@ mostly reaches non-focusable layouts. VISION is updated.
 through the popup's content and then through the anchor's ancestry, because the
 popup belongs to its originator. In program 4, the header shortcut therefore
 still applies while the rename popup has focus.
+For a nested popup, this follows the anchor through each earlier parent layer
+back to the base. The innermost matching binding still wins. If stored focus is
+blocked by a modal layer, it supplies no local shortcut ancestry; window and
+application shortcuts remain available under D9.
 
 ## Decisions made during implementation
 

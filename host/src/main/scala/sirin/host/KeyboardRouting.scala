@@ -41,26 +41,23 @@ object KeyboardRouting:
     def within(id: NodeId): Option[Vector[NodeId]] =
       captured.tree.content match
         case Content.Layered(base, popups) =>
-          path(base, id).orElse(
-            popups
-              .iterator
-              .map { (frame, content) =>
-                path(content, id).map { inside =>
-                  val anchor = route(
-                    base,
-                    _.content match
-                      case Content.Reference(ref, _) =>
-                        ref == frame.anchor
-                      case _ =>
-                        false
+          // Anchors can only be presented in the base or an earlier layer. Decreasing the prefix also bounds
+          // malformed cyclic anchor references without dropping shortcuts inside the focused popup itself.
+          def lineage(found: Node => Boolean, before: Int): Option[Vector[NodeId]] =
+            route(base, found).orElse(
+              popups.iterator.take(before).zipWithIndex.map { case ((frame, content), index) =>
+                route(content, found).map { inside =>
+                  val anchor = lineage(
+                    node => node.content match
+                      case Content.Reference(ref, _) => ref == frame.anchor
+                      case _ => false,
+                    index
                   )
                   anchor.getOrElse(Vector.empty) ++ inside
                 }
-              }
-              .collectFirst { case Some(steps) =>
-                steps
-              }
-          )
+              }.collectFirst { case Some(steps) => steps }
+            )
+          lineage(_.id == id, popups.size)
         case _ =>
           path(captured.tree, id)
     val ancestry = focused.flatMap(within).getOrElse(Vector(captured.tree.id))

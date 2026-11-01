@@ -174,7 +174,7 @@ private[desktop] final class DesktopApplicationSession(
               .withCommitted(_ =>
                 KeyboardRouting.command(
                   window.content,
-                  controller.interaction.state.focused,
+                  controller.interaction.inputFocus.map(_.id),
                   chord,
                   window.menu,
                   captured.menu

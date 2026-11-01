@@ -335,5 +335,56 @@ class PopupSeamSuite extends munit.FunSuite:
       assert(f.layout.layers.head.frame.modal)
       f.key(Key.Space)
       assertEquals(f.read(presses), 1, "a presented modal popup must block the underlying action")
+      val id = f.part("Underlying action")._1
+      assert(!f.controller.accessibility(new NativeWindow.AccessibilityAction(f.generation, id, 4, 0, 0, "")))
+      assert(!f.controller.focusReference(f.captured.popups.head.anchor))
+      f.key(Key.Escape)
+      assert(!f.read(open))
+      f.key(Key.Space)
+      assertEquals(f.read(presses), 2, "the stored focus becomes usable after closing")
+    finally f.close()
+  }
+
+  test("an empty modal blocks text, composition and assistive edits while window shortcuts remain available") {
+    val f = new Fixture
+    try
+      val open = f.owner.cell(false)
+      val text = f.owner.cell("draft")
+      val anchor = f.owner.ref()
+      val local = f.owner.action("local", "Local")(_ => ())
+      val view = Column(
+        TextField.bind(text).label("Draft").ref(anchor),
+        Popup(open, anchor, modal = true)(Text("Please wait"))
+      ).shortcut(Chord.primary('k'), local)
+      ok(f.runtime.transact(f.mounted.update(view)))
+      f.frame()
+      f.click("Draft")
+      val id = f.part("Draft")._1
+      f.controller.handle(HostInput.Composition("に", 1, 0))
+      f.frame()
+      assert(f.controller.composingText)
+      ok(f.runtime.transact(open.set(true)))
+      f.frame()
+      assert(!f.controller.composingText)
+      assertEquals(f.controller.textElement, None)
+      f.controller.handle(HostInput.TextInput("blocked"))
+      f.controller.handle(HostInput.Composition("blocked", 7, 0))
+      f.key(Key.Backspace)
+      assertEquals(f.read(text), "draft")
+      assert(!f.controller.focusElement(id))
+      assert(!f.controller.accessibility(new NativeWindow.AccessibilityAction(f.generation, id, 3, 0, 0, "blocked")))
+      val focus = f.controller.interaction.inputFocus.map(_.id)
+      assertEquals(KeyboardRouting.local(f.captured, focus, Chord.primary('k')), None)
+      val menu = CapturedMenus(
+        Vector(MenuNode.Item(1, "Window command", Some(Chord.primary('k')), true, false)),
+        Map(1 -> MenuAction(MenuItem(local, Chord.primary('k')), Activation(true, _ => ()), None))
+      )
+      assert(KeyboardRouting.command(f.captured, focus, Chord.primary('k'), menu, CapturedMenus.empty).nonEmpty)
+      f.key(Key.Escape)
+      assert(!f.read(open))
+      assert(f.controller.textElement.nonEmpty)
+      f.controller.handle(HostInput.TextInput("ok"))
+      f.frame()
+      assert(f.read(text).contains("ok"))
     finally f.close()
   }

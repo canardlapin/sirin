@@ -233,6 +233,42 @@ class ElementHostSuite extends munit.FunSuite:
     finally
       r.close()
   }
+  test("opening a modal cancels a base element's pointer capture without delivering its later release") {
+    val r = new HeadlessRuntime
+    try
+      val owner = r.scope("modal-capture")
+      val open = owner.cell(false)
+      val value = owner.cell(0)
+      val anchor = owner.ref()
+      var phases = Vector.empty[PointerPhase]
+      val surface = new Surface:
+        override def pointer(event: PointerEvent)(using UiTxn): PointerResponse =
+          phases :+= event.phase
+          if event.phase == PointerPhase.Down then PointerResponse.Capture else PointerResponse.Handled
+      val mounted = r.mount(owner, Column(
+        element(value, surface).width(40.lp).height(40.lp).ref(anchor),
+        Popup(open, anchor, modal = true)(Spacer(20.lp))
+      ))
+      val interaction = new Interaction
+      val input = new ElementInput(r, interaction)
+      def settle(): Unit =
+        val tree = captured(r, mounted)
+        val result = layout(tree)
+        input.update(tree.elements)
+        interaction.install(InteractionSnapshot(1, result))
+        input.install(result)
+      settle()
+      input.pointer(HostInput.Down(5, 5))
+      assert(input.captured.nonEmpty)
+      ok(r.transact(open.set(true)))
+      settle()
+      assertEquals(input.captured, None)
+      assertEquals(phases, Vector(PointerPhase.Down, PointerPhase.Cancel))
+      input.pointer(HostInput.Up(5, 5))
+      assertEquals(phases, Vector(PointerPhase.Down, PointerPhase.Cancel))
+    finally r.close()
+  }
+
   test("render code cannot reuse an otherwise live committed graph reader") {
     val r = new HeadlessRuntime
     try

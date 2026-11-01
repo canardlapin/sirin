@@ -296,6 +296,44 @@ class TextInputSeamSuite extends munit.FunSuite:
     val unit = Signal.const(())
     Element(name, ElementInputs(unit, unit, unit, unit, Presentation.const(())), box, true, handlers = Some(handlers))
 
+  test("a focus-loss veto remains honored while a modal blocks keys to the retained base focus") {
+    var open = Option.empty[Cell[Boolean]]
+    var keys = 0
+    var lost = 0
+    val recorder = new ElementHandlers:
+      override def focus(event: FocusEvent)(using UiTxn): Unit =
+        if event == FocusEvent.Lost then
+          lost += 1
+          UiTxn.refuse("retain focus")
+      override def key(event: KeyEvent)(using UiTxn): Boolean =
+        keys += 1
+        true
+    val f = new Fixture(scope =>
+      val shown = scope.cell(false)
+      open = Some(shown)
+      val anchor = scope.ref()
+      Column(
+        focusable("base", recorder).ref(anchor),
+        Popup(shown, anchor, modal = true)(Button("Inside"))
+      )
+    )
+    try
+      val before = f.controller.interaction.state.focused
+      assert(before.nonEmpty)
+      ok(f.runtime.transact(open.get.set(true)))
+      f.settle()
+      assert(lost > 0)
+      assertEquals(f.controller.interaction.state.focused, before)
+      assertEquals(f.controller.interaction.inputFocus, None)
+      f.key(Key.Character('x'))
+      assertEquals(keys, 0)
+      f.key(Key.Escape)
+      assertEquals(ok(f.runtime.transact(open.get.get)), false)
+      f.key(Key.Character('x'))
+      assertEquals(keys, 1)
+    finally f.close()
+  }
+
   test("focus moves deliver Lost then Gained, a refused Lost vetoes the move and deactivation reports Lost") {
     val first = FocusRecorder("first")
     val second = FocusRecorder("second")
