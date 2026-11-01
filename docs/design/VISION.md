@@ -1247,6 +1247,10 @@ identity snapshot is observational; attachment, lifetime and focus policy remain
 as specified in §5. Missing or excluded targets are omitted. Text-field errors
 retain their direct description and expose the painted label through
 `describedBy`. See `docs/design/decisions/2026-11-01-native-semantic-relationships.md`.
+The pinned macOS adapter needs a direct-description fallback for textual
+`describedBy` targets; the bridge computes it from the same accepted tree while
+preserving explicit descriptions and the relationship. See
+`docs/design/decisions/2026-11-01-cocoa-description-fallback.md`.
 
 **Design system.** The design aims to be restrained, typographically strong,
 and canvas-first. It defines semantic color roles, coordinated density modes,

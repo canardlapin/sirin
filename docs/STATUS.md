@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for native semantic relationships. This page says, in plain
+Last updated 2026-11-01, for native Cocoa client checks. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -148,6 +148,17 @@ Sirin is a pre-release prototype. Nothing is published.
   error clears. A fresh packaged window showed and cleared the title error in
   both paint and its AX snapshot, with exact document bytes preserved. An AX
   click still failed to focus the field where a coordinate click succeeded.
+  A hidden-window Cocoa client now confirms that the native Focus setter queues
+  the exact field and that focus publication follows the active-view state;
+  TextField intentionally has no button Press action. This does not establish
+  what the automation tool's generic click sent. The client test also exposed
+  missing Cocoa Help for `describedBy` alone. The bridge now projects the linked
+  textual description into Help, preserving explicit descriptions and clearing
+  stale help on removal. Native role, checked state and disabled/retired action
+  checks pass. In a fresh production package, native accessibility value actions
+  changed Title, triggered validation and restored the original value; discard
+  on Quit preserved the saved document bytes.
+  [Cocoa client evidence](evidence/2026-11-01-cocoa-accessibility-client.md).
   Semantic-part focus and actual VoiceOver remain open.
   [Relationship evidence](evidence/2026-11-01-native-semantic-relationships.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames

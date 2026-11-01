@@ -70,6 +70,13 @@ ABI v4 adds label, description and active-descendant relationships plus collecti
 positions. Resolution uses live reference identity and the exposed window tree;
 text fields describe their painted error label and clear the link with the error.
 See [relationship evidence](../evidence/2026-11-01-native-semantic-relationships.md).
+An in-process Cocoa client now checks actual platform objects in a hidden window.
+It exposed missing Help for linked-only descriptions; the repaired bridge retains
+the relationship and supplies its textual fallback. Native Focus requests queue
+correctly and accepted focus follows the adapter's active-view state. These checks
+do not substitute for window activation or VoiceOver; the generic tool-click
+observation is still unqualified. See
+[Cocoa client evidence](../evidence/2026-11-01-cocoa-accessibility-client.md).
 Actual VoiceOver permission is pending; the broader acceptance outcomes and
 semantic-part focus stay open.
 Packaged recovery checks now preserve exact files across external-change

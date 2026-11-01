@@ -291,6 +291,7 @@ static void semantic_relationships(void) {
  assert(strstr(debug, "active_descendant: #131072"));
  assert(strstr(debug, "position_in_set: 2") && strstr(debug, "size_of_set: 100"));
  assert(strstr(debug, "value: \"Collection name\""));
+ assert(strstr(debug, "description: \"Help text\""));
  assert(!strstr(debug, "label: \"\"") && !strstr(debug, "description: \"\""));
  puts(debug);
  accesskit_string_free(debug);

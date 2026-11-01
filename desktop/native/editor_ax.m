@@ -64,6 +64,21 @@ static BOOL has_action(NSDictionary *field, int kind) {
   if([entry[@"kind"] intValue] == kind)return YES;
  return NO;
 }
+static NSString *description_for(NSDictionary *field, NSArray *fields) {
+ NSString *direct = field[@"help"];
+ if(direct.length)return direct;
+ NSNumber *target = field[@"describedBy"];
+ if(!target.longLongValue)return nil;
+ // The pinned Cocoa adapter does not derive Help from describedBy. Keep the
+ // relationship and project its bounded textual target into the native description.
+ for(NSDictionary *candidate in fields) {
+  if(![candidate[@"id"] isEqual:target])continue;
+  NSString *value = candidate[@"value"];
+  if([candidate[@"kind"] intValue] == 5 && value.length)return value;
+  return candidate[@"label"];
+ }
+ return nil;
+}
 static void extra_actions(struct accesskit_node *node, NSDictionary *field) {
  NSArray *actions = field[@"actions"];
  for(NSUInteger index = 0; index < actions.count; index++) {
@@ -104,7 +119,8 @@ static struct accesskit_tree_update *tree(void *raw) {
   accesskit_node_id base=control_id(f);int kind=[f[@"kind"] intValue];
   struct accesskit_node *node = [nodes[f[@"id"]] pointerValue];
   if([f[@"label"] length])accesskit_node_set_label(node,[f[@"label"] UTF8String]);
-  if([f[@"help"] length])accesskit_node_set_description(node,[f[@"help"] UTF8String]);
+  NSString *description = description_for(f, fields);
+  if(description.length)accesskit_node_set_description(node, description.UTF8String);
   if([f[@"labelledBy"] longLongValue])
    accesskit_node_push_labelled_by(node, [f[@"labelledBy"] unsignedLongLongValue] << 16);
   if([f[@"describedBy"] longLongValue])
