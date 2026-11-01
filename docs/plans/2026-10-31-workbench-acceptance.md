@@ -30,8 +30,13 @@ result. The goal stays open until the required application evidence exists.
   insufficient.
 - Continue a bounded causal investigation of P0.6 from its preserved
   standalone trap/conditional controls. Keep runtime pins and thresholds
-  unchanged without an explicit design decision. The original idle-host
-  600-second event/50 ms qualification remains required.
+  unchanged without an explicit design decision. The November 1 activation
+  diagnostic observes the restore tail and detects synthetic ownership failures;
+  three short saved-mask trials and one four-allocator follow-up complete without
+  observed overlap or lost signal-mask bits. Original controls still abort.
+  These private results require independent review and do not adopt a runtime.
+  The original idle-host 600-second event/50 ms qualification remains required.
+  See [activation evidence](../evidence/2026-11-01-native-activation.md).
 - State the application-provider gap explicitly. Shared Native test passes
   do not establish Native desktop delivery. Obtain the explicit delivery-order
   decision required by VISION before Alpha6; do not silently substitute JVM

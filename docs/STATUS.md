@@ -139,9 +139,14 @@ Sirin is a pre-release prototype. Nothing is published.
   four existing functions in the exact packaged library. These are binding
   checks, not a provider.
   On November 1, all six samples of the unchanged idle preflight failed, so
-  the original 600-second latency gate remains unrun. A source review also
-  identified the full trampoline lifetime as an unverified part of the private
-  saved-mask remedy. See [Native continuation evidence](evidence/2026-11-01-native-continuation.md).
+  the original 600-second latency gate remains unrun. A private diagnostic now
+  observes the full trampoline interval, including its restore tail. Original
+  controls still abort with a signal-mask mismatch; three short saved-mask trials
+  and a four-allocator follow-up complete without observed ownership errors or
+  loss of an unrelated blocked signal. These bounded, instrumented checks do not
+  adopt the remedy or qualify Native delivery.
+  [Activation evidence](evidence/2026-11-01-native-activation.md),
+  [idle-host evidence](evidence/2026-11-01-native-continuation.md).
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
   physical pointer drag and trackpad behavior remain unqualified. Packaged
   workbench modal decisions have been exercised with synthetic pointer and
