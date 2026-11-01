@@ -43,6 +43,9 @@ def main():
     version = re.search(r'^JAVA_VERSION="(\d+)', release, re.MULTILINE)
     if not version or int(version.group(1)) != manifest['jdk_major']:
         raise ValueError('Package with the JDK 25 runtime required by this SDK')
+    note_path = str(args.file.absolute()) if args.file else None
+    if note_path and any(char in note_path for char in '\n\r\0'):
+        raise ValueError('A launcher note path cannot contain a line break or NUL')
     root = Path(__file__).resolve().parent
     target = root / 'target'
     inputs = target / 'package-input'
@@ -62,16 +65,23 @@ def main():
                '--java-options', '-XstartOnFirstThread', '--java-options', '--enable-native-access=ALL-UNNAMED',
                '--java-options', '-Dsirin.desktop.library=$APPDIR/libsirin_desktop.dylib',
                '--java-options', '-Dsirin.repo=$APPDIR']
-    if args.file:
-        command += ['--arguments', '--file', '--arguments', str(args.file.absolute())]
     subprocess.run(command, check=True)
     app = output / 'SirinReviewPad.app'
+    if note_path:
+        # jpackage tokenizes --arguments on whitespace. The launcher's CFG stores
+        # each argument as one property, preserving spaces and quote characters.
+        config = app / 'Contents/app/SirinReviewPad.cfg'
+        text = config.read_text()
+        if '[ArgOptions]' in text:
+            raise ValueError('Unexpected launcher arguments in the generated image')
+        config.write_text(text + '\n[ArgOptions]\narguments=--file\narguments=' + note_path + '\n')
+        subprocess.run(['codesign', '--force', '--deep', '--sign', '-', str(app)], check=True)
     subprocess.run(['codesign', '--verify', '--deep', '--strict', str(app)], check=True)
     receipt = {'sdk_commit': manifest['source_commit'], 'sdk_dirty': manifest['source_dirty'],
                'sdk_manifest_sha256': hashlib.sha256((sdk / 'sdk.json').read_bytes()).hexdigest(),
                'application_jar_sha256': hashlib.sha256(args.jar.read_bytes()).hexdigest(),
                'native_library_sha256': hashlib.sha256((sdk / 'libsirin_desktop.dylib').read_bytes()).hexdigest(),
-               'configured_note': str(args.file.absolute()) if args.file else None}
+               'configured_note': note_path}
     (output / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     print('ReviewPad image: ' + str(app))
 

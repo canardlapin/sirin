@@ -25,6 +25,13 @@ Packager controls accept the original SDK and refuse a changed JAR, an unexpecte
 JAR and a mismatched JDK before packaging. Their receipts and the expected
 wrong-JDK failure are under `/private/tmp/sirin-public-starter-20261101`.
 
+A packaging check with `test documents/review.note` exposed `jpackage` splitting
+the configured path into two arguments. The starter now writes the launcher's
+one-property-per-argument CFG section and signs the modified image. The generated
+configuration contains exactly `--file` and the complete path, and signing
+verification passes. The original split CFG, corrected CFG and receipt are
+retained. Real launch remains a separate required check.
+
 ## Remaining verification
 
 Clean-checkout framework verification, fresh SDK export, independent consumer
