@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-31, for popup input repairs. This page says, in plain
+Last updated 2026-10-31, for workbench window checks. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -67,6 +67,14 @@ Sirin is a pre-release prototype. Nothing is published.
   focus and keyboard routing, editable text fields (undo, clipboard, marked-text
   composition), AccessKit accessibility, and a persistent document workbench with
   save, reopen, import and cancellation. Packaged `.app` builds exist.
+  A real-window check created, edited, saved and reopened exact test content.
+  Reopening after closing the last window exposed an AccessKit class-setup
+  crash, now repaired and checked in a native regression and a packaged window.
+  The native last-window close button still quits the process, contrary to the
+  application lifetime design; work stopped to report that disagreement.
+  Foreground Finder launch renders; background presentation and visual usability
+  remain under investigation.
+  [Window evidence](evidence/2026-10-31-workbench-window-lifecycle.md).
 
 ## What is partial
 

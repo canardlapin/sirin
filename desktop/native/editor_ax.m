@@ -121,13 +121,25 @@ static void action(const struct accesskit_action_request *request,void *raw) {
  }
 }
 static void action_owned(struct accesskit_action_request *request,void *raw) {action(request,raw);accesskit_action_request_free(request);}
+static void install_focus_forwarder(Class windowClass) {
+ NSCAssert(NSThread.isMainThread, @"AccessKit class setup requires main thread");
+ // AccessKit adds a method to the class and aborts if it is already present.
+ // The patch outlives individual adapters, including after the last window closes.
+ static NSMutableSet<NSString *> *patchedClasses;
+ if(!patchedClasses)patchedClasses = [NSMutableSet new];
+ NSString *name = NSStringFromClass(windowClass);
+ if(![patchedClasses containsObject:name]) {
+  accesskit_macos_add_focus_forwarder_to_window_class(name.UTF8String);
+  [patchedClasses addObject:name];
+ }
+}
 void *sirin_ax_open(SDL_Window *window,uint32_t wake) {
  if(!NSThread.isMainThread)return NULL;
  @autoreleasepool {
  NSWindow *native=(__bridge NSWindow*)SDL_GetPointerProperty(SDL_GetWindowProperties(window),SDL_PROP_WINDOW_COCOA_WINDOW_POINTER,NULL);if(!native)return NULL;
  SirinAccessKit *s=[SirinAccessKit new];s.alive=YES;s.fields=@[];s.pending=[NSMutableArray new];s.actions=[NSMutableArray new];s.windowId=SDL_GetWindowID(window);s.wakeType=wake;s.window=native;s.scale=native.backingScaleFactor;
  // AccessKit's class forwarding code has process lifetime, like the FFM library.
- accesskit_macos_add_focus_forwarder_to_window_class(NSStringFromClass(native.class).UTF8String);
+ install_focus_forwarder(native.class);
  s.adapter=accesskit_macos_subclassing_adapter_for_window((__bridge void*)native,tree,(__bridge void*)s,action_owned,(__bridge void*)s);
  return (__bridge_retained void*)s;
  }

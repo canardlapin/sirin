@@ -9,12 +9,12 @@ result. The goal stays open until the required application evidence exists.
 
 | Outcome | Evidence needed | Current position |
 |---|---|---|
-| Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Model, filesystem and controller tests exist; current package workflow needs real-window verification |
-| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | Automated coverage exists; actual application workflow remains to be exercised |
-| Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions reproduced; repairs and expanded tests in progress |
+| Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch round trip checked in a real window; broader workflow acceptance remains open |
+| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | AccessKit reopen crash repaired and checked in the package; last-window close-button exit violates the design and is reported |
+| Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
 | Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Native publication currently handles buttons and text fields only |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
-| Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Offscreen renders exist; current app requires visual review |
+| Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; narrow editor and extensive scrolling observed; layout and large-window acceptance remain open |
 | Public authoring | A separate public consumer implements one real feature using the documented API, builds/packages from a clean checkout, and completes its workflow | Independent review and starter workflow remain incomplete |
 | Matched comparison | One explicit equivalent workflow in Sirin and ScalaFX, with source, behavior and measured presentation path stated | Not yet performed |
 
@@ -50,7 +50,15 @@ result. The goal stays open until the required application evidence exists.
 5. Carry the Native investigation and explicit delivery decision alongside
    application progress; close neither from unrelated passing tests.
 
-Use the authoritative Mote store in the original checkout. The implementation
-worktree is `/private/tmp/sirin-popup-review-20261031` for the first repair.
+Popup prerequisite repairs landed on main at `1a3ca02`. The first real-window
+checks verified an exact persistence round trip and exposed repeated AccessKit
+class setup on window reopening. The native regression and packaged Command-W/Command-0 reopening pass with a
+process-lifetime guard. A separate close-button exit violates the documented
+application lifetime. Work stopped under AGENTS to report
+`bd-01M6AGHZWYQXQ9H63EPW16C77E`; application acceptance remains incomplete.
+
+Use the authoritative Mote store in the original checkout. The current worktree
+is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was
+retired after landing.
 Tranche issue: `bd-01M6AF7EAPRRC63YH4TQ3MF1SR`. Original alpha obligations
 remain tracked separately; this plan does not close any of them by inference.

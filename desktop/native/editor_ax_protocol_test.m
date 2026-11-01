@@ -3,12 +3,35 @@
 #include <assert.h>
 #include <pthread.h>
 
+@interface SirinFocusTestWindow : NSWindow
+@end
+@implementation SirinFocusTestWindow
+@end
+@interface SirinOtherFocusTestWindow : NSWindow
+@end
+@implementation SirinOtherFocusTestWindow
+@end
+
+static void repeated_window_class_setup(void) {
+ // Exercise the real AccessKit class patch without opening an application window.
+ install_focus_forwarder(SirinFocusTestWindow.class);
+ install_focus_forwarder(SirinOtherFocusTestWindow.class);
+ for(int i = 0; i < 3; i++) {
+  install_focus_forwarder(SirinFocusTestWindow.class);
+  install_focus_forwarder(SirinOtherFocusTestWindow.class);
+ }
+ assert([SirinFocusTestWindow instancesRespondToSelector:@selector(accessibilityFocusedUIElement)]);
+ assert([SirinOtherFocusTestWindow instancesRespondToSelector:@selector(accessibilityFocusedUIElement)]);
+ puts("AccessKit native lifecycle: repeated focus setup for two window classes passed");
+}
+
 static void *foreign_focus(void *raw) {
  accesskit_action_request request={0};request.target_node=7ULL<<16;request.action=ACCESSKIT_ACTION_FOCUS;
  action(&request,raw);return NULL;
 }
 int main(void) {
  @autoreleasepool {
+ repeated_window_class_setup();
  assert(SDL_Init(SDL_INIT_EVENTS));
  SirinAccessKit *s=[SirinAccessKit new];s.alive=YES;s.fields=@[];s.pending=[NSMutableArray new];s.actions=[NSMutableArray new];s.wakeType=SDL_RegisterEvents(1);s.scale=2;
  void *raw=(__bridge void*)s;double bounds[]={10,20,160,30};
