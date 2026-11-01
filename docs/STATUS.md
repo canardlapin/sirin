@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for workbench application viewport checks. This page says, in plain
+Last updated 2026-11-01, for workbench cancellation and overlapping-save checks. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -68,6 +68,12 @@ Sirin is a pre-release prototype. Nothing is published.
   focus and keyboard routing, editable text fields (undo, clipboard, marked-text
   composition), AccessKit accessibility, and a persistent document workbench with
   save, reopen, import and cancellation. Packaged `.app` builds exist.
+  A test-only storage wrapper made cancellation and queued saves observable in
+  the real UI: cancellation retained committed files, and completing older saves
+  left newer edits dirty. The normal package reopened the final exact saved body.
+  Ordinary imports completed too quickly to interrupt; injected latency is
+  explicit in the [workflow evidence](evidence/2026-11-01-workbench-controlled-work.md).
+  Oversized import review now explains the unchanged 128-document limit.
   Application windows now support up to 4096 by 3200 physical pixels under
   explicit cache and texture budgets. Packaged zoom, shrink/grow with unsaved
   edits, two enlarged windows, save and exact relaunch were checked. A transient

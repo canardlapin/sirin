@@ -4,13 +4,17 @@ import sirin.*
 import scala.concurrent.duration.*
 
 final case class DocumentImportPlan(source: String,entries: Vector[DocumentSummary]):
-  require(entries.size<=128 && entries.map(_.id).distinct.size==entries.size,"Import plan exceeds its budget or repeats an ID")
+  require(entries.size <= DocumentImportPlan.maxEntries && entries.map(_.id).distinct.size == entries.size,
+    "Import plan exceeds its budget or repeats an ID")
+object DocumentImportPlan:
+  val maxEntries: Int = 128
 enum DocumentImportOutcome:
   case Created(summary: DocumentSummary)
   case Failed(message: String)
 final case class DocumentImportRecord(id: DocumentId,outcome: DocumentImportOutcome)
 final case class DocumentImportReport(total: Int,processed: Int,created: Int,failed: Int):
-  require(total>=0 && total<=128 && processed>=0 && processed<=total && created>=0 && failed>=0 && created+failed==processed)
+  require(total >= 0 && total <= DocumentImportPlan.maxEntries && processed >= 0 && processed <= total &&
+    created >= 0 && failed >= 0 && created + failed == processed)
 trait DocumentImporter:
   def prepare(source: String): Work[DocumentImportPlan]
   def run(plan: DocumentImportPlan,output: Progress[DocumentImportRecord]): Work[DocumentImportReport]

@@ -7,12 +7,20 @@ import sirin.specimen.*
 
 /** Sequential public Work composition; no privileged execution or silent overwrite. */
 final class FileDocumentImporter(target: DocumentRepository) extends DocumentImporter:
-  def prepare(source: String): Work[DocumentImportPlan]=Work {
-    require(source.nonEmpty && source.length<=2048,"Invalid import directory")
-    val path=Path.of(source)
-    if !Files.isDirectory(path,LinkOption.NOFOLLOW_LINKS) then throw new IOException("Import source must be an existing directory.")
+  def prepare(source: String): Work[DocumentImportPlan] = Work {
+    require(source.nonEmpty && source.length <= 2048, "Invalid import directory")
+    val path = Path.of(source)
+    if !Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS) then
+      throw new IOException("Import source must be an existing directory.")
     path.toRealPath()
-  }.flatMap(path => new FileDocumentRepository(path,createDirectory=false).list("").map(entries => DocumentImportPlan(path.toString,entries)))
+  }.flatMap { path =>
+    new FileDocumentRepository(path, createDirectory = false).list("").map { entries =>
+      if entries.size > DocumentImportPlan.maxEntries then
+        throw new IOException(s"Import up to ${DocumentImportPlan.maxEntries} documents at a time. " +
+          "Choose a directory with fewer documents.")
+      DocumentImportPlan(path.toString, entries)
+    }
+  }
   def run(plan: DocumentImportPlan,output: Progress[DocumentImportRecord]): Work[DocumentImportReport] =
     val source=new FileDocumentRepository(Path.of(plan.source),createDirectory=false)
     plan.entries.foldLeft(Work {DocumentImportReport(plan.entries.size,0,0,0)}) { (previous,entry) =>

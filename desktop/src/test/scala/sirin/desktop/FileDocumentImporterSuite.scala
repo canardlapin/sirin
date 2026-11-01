@@ -105,3 +105,16 @@ class FileDocumentImporterSuite extends munit.FunSuite:
       assert(!Files.exists(sourcePath))
     }
   }
+
+  test("oversized import review explains the limit without creating target files") {
+    fixture { root =>
+      val source = new FileDocumentRepository(root.resolve("source"))
+      val targetPath = root.resolve("target")
+      val target = new FileDocumentRepository(targetPath)
+      (1 to 129).foreach(i => execute(source.create(data(i))))
+      val importer = new FileDocumentImporter(target)
+      val error = intercept[java.io.IOException](execute(importer.prepare(root.resolve("source").toString)))
+      assertEquals(error.getMessage, "Import up to 128 documents at a time. Choose a directory with fewer documents.")
+      assert(!Files.exists(targetPath), "review must not create the destination")
+    }
+  }

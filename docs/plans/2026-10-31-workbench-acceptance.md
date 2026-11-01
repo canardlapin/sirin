@@ -9,8 +9,8 @@ result. The goal stays open until the required application evidence exists.
 
 | Outcome | Evidence needed | Current position |
 |---|---|---|
-| Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch round trip checked in a real window; broader workflow acceptance remains open |
-| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | Real conflict/no-overwrite, save-copy, reload consent, partial-import receipts, zero-window draft retention and Quit consent checked; live cancellation remains open |
+| Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch and queued-save/newer-draft behavior checked in real windows, the latter with controlled storage latency; broader acceptance remains open |
+| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | Real conflict/no-overwrite, save-copy, reload consent, partial-import receipts, zero-window draft retention and Quit consent checked; live cancellation checked in a real window with controlled storage latency |
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
 | Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Dialog/label/checkbox/custom-part transport and shared ABI checks pass; fresh-package modal AX tree verified; actual VoiceOver and remaining semantic relationships are open |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
@@ -67,8 +67,12 @@ acceptance outcomes and remaining semantic relationships stay open.
 Packaged recovery checks now preserve exact files across external-change
 conflicts, copy/reload and partial import. Import review validity, local errors,
 readable receipts and stable navigation were repaired through public APIs.
-The attempted live cancellation completed too quickly to interrupt and remains
-unqualified. Keyboard input loss after switching back from Import to main was
+The natural-speed cancellation attempts completed too quickly to interrupt. A
+later test-only storage wrapper made the in-flight boundary observable in the
+real UI: Cancel retained three committed files with two delivered receipts and
+no later publication. Controlled queued saves also preserved newer unsaved
+edits, and the restored production package reopened the exact final save. See
+[controlled-work evidence](../evidence/2026-11-01-workbench-controlled-work.md). Keyboard input loss after switching back from Import to main was
 traced to native text-client ownership and repaired in the shared shim; both
 hidden-window and packaged keyboard handoffs now pass. A Native executable also
 checks the existing text/focus ABI in the exact packaged library. Closing an
