@@ -1275,6 +1275,12 @@ preserving explicit descriptions and the relationship. See
 and canvas-first. It defines semantic color roles, coordinated density modes,
 a type scale, visible focus, high contrast, and light and dark themes.
 Behavior and skin can be separated, but the default skin must be complete.
+The desktop application host captures an immutable light/dark semantic palette
+with each frame and follows system appearance events. Palette changes retire
+older frame requests and advance the theme-color epoch; only declared layout
+dependencies remeasure. See
+`docs/design/decisions/2026-11-01-system-colors.md`. Real system-switching and
+owner visual acceptance remain separate from rendering regression checks.
 
 ### 8.1 Visual reference suite *(new)*
 

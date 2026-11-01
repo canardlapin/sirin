@@ -11,6 +11,7 @@
 #include "accessibility.h"
 #include "text_input_owner.h"
 #include "text_input.h"
+#include "appearance.h"
 
 static _Atomic int live_requests;
 static int fault_stage;
@@ -152,6 +153,10 @@ int sirin_desktop_menu_poll(void *raw,int64_t *out){DesktopApp *a=raw;return app
 int sirin_desktop_menu_standard(void *raw,int kind){DesktopApp *a=raw;return app_owner(a)?sirin_menus_standard(a->menus,kind):1;}
 int sirin_desktop_app_live(void) {return live_apps;}
 int sirin_desktop_reduce_motion(void) {return sirin_menus_reduce_motion();}
+int sirin_desktop_system_theme(void *raw) {
+  if (!app_owner(raw)) return -1;
+  return (int)SDL_GetSystemTheme();
+}
 int sirin_desktop_app_wake(int serial,int wake_type) {
   SDL_Event event;SDL_zero(event);event.type=(uint32_t)wake_type;event.user.code=serial;
   return SDL_PushEvent(&event)?0:1;

@@ -53,15 +53,19 @@ private[sirin] object ButtonElement:
       ): Unit =
         val bounds = Rect(Point.origin, size)
         val base =
-          if state.primary then
-            Color.rgba(45, 90, 140)
+          if state.primary && state.enabled then
+            canvas.theme.color(ColorRole.Accent)
           else
-            Color.rgba(44, 53, 69)
+            canvas.theme.color(ColorRole.SurfaceRaised)
         canvas.fill(bounds, base)
+        if !state.primary || !state.enabled then canvas.stroke(bounds, canvas.theme.color(ColorRole.Border), 1.lp)
         val label = state.label
         val width = (size.width - 24.lp).max(Lp.zero)
         val text = canvas.textServices.layout(label.display, TextStyle.Body, label.width(width))
-        val color = canvas.theme.color(if state.enabled then ColorRole.OnSurface else ColorRole.Muted)
+        val color = canvas.theme.color(
+          if !state.enabled then ColorRole.Muted
+          else if state.primary then ColorRole.OnAccent
+          else ColorRole.OnSurface)
         if label.singleLine then
           val content = Rect(Point(12.lp, 8.lp), Size(width, (size.height - 16.lp).max(Lp.zero)))
           canvas.clipped(content) { clipped =>
@@ -93,7 +97,6 @@ private[sirin] object ButtonElement:
         paintOverlay(state, presentation, size, canvas, feedback)
 
       override def paintOverlay(
-          @unused
           state: State,
           @unused
           presentation: Unit,
@@ -105,10 +108,12 @@ private[sirin] object ButtonElement:
           c: Committed
       ): Unit =
         val bounds = Rect(Point.origin, size)
+        val contrast = if state.primary && state.enabled then ColorRole.OnAccent else ColorRole.Accent
         if feedback.pressed then
-          canvas.fill(bounds, Color.rgba(50, 130, 220, 46))
+          canvas.fill(bounds, canvas.theme.color(contrast).withAlpha(46))
         if feedback.focused && feedback.keyboard && size.width.toDouble > 0 && size.height.toDouble > 0 then
-          canvas.stroke(bounds, canvas.theme.color(ColorRole.FocusRing), 2.lp)
+          val ring = if state.primary && state.enabled then ColorRole.OnAccent else ColorRole.FocusRing
+          canvas.stroke(bounds, canvas.theme.color(ring), 2.lp)
 
       override def activation(state: State)(using
           @unused

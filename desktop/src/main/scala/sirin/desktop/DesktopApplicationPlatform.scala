@@ -78,11 +78,14 @@ private[desktop] final class DesktopApplicationSession(
     }
   )
   application.observe(mounted.snapshot)(_ => ())
-  followMotionPreference()
+  private var currentTheme = ThemeSnapshot()
+  private[desktop] def theme: ThemeSnapshot = currentTheme
+  followEnvironmentPreferences()
 
-  /** Reads the platform's Reduce Motion setting each loop turn, so a change applies from the next frame. */
-  private def followMotionPreference(): Unit =
+  /** Captures system colors and Reduce Motion each loop turn for the next frame. */
+  private def followEnvironmentPreferences(): Unit =
     val reduce = NativeApplication.reduceMotion()
+    currentTheme = DesktopAppearance.snapshot(native.systemTheme(), reduce)
     if reduce != runtime.reducedMotion then
       DevelopmentTheme.reducedMotion = reduce
       runtime.reducedMotion = reduce
@@ -260,7 +263,7 @@ private[desktop] final class DesktopApplicationSession(
         applicationWakes += 1
       if event.quit() then
         commands.requestQuit()
-      followMotionPreference()
+      followEnvironmentPreferences()
       val turn = runtime.drive(32)
       require(turn.failures.isEmpty, s"application driver failures: ${turn.failures}")
       sync()
@@ -588,7 +591,8 @@ private[desktop] final class ApplicationPeer(
       state.pressed.map(_.target),
       viewports,
       controller.textFocus.filter(_ => focusActive),
-      state.part.filter(_ => focusActive)
+      state.part.filter(_ => focusActive),
+      session.theme
     )
     renderRecovery
       .request(payload)

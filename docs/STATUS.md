@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for native Cocoa client checks. This page says, in plain
+Last updated 2026-11-01, for system appearance support. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -54,6 +54,14 @@ Sirin is a pre-release prototype. Nothing is published.
   real machine has not been tried.
   [Design](design/decisions/2026-10-30-motion.md),
   [evidence](evidence/2026-10-30-motion.md).
+- **Light and dark appearance.** The desktop application host captures the
+  system palette in each frame. Standard buttons, checkboxes and text fields
+  use semantic colors, including contrasting focus and press feedback.
+  Rendering checks preserve drafts and focus across palette changes, reject
+  obsolete frames, retain unchanged text shaping and compare cached output with
+  a fresh render. A native query matches SDL's current preference and rejects
+  invalid owners. Actual system switching, display-scale review and owner visual
+  acceptance remain open. [Evidence](evidence/2026-11-01-system-colors.md).
 - **Public diagram client.** Application code outside the `sirin` package uses
   Element, named Layout, commands and the graphics adapter for curved connections,
   gradient nodes, prepared labels, selection tools, drag/cancel, pan/zoom and bounded
@@ -147,6 +155,10 @@ Sirin is a pre-release prototype. Nothing is published.
   adopt the remedy or qualify Native delivery.
   [Activation evidence](evidence/2026-11-01-native-activation.md),
   [idle-host evidence](evidence/2026-11-01-native-continuation.md).
+  Appearance verification also recorded a Native test-runner startup timeout
+  before `TransactionSuite` connected. Its isolated unchanged run and one full
+  follow-up pass; the timeout's cause remains unexplained.
+  [Runner evidence](evidence/2026-11-01-system-colors.md).
 - **Linux Native reconciliation.** The original CI type error remains
   unexplained. A local Linux amd64 container replay passes the historical full
   suite and three smaller-heap testkit runs. The reconciliation property now

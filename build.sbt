@@ -501,6 +501,23 @@ lazy val probeAccessibilityNative = project
     Compile / nativeLink := ((Compile / nativeLink) dependsOn (desktopJVM / desktopNativeLibrary)).value
   )
 
+// System appearance ABI reachability, without a Native application-provider claim.
+lazy val probeAppearanceNative = project
+  .in(file("probes/appearance"))
+  .enablePlugins(ScalaNativePlugin)
+  .settings(
+    name := "sirin-appearance-abi-probe",
+    publish / skip := true,
+    Compile / mainClass := Some("sirin.probe.appearance.NativeAppearanceProbe"),
+    nativeConfig := {
+      val config = nativeConfig.value
+      val library = (ThisBuild / baseDirectory).value / "desktop" / "target" / "native"
+      config.withLinkingOptions(config.linkingOptions ++ Seq(
+        "-L" + library.toString, "-lsirin_desktop", "-Wl,-rpath," + library.toString))
+    },
+    Compile / nativeLink := ((Compile / nativeLink) dependsOn (desktopJVM / desktopNativeLibrary)).value
+  )
+
 // Existing text/focus ABI reachability, without a Native application-provider claim.
 lazy val probeTextInputNative = project
   .in(file("probes/text-input"))

@@ -161,6 +161,14 @@ requires checking ownership across the entire redirected trampoline lifetime;
 zero nested signal handlers alone does not establish it. Runtime defaults remain
 unchanged. See [Native continuation evidence](../evidence/2026-11-01-native-continuation.md).
 
+The application host now captures system light/dark colors with each frame.
+Palette changes retain drafts, text shaping and ordinary measurement caches;
+declared theme-dependent measurements invalidate. Both renderer paths check
+cached output against a fresh render and keep focus/press feedback visible on
+accent-filled controls. Native query ownership checks pass without creating a
+window. This does not qualify actual system switching or owner visual acceptance.
+See [appearance evidence](../evidence/2026-11-01-system-colors.md).
+
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was
 retired after landing.

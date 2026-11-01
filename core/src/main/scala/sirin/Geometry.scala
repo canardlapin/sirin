@@ -36,6 +36,9 @@ object Color:
     ((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff)
   extension (c: Color)
     def argb: Int = c
+    def withAlpha(alpha: Int): Color =
+      require(alpha >= 0 && alpha <= 255, "color alpha must be between 0 and 255")
+      (c & 0x00ffffff) | (alpha << 24)
 
 /** Finite affine paint transform, composed by the standalone graphics backend. */
 final case class Transform2D(a: Double, b: Double, c: Double, d: Double, tx: Double, ty: Double):

@@ -174,21 +174,21 @@ private[sirin] object TextFieldElement:
         canvas.fill(
           border,
           if shown.measured.error.nonEmpty then
-            Color.rgba(222, 100, 100)
+            theme.color(ColorRole.Danger)
           else
-            Color.rgba(89, 103, 126)
+            theme.color(ColorRole.Border)
         )
         canvas.fill(
           Rect(
             Point(1.lp, border.origin.y + 1.lp),
             Size((border.size.width - 2.lp).max(Lp.zero), (border.size.height - 2.lp).max(Lp.zero))
           ),
-          Color.rgba(28, 34, 46)
+          theme.color(ColorRole.SurfaceRaised)
         )
         g.label.foreach(t => canvas.text(t, Point.origin, theme.color(ColorRole.OnSurface)))
         g.error
           .foreach(t =>
-            canvas.text(t, Point(Lp.zero, border.origin.y + border.size.height + 2.lp), Color.rgba(255, 145, 145))
+            canvas.text(t, Point(Lp.zero, border.origin.y + border.size.height + 2.lp), theme.color(ColorRole.Danger))
           )
         canvas.clipped(g.area(size)) { inner =>
           val layout = g.layout
@@ -201,7 +201,7 @@ private[sirin] object TextFieldElement:
           val selection = shown.snapshot.visibleSelection
           if feedback.focused && !selection.empty then
             selected(selection.start, selection.end)
-              .foreach(r => inner.fill(r.bounds.translate(origin), Color.rgba(62, 110, 169)))
+              .foreach(r => inner.fill(r.bounds.translate(origin), theme.color(ColorRole.Selection)))
           if layout.text.isEmpty then
             g.hint.foreach(t => inner.text(t, origin, theme.color(ColorRole.Muted)))
           else

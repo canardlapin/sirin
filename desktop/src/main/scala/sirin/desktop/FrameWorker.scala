@@ -44,19 +44,7 @@ object DevelopmentTheme extends Theme:
   def reducedMotion: Boolean = reduced
   private[desktop] def reducedMotion_=(value: Boolean): Unit = reduced = value
   def color(role: ColorRole): Color =
-    role match
-      case ColorRole.Surface =>
-        Color.rgba(20, 25, 35)
-      case ColorRole.SurfaceRaised =>
-        Color.rgba(32, 39, 53)
-      case ColorRole.OnSurface =>
-        Color.rgba(230, 233, 239)
-      case ColorRole.Muted =>
-        Color.rgba(158, 170, 190)
-      case ColorRole.Accent =>
-        Color.rgba(115, 185, 248)
-      case _ =>
-        Color.rgba(215, 223, 238)
+    ThemeSnapshot().color(role)
 
 trait RenderBackend extends OwnedRenderBackend[FrameRequest, FrameOutput]
 
@@ -75,12 +63,17 @@ final class RenderSession(
   private val elementMeasurements = new ElementMeasureCache
   private var displayScale = Option.empty[(Double, Double)]
   private var displayEpoch = 0L
+  private var colors = Option.empty[ColorScheme]
+  private var colorEpoch = 0L
   private def phaseEpochs(payload: FramePayload): PhaseEpochs =
     val scale = (payload.pixelWidth / payload.logicalWidth, payload.pixelHeight / payload.logicalHeight)
     if !displayScale.contains(scale) then
       displayScale = Some(scale)
       displayEpoch = Math.addExact(displayEpoch, 1L)
-    PhaseEpochs(displayScale = displayEpoch)
+    if !colors.contains(payload.theme.scheme) then
+      colors = Some(payload.theme.scheme)
+      colorEpoch = Math.addExact(colorEpoch, 1L)
+    PhaseEpochs(displayScale = displayEpoch, themeColors = colorEpoch)
   private val unicode = NativeUnicode.open()
   private val faces = scala.collection.mutable.Map.empty[TextStyle, Vector[NativeFont]]
   private val extraFaces = scala.collection.mutable.Map.empty[sirin.graphics.ResolvedFont, NativeFont]
@@ -259,7 +252,7 @@ final class RenderSession(
             return LayoutFeedback(request, layout)
           val layoutAt = System.nanoTime()
           layoutNanos = layoutAt - began
-          val drawing = layout.drawing(DevelopmentTheme, textFocus = payload.textFocus)
+          val drawing = layout.drawing(payload.theme, textFocus = payload.textFocus)
           val target = gpu
             .target(payload.pixelWidth, payload.pixelHeight, 1)
             .copy(logicalToDevice =
@@ -274,7 +267,7 @@ final class RenderSession(
           (layout, target, (base.programBytes, base.readbackBytes, base.maskBytes), tiles.lastProfile)
     val scale = target.logicalToDevice
     val inverse = scale.inverse.get
-    val overlay = layout.overlay(DevelopmentTheme, payload.focus, payload.keyboardFocus, payload.pressed)
+    val overlay = layout.overlay(payload.theme, payload.focus, payload.keyboardFocus, payload.pressed)
     val composed = sirin
       .graphics
       .Drawing
@@ -397,14 +390,14 @@ final class RenderSession(
                     Affine.scale(payload.pixelWidth / payload.logicalWidth, payload.pixelHeight / payload.logicalHeight)
                   )
                 val base = preparation
-                  .prepare(layout.drawing(DevelopmentTheme, textFocus = payload.textFocus), target, control = control)
+                  .prepare(layout.drawing(payload.theme, textFocus = payload.textFocus), target, control = control)
                   .fold(e => throw new IllegalStateException(e.toString), identity)
                 prepared += 1
                 gpuBase = Some((baseKey, layout, base))
                 (layout, base)
           val overlay = preparation
             .prepare(
-              layout.overlay(DevelopmentTheme, payload.focus, payload.keyboardFocus, payload.pressed),
+              layout.overlay(payload.theme, payload.focus, payload.keyboardFocus, payload.pressed),
               base.target,
               control = control
             )

@@ -56,7 +56,7 @@ private[sirin] object CheckboxElement:
           canvas.fill(mark, theme.color(ColorRole.Accent), 3.lp)
           val x = mark.origin.x.toDouble
           val y = mark.origin.y.toDouble
-          val ink = theme.color(ColorRole.Surface)
+          val ink = theme.color(ColorRole.OnAccent)
           canvas.line(Point(Lp(x + 4), Lp(y + 8)), Point(Lp(x + 7), Lp(y + 11)), ink, 2.lp)
           canvas.line(Point(Lp(x + 7), Lp(y + 11)), Point(Lp(x + 12), Lp(y + 5)), ink, 2.lp)
         else
@@ -70,7 +70,6 @@ private[sirin] object CheckboxElement:
         paintOverlay(state, presentation, size, canvas, feedback)
 
       override def paintOverlay(
-          @unused
           state: State,
           @unused
           presentation: Unit,
@@ -83,9 +82,12 @@ private[sirin] object CheckboxElement:
       ): Unit =
         val mark = square(size)
         if feedback.pressed then
-          canvas.fill(mark, Color.rgba(50, 130, 220, 46), 3.lp)
+          val contrast = if state.checked then ColorRole.OnAccent else ColorRole.Accent
+          canvas.fill(mark, canvas.theme.color(contrast).withAlpha(46), 3.lp)
         if feedback.focused && feedback.keyboard then
-          canvas.stroke(mark, canvas.theme.color(ColorRole.FocusRing), 2.lp, 3.lp)
+          val ring = if state.checked then ColorRole.OnAccent else ColorRole.FocusRing
+          // A square focus border stays bounded in the reference renderer's stroke expansion.
+          canvas.stroke(mark, canvas.theme.color(ring), 2.lp)
 
       override def activation(state: State)(using
           @unused

@@ -9,6 +9,9 @@ import sirin.graphics as g
 /** The presentation input is the drag lift, 0 to 1: paint only, so it never reaches hit testing or semantics. */
 private[diagram] object DiagramSurface extends Element[Unit, DiagramScene, DiagramScene, DiagramScene, Double]:
   private val labelWidth = 108.lp
+  private def color(theme: Theme, role: ColorRole): g.Color =
+    val argb = theme.color(role).argb
+    g.Color.rgba8((argb >>> 16) & 255, (argb >>> 8) & 255, argb & 255, argb >>> 24)
   private def visible(scene: DiagramScene, viewport: Size): Vector[DiagramNode] =
     scene.graph.nodes.filter(DiagramGeometry.visible(_, scene.camera, viewport))
   override def textRequests(scene: DiagramScene, @unused lift: Double, viewport: Size)(using
@@ -48,7 +51,7 @@ private[diagram] object DiagramSurface extends Element[Unit, DiagramScene, Diagr
         scene.graph.edges.flatMap(edge(scene, _, viewport)).foreach { path =>
           world.graphics.stroke(
             path,
-            g.Paint.Solid(g.Color.rgba8(110, 145, 185)),
+            g.Paint.Solid(color(world.theme, ColorRole.Border)),
             g.StrokeStyle.logical(1.5.lp)
           )
         }
@@ -73,8 +76,8 @@ private[diagram] object DiagramSurface extends Element[Unit, DiagramScene, Diagr
             g.Point(node.at.x, node.at.y),
             g.Point(node.at.x, node.at.y + DiagramGeometry.nodeSize.height),
             Vector(
-              g.ColorStop(0, g.Color.rgba8(49, 70, 95)),
-              g.ColorStop(1, g.Color.rgba8(30, 43, 61))
+              g.ColorStop(0, color(world.theme, ColorRole.SurfaceRaised)),
+              g.ColorStop(1, color(world.theme, ColorRole.Surface))
             )
           )
           world.graphics.fill(path, paint)

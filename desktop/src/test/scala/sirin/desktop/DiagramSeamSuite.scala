@@ -45,7 +45,7 @@ class DiagramSeamSuite extends munit.FunSuite:
     var pixels = Option.empty[g.ImageSnapshot]
     var tileCount = 0
     def gpuStats: Option[sirin.render.BatchGpuStats] = batch.map(_.stats)
-    def frame(capture: Boolean = false): LayoutResult =
+    def frame(capture: Boolean = false, scheme: ColorScheme = ColorScheme.Dark): LayoutResult =
       runtime.drive(128)
       val tree = runtime.present(
         runtime.withCommitted(reader =>
@@ -69,7 +69,8 @@ class DiagramSeamSuite extends munit.FunSuite:
           focus.focused,
           focus.keyboard,
           focus.pressed.map(_.target),
-          textFocus = controller.textFocus
+          textFocus = controller.textFocus,
+          theme = ThemeSnapshot(scheme)
         )
       )
       val output = renderer.render(request, () => false).asInstanceOf[RenderedFrame]
@@ -94,6 +95,24 @@ class DiagramSeamSuite extends munit.FunSuite:
       renderer.close()
       unicode.close()
       runtime.close()
+
+  test("public diagram colors follow the palette without changing geometry or reshaping labels") {
+    for direct <- Vector(false, true) do
+      val fixture = new Fixture(direct = direct)
+      try
+        val dark = fixture.frame(capture = true)
+        val darkPixels = fixture.pixels.get.pixelsCopy.toVector
+        val shaped = fixture.renderer.shaped
+        val light = fixture.frame(capture = true, scheme = ColorScheme.Light)
+        assertEquals(light.semanticParts, dark.semanticParts)
+        assertEquals(fixture.renderer.shaped, shaped)
+        assert(fixture.pixels.get.pixelsCopy.toVector != darkPixels)
+        FrameWorker.save(fixture.pixels.get, Path.of(s"target/appearance/diagram-$direct-light.png"))
+        fixture.frame(capture = true)
+        assertEquals(fixture.pixels.get.pixelsCopy.toVector, darkPixels)
+        assertEquals(fixture.renderer.shaped, shaped)
+      finally fixture.close()
+  }
 
   test("presented pointer capture, wheel, keyboard and semantic actions drive one public diagram") {
     val fixture = new Fixture()

@@ -5,7 +5,9 @@ final case class FramePayload(tree: Node, logicalWidth: Double, logicalHeight: D
     /** The focused text control, which a cached base drawing must paint as focused. */
     textFocus: Option[NodeId] = None,
     /** Advances native focus publication even when the element's drawing does not change. */
-    focusPart: Option[sirin.PartId] = None)
+    focusPart: Option[sirin.PartId] = None,
+    /** Immutable appearance captured by the UI owner for this generation. */
+    theme: sirin.ThemeSnapshot = sirin.ThemeSnapshot())
 final case class FrameRequest(generation: Long, payload: FramePayload)
 
 /** Owner-only generation gate. Immutable worker results never advance it. */

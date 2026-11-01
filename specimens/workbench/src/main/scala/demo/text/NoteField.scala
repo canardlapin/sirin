@@ -68,7 +68,7 @@ object NoteField:
           if feedback.focused && !shown.isEmpty then
             line
               .selection(shown.start, shown.end)
-              .foreach(r => inner.fill(r.bounds.translate(at), Color.rgba(50, 130, 220, 90)))
+              .foreach(r => inner.fill(r.bounds.translate(at), inner.theme.color(ColorRole.Selection)))
           inner.text(line, at, inner.theme.color(ColorRole.OnSurface))
           state
             .composition
@@ -78,14 +78,16 @@ object NoteField:
                 .foreach { r =>
                   val b = r.bounds.translate(at)
                   val y = b.origin.y + b.size.height
-                  inner.line(Point(b.origin.x, y), Point(b.origin.x + b.size.width, y), Color.rgba(220, 220, 220), 1.lp)
+                  val ink = inner.theme.color(ColorRole.Accent)
+                  inner.line(Point(b.origin.x, y), Point(b.origin.x + b.size.width, y), ink, 1.lp)
                 }
             }
           if feedback.focused then
             caret(state, line)
               .foreach { c =>
                 val b = c.bounds.translate(at)
-                inner.line(b.origin, Point(b.origin.x, b.origin.y + b.size.height), Color.rgba(240, 240, 240), 1.lp)
+                val ink = inner.theme.color(ColorRole.Accent)
+                inner.line(b.origin, Point(b.origin.x, b.origin.y + b.size.height), ink, 1.lp)
               }
         }
         if feedback.focused && feedback.keyboard then

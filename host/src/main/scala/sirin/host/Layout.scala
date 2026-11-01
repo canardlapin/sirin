@@ -82,15 +82,14 @@ final case class LayoutResult(
             case Content.Button(_, _, enabled, _, primary) =>
               def rectangle(b: Box) = Rect(Point(b.x.lp, b.y.lp), Size(b.width.lp, b.height.lp))
               val base =
-                if pressed.contains(p.node.id) then
-                  Color.rgba(65, 112, 160)
-                else if primary then
-                  Color.rgba(45, 90, 140)
+                if primary && enabled then
+                  theme.color(ColorRole.Accent)
                 else
-                  Color.rgba(44, 53, 69)
+                  theme.color(ColorRole.SurfaceRaised)
               val focused = keyboardFocus && focus.contains(p.node.id)
               if focused then
-                canvas.fill(rectangle(p.bounds), theme.color(ColorRole.Accent))
+                val ring = if primary && enabled then ColorRole.OnAccent else ColorRole.FocusRing
+                canvas.fill(rectangle(p.bounds), theme.color(ring))
               val inner =
                 if focused then
                   Box(p.bounds.x + 2, p.bounds.y + 2, math.max(0, p.bounds.width - 4), math.max(0, p.bounds.height - 4))
@@ -101,10 +100,12 @@ final case class LayoutResult(
                 p.text.get,
                 Point((p.bounds.x + 12).lp, (p.bounds.y + 8).lp),
                 theme.color(
-                  if enabled then
-                    ColorRole.OnSurface
-                  else
+                  if !enabled then
                     ColorRole.Muted
+                  else if primary then
+                    ColorRole.OnAccent
+                  else
+                    ColorRole.OnSurface
                 )
               )
             case Content.Custom(frame) =>
@@ -126,7 +127,7 @@ final case class LayoutResult(
         if layers.exists(_.placed eq p) then
           val b = Rect(Point(p.bounds.x.lp, p.bounds.y.lp), Size(p.bounds.width.lp, p.bounds.height.lp))
           // Nested fills keep the rounded border bounded in the reference renderer.
-          canvas.fill(b, theme.color(ColorRole.Muted), 6.lp)
+          canvas.fill(b, theme.color(ColorRole.Border), 6.lp)
           val inner = Rect(
             Point((p.bounds.x + 1).lp, (p.bounds.y + 1).lp),
             Size(math.max(0, p.bounds.width - 2).lp, math.max(0, p.bounds.height - 2).lp)
@@ -152,13 +153,15 @@ final case class LayoutResult(
                   ElementFeedback(focus.contains(p.node.id), keyboard, pressed.contains(p.node.id))
                 )
               }
-            case Content.Button(_, _, _, _, _) =>
+            case Content.Button(_, _, enabled, _, primary) =>
               val b = p.bounds
               if pressed.contains(p.node.id) then
-                canvas.fill(rect(b), Color.rgba(50, 130, 220, 46))
+                val contrast = if primary && enabled then ColorRole.OnAccent else ColorRole.Accent
+                canvas.fill(rect(b), theme.color(contrast).withAlpha(46))
               if keyboard && focus.contains(p.node.id) then
                 val thickness = math.min(2, math.min(b.width, b.height) / 2)
-                val color = theme.color(ColorRole.Accent)
+                val ring = if primary && enabled then ColorRole.OnAccent else ColorRole.FocusRing
+                val color = theme.color(ring)
                 Vector(
                   Box(b.x, b.y, b.width, thickness),
                   Box(b.x, b.y + b.height - thickness, b.width, thickness),
