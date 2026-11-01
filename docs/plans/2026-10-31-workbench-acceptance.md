@@ -99,7 +99,8 @@ typing after observing restored focus succeeds. A controlled render delay traced
 the failure to native text input remaining disabled before restored focus is
 presented. The repair prepares native transport for the surviving restore field
 and queues delivery until accepted presentation. Controller regressions pass;
-repaired diagnostic and production window verification remain pending approval.
+two repaired diagnostic-window trials with a 200 ms render delay now retain
+all immediately typed characters. Production-window verification remains pending.
 The defect stays open. See
 [text-handoff evidence](../evidence/2026-11-01-popup-text-handoff.md).
 The independent ReviewPad consumer now builds and packages from a committed

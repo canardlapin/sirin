@@ -183,8 +183,9 @@ Sirin is a pre-release prototype. Nothing is published.
   after observing the restored field succeeds. A controlled render delay traced
   the loss to disabled native text transport before restored focus is presented.
   A repair prepares transport early and queues delivery until presentation;
-  controller regressions pass. Repaired real-window verification remains pending,
-  so input acceptance stays open.
+  controller regressions and two real-window trials with a diagnostic 200 ms
+  render delay pass without losing text. An uninstrumented production-window
+  repeat remains pending, so input acceptance stays open.
   [Text-handoff evidence](evidence/2026-11-01-popup-text-handoff.md).
   [Relationship evidence](evidence/2026-11-01-native-semantic-relationships.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames
