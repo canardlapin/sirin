@@ -294,12 +294,53 @@ lazy val workbench = crossProject(JVMPlatform, NativePlatform)
   .settings(name := "sirin-workbench-specimen", publish / skip := true, testDeps)
 
 // Competent JavaFX-backed authoring baseline; compile explicitly with JDK 25+.
+lazy val scalafxWorkbenchPackage = taskKey[File]("Package the independent ScalaFX persistent workbench")
+def comparisonJavaFxModules(classpath: Seq[File]): Seq[File] = {
+  val modules = classpath.filter(_.getName.matches("javafx-(base|graphics|controls)-26-mac-aarch64.jar"))
+  require(modules.size == 3, "ScalaFX acceptance requires the three pinned JavaFX 26 macOS ARM64 modules")
+  modules
+}
 lazy val scalafxWorkbench = project
   .in(file("specimens/scalafx-workbench"))
   .settings(
     name := "sirin-scalafx-comparison",
     publish / skip := true,
-    libraryDependencies += "org.scalafx" %% "scalafx" % "26.0.0-R38"
+    libraryDependencies += "org.scalafx" %% "scalafx" % "26.0.0-R38",
+    libraryDependencies += "org.scalameta" %% "munit" % munitV % Test,
+    Test / fork := true,
+    Test / parallelExecution := false,
+    Test / javaOptions ++= Seq(
+      "--module-path", comparisonJavaFxModules((Test / dependencyClasspath).value.map(_.data))
+        .mkString(java.io.File.pathSeparator),
+      "--add-modules=javafx.controls",
+      "--enable-native-access=javafx.graphics"
+    ),
+    scalafxWorkbenchPackage := {
+      import scala.sys.process._
+      val home = file(sys.props("java.home"))
+      val output = target.value / "package"
+      val input = target.value / "package-input"
+      val compiled = (Compile / packageBin).value
+      val dependencies = (Runtime / dependencyClasspath).value.map(_.data).filter(_.isFile)
+      val modules = comparisonJavaFxModules(dependencies)
+      require(!dependencies.exists(_.getName.startsWith("sirin-")), "Baseline must not depend on Sirin")
+      IO.delete(input)
+      IO.delete(output)
+      IO.createDirectory(input)
+      dependencies.filterNot(jar => jar.getName.startsWith("javafx-") || jar.getName.startsWith("jdk-jsobject"))
+        .foreach(jar => IO.copyFile(jar, input / jar.getName))
+      modules.foreach(jar => IO.copyFile(jar, input / "javafx" / jar.getName))
+      IO.copyFile(compiled, input / "workbench.jar")
+      val command = Seq((home / "bin/jpackage").toString, "--type", "app-image",
+        "--name", "ScalaFXWorkbench", "--dest", output.toString, "--input", input.toString,
+        "--main-jar", "workbench.jar", "--main-class", "sirin.comparison.PersistentWorkbench",
+        "--runtime-image", home.toString, "--mac-package-identifier", "io.github.canardlapin.sirin.scalafx",
+        "--java-options", "--module-path=$APPDIR/javafx",
+        "--java-options", "--add-modules=javafx.controls",
+        "--java-options", "--enable-native-access=javafx.graphics")
+      require(Process(command, baseDirectory.value).! == 0, "ScalaFX package failed")
+      output / "ScalaFXWorkbench.app"
+    }
   )
 
 // Bounded JDK25 FFM development host. Deliberately not root-aggregated: invoke

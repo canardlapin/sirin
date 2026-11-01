@@ -16,7 +16,11 @@ result. The goal stays open until the required application evidence exists.
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
 | Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; default and larger windows, visible decisions, resize draft retention and exact saving checked; smooth live resize and remaining appearance/display checks stay open |
 | Public authoring | A separate public consumer implements one real feature using the documented API, builds/packages from a clean checkout, and completes its workflow | ReviewPad persists notes and review status through public APIs; clean framework/SDK and independent consumer builds pass; real-window approval and workflow acceptance remain pending |
-| Matched comparison | One explicit equivalent workflow in Sirin and ScalaFX, with source, behavior and measured presentation path stated | Not yet performed |
+| Matched comparison | One explicit equivalent workflow in Sirin and ScalaFX, with source, behavior and measured presentation path stated | Persistent ScalaFX app builds and passes 16 checks; paired visible operation and measurements remain open |
+
+The [matched persistent task plan](2026-11-01-matched-persistent-workbench.md)
+now defines the first paired visible session. Its ScalaFX baseline is packaged;
+test and offscreen results are prerequisites, not comparison acceptance.
 
 ## Scala Native is a required parallel track
 

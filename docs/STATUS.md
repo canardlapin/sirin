@@ -210,6 +210,13 @@ Sirin is a pre-release prototype. Nothing is published.
   it clears its sample and preserves application quit policy. Actual window
   operation, complete per-phase invalidation and latency qualification stay open.
   [Inspector guide](tooling/runtime-inspection.md).
+  A persistent ScalaFX baseline now builds and packages with native JavaFX
+  controls, asynchronous save/search, retained drafts and import receipts.
+  Six storage and ten workspace/control checks pass, including compact offscreen
+  layouts. Its isolated app passes signature and bundled-module checks; visible
+  operation and paired comparison are still pending.
+  [ScalaFX evidence](evidence/2026-11-01-scalafx-persistent-workbench.md) and
+  [matched task plan](plans/2026-11-01-matched-persistent-workbench.md).
   The diagram still needs real pointer and accessibility acceptance.
 - Windows and Linux desktop hosts. Those platforms are CI-only.
 
