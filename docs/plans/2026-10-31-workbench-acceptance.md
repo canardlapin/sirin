@@ -83,6 +83,12 @@ modality, removal, veto and exact popup restoration; a hidden Cocoa client
 confirms non-first graphic-part focus. Part-only changes republish native focus
 without invalidating the base drawing cache. See
 [part-focus evidence](../evidence/2026-11-01-semantic-part-focus.md).
+Bounded owner-thread runtime inspection now copies scope/signal identities,
+dependencies, revisions, committed change causes, command refusals and work flags.
+A workbench regression diagnoses a disabled save through its empty-title input
+without advancing work or changing the graph. The visible inspector, full
+per-phase invalidation and render/cache diagnostics remain open. See
+[runtime inspection](../tooling/runtime-inspection.md).
 Actual VoiceOver permission is pending; the broader acceptance outcomes stay open.
 The final part-focus package exposed a further coherent-input defect: immediate
 typing after Escape dismisses the dirty-quit popup can lose its prefix, while

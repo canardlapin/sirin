@@ -88,6 +88,49 @@ class DocumentWorkspaceSuite extends munit.FunSuite:
         case _ => Vector.empty
       loop(value(r,mounted.snapshot))
     def close(): Unit=r.close()
+  test("runtime inspection diagnoses a refused workbench save without changing the application") {
+    val fixture = new Fixture
+    try
+      val document = fixture.open(a)
+      ok(fixture.r.transact { document.editor.title.set("") })
+      assertEquals(ok(fixture.r.transact { document.editor.save.dispatch(()) }), Dispatched.Refused("command disabled"))
+      val limits = InspectionLimits(nodes = 8192, edges = 8192, commands = 256)
+      val snapshot = fixture.r.inspect(limits, includeValues = true)
+      val save = snapshot.commands.rows.find(_.name == "document.save").get
+      assertEquals(save.enabled, Some(false))
+      assertEquals(save.running, Some(0))
+      assertEquals(save.refusal, Some("command disabled"))
+      assert(save.enabledNode.nonEmpty)
+      val dependencyInputs = snapshot.edges.rows.groupMap(_.node)(_.input)
+      var pending = save.enabledNode.toVector
+      var visited = Set.empty[Long]
+      while pending.nonEmpty do
+        val node = pending.head
+        pending = pending.tail
+        if !visited(node) then
+          visited += node
+          pending ++= dependencyInputs.getOrElse(node, Vector.empty)
+      val inputs = snapshot.nodes.rows.filter(n => visited(n.id))
+      assert(inputs.exists(n => n.kind == "cell" && n.preview.contains("")))
+      assert(inputs.exists(_.preview.contains("false")))
+      val before = fixture.r.lifetimes
+      val start = System.nanoTime()
+      val samples = Vector.fill(25) {
+        val began = System.nanoTime()
+        val copied = fixture.r.inspect()
+        assert(copied.nodes.rows.size <= 512)
+        System.nanoTime() - began
+      }.sorted
+      assertEquals(fixture.r.lifetimes, before)
+      assertEquals(fixture.r.inspect(limits, includeValues = true), snapshot)
+      println(s"inspection-workbench scopes=${snapshot.scopes.total} nodes=${snapshot.nodes.total} " +
+        s"edges=${snapshot.edges.total} commands=${snapshot.commands.total} samples=25 " +
+        s"medianNs=${samples(12)} p95Ns=${samples(23)} elapsedNs=${System.nanoTime() - start}")
+      println(s"inspection-diagnosis command=${save.name} refusal=${save.refusal} " +
+        s"enabledNode=${save.enabledNode} dependencyNodes=${visited.size} emptyTitle=true")
+    finally fixture.close()
+  }
+
   test("visible workspace retains drafts and actual field identities through refresh, reorder, filter and outlet move") {
     val f=new Fixture
     try

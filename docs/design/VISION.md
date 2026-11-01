@@ -396,7 +396,11 @@ further.
 
 Dependencies are explicit through signal composition. We do not discover them
 from arbitrary reads. The inspector can answer "why did this frame happen" by
-walking the recorded causes.
+walking the recorded causes. Bounded owner-thread runtime inspection copies only
+committed diagnostic metadata, never evaluates user code or advances work, and
+uses IDs separate from kernel identity. Last-value-change causes do not claim
+complete per-phase invalidation history. See
+`docs/design/decisions/2026-11-01-runtime-inspection.md`.
 
 A **reference evaluator** recomputes everything from scratch. Property tests
 assert that the incremental engine and the reference evaluator agree on

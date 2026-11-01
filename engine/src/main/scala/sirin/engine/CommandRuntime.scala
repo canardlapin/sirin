@@ -18,6 +18,7 @@ private[engine] final class RuntimeCommand[A, S, R](val runtime: HeadlessRuntime
     case Value.Ok(value) => value
     case Value.Failed(error) => runtime.note(error); false
   }
+  runtime.registerInspectionCommand(owner, name, label, count, refusal, enabled)
   def enabledFor(arg: Signal[A]): Signal[Boolean] = enabled.zip(argumentEnabled.attempt).zip(arg).map {
     case ((general, Value.Ok(predicate)), value) =>
       try general && runtime.lawful(predicate(value))

@@ -121,6 +121,21 @@ final class HeadlessRuntime(
   private val motion = new MotionRuntime(this, animationFrameNanos)
   private val eventHub = new EventHub(this, eventCapacity)
   private val changeBindings = mutable.ArrayBuffer.empty[CommittedCollection]
+  private val inspectionFailures = mutable.Queue.empty[InspectionFailure]
+  private var inspectionSerial = 0L
+  private def freshInspectionId(): Long =
+    inspectionSerial = Math.addExact(inspectionSerial, 1L)
+    inspectionSerial
+  private final case class CommandInspectionBinding(
+      owner: OwnedScope, name: String, label: String, count: Signal[Int],
+      refusal: Signal[Option[String]], enabled: Signal[Boolean])
+  private val inspectionCommands = mutable.ArrayBuffer.empty[CommandInspectionBinding]
+  private[engine] def registerInspectionCommand(
+      owner: OwnedScope, name: String, label: String, count: Signal[Int],
+      refusal: Signal[Option[String]], enabled: Signal[Boolean]): Unit =
+    val binding = CommandInspectionBinding(owner, name, label, count, refusal, enabled)
+    inspectionCommands += binding
+    recordUndo(() => inspectionCommands -= binding)
   private val traceRing = mutable.Queue.empty[TraceRecord]
   private def appendTrace(record: TraceRecord): Unit =
     traceRing.enqueue(record)
@@ -165,18 +180,21 @@ final class HeadlessRuntime(
       var inputs: Vector[Signal[?]],
       val equality: Equality[Any],
       var value: Value[Any],
-      var initialized: Boolean
+      var initialized: Boolean,
+      val inspectionId: Long = freshInspectionId()
   ):
     var selected: Option[Signal[?]] = None
     var selectionReady = false
     var selectionFailure: Option[Throwable] = None
     var runs = 0L
+    var changedBy = Option.empty[Long]
     def copyNode(): Node =
-      val n = new Node(signal, inputs, equality, value, initialized)
+      val n = new Node(signal, inputs, equality, value, initialized, inspectionId)
       n.selected = selected
       n.selectionReady = selectionReady
       n.selectionFailure = selectionFailure
       n.runs = runs
+      n.changedBy = changedBy
       n
 
   private final class Refusal(val reason: String) extends ControlThrowable
@@ -1134,6 +1152,14 @@ final class HeadlessRuntime(
         appendTrace(
           TraceRecord(txn.cause, txn.context._2, txn.context._1, outcome, txn.graphPasses, txn.structuralPasses)
         )
+        val failureDetail = result match
+          case CommitResult.Refused(reason) => Some(InspectionText.clip(reason, 256))
+          case CommitResult.Failed(error) => Some(InspectionText.clip(error.getClass.getName, 256))
+          case _ => None
+        failureDetail.foreach { detail =>
+          inspectionFailures.enqueue(InspectionFailure(txn.cause, outcome, detail))
+          while inspectionFailures.size > traceCapacity do inspectionFailures.dequeue()
+        }
         result match
           case CommitResult.Committed(_) =>
             releases.foreach(release)
@@ -1386,6 +1412,10 @@ final class HeadlessRuntime(
         .toSet
     val retiring = scopes.values.filter(s => !valid(s, disposed)).toVector.reverse
     val releases = retiring.flatMap(_.releases.toVector.reverse)
+    // Diagnostic metadata uses the already-computed change set; it does not evaluate equality again.
+    candidate.foreach { (signal, node) =>
+      if changed(signal) || nodes.get(signal).forall(!_.initialized) then node.changedBy = Some(txn.cause)
+    }
     // No application code between committing graph, revisions and lifetimes.
     nodes.clear()
     nodes ++= candidate
@@ -1397,6 +1427,7 @@ final class HeadlessRuntime(
       s.pins.clear()
       scopes.remove(s.id)
     }
+    inspectionCommands.filterInPlace(_.owner.live)
     sources.filterInPlace(s => s.live && s.scope.forall(valid(_)))
     sources.foreach(_.committed = true)
     watches.filterInPlace(watchLive(_))
@@ -1603,6 +1634,55 @@ final class HeadlessRuntime(
     control()
     traceRing.toVector
   }
+  /** Copies committed metadata without evaluating signals, collecting work or retaining application objects. */
+  def inspect(limits: InspectionLimits = InspectionLimits(), includeValues: Boolean = false): RuntimeInspection =
+    installation()
+    def clip(value: String): String = InspectionText.clip(value, limits.text)
+    val scopeRows = scopes.valuesIterator.take(limits.scopes).map { scope =>
+      InspectedScope(scope.id, scope.parent.map(_.id), clip(scope.name), scope.identity.map(_.position),
+        scope.identity.map(identity => clip(identity.definition.name)))
+    }.toVector
+    val selected = nodes.valuesIterator.take(limits.nodes).toVector
+    val nodeRows = selected.map { node =>
+      val source = node.signal match
+        case value: Source[?] => Some(value)
+        case _ => None
+      val kind = node.signal match
+        case _: Source[?] => "cell"
+        case _: Signal.Constant[?] => "constant"
+        case _: Signal.Dynamic[?, ?] => "dynamic"
+        case _ => "derived"
+      val state = if !node.initialized then "uninitialized" else node.value match
+        case Value.Ok(_) => "ok"
+        case Value.Failed(_) => "failed"
+      val preview = if !includeValues then None else node.value match
+        case Value.Ok(value) => InspectionText.scalar(value, limits.text)
+        case Value.Failed(error) => Some(clip(error.getClass.getName))
+      InspectedNode(node.inspectionId, kind, source.map(_.id), source.flatMap(_.scope.map(_.id)),
+        source.map(_.revision.value), state, preview, node.runs, node.changedBy)
+    }
+    val edgeCount = selected.iterator.map(_.inputs.size).sum
+    val edges = selected.iterator.flatMap { node =>
+      node.inputs.iterator.flatMap(input => nodes.get(input).map(n => InspectedEdge(node.inspectionId, n.inspectionId)))
+    }.take(limits.edges).toVector
+    def committedValue(signal: Signal[?]): Option[Any] = nodes.get(signal).flatMap(_.value match
+      case Value.Ok(value) => Some(value)
+      case _ => None)
+    val commandRows = inspectionCommands.iterator.take(limits.commands).map { binding =>
+      val running = committedValue(binding.count).collect { case value: Int => value }
+      val enabled = committedValue(binding.enabled).collect { case value: Boolean => value }
+      val refusal = committedValue(binding.refusal).collect { case Some(value: String) => clip(value) }
+      InspectedCommand(nodes(binding.count).inspectionId, binding.owner.id, clip(binding.name), clip(binding.label),
+        nodes.get(binding.enabled).map(_.inspectionId), running, enabled, refusal)
+    }.toVector
+    val work = scheduler.inspect(limits.work)
+    val recentTraces = traceRing.takeRight(limits.traces).toVector
+    val recentFailures = inspectionFailures.takeRight(limits.traces).map(f => f.copy(detail = clip(f.detail))).toVector
+    RuntimeInspection(InspectionPage(scopeRows, scopes.size), InspectionPage(nodeRows, nodes.size),
+      InspectionPage(edges, edgeCount), InspectionPage(commandRows, inspectionCommands.size), work._1, work._2,
+      InspectionPage(recentTraces, traceRing.size), InspectionPage(recentFailures, inspectionFailures.size),
+      driverSnapshot, includeValues)
+
   def driverSnapshot: DriverSnapshot =
     control()
     DriverSnapshot(
@@ -1740,6 +1820,8 @@ final class HeadlessRuntime(
         s.pins.clear()
       }
     scopes.clear()
+    inspectionCommands.clear()
+    inspectionFailures.clear()
     watches.clear()
     mounts.clear()
     workBindings.clear()

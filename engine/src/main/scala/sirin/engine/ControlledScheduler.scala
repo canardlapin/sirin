@@ -77,6 +77,13 @@ final class ControlledScheduler private[engine](runtime: HeadlessRuntime, val ca
       }
       transport.shutdown()
     })
+  /** Observe owner state without collecting worker results or submitting queued work. */
+  private[engine] def inspect(limit: Int): (InspectionPage[InspectedWork], Option[WorkerPoolSnapshot]) =
+    runtime.control()
+    val published = entries.valuesIterator.filter(_.published)
+    val rows = published.take(limit).map(t =>
+      InspectedWork(t.id, t.ready, t.started, t.result.nonEmpty, t.token.cancelled)).toVector
+    (InspectionPage(rows, entries.size), pool.map(_.snapshot))
   def tickets: Vector[WorkTicket] =
     runtime.control()
     collect()

@@ -197,7 +197,12 @@ Sirin is a pre-release prototype. Nothing is published.
 
 ## What is missing
 
-- The inspector and the matched ScalaFX comparison.
+- The visible inspector and the matched ScalaFX comparison. Bounded runtime
+  snapshots now expose copied identity, dependency, committed-state, command and
+  work metadata without evaluating signals or collecting work. Shared tests
+  diagnose a refused workbench save through its enablement dependencies. Complete
+  per-phase invalidation and render/cache diagnostics remain open.
+  [Runtime inspection](tooling/runtime-inspection.md).
   The diagram still needs real pointer and accessibility acceptance.
 - Windows and Linux desktop hosts. Those platforms are CI-only.
 
