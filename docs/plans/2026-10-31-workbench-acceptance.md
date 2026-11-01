@@ -31,7 +31,10 @@ test and offscreen results are prerequisites, not comparison acceptance.
   enters from a foreign thread.
 - Revalidate the exact Linux Native reconciliation failure and its existing
   negative evidence before declaring it resolved. Later green runs alone are
-  insufficient.
+  insufficient. The November 1 local Linux replay passes the historical full
+  suite and three smaller-heap testkit runs. A new property guard preserves
+  captured type errors; the original cause remains open. See
+  [Linux replay evidence](../evidence/2026-11-01-linux-reconciliation.md).
 - Continue a bounded causal investigation of P0.6 from its preserved
   standalone trap/conditional controls. Keep runtime pins and thresholds
   unchanged without an explicit design decision. The November 1 activation

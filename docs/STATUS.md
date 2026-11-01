@@ -147,6 +147,13 @@ Sirin is a pre-release prototype. Nothing is published.
   adopt the remedy or qualify Native delivery.
   [Activation evidence](evidence/2026-11-01-native-activation.md),
   [idle-host evidence](evidence/2026-11-01-native-continuation.md).
+- **Linux Native reconciliation.** The original CI type error remains
+  unexplained. A local Linux amd64 container replay passes the historical full
+  suite and three smaller-heap testkit runs. The reconciliation property now
+  preserves a captured ClassCastException instead of accepting it as a generic
+  failed transaction. A negative control exposes the old diagnostic blind spot;
+  this is not a fix for the original exception.
+  [Linux replay evidence](evidence/2026-11-01-linux-reconciliation.md).
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
   physical pointer drag and trackpad behavior remain unqualified. Packaged
   workbench modal decisions have been exercised with synthetic pointer and

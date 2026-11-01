@@ -40,6 +40,15 @@ class ReconciliationAgreementSuite extends ScalaCheckSuite:
           error.printStackTrace() // Preserve the first underlying failure, before property shrinking.
         throw error
 
+  private def status(result: CommitResult[?]): Result = result match
+    case CommitResult.Committed(_) => Result.Accepted
+    case CommitResult.Refused(_) => Result.Refused
+    // This typed program never intentionally causes a ClassCastException.
+    // Keep its original stack even when the model also expects a failed transaction.
+    case CommitResult.Failed(error: ClassCastException) => throw error
+    case CommitResult.Failed(_) => Result.Failed
+    case CommitResult.Joined(_) => throw new IllegalStateException("unexpected joined transaction")
+
   private def runProgram(steps: Vector[Step]): Unit =
     val r = new HeadlessRuntime
     val owner = r.scope("workspace")
@@ -86,11 +95,6 @@ class ReconciliationAgreementSuite extends ScalaCheckSuite:
         try UiTxn.attempt { throw new IllegalArgumentException("poison") }
         catch case _: IllegalArgumentException => ()
     }
-    def status(result: CommitResult[?]): Result = result match
-      case CommitResult.Committed(_) => Result.Accepted
-      case CommitResult.Refused(_) => Result.Refused
-      case CommitResult.Failed(_) => Result.Failed
-      case CommitResult.Joined(_) => throw new IllegalStateException("unexpected joined transaction")
     var model = ReconciliationModel.initial
     steps.zipWithIndex.foreach { (step, index) =>
       reads = Vector.empty
@@ -135,6 +139,21 @@ class ReconciliationAgreementSuite extends ScalaCheckSuite:
       assertEquals(r.diagnostics, Vector.empty)
     }
     r.close()
+
+  test("a captured type error cannot masquerade as an expected failed transaction") {
+    val runtime = new HeadlessRuntime
+    val failure = new ClassCastException("synthetic captured type error")
+    try
+      val result = runtime.transact {
+        try UiTxn.attempt { throw failure }
+        catch case _: ClassCastException => ()
+      }
+      val observed = intercept[ClassCastException](status(result))
+      assert(observed eq failure)
+      assertEquals(status(runtime.transact { UiTxn.refuse("expected refusal") }), Result.Refused)
+      assertEquals(status(runtime.transact { throw new IllegalArgumentException("poison") }), Result.Failed)
+    finally runtime.close()
+  }
 
   test("frozen Linux Native CI40974637787 forty-step counterexample") {
     checkProgram(ReconciliationCiRegression.steps)
