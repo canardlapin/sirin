@@ -197,3 +197,41 @@ class GpuFrameSuite extends munit.FunSuite:
     finally {release.countDown();service.close()}
     assertEquals(BatchGpu.liveOwners,0)
   }
+
+  test("independent window devices retain their own displayed and replacement frames") {
+    val a = BatchGpu.open()
+    val b = BatchGpu.open()
+    def tile(gpu: BatchGpu) =
+      val drawing = DrawingPreparation.prepare(Drawing.empty, gpu.target(16, 16, 1)).toOption.get
+      val retained = gpu.retain(gpu.compile(drawing))
+      try
+        retained.submit()
+        retained.exportTile()
+      finally retained.close()
+    val x = tile(a)
+    val y = tile(b)
+    val frames = scala.collection.mutable.ArrayBuffer.empty[GpuFrame]
+    try
+      for _ <- 0 until 3 do
+        frames += GpuFrame(Vector((0, 0, x)), 16, 16)
+        frames += GpuFrame(Vector((0, 0, y)), 16, 16)
+      assertEquals(GpuFrame.liveFrames, 6)
+      assertEquals(GpuFrame.outputBytes, 2L * 16 * 16 * 4, "packets share immutable exported textures")
+      intercept[IllegalArgumentException](GpuFrame(Vector((0, 0, x)), 16, 16))
+      intercept[IllegalArgumentException](GpuFrame(Vector((0, 0, y)), 16, 16))
+      assertEquals(GpuFrame.liveFrames, 6, "refusal does not leak a global reservation")
+      frames.remove(0).close()
+      frames += GpuFrame(Vector((0, 0, x)), 16, 16)
+      assertEquals(GpuFrame.liveFrames, 6, "retirement makes the owner's slot reusable")
+      frames.foreach(frame => assertEquals((frame.readback().width, frame.height), (16, 16)))
+    finally
+      frames.foreach(_.close())
+      x.close()
+      y.close()
+      a.close()
+      b.close()
+    assertEquals(GpuFrame.liveFrames, 0)
+    assertEquals(GpuFrame.liveTiles, 0)
+    assertEquals(GpuFrame.outputBytes, 0L)
+    assertEquals(BatchGpu.liveOwners, 0)
+  }

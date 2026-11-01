@@ -81,7 +81,7 @@ int sirin_ax_publish(void*);
 int sirin_ax_poll(void*,int64_t*,char*,int);
 int sirin_editor_ime_control(void*,const char*,int,int,int);
 int sirin_editor_activate(void*);
-#define SIRIN_MAX_WINDOWS 16
+#include "frame_inventory.h"
 typedef struct Desktop Desktop;
 typedef struct DesktopApp {
   pthread_t owner; int explicit_owner, count, serial; uint32_t wake_type;

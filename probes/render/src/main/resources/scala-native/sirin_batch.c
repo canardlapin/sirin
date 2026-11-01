@@ -24,7 +24,11 @@ static void lost_cb(WGPUDevice const*device,WGPUDeviceLostReason reason,WGPUStri
 typedef struct { int id,offset,count,refs; unsigned long long used; } Mesh;
 typedef struct { int id,w,h,refs; unsigned long long used; } Asset;
 typedef struct {
-  _Atomic int refs,done;int status;BatchHealth*health;
+  _Atomic int refs,done;
+  // Exported frame packets are independently bounded for each device/generation.
+  _Atomic int frame_packets;
+  int status;
+  BatchHealth *health;
   WGPUInstance instance;WGPUAdapter adapter;WGPUDevice device;WGPUQueue queue;
   WGPURenderPipeline pipeline,layer;WGPUComputePipeline resolve;
   WGPUBuffer geometry;WGPUTexture masks,images;WGPUTextureView mask_view,image_view;
@@ -171,7 +175,9 @@ int bgpu_open(const char*shader,int vertices,int meshes,int masks,int images,voi
   *out=NULL;
   if(vertices<3||vertices>1048576||meshes<1||meshes>1024||masks<1||masks>256||images<1||images>16)return 4;
   Bgpu*s=calloc(1,sizeof(*s));if(!s)return 1;
-  atomic_init(&s->refs,1);atomic_fetch_add(&batch_live,1);
+  atomic_init(&s->refs,1);
+  atomic_init(&s->frame_packets,0);
+  atomic_fetch_add(&batch_live,1);
   s->mesh_capacity=vertices;s->mesh_limit=meshes;s->mask_limit=masks;s->image_limit=images;
   s->instance=wgpuCreateInstance(NULL);if(!s->instance)goto fail;
   WGPURequestAdapterOptions opts=WGPU_REQUEST_ADAPTER_OPTIONS_INIT;opts.backendType=WGPUBackendType_Metal;

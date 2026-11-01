@@ -1464,7 +1464,12 @@ Temporary tile programs retain the existing batch limits (640x360, 16 programs,
 192MiB payload); completed variants obey 256 entries and 1,048,576 pixels.
 Native atomic references independently protect exported immutable textures from
 cache eviction. All exported output textures, including stale/displayed frames,
-share a 16MiB cap; at most three complete frame packets may exist. Packets validate
+share a 16MiB cap. At most three complete frame packets may exist per owning
+batch device/generation, with a process-wide ceiling of 48 (the existing
+16-window host capacity times three). Retiring generations count toward that
+ceiling; packet admission and release are atomic. This replaces the earlier
+single-window candidate's process-wide three-packet cap, without changing texture
+memory or pixel limits (2026-11-01; `decisions/2026-11-01-window-frame-inventory.md`). Packets validate
 one device and exact non-overlapping full-target coverage. Replacement, obsolete
 results, unpolled mailboxes, feedback and close explicitly retire their references;
 close does not depend on a future frame. GPU resource mutation stays on the

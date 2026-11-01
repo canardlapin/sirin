@@ -70,26 +70,49 @@ int sirin_desktop_tile_export(void*raw,void**out){
   atomic_fetch_add(&t->owner->refs,1);atomic_fetch_add(&gpu_tiles,1);
   *out=t;return 0;
 }
-int sirin_desktop_frame_open(void**raw,const int*xy,int count,int w,int h,void**out){
-  *out=NULL;if(count<1||count>256||w<1||h<1||w>1280||h>800||atomic_load(&gpu_frames)>=3)return 4;
-  DesktopTile**tiles=(DesktopTile**)raw;Bgpu*s=tiles[0]->owner;
-  long long pixels=0;
-  for(int i=0;i<count;i++){
-    DesktopTile*t=tiles[i];int x=xy[i*2],y=xy[i*2+1];
-    if(t->owner!=s||x<0||y<0||x+t->w>w||y+t->h>h)return 4;
-    pixels+=(long long)t->w*t->h;
-    for(int j=0;j<i;j++)if(x<xy[j*2]+tiles[j]->w&&xy[j*2]<x+t->w&&y<xy[j*2+1]+tiles[j]->h&&xy[j*2+1]<y+t->h)return 4;
+int sirin_desktop_frame_open(void **raw, const int *xy, int count, int w, int h, void **out) {
+  *out = NULL;
+  if (count < 1 || count > 256 || w < 1 || h < 1 || w > 1280 || h > 800) return 4;
+  DesktopTile **tiles = (DesktopTile **)raw;
+  Bgpu *owner = tiles[0]->owner;
+  long long pixels = 0;
+  for (int i = 0; i < count; i++) {
+    DesktopTile *tile = tiles[i];
+    int x = xy[i * 2];
+    int y = xy[i * 2 + 1];
+    if (tile->owner != owner || x < 0 || y < 0 || x + tile->w > w || y + tile->h > h) return 4;
+    pixels += (long long)tile->w * tile->h;
+    for (int j = 0; j < i; j++) {
+      if (x < xy[j * 2] + tiles[j]->w && xy[j * 2] < x + tile->w &&
+          y < xy[j * 2 + 1] + tiles[j]->h && xy[j * 2 + 1] < y + tile->h) return 4;
+    }
   }
-  if(pixels!=(long long)w*h)return 4; // exact, non-overlapping complete coverage
-  DesktopFrame*f=calloc(1,sizeof(*f));if(!f)return 1;
-  if(atomic_fetch_add(&gpu_frames,1)>=3){atomic_fetch_sub(&gpu_frames,1);free(f);return 4;}
-  f->owner=s;f->w=w;f->h=h;f->count=count;
-  for(int i=0;i<count;i++){f->tiles[i]=tiles[i];atomic_fetch_add(&tiles[i]->refs,1);f->x[i]=xy[i*2];f->y[i]=xy[i*2+1];}
-  *out=f;return 0;
+  if (pixels != (long long)w * h) return 4; // Exact, non-overlapping complete coverage.
+  if (!sirin_frame_reserve(&gpu_frames, &owner->frame_packets)) return 6;
+  DesktopFrame *frame = calloc(1, sizeof(*frame));
+  if (!frame) {
+    sirin_frame_release(&gpu_frames, &owner->frame_packets);
+    return 1;
+  }
+  frame->owner = owner;
+  frame->w = w;
+  frame->h = h;
+  frame->count = count;
+  for (int i = 0; i < count; i++) {
+    frame->tiles[i] = tiles[i];
+    atomic_fetch_add(&tiles[i]->refs, 1);
+    frame->x[i] = xy[i * 2];
+    frame->y[i] = xy[i * 2 + 1];
+  }
+  *out = frame;
+  return 0;
 }
-void sirin_desktop_frame_close(void*raw){
-  DesktopFrame*f=raw;for(int i=0;i<f->count;i++)tile_release(f->tiles[i]);
-  atomic_fetch_sub(&gpu_frames,1);free(f);
+void sirin_desktop_frame_close(void *raw) {
+  DesktopFrame *frame = raw;
+  // Tile retirement can release the final reference to the owning device.
+  sirin_frame_release(&gpu_frames, &frame->owner->frame_packets);
+  for (int i = 0; i < frame->count; i++) tile_release(frame->tiles[i]);
+  free(frame);
 }
 int sirin_desktop_frame_read(void*raw,unsigned char*out){
   DesktopFrame*f=raw;if(bgpu_lost(f->owner))return 8;

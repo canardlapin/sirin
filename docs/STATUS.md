@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for workbench window and title checks. This page says, in plain
+Last updated 2026-11-01, for workbench renderer inventory checks. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -91,8 +91,11 @@ Sirin is a pre-release prototype. Nothing is published.
   names and usable reorder buttons. An Arabic-title accessibility crash was also
   repaired by retaining zero-advance grapheme ranges. Fresh-package open/edit/save
   and immediate typing after both close paths pass. Repeated window handoffs
-  exposed a separate GPU frame inventory/coverage rejection; recovery retains
-  state, but the cause remains open.
+  exposed a process-wide frame-packet cap inherited from the single-window host.
+  Each rendering device now retains at most three packets, with a bounded global
+  total and the same texture-memory cap. The original failing sequence and
+  additional round trips pass in the clean package.
+  [Renderer inventory evidence](evidence/2026-11-01-window-frame-inventory.md).
   [Window and title evidence](evidence/2026-11-01-workbench-window-rows.md).
   [Window-input evidence](evidence/2026-11-01-workbench-window-input.md).
   [Recovery evidence](evidence/2026-10-31-workbench-recovery.md).

@@ -46,6 +46,9 @@ object GpuFrame:
       pointers(i)=t.handle;xy(i*2)=x;xy(i*2+1)=y
     }
     val out=alloc[Ptr[Byte]]()
-    require(Calls.int("sirin_desktop_frame_open",pointers,xy,tiles.size,width,height,out)==0,"GPU frame coverage, generation or inventory rejection")
+    val status = Calls.int("sirin_desktop_frame_open", pointers, xy, tiles.size, width, height, out)
+    require(status == 0,
+      if status == 6 then "GPU frame inventory exhausted"
+      else s"GPU frame coverage, device or allocation rejection (native status $status)")
     new GpuFrame(!out,width,height)
   }

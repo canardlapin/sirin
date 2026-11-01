@@ -76,10 +76,13 @@ active window now activates the most recently active survivor while retaining
 its control focus. Sidebar titles ellipsize within fixed rows and preserve full
 accessible names. An Arabic-title native text-publication crash was reproduced
 and repaired; clean-package open/edit/save and close-and-type checks pass.
-Repeated handoffs exposed a separate GPU frame coverage/generation/inventory
-rejection, tracked in `bd-01M6APTQYS91VRFD96KXG58PMK`. Retry retained state, but
-its cause remains unresolved. That failure and broader acceptance gates prevent
-full usability acceptance. See
+Repeated handoffs exposed a process-wide three-frame cap inherited from the
+single-window renderer. Packet inventories now preserve the three-frame bound
+per device/generation under a bounded process total, without increasing texture
+memory. A failing two-device regression, concurrent native accounting, the Native
+batch path and the exact packaged handoff sequence verify the repair. See
+[renderer inventory evidence](../evidence/2026-11-01-window-frame-inventory.md).
+Broader acceptance gates still prevent full usability acceptance. See
 [window and title evidence](../evidence/2026-11-01-workbench-window-rows.md).
 See [recovery evidence](../evidence/2026-10-31-workbench-recovery.md) and
 [window-input evidence](../evidence/2026-11-01-workbench-window-input.md).
