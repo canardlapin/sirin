@@ -72,8 +72,11 @@ Sirin is a pre-release prototype. Nothing is published.
   crash, now repaired and checked in a native regression and a packaged window.
   The native last-window close policy is also repaired: real-window checks
   retained unsaved drafts across zero windows, restored Quit consent from that
-  state, and exited only after explicit Quit. Decision controls still require
-  scrolling into view and the editor pane is cramped.
+  state, and exited only after explicit Quit. Decisions now appear in a visible
+  modal popup; Escape restores editing focus. The editor fills the space beside
+  the document list, and Save stays visible at the default size. These paths
+  passed fresh-package window checks and rendered regressions at two sizes.
+  [Usability evidence](evidence/2026-10-31-workbench-visible-decisions.md).
   [Close-policy evidence](evidence/2026-10-31-workbench-native-close.md).
   Foreground Finder launch renders; background presentation and visual usability
   remain under investigation.
@@ -86,8 +89,9 @@ Sirin is a pre-release prototype. Nothing is published.
   open GC safepoint stall (P0.6). The delivery order is to be decided before
   Alpha6 (VISION §1.1).
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
-  pointer drag, dialogs and modality have not been checked with real clients.
-  The packaged apps have not yet been launched for acceptance.
+  physical pointer drag and trackpad behavior remain unqualified. Packaged
+  workbench modal decisions have been exercised with synthetic pointer and
+  keyboard input. Native Dialog/Checkbox publication and VoiceOver remain open.
 - **Rendering.** The shared-device batch path presents retained GPU frames
   without a full-frame CPU readback. Explicit captures read pixels back; the
   reference/fallback path still reads back and uploads. This is not a zero-copy

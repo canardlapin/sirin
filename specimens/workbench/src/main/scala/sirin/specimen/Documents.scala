@@ -86,9 +86,9 @@ final class DocumentEditor(scope: Scope,session: DocumentSession):
   }
   def requestClose()(using UiTxn): CloseDecision =
     if dirty.get then {closePrompt.set(true);CloseDecision.KeepOpen} else CloseDecision.Allow
-  val view: View=Column(
+  val view: View = Column(
     TextField.bind(title).maxLength(256).label("Title").error(titleError),
-    TextField.bind(body).label("Document").error(bodyError).multiline.height(260.lp),
-    Row(Button(save).primary,Text(status)).spacing(12.lp),
-    Text(notice.map(_.getOrElse(""))).color(ColorRole.Danger)
-  ).spacing(12.lp).padding(16.lp)
+    TextField.bind(body).label("Document").error(bodyError).multiline.grow,
+    Row(Button(save).primary, Text(status).grow).spacing(12.lp),
+    Show(notice.map(_.nonEmpty))(Text(notice.map(_.getOrElse(""))).color(ColorRole.Danger))
+  ).spacing(8.lp).padding(8.lp)

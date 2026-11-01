@@ -14,7 +14,7 @@ result. The goal stays open until the required application evidence exists.
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
 | Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Native publication currently handles buttons and text fields only |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
-| Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; narrow editor and extensive scrolling observed; layout and large-window acceptance remain open |
+| Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; default-size editor and visible decisions checked; large-window acceptance remains open |
 | Public authoring | A separate public consumer implements one real feature using the documented API, builds/packages from a clean checkout, and completes its workflow | Independent review and starter workflow remain incomplete |
 | Matched comparison | One explicit equivalent workflow in Sirin and ScalaFX, with source, behavior and measured presentation path stated | Not yet performed |
 
@@ -56,8 +56,11 @@ class setup on window reopening. The native regression and packaged Command-W/Co
 process-lifetime guard. The separately reported native close-button exit was
 repaired on continuation by selecting SDL's application-owned close policy.
 Real-window checks now retain drafts across zero windows and restore dirty-Quit
-consent. Decisions below the viewport and the cramped editor are the next
-application-usability repairs; full acceptance remains incomplete.
+consent. Decisions now use a visible modal popup, and the editor uses the available
+pane width and height. Fresh-package dirty-close/quit, focus restoration,
+docking, zero-window draft retention and exact saving were checked; see
+[usability evidence](../evidence/2026-10-31-workbench-visible-decisions.md).
+Native accessibility transport and the broader acceptance outcomes remain open.
 
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was

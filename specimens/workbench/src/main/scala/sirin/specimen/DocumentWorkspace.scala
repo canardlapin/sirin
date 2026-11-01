@@ -52,7 +52,9 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
   val notice=scope.cell(Option.empty[String])
   private val quitAuthority=scope.cell(Option.empty[Vector[DocumentAuthority]])
   private val searchRef=scope.ref()
-  private val confirmRef=scope.ref()
+  private val decisionCancelRef = scope.ref()
+  private val decisionAnchor = scope.ref()
+  private val decisionOpen = scope.cell(false)
   private val importRef=scope.ref()
   private val leftOutlet=scope.ref()
   private val rightOutlet=scope.ref()
@@ -95,8 +97,17 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
       UiTxn.require(views.size<5,"Close another view first")
       viewSerial.update(Math.addExact(_,1L));views.append(WorkspaceView(viewSerial.get,None))
     searchRef.focus()
-  private def showPrompt(decision: WorkspaceDecision,tokens: Vector[DocumentAuthority],text: String)(using UiTxn): Unit =
-    mainView();prompt.set(Some(WorkspacePrompt(decision,tokens,text)));confirmRef.focus()
+  private def setPrompt(next: Option[WorkspacePrompt])(using UiTxn): Unit =
+    prompt.set(next)
+    decisionOpen.set(next.nonEmpty)
+  private def showPrompt(
+      decision: WorkspaceDecision,
+      tokens: Vector[DocumentAuthority],
+      text: String
+  )(using UiTxn): Unit =
+    mainView()
+    setPrompt(Some(WorkspacePrompt(decision, tokens, text)))
+    decisionCancelRef.focus()
   private def install(session: DocumentSession)(using UiTxn): WorkspaceDocument =
     val id=session.initial.data.id
     UiTxn.require(documents.get(id).nonEmpty || documents.size<32,"Close an open document before opening another")
@@ -211,25 +222,39 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
       val names=dirtyDocuments.map(d => s"${DocumentData.preview(d.editor.title.get,80)} (${d.id.value.take(8)})").mkString(", ")
       showPrompt(WorkspaceDecision.Quit,authorities(),s"Discard ${dirtyDocuments.size} unsaved drafts and quit? $names. Completed files and saves already running are retained.")
       CloseDecision.KeepOpen
-  val cancelDecision=scope.action[Unit]("workspace.keep","Keep editing") { _ => prompt.set(None);searchRef.focus() }
-  val confirmDecision=scope.action[Unit]("workspace.confirm","Confirm") { _ =>
-    val decision=prompt.get.getOrElse(UiTxn.refuse("No decision is pending"))
-    val current=decision.decision match
+  val cancelDecision = scope.action[Unit]("workspace.keep", "Keep editing") { _ =>
+    setPrompt(None)
+  }
+  val confirmDecision = scope.action[Unit]("workspace.confirm", "Confirm") { _ =>
+    val decision = prompt.get.getOrElse(UiTxn.refuse("No decision is pending"))
+    val current = decision.decision match
       case WorkspaceDecision.Quit => authorities()
       case _ => decision.authority.flatMap(token => currentAuthority(token.id))
-    if current!=decision.authority then
-      val names=current.flatMap(token => documents.get(token.id)).map(document => DocumentData.preview(document.editor.title.get,80)).mkString(", ")
-      prompt.set(Some(decision.copy(authority=current,message=s"Drafts changed while this decision was open: $names. Review the edits, then confirm again.",changedSinceReview=true)))
+    if current != decision.authority then
+      val names = current.flatMap(token => documents.get(token.id))
+        .map(document => DocumentData.preview(document.editor.title.get, 80)).mkString(", ")
+      setPrompt(Some(decision.copy(
+        authority = current,
+        message = s"Drafts changed while this decision was open: $names. Review the edits, then confirm again.",
+        changedSinceReview = true
+      )))
     else decision.decision match
-      case WorkspaceDecision.CloseView(id) => views.remove(id);prompt.set(None)
+      case WorkspaceDecision.CloseView(id) =>
+        views.remove(id)
+        setPrompt(None)
       case WorkspaceDecision.CloseDocument(id) =>
-        val document=documents.get(id).getOrElse(UiTxn.refuse("Document is closed"))
-        UiTxn.require(document.editor.save.running.get==0,"Wait for the current save before closing this document")
-        removeDocument(document);prompt.set(None)
+        val document = documents.get(id).getOrElse(UiTxn.refuse("Document is closed"))
+        UiTxn.require(document.editor.save.running.get == 0, "Wait for the current save before closing this document")
+        removeDocument(document)
+        setPrompt(None)
       case WorkspaceDecision.Reload(id) =>
-        start(WorkspaceFileRequest.Reload(current.find(_.id==id).getOrElse(UiTxn.refuse("Document is closed")),nextEpoch()));prompt.set(None)
+        val token = current.find(_.id == id).getOrElse(UiTxn.refuse("Document is closed"))
+        start(WorkspaceFileRequest.Reload(token, nextEpoch()))
+        setPrompt(None)
       case WorkspaceDecision.Quit =>
-        quitAuthority.set(Some(current));prompt.set(None);services.quit.dispatch(()) match
+        quitAuthority.set(Some(current))
+        setPrompt(None)
+        services.quit.dispatch(()) match
           case Dispatched.Started(_) => ()
           case Dispatched.Refused(reason) => UiTxn.refuse(reason)
   }
@@ -270,10 +295,42 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
       Row(Button("Up").command(moveRow,id.map(_ -> -1)),Button("Down").command(moveRow,id.map(_ -> 1))).spacing(6.lp)
     ).spacing(4.lp)
   }
-  private val decisionPanel: View=Switch(prompt) {
-    case None => View.empty
-    case Some(pending) => Column(Text(pending.message).color(ColorRole.Danger),Row(Button(confirmDecision).ref(confirmRef),Button(cancelDecision)).spacing(8.lp)).spacing(8.lp)
-  }
+  private val decisionTitle = prompt.map(_.fold("Review decision") { pending =>
+    pending.decision match
+      case WorkspaceDecision.CloseView(_) => "Close this view?"
+      case WorkspaceDecision.CloseDocument(_) => "Discard this draft?"
+      case WorkspaceDecision.Reload(_) => "Reload from disk?"
+      case WorkspaceDecision.Quit => "Quit with unsaved drafts?"
+  })
+  private val decisionAction = prompt.map(_.fold("Confirm") { pending =>
+    pending.decision match
+      case WorkspaceDecision.CloseView(_) => "Close view"
+      case WorkspaceDecision.CloseDocument(_) => "Discard draft"
+      case WorkspaceDecision.Reload(_) => "Reload"
+      case WorkspaceDecision.Quit => "Discard and quit"
+  })
+  private val decisionPanel: View = Popup(
+    decisionOpen,
+    anchor = decisionAnchor,
+    placement = Placement.Over,
+    initialFocus = Some(decisionCancelRef),
+    restoreFocus = FocusRestore.Previous,
+    dismissal = Dismissal(onEscape = true, onOutsidePress = false),
+    modal = true,
+    onDismiss = _ =>
+      setPrompt(None)
+      DismissDecision.Allow
+  )(
+    Column(
+      Text(decisionTitle).style(TextStyle.Heading),
+      Scroll(Text(prompt.map(_.fold("")(_.message)))).grow,
+      Row(
+        Button(cancelDecision).ref(decisionCancelRef),
+        Button(decisionAction).command(confirmDecision)
+      ).spacing(8.lp)
+    ).spacing(12.lp).padding(16.lp).width(440.lp).height(240.lp)
+      .semantics(decisionTitle.map(title => Semantics(Role.Dialog, name = Some(title))))
+  )
   private val safeDecisionPanel: View=Switch(prompt) {
     case None => Text("Application menus remain available. Retry after resolving the document or diagnostic.")
     case Some(pending) =>
@@ -288,20 +345,43 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
   private val recoveryContent: View=safeDecisionPanel
   private val importPanel: View=Column(Text("Import documents").style(TextStyle.Heading),
     TextField.bind(importSource).maxLength(2048).label("Source directory").ref(importRef),Button(prepareImport),Switch(currentImport)(_.fold[View](Text("Choose a directory to review its document count."))(_.view))).spacing(8.lp)
-  val mainContent: View=Scroll(Column(
-    Text("Sirin document workbench").style(TextStyle.Title),
-    Row(Button(newDocument),Button(refresh),Button(openView)).spacing(8.lp),
-    Row(Button(moveEditor),Button(showImport)).spacing(8.lp),
-    TextField.bind(query).maxLength(256).label("Search titles and content").ref(searchRef),Text(searchStatus).color(ColorRole.Muted),
-    Row(Scroll(VirtualRows(rows,64.lp,2)(input => row(input))).width(200.lp).height(260.lp),
-      Row(DockOutlet(leftOutlet).grow,DockOutlet(rightOutlet).grow).grow).spacing(12.lp),
-    ForEach(documents)(input => Switch(input) { document =>
-      document.panel.at(selected.zip(right).map((id,moved) => if id.contains(document.id) then (if moved then rightOutlet else leftOutlet) else parking))
-    }),
-    Row(Button(saveSelected),Button(reloadSelected),Button(saveCopy),Button(closeDocument)).spacing(8.lp),
-    Text(selectedDocument.flatMap(_.fold(Signal.const("Select a document to edit."))(d => d.diskNotice.map(_.getOrElse(""))))).color(ColorRole.Danger),
-    Text(notice.map(_.getOrElse(""))).color(ColorRole.Danger),Text(refusalNotice).color(ColorRole.Danger),decisionPanel
-  ).spacing(10.lp).padding(16.lp))
+  private val sidebar: View = Column(
+    TextField.bind(query).maxLength(256).label("Search documents").ref(searchRef),
+    Text(searchStatus).style(TextStyle.Caption).color(ColorRole.Muted),
+    Scroll(VirtualRows(rows, 80.lp, 2)(input => row(input))).grow
+  ).spacing(8.lp)
+  private val diskNotice = selectedDocument.flatMap(
+    _.fold(Signal.const(""))(document => document.diskNotice.map(_.getOrElse("")))
+  )
+  private val workspaceNotice = diskNotice.zip(notice).zip(refusalNotice).map {
+    case ((disk, current), refused) => Vector(disk, current.getOrElse(""), refused).filter(_.nonEmpty).mkString("\n")
+  }
+  val mainContent: View = Overlay(
+    Column(
+      Row(
+        Text("Documents").style(TextStyle.Heading).grow,
+        Button("New").command(newDocument),
+        Button("Import").command(showImport),
+        Button("Refresh").command(refresh)
+      ).spacing(8.lp),
+      WorkspaceLayout(
+        right,
+        sidebar,
+        DockOutlet(leftOutlet),
+        DockOutlet(rightOutlet),
+        Show(selected.map(_.isEmpty))(Text("Select a document or choose New to start writing.").padding(16.lp))
+      ).grow,
+      ForEach(documents)(input => Switch(input) { document =>
+        document.panel.at(selected.zip(right).map { (id, moved) =>
+          if id.contains(document.id) then
+            if moved then rightOutlet else leftOutlet
+          else parking
+        })
+      }),
+      Show(workspaceNotice.map(_.nonEmpty))(Text(workspaceNotice).color(ColorRole.Danger))
+    ).spacing(8.lp).padding(12.lp).ref(decisionAnchor),
+    decisionPanel
+  )
   val windows: Windows=Windows(views) { (windowScope,input) =>
     val current=input.flatMap(view => if view.mode==WorkspaceViewMode.Import then Signal.const(None) else view.document.fold(selectedDocument)(d => Signal.const(Some(d))))
     val saveView=windowScope.action[Unit]("view.save","Save",current.flatMap(_.fold(Signal.const(false))(_.editor.save.enabled))) { _ =>
@@ -310,9 +390,35 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
     val closeView=windowScope.action[Unit]("view.close","Close view")(_ => {requestWindowClose(input.get.id);()})
     val title=input.flatMap(view => if view.mode==WorkspaceViewMode.Import then Signal.const("Import documents") else
       view.document.fold(selectedDocument)(d => Signal.const(Some(d))).flatMap(_.fold(Signal.const("Sirin workbench"))(_.editor.title.map(t => if t.trim.isEmpty then "Untitled" else t))))
-    Window(title,MenuBar(Menu("File",MenuItem(saveView,Chord.primary('s')),MenuItem(closeView,Chord.primary('w')))))(
-      Switch(input) { view => if view.mode==WorkspaceViewMode.Import then Scroll(Column(importPanel,Button(openWorkbench)).spacing(12.lp).padding(16.lp)) else view.document.fold(mainContent)(document => Scroll(Column(Text(document.editor.title).style(TextStyle.Heading),document.editor.view,
-        Text(document.diskNotice.map(_.getOrElse(""))).color(ColorRole.Danger),Button(openWorkbench)).spacing(10.lp).padding(16.lp))) }
+    val inWorkbench = input.map(view => view.mode == WorkspaceViewMode.Workbench && view.document.isEmpty)
+    def workspaceItem(key: String, command: Command[Unit, ?]): MenuEntry =
+      val enabled = inWorkbench.zip(command.enabled).map((main, ready) => main && ready)
+      MenuItem(windowScope.action[Unit](s"view.workspace.$key", command.label, enabled) { _ =>
+        command.dispatch(())
+        ()
+      })
+    Window(title, MenuBar(Menu("File",
+      MenuItem(saveView, Chord.primary('s')),
+      workspaceItem("reload", reloadSelected),
+      workspaceItem("copy", saveCopy),
+      workspaceItem("close-document", closeDocument),
+      workspaceItem("open-view", openView),
+      workspaceItem("move-editor", moveEditor),
+      MenuItem(closeView, Chord.primary('w'))
+    )))(
+      Switch(input) { view =>
+        if view.mode == WorkspaceViewMode.Import then
+          Scroll(Column(importPanel, Button(openWorkbench)).spacing(12.lp).padding(16.lp))
+        else view.document.fold(mainContent) { document =>
+          Column(
+            document.editor.view.grow,
+            Show(document.diskNotice.map(_.nonEmpty))(
+              Text(document.diskNotice.map(_.getOrElse(""))).color(ColorRole.Danger)
+            ),
+            Button(openWorkbench)
+          ).spacing(8.lp).padding(12.lp)
+        }
+      }
     ).onCloseRequest {requestWindowClose(input.get.id)}.renderFailureContent(Switch(input)(view => if view.document.isEmpty && view.mode==WorkspaceViewMode.Workbench then recoveryContent else Column(Button(openWorkbench),recoveryContent).spacing(10.lp)))
   }.menuBar(MenuBar(Menu("File",MenuItem(newDocument,Chord.primary('n')),MenuItem(openWorkbench,Chord.primary('0')),MenuItem(refresh,Chord.primary('r')),MenuItem(showImport,Chord.primary('i')),MenuItem(services.quit,Chord.primary('q')))))
     .onQuitRequest {requestApplicationQuit()}

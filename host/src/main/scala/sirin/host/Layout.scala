@@ -125,8 +125,13 @@ final case class LayoutResult(
         // The overlay layer gives each popup a raised surface beneath its content (D16).
         if layers.exists(_.placed eq p) then
           val b = Rect(Point(p.bounds.x.lp, p.bounds.y.lp), Size(p.bounds.width.lp, p.bounds.height.lp))
-          canvas.fill(b, theme.color(ColorRole.SurfaceRaised), 6.lp)
-          canvas.stroke(b, theme.color(ColorRole.Muted), 1.lp, 6.lp)
+          // Nested fills keep the rounded border bounded in the reference renderer.
+          canvas.fill(b, theme.color(ColorRole.Muted), 6.lp)
+          val inner = Rect(
+            Point((p.bounds.x + 1).lp, (p.bounds.y + 1).lp),
+            Size(math.max(0, p.bounds.width - 2).lp, math.max(0, p.bounds.height - 2).lp)
+          )
+          canvas.fill(inner, theme.color(ColorRole.SurfaceRaised), 5.lp)
         LayoutResult.group(canvas, p)(p.children.foreach(paint))
       canvas.fill(Rect(Point.origin, Size(root.bounds.width.lp, root.bounds.height.lp)), theme.color(ColorRole.Surface))
       paint(root)
