@@ -78,6 +78,14 @@ final class EditorController(
         ()
     result
   def textElement: Option[(Long, Placed, TextInputRequest)] = elements.textTarget
+  /** Native transport can prepare a restore target; owner text delivery still waits for accepted focus. */
+  def textInputTransport: Option[(Long, Placed, TextInputRequest)] = textElement.orElse {
+    pendingRestoration.flatMap { restore =>
+      restore.target.kind match
+        case TargetKind.Custom(frame) => elements.textRequest(frame.instance)
+        case _ => None
+    }
+  }
   def composingText: Boolean = composingElement.nonEmpty
 
   /** Delivers one text-channel event; a refused composition update also retires the platform's marked text. */
@@ -169,8 +177,10 @@ final class EditorController(
       input match
         case _: HostInput.Down | _: HostInput.Up | _: HostInput.Move | _: HostInput.Wheel =>
           true
-        case _: HostInput.KeyDown | _: HostInput.TextInput | _: HostInput.Composition
-            if interaction.focused.exists(_.kind.isInstanceOf[TargetKind.Custom]) =>
+        case _: HostInput.TextInput | _: HostInput.Composition =>
+          true
+        case _: HostInput.KeyDown
+            if closingFocusedPopup || interaction.focused.exists(_.kind.isInstanceOf[TargetKind.Custom]) =>
           true
         case HostInput.KeyDown(key, _, _) =>
           Set(Key.ArrowLeft, Key.ArrowRight, Key.ArrowUp, Key.ArrowDown, Key.Home, Key.End, Key.Tab).contains(key)
@@ -238,6 +248,45 @@ final class EditorController(
       popup: CapturedPopup, previous: Option[NodeId], keyboard: Boolean, part: Option[PartId])
   private var popups = Vector.empty[OpenPopup]
   private def openPopup(instance: Long): Option[CapturedPopup] = captured.popups.find(_.instance == instance)
+  private def closedPopups: Vector[OpenPopup] =
+    popups.filterNot(open => captured.popups.exists(_.instance == open.popup.instance))
+  private def closingFocusedPopup: Boolean =
+    !ready && interaction.focused.flatMap(_.layer).exists(id => closedPopups.exists(_.popup.instance == id))
+
+  private final case class Restoration(target: Target, keyboard: Boolean, part: Option[PartId])
+  private def restoration(open: OpenPopup, snapshot: InteractionSnapshot): Option[Restoration] =
+    if open.popup.description.restoreFocus == FocusRestore.Nowhere then None
+    else
+      def reference(id: Long): Option[Restoration] =
+        snapshot.referenceTarget(id).map(target => Restoration(target, true, None))
+      val requested = open.popup.description.restoreFocus match
+        case FocusRestore.Previous =>
+          open.previous.flatMap(snapshot.target).filter(t => t.focusable && snapshot.accepts(t)).map { target =>
+            Restoration(target, open.keyboard, open.part.filter(id => target.semanticParts.count(_ == id) == 1))
+          }
+        case _ => open.popup.restoreTo.flatMap(reference)
+      requested.orElse(reference(open.popup.anchor))
+
+  private def pendingRestoration: Option[Restoration] =
+    if !closingFocusedPopup then None
+    else
+      val accepted = interaction.presented
+      val newModal = captured.popups.exists(p =>
+        p.description.modal && !accepted.popups.exists(_.instance == p.instance))
+      if newModal then None
+      else
+        val closed = closedPopups
+        val gone = closed.map(_.popup.instance).toSet
+        val targets = accepted.targets.filter { target =>
+          val live = target.element match
+            case Some(frame) => captured.elements.contains(frame.instance)
+            case None => target.kind match
+              case TargetKind.Button(instance) => captured.bindings.contains(instance)
+              case _ => false
+          live && !target.layer.exists(gone)
+        }
+        val remaining = accepted.copy(targets = targets, popups = accepted.popups.filterNot(p => gone(p.instance)))
+        closed.reverseIterator.flatMap(open => restoration(open, remaining)).nextOption()
 
   /** Popups that stopped being presented restore focus (D12); newly presented ones take it (D11). */
   private def followPopups(): Unit =
@@ -262,23 +311,9 @@ final class EditorController(
   private def restore(open: OpenPopup): Unit =
     // A user who moved focus elsewhere keeps it; only focus that was inside the popup, now gone, is restored.
     if interaction.state.focused.isEmpty then
-      open.popup.description.restoreFocus match
-        case FocusRestore.Nowhere =>
-          ()
-        case mode =>
-          val requested =
-            mode match
-              case FocusRestore.Previous =>
-                open.previous.exists { id =>
-                  val part = open.part.filter(part =>
-                    interaction.presented.target(id).exists(_.semanticParts.contains(part)))
-                  focusTarget(id, open.keyboard, part)
-                }
-              case _ =>
-                open.popup.restoreTo.exists(focusReference)
-          if !requested then
-            focusReference(open.popup.anchor)
-            ()
+      restoration(open, interaction.presented).foreach { restore =>
+        focusTarget(restore.target.id, restore.keyboard, restore.part)
+      }
 
   /** Runs `onDismiss` and, if it allows, closes the popup, in one transaction (D8). */
   private def dismiss(popup: CapturedPopup, reason: DismissReason): Unit =

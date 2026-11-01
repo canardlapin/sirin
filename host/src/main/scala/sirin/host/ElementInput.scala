@@ -50,18 +50,18 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
     .flatMap(
       _.kind match
         case TargetKind.Custom(frame) =>
-          shown
-            .get(frame.instance)
-            .filter(_ => bindings.contains(frame.instance))
-            .flatMap { p =>
-              val current = p.node.content.asInstanceOf[Content.Custom].frame
-              current
-                .textInput(Size(p.bounds.width.lp, p.bounds.height.lp), prepared)
-                .map(r => (frame.instance, p, r))
-            }
+          textRequest(frame.instance)
         case _ =>
           None
     )
+  /** Last accepted text geometry for a still-bound element; does not grant it focus or deliver input. */
+  def textRequest(instance: Long): Option[(Long, Placed, TextInputRequest)] = shown
+    .get(instance)
+    .filter(_ => bindings.contains(instance))
+    .flatMap { p =>
+      val frame = p.node.content.asInstanceOf[Content.Custom].frame
+      frame.textInput(Size(p.bounds.width.lp, p.bounds.height.lp), prepared).map(r => (instance, p, r))
+    }
   private def exposedText(instance: Long): Option[TextSemantics] = shown
     .get(instance)
     .filter(_ => bindings.contains(instance))

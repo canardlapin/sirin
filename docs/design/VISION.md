@@ -597,6 +597,11 @@ granularity. Removal clears the part while retaining a surviving element's focus
 and popup restoration retains the previous part if still exposed. See
 `decisions/2026-11-01-semantic-part-focus.md` for the target and fallback rules.
 Dismissal carries a reason and may be vetoed; the simple default closes.
+During committed popup closure, native text transport may prepare the pending
+restore target from accepted geometry while its replacement frame is pending.
+This does not publish focus or deliver edits early: text/composition and the
+transition's key-down events remain in the bounded owner queue until accepted
+presentation. See `decisions/2026-11-01-popup-text-handoff.md`.
 
 Key precedence is IME composition, focused editing/text keys, local shortcut
 bubbling, then window chords. Text controls consume only primary-modifier

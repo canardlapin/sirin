@@ -180,8 +180,12 @@ Sirin is a pre-release prototype. Nothing is published.
   [Part-focus evidence](evidence/2026-11-01-semantic-part-focus.md).
   A fresh window check reproduced a separate input defect: typing immediately
   after Escape closes a modal popup can lose the beginning of the text. Typing
-  after observing the restored field succeeds. Its timing and transport cause
-  are still under investigation; input acceptance remains open.
+  after observing the restored field succeeds. A controlled render delay traced
+  the loss to disabled native text transport before restored focus is presented.
+  A repair prepares transport early and queues delivery until presentation;
+  controller regressions pass. Repaired real-window verification remains pending,
+  so input acceptance stays open.
+  [Text-handoff evidence](evidence/2026-11-01-popup-text-handoff.md).
   [Relationship evidence](evidence/2026-11-01-native-semantic-relationships.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames
   without a full-frame CPU readback. Explicit captures read pixels back; the

@@ -107,7 +107,7 @@ object EditorAccessibility:
 
   /** Enable input immediately on focus using accepted geometry; the next frame refines the caret. */
   def updateTextInput(window: NativeWindow, controller: EditorController, active: Boolean): Unit =
-    val element = controller.textElement.filter(_ => active)
+    val element = controller.textInputTransport.filter(_ => active)
     element.foreach { (_, p, request) =>
       val c = request.caret
       val rect = Box(

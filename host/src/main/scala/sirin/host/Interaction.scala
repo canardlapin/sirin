@@ -67,6 +67,15 @@ final case class PopupLayer(instance: Long, bounds: Box, modal: Boolean)
 final case class InteractionSnapshot(epoch: Long, targets: Vector[Target], popups: Vector[PopupLayer] = Vector.empty):
   require(targets.size <= 10000 && targets.map(_.id).distinct.size == targets.size, "interaction identity/budget")
   def target(id: NodeId): Option[Target] = targets.find(_.id == id)
+  def referenceTarget(reference: Long, part: Option[PartId] = None): Option[Target] =
+    val candidates = targets.filter(t => t.focusable && accepts(t))
+    part match
+      case Some(id) =>
+        val matching = candidates.filter(t => t.directRefs.contains(reference) && t.semanticParts.count(_ == id) == 1)
+        Option.when(matching.size == 1)(matching.head)
+      case None => candidates
+        .find(_.directRefs.contains(reference))
+        .orElse(candidates.find(_.ancestorRefs.contains(reference)))
 
   /** The layers that take input: all of them, unless a modal popup blocks everything beneath it. */
   def active: Vector[Option[Long]] =
@@ -191,15 +200,7 @@ final class Interaction:
   }
   /** A ref on a view that cannot take focus itself, such as a layout, focuses the first focusable view inside it. */
   def focusRef(reference: Long, part: Option[PartId] = None): Boolean =
-    val candidates = snapshot.targets.filter(t => t.focusable && snapshot.accepts(t))
-    val target = part match
-      case Some(id) =>
-        val matching = candidates.filter(t => t.directRefs.contains(reference) && t.semanticParts.count(_ == id) == 1)
-        Option.when(matching.size == 1)(matching.head)
-      case None => candidates
-        .find(_.directRefs.contains(reference))
-        .orElse(candidates.find(_.ancestorRefs.contains(reference)))
-    target match
+    snapshot.referenceTarget(reference, part) match
       case None =>
         false
       case Some(target) =>

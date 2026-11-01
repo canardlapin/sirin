@@ -401,12 +401,14 @@ private[desktop] final class ApplicationPeer(
       window.close()
       throw error
   def update(next: CapturedWindow): Unit =
+    val previousText = controller.textInputTransport.map(_._1)
     val wasUnavailable = renderRecovery.unavailable
     renderRecovery.update(next.renderStatus)
     if !renderRecovery.unavailable && (wasUnavailable || title(captured.title) != title(next.title)) then
       window.title(title(next.title))
     captured = next
     inputs.update(next)
+    if controller.textInputTransport.map(_._1) != previousText then updateInputClient()
   private def refresh(): Boolean =
     session.capture().find(_.instance == instance) match
       case Some(next) =>

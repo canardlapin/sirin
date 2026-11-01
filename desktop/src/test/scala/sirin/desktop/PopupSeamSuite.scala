@@ -12,7 +12,8 @@ import sirin.graphics.unicode.NativeUnicode
 object PopupSeamSuite:
   final case class Layer(name: String, locked: Boolean)
 
-  final class Program(scope: Scope, val layer: Cell[Layer]):
+  final class Program(
+      scope: Scope, val layer: Cell[Layer], restore: NodeRef => FocusRestore = _ => FocusRestore.Previous):
     val open = scope.cell(false)
     val draft = scope.cell("")
     val error = scope.cell(Option.empty[String])
@@ -50,7 +51,7 @@ object PopupSeamSuite:
           anchor = renameButton,
           placement = Placement.Below,
           initialFocus = Some(nameField),
-          restoreFocus = FocusRestore.Previous,
+          restoreFocus = restore(notesField),
           onDismiss = reason =>
             if reason == DismissReason.OutsidePress && draft.get != layer.get.name then
               DismissDecision.Veto
@@ -84,13 +85,14 @@ class PopupSeamSuite extends munit.FunSuite:
 
   import PopupSeamSuite.*
 
-  private final class Fixture(width: Int = 560, height: Int = 320) extends AutoCloseable:
+  private final class Fixture(width: Int = 560, height: Int = 320,
+      restore: NodeRef => FocusRestore = _ => FocusRestore.Previous) extends AutoCloseable:
     val runtime = new HeadlessRuntime
     val owner = runtime.scope("popup")
     val layer = owner.cell(Layer("Background", false))
     private var built = Option.empty[Program]
     private val panel = Component[Unit]("LayerPanel") { (scope, _) =>
-      val created = new Program(scope, layer)
+      val created = new Program(scope, layer, restore)
       built = Some(created)
       created.view
     }
@@ -108,7 +110,7 @@ class PopupSeamSuite extends munit.FunSuite:
     )
     var generation = 0L
     var captured = CapturedTree(Node(NodeId(Vector("empty")), Content.Empty), Map.empty)
-    def frame(save: Option[String] = None): LayoutResult =
+    def refresh(): Unit =
       runtime.drive(32)
       captured = runtime.withCommitted(reader =>
         reader(mounted.snapshot) match
@@ -118,6 +120,8 @@ class PopupSeamSuite extends munit.FunSuite:
             throw error
       )
       controller.update(captured)
+    def frame(save: Option[String] = None): LayoutResult =
+      refresh()
       generation += 1
       val state = controller.interaction.state
       val request = FrameRequest(
@@ -173,6 +177,92 @@ class PopupSeamSuite extends munit.FunSuite:
       assert(!f.read(f.program.open), "Escape in the field dismisses the popup")
       assert(!f.has("Rename layer"))
       assert(f.focused("Rename Layer…"), "focus returns to the button that opened it")
+    finally f.close()
+  }
+
+  test("text after popup dismissal waits for the restored field's accepted presentation") {
+    val f = new Fixture
+    try
+      f.frame()
+      f.click("Notes")
+      ok(f.runtime.transact { f.program.beginRename.dispatch(()) })
+      f.frame()
+      assert(f.controller.focusElement(f.part("Cancel")._1))
+      f.frame()
+      assertEquals(f.controller.textElement, None)
+      f.controller.handle(HostInput.KeyDown(Key.Escape, Mods.none))
+      f.refresh()
+      assert(!f.controller.ready)
+      assertEquals(f.controller.textElement, None, "logical focus does not move before presentation")
+      assertEquals(f.controller.textInputTransport.map(_._1), Some(f.part("Notes")._1))
+      assert(!f.read(f.program.notesField.hasFocus), "transport preparation does not publish reference focus")
+      assert(f.controller.needsGeometry(HostInput.KeyDown(Key.Character('a'), Mods.none)))
+      val queue = new OwnerInputQueue[Int]
+      queue.add(1, Some(HostInput.TextInput("prefix")))
+      assert(f.controller.needsGeometry(HostInput.TextInput("prefix")))
+      assert(f.controller.needsGeometry(HostInput.Composition("candidate", 0, 0)))
+      def drain(): Unit =
+        assert(queue.drain(() => f.controller.ready, f.controller.needsGeometry)(
+          (_, event) => {
+            f.controller.handle(event)
+            true
+          }, _ => fail("no close request")))
+      drain()
+      assert(queue.nonEmpty)
+      f.frame()
+      assert(f.focused("Notes"))
+      drain()
+      assert(!queue.nonEmpty)
+      f.frame()
+      assertEquals(f.part("Notes")._2.text.get.request.content, "prefix")
+    finally f.close()
+  }
+
+  test("pending transport obeys explicit, non-text and Nowhere restoration policies") {
+    val policies: Vector[(NodeRef => FocusRestore, Boolean)] = Vector(
+      ((_ => FocusRestore.Previous), false),
+      ((ref => FocusRestore.To(ref)), true),
+      ((_ => FocusRestore.Nowhere), false)
+    )
+    for (restore, preparesText) <- policies do
+      val f = new Fixture(restore = restore)
+      try
+        f.frame()
+        f.click("Rename Layer…")
+        assert(f.controller.focusElement(f.part("Cancel")._1))
+        f.frame()
+        f.controller.handle(HostInput.KeyDown(Key.Escape, Mods.none))
+        f.refresh()
+        assert(!f.controller.ready)
+        assertEquals(f.controller.textInputTransport.nonEmpty, preparesText)
+        f.frame()
+        assertEquals(f.controller.textElement.nonEmpty, preparesText)
+        if preparesText then assert(f.focused("Notes"))
+      finally f.close()
+  }
+
+  test("vetoed dismissal and retired restore targets do not prepare unrelated text input") {
+    val f = new Fixture
+    try
+      f.frame()
+      f.click("Notes")
+      ok(f.runtime.transact { f.program.beginRename.dispatch(()) })
+      f.frame()
+      ok(f.runtime.transact { f.program.draft.set("changed") })
+      f.frame()
+      assert(f.controller.focusElement(f.part("Cancel")._1))
+      f.frame()
+      val outside = f.part("Locked")._2.bounds.origin
+      f.controller.handle(HostInput.Down(outside.x.toDouble, outside.y.toDouble))
+      f.refresh()
+      assert(f.read(f.program.open), "the edited draft vetoes the outside press")
+      assertEquals(f.controller.textInputTransport, None)
+      f.controller.handle(HostInput.KeyDown(Key.Escape, Mods.none))
+      ok(f.runtime.transact { f.mounted.update(View.empty) })
+      f.refresh()
+      assertEquals(f.controller.textInputTransport, None)
+      f.frame()
+      assertEquals(f.controller.textElement, None)
     finally f.close()
   }
 

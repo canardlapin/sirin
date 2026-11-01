@@ -86,8 +86,13 @@ without invalidating the base drawing cache. See
 Actual VoiceOver permission is pending; the broader acceptance outcomes stay open.
 The final part-focus package exposed a further coherent-input defect: immediate
 typing after Escape dismisses the dirty-quit popup can lose its prefix, while
-typing after observing restored focus succeeds. Preserve the negative window
-evidence and diagnose the native/owner handoff before accepting that workflow.
+typing after observing restored focus succeeds. A controlled render delay traced
+the failure to native text input remaining disabled before restored focus is
+presented. The repair prepares native transport for the surviving restore field
+and queues delivery until accepted presentation. Controller regressions pass;
+repaired diagnostic and production window verification remain pending approval.
+The defect stays open. See
+[text-handoff evidence](../evidence/2026-11-01-popup-text-handoff.md).
 The independent ReviewPad consumer now builds and packages from a committed
 external copy against a clean binary SDK. Four storage regressions pass,
 including a reproduced and repaired malformed-text load failure. Its separate
