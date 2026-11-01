@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-10-31, for workbench window checks. This page says, in plain
+Last updated 2026-11-01, for workbench window and title checks. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -85,9 +85,15 @@ Sirin is a pre-release prototype. Nothing is published.
   before interruption, so that acceptance check remains open. Text input now
   survives returning from Import to the main window: the shared native shim
   stops the prior Cocoa text client before starting the next. Hidden-window and
-  fresh-package keyboard handoffs, save and Quit checks pass. Closing Import
-  still leaves the remaining window inactive until clicked. Long titles can
-  also overflow the fixed sidebar row height.
+  fresh-package keyboard handoffs, save and Quit checks pass. Closing the active
+  window now activates the most recently active survivor and retains its focused
+  control. Long sidebar titles ellipsize within fixed rows, with full accessible
+  names and usable reorder buttons. An Arabic-title accessibility crash was also
+  repaired by retaining zero-advance grapheme ranges. Fresh-package open/edit/save
+  and immediate typing after both close paths pass. Repeated window handoffs
+  exposed a separate GPU frame inventory/coverage rejection; recovery retains
+  state, but the cause remains open.
+  [Window and title evidence](evidence/2026-11-01-workbench-window-rows.md).
   [Window-input evidence](evidence/2026-11-01-workbench-window-input.md).
   [Recovery evidence](evidence/2026-10-31-workbench-recovery.md).
   [Close-policy evidence](evidence/2026-10-31-workbench-native-close.md).

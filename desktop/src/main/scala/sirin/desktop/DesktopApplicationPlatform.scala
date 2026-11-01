@@ -99,6 +99,7 @@ private[desktop] final class DesktopApplicationSession(
   var turns = 0L
   private val menus = new ApplicationMenus(native)
   private var menuWindow = Option.empty[Long]
+  private val activationOrder = new WindowActivationOrder
   private var failures = Vector.empty[Throwable]
   def reportedFailures: Vector[Throwable] = failures
   private[desktop] def report(error: Throwable): Unit =
@@ -124,6 +125,9 @@ private[desktop] final class DesktopApplicationSession(
     val captured = captureApplication()
     val windows = captured.windows
     val ids = windows.map(_.instance).toSet
+    val focusedBefore = active.valuesIterator.find(_.window.keyboardFocus()).map(_.instance)
+    activationOrder.observe(active.keys.toVector, focusedBefore)
+    val removedFocused = focusedBefore.exists(id => !ids(id))
     active
       .keys
       .filterNot(ids)
@@ -142,6 +146,9 @@ private[desktop] final class DesktopApplicationSession(
         case None =>
           () // Existing retiring peers still own the native capacity.
     }
+    val focusedAfter = active.valuesIterator.find(_.window.keyboardFocus()).map(_.instance)
+    activationOrder.afterRetirement(active.keys.toVector, removedFocused, focusedAfter, quitting)
+      .foreach(id => active(id).activate())
     menuWindow = active
       .valuesIterator
       .find(_.window.keyboardFocus())
@@ -531,12 +538,16 @@ private[desktop] final class ApplicationPeer(
         if !refresh() then
           return
         actions += 1
+  def activate(): Unit =
+    window.activate()
+    focusActive = true
+    controller.nativeFocus(true)
+    updateInputClient()
+    repaint = true
+
   def focus(reference: Long): Boolean =
     if controller.ready && controller.focusReference(reference) then
-      window.activate()
-      focusActive = true
-      controller.nativeFocus(true)
-      updateInputClient()
+      activate()
       true
     else
       false

@@ -26,8 +26,15 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
       val directory = Files.createTempDirectory("sirin-public-workbench-")
       val repository = new FileDocumentRepository(directory)
       val id = DocumentId("document")
+      val longTitle = "A Unicode document with a title that exceeds the width of its sidebar row"
       Work.execute(
-        repository.create(DocumentData(id, "Unicode document", "initial")),
+        repository.create(DocumentData(id, longTitle, "initial")),
+        new Cancellation {
+          def cancelled = false
+        }
+      )
+      Work.execute(
+        repository.create(DocumentData(DocumentId("neighbor"), "B adjacent document", "neighbor")),
         new Cancellation {
           def cancelled = false
         }
@@ -153,6 +160,27 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
           rect.origin.x.toDouble >= 0 && rect.origin.y.toDouble >= 0 &&
             rect.origin.x.toDouble + rect.size.width.toDouble <= width &&
             rect.origin.y.toDouble + rect.size.height.toDouble <= height
+        val titlePart = part(longTitle, Role.Button)
+        val titleBounds = titlePart._2.bounds
+        assert(titleBounds.size.height.toDouble <= 40, "long titles remain one line")
+        val moveParts = controller.layout.get.semanticParts.filter { (_, node) =>
+          node.semantics.name.exists(name => name == "Up" || name == "Down") &&
+            node.bounds.origin.y.toDouble >= titleBounds.origin.y.toDouble &&
+            node.bounds.origin.y.toDouble < titleBounds.origin.y.toDouble + 80
+        }
+        assertEquals(moveParts.size, 2)
+        moveParts.foreach { (_, node) =>
+          assert(node.bounds.origin.y.toDouble >= titleBounds.origin.y.toDouble + titleBounds.size.height.toDouble)
+          assert(node.bounds.origin.y.toDouble + node.bounds.size.height.toDouble <= titleBounds.origin.y.toDouble + 80)
+          assert(node.bounds.size.height.toDouble >= 30, "move controls keep a usable target")
+        }
+        val down = moveParts.find(_._2.semantics.name.contains("Down")).get._2.bounds.center
+        controller.handle(HostInput.Down(down.x.toDouble, down.y.toDouble))
+        controller.handle(HostInput.Up(down.x.toDouble, down.y.toDouble))
+        frame()
+        val movedTitle = part(longTitle, Role.Button)
+        assertEquals(movedTitle._1, titlePart._1, "reordering retains the title control")
+        assertEquals(movedTitle._2.bounds.origin.y, titleBounds.origin.y + 80.lp)
         val originalBody = part("Document", Role.TextInput)
         assert(inside(originalBody._2.bounds))
         assert(originalBody._2.bounds.size.width.toDouble >= 300, "editor must use the available pane width")

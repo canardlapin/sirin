@@ -317,8 +317,11 @@ final class DocumentWorkspace(scope: Scope,repository: DocumentRepository,import
       case None => Signal.const(summary.title)
     })
     Column(
-      Button(label).command(open,id),
-      Row(Button("Up").command(moveRow,id.map(_ -> -1)),Button("Down").command(moveRow,id.map(_ -> 1))).spacing(6.lp)
+      Button(label).singleLine.height(40.lp).command(open, id),
+      Row(
+        Button("Up").command(moveRow, id.map(_ -> -1)),
+        Button("Down").command(moveRow, id.map(_ -> 1))
+      ).spacing(6.lp).height(36.lp)
     ).spacing(4.lp)
   }
   private val decisionTitle = prompt.map(_.fold("Review decision") { pending =>

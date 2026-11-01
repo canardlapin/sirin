@@ -1220,7 +1220,12 @@ font-metrics epoch, and the scale. The layout debugger can answer "why is
 this 418 px wide?"
 
 **Interaction.** Focus, hover, pointer capture, activation, tab navigation,
-and window activation are modeled separately. Dismissal, placement, focus
+and window activation are modeled separately. When the active native window
+retires, the desktop host activates the most recently active surviving window
+(last-created survivor if no activation history exists), preserving its logical
+control focus. An already active survivor takes precedence. Background retirement,
+application deactivation, Quit and closing the last window do not activate a
+survivor (2026-11-01; `decisions/2026-11-01-workbench-window-rows.md`). Dismissal, placement, focus
 restoration, and modality of overlays are shared machinery, not something
 each widget reimplements. *(2026-10-31: popups are mounted under their
 originator and presented in a host window overlay layer; see
@@ -1403,7 +1408,9 @@ entries and native programs referencing that source, so old base images cannot
 escape the shared ownership bounds through composite cache keys.
 
 Buttons are immutable public descriptions with either a transaction action or
-an existing Command binding. Labels, enablement and running state are declared
+an existing Command binding. `Button.singleLine` opts into one visual line with
+an ellipsis on overflow and retains the full semantic name; ordinary labels wrap.
+Line separators become spaces for this visual label only. Labels, enablement and running state are declared
 phase dependencies. Worker trees contain only captured values and stable mounted
 control IDs; callbacks, commands, Signals and NodeRefs stay with the UI owner.
 Each successful presentation installs one matching geometry/binding epoch. Input

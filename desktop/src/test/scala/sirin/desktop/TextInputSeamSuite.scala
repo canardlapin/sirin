@@ -435,3 +435,29 @@ class TextInputSeamSuite extends munit.FunSuite:
     finally
       f.close()
   }
+
+  test("native text spans cover zero-advance graphemes as well as painted selections") {
+    for content <- Vector(
+        "عنوان عربي طويل جدا لا يتسع داخل هذا الزر",
+        "a\u200Bb",
+        "left \u2067عربي\u2069 end",
+        ""
+      ) do
+      val f = new Fixture(scope => TextField.bind(scope.cell(content)), focusAt = None)
+      try
+        val layout = f.settle()
+        val node = layout.semanticParts.find(_._2.text.nonEmpty).get._2
+        val request = node.text.get
+        val shaped = layout.text.get(request.request).get
+        val spans = EditorAccessibility.spans(shaped, Point.origin, Box(0, 0, 240, 40), 0,
+          shaped.caret(0, TextAffinity.Downstream)).grouped(7).toVector
+        val expected = shaped.graphemeBoundaries.zip(shaped.graphemeBoundaries.drop(1))
+        val ranges = spans.filter(p => p(0) != p(1)).map(p => (p(0).toInt, p(1).toInt))
+        assertEquals(ranges.distinct.sorted, expected, s"complete native text coverage for $content")
+        assert(spans.flatten.forall(_.isFinite))
+        spans.foreach { p =>
+          assert(p(2) >= 0 && p(3) >= 0 && p(4) >= 0 && p(5) >= 0)
+          assert(p(2) + p(4) <= 240 && p(3) + p(5) <= 40)
+        }
+      finally f.close()
+  }

@@ -85,7 +85,13 @@ object EditorAccessibility:
     stops
       .zip(stops.drop(1))
       .foreach { (a, b) =>
-        text.selection(a, b).foreach(r => add(a, b, r.bounds, r.lineIndex))
+        val regions = text.selection(a, b)
+        if regions.nonEmpty then regions.foreach(r => add(a, b, r.bounds, r.lineIndex))
+        else
+          // Zero-advance graphemes have no filled selection region, but still own source text.
+          val caret = text.caret(TextPosition(a, TextAffinity.Downstream)).orElse(text.caretsAt(a).headOption)
+            .getOrElse(throw new IllegalStateException("accessibility grapheme has no caret"))
+          add(a, b, caret.bounds, caret.lineIndex)
       }
     result.result().toArray
 

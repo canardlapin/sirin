@@ -71,9 +71,16 @@ The attempted live cancellation completed too quickly to interrupt and remains
 unqualified. Keyboard input loss after switching back from Import to main was
 traced to native text-client ownership and repaired in the shared shim; both
 hidden-window and packaged keyboard handoffs now pass. A Native executable also
-checks the existing text/focus ABI in the exact packaged library. Closing Import
-still leaves main inactive until clicked, and long sidebar titles overflow rows.
-Those open issues and broader acceptance gates prevent full usability acceptance.
+checks the existing text/focus ABI in the exact packaged library. Closing an
+active window now activates the most recently active survivor while retaining
+its control focus. Sidebar titles ellipsize within fixed rows and preserve full
+accessible names. An Arabic-title native text-publication crash was reproduced
+and repaired; clean-package open/edit/save and close-and-type checks pass.
+Repeated handoffs exposed a separate GPU frame coverage/generation/inventory
+rejection, tracked in `bd-01M6APTQYS91VRFD96KXG58PMK`. Retry retained state, but
+its cause remains unresolved. That failure and broader acceptance gates prevent
+full usability acceptance. See
+[window and title evidence](../evidence/2026-11-01-workbench-window-rows.md).
 See [recovery evidence](../evidence/2026-10-31-workbench-recovery.md) and
 [window-input evidence](../evidence/2026-11-01-workbench-window-input.md).
 

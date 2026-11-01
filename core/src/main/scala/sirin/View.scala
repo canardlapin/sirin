@@ -86,6 +86,7 @@ object View:
     def color(value: ColorRole): TextView = copy(view = view.color(value))
   private[sirin] final case class ButtonDecoration(view: ButtonView, decoration: Decoration) extends ButtonView:
     def primary: ButtonView = copy(view = view.primary)
+    def singleLine: ButtonView = copy(view = view.singleLine)
     def command(c: Command[Unit, ?]): ButtonView = copy(view = view.command(c))
     def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(view = view.command(c, arg))
     def onPress(run: Action): ButtonView = copy(view = view.onPress(run))
@@ -166,6 +167,9 @@ object TextField:
 trait ButtonView extends View:
   def primary: ButtonView
 
+  /** One visual line with an ellipsis on overflow; accessibility keeps the full label. */
+  def singleLine: ButtonView
+
   /** Enablement, activation, and busy state all come from the command. */
   def command(c: Command[Unit, ?]): ButtonView
   def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView
@@ -196,17 +200,20 @@ object Button:
   private[sirin] final case class Description(
       label: Signal[String],
       isPrimary: Boolean = false,
-      binding: Binding = Inert
+      binding: Binding = Inert,
+      isSingleLine: Boolean = false
   ) extends ButtonView
       with View.Proxy:
     lazy val body: View = ButtonElement.view(
       label,
       isPrimary,
+      isSingleLine,
       binding.enabled,
       binding.running,
       txn => binding.invoke()(using txn)
     )
     def primary: ButtonView = copy(isPrimary = true)
+    def singleLine: ButtonView = copy(isSingleLine = true)
     def command(c: Command[Unit, ?]): ButtonView = command(c, Signal.const(()))
     def command[A](c: Command[A, ?], arg: Signal[A]): ButtonView = copy(binding = Bound(c, arg))
     def onPress(run: Action): ButtonView = copy(binding = Plain(txn => run(using txn)))
