@@ -579,10 +579,14 @@ final class EditorController(
     ready && revision == presentedRevision && focusElement(instance)
 
   def accessibilityActivate(instance: Long, part: PartId, revision: Long): Boolean =
+    accessibilityAction(instance, part, SemanticAction.Activate, revision)
+
+  def accessibilityAction(instance: Long, part: PartId, action: SemanticAction, revision: Long): Boolean =
     if !ready || revision != presentedRevision || !interaction.accepts(instance) then false
+    else if captured.bindings.get(instance).exists(!_.enabled) then false
     else if captured.elements.contains(instance) then
-      elements.action(instance, part, SemanticAction.Activate).contains(CommitResult.Committed(true))
-    else if captured.bindings.get(instance).exists(_.enabled) then
+      elements.action(instance, part, action).contains(CommitResult.Committed(true))
+    else if action == SemanticAction.Activate && captured.bindings.get(instance).exists(_.enabled) then
       invoke(instance)
       true
     else false

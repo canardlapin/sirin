@@ -78,6 +78,7 @@ int sirin_ax_begin(void*,int64_t);
 int sirin_ax_field(void*,int64_t,int,const char*,const char*,const char*,int,int,int,int,const double*,const double*,int);
 int sirin_ax_node(void*,int64_t,int64_t,int,const char*,const char*,const char*,int,int,const double*);
 int sirin_ax_link(void*,int64_t,int64_t,int);
+int sirin_ax_actions(void*,int64_t,const int32_t*,const int32_t*,const char*,int,int);
 int sirin_ax_publish(void*);
 int sirin_ax_poll(void*,int64_t*,char*,int);
 int sirin_editor_ime_control(void*,const char*,int,int,int);
@@ -612,7 +613,12 @@ int sirin_desktop_clipboard(void *raw,int write,char *text,int capacity){
  char *value=SDL_GetClipboardText();if(!value)return 1;size_t length=strlen(value);
  if(length>=(size_t)capacity){SDL_free(value);return 2;}memcpy(text,value,length+1);SDL_free(value);return 0;
 }
-int sirin_desktop_ax_abi(void) { return 2; }
+int sirin_desktop_ax_abi(void) { return 3; }
+int sirin_desktop_ax_actions(void *raw, int64_t id, const int32_t *kinds, const int32_t *lengths,
+    const char *names, int count, int bytes) {
+ Desktop *d = raw;
+ return owner(d) ? sirin_ax_actions(d->accessibility, id, kinds, lengths, names, count, bytes) : 1;
+}
 int sirin_desktop_ax_node(void *raw, int64_t id, int64_t parent, int kind,
     const char *label, const char *value, const char *help, int flags, int checked, const double *bounds) {
  Desktop *d = raw;

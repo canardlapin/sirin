@@ -1235,6 +1235,12 @@ originator and presented in a host window overlay layer; see
 name, value, state, actions, relationships, and keyboard behavior.
 Virtualized collections expose set size and position in set. Exposing a
 control to accessibility does not grant automation privileges.
+The macOS action bridge publishes bounded batches of additional declared
+actions through the shared pointer-only ABI. Custom action addresses remain
+stable while declared and are never reused after retirement; owner delivery
+revalidates the presentation and exact semantic part. This is transport of
+the existing action vocabulary, not a kernel dispatch change. See
+`docs/design/decisions/2026-11-01-native-semantic-actions.md`.
 
 **Design system.** The design aims to be restrained, typographically strong,
 and canvas-first. It defines semantic color roles, coordinated density modes,

@@ -33,6 +33,9 @@ final class EditorAccessibility:
           window.accessibilityNode(node.id, node.parent, node.kind, semantic.name.getOrElse(""),
             semantic.value.getOrElse(""), semantic.description.getOrElse(""), node.flags,
             semantic.checked.fold(-1)(value => if value then 1 else 0), bounds)
+      val actions = NativeSemanticAction.declarations(node.part.actions)
+      if actions.nonEmpty then
+        window.accessibilityActions(node.id, actions.map(_._1).toArray, actions.map(_._2).toArray)
     }
     window.publishAccessibility()
     revision = frame.request.generation
@@ -50,7 +53,11 @@ final class EditorAccessibility:
           case 2 | 3 if node.part.text.exists(_.editable) =>
             controller.accessibility(new NativeWindow.AccessibilityAction(
               revision, instance, action.kind(), action.start(), action.length(), action.value()))
-          case _ => false
+          case kind =>
+            NativeSemanticAction.decode(kind, action.value()).exists { semantic =>
+              node.part.actions(semantic) &&
+                controller.accessibilityAction(instance, node.part.part, semantic, revision)
+            }
       }
     }
 

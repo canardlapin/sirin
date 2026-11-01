@@ -43,6 +43,8 @@ public final class NativeWindow implements AutoCloseable {
         ADDRESS, JAVA_LONG, JAVA_LONG, JAVA_INT, ADDRESS, ADDRESS, ADDRESS, JAVA_INT, JAVA_INT, ADDRESS);
     private static final MethodHandle AX_LINK = bind("sirin_desktop_ax_link", JAVA_INT,
         ADDRESS, JAVA_LONG, JAVA_LONG, JAVA_INT);
+    private static final MethodHandle AX_ACTIONS = bind("sirin_desktop_ax_actions", JAVA_INT,
+        ADDRESS, JAVA_LONG, ADDRESS, ADDRESS, ADDRESS, JAVA_INT, JAVA_INT);
     private static final MethodHandle AX_PUBLISH = bind("sirin_desktop_ax_publish",JAVA_INT,ADDRESS);
     private static final MethodHandle AX_POLL = bind("sirin_desktop_ax_poll",JAVA_INT,ADDRESS,ADDRESS,ADDRESS,JAVA_INT);
     private static final MethodHandle IME_CONTROL = bind("sirin_desktop_ime_control",JAVA_INT,ADDRESS,ADDRESS,JAVA_INT,JAVA_INT,JAVA_INT);
@@ -269,23 +271,49 @@ public final class NativeWindow implements AutoCloseable {
         try { accepted((int)AX_LINK.invokeExact(handle, id, parent, flags)); }
         catch (Throwable error) { throw failure(error); }
     }
+    public void accessibilityActions(long id, int[] kinds, String[] names) {
+        checkOwner();
+        if (kinds.length != names.length || kinds.length > 32)
+            throw new IllegalArgumentException("AX action batch budget");
+        int[] lengths = new int[names.length];
+        var packed = new java.io.ByteArrayOutputStream();
+        // Snapshot name packing is off the input hot path; each array crosses in one bulk copy below.
+        for (int index = 0; index < names.length; index++) {
+            if (names[index].indexOf('\0') >= 0) throw new IllegalArgumentException("AX action name contains NUL");
+            byte[] bytes = names[index].getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            if (bytes.length > 256) throw new IllegalArgumentException("AX action name budget");
+            if (!new String(bytes, java.nio.charset.StandardCharsets.UTF_8).equals(names[index]))
+                throw new IllegalArgumentException("AX action name encoding");
+            lengths[index] = bytes.length;
+            packed.writeBytes(bytes);
+        }
+        byte[] bytes = packed.toByteArray();
+        try (Arena arena = Arena.ofConfined()) {
+            accepted((int)AX_ACTIONS.invokeExact(handle, id, arena.allocateFrom(JAVA_INT, kinds),
+                arena.allocateFrom(JAVA_INT, lengths), arena.allocateFrom(JAVA_BYTE, bytes),
+                kinds.length, bytes.length));
+        } catch (Throwable error) { throw failure(error); }
+    }
     /** Shared ABI is callable without creating an application or window. */
     public static int accessibilityAbi() {
         try { return (int)bind("sirin_desktop_ax_abi", JAVA_INT).invokeExact(); }
         catch (Throwable error) { throw failure(error); }
     }
     public static void verifyAccessibilityAbi() {
-        if (accessibilityAbi() != 2) throw new IllegalStateException("AX ABI version");
+        if (accessibilityAbi() != 3) throw new IllegalStateException("AX ABI version");
         try (Arena arena = Arena.ofConfined()) {
             MemorySegment text = arena.allocateFrom("ABI probe");
             MemorySegment bounds = arena.allocate(JAVA_DOUBLE, 4);
             MemorySegment facts = arena.allocate(JAVA_LONG, 5);
             MemorySegment output = arena.allocate(65537);
+            MemorySegment kinds = arena.allocateFrom(JAVA_INT, 8);
+            MemorySegment lengths = arena.allocateFrom(JAVA_INT, 9);
             MemorySegment none = MemorySegment.NULL;
             if ((int)AX_BEGIN.invokeExact(none, 17L) != 1 ||
                 (int)AX_FIELD.invokeExact(none, 1L, 0, text, text, text, 0, 0, 0, 1, bounds, none, 0) != 1 ||
                 (int)AX_NODE.invokeExact(none, 2L, 0L, 3, text, text, text, 3, 1, bounds) != 1 ||
                 (int)AX_LINK.invokeExact(none, 1L, 2L, 1) != 1 ||
+                (int)AX_ACTIONS.invokeExact(none, 2L, kinds, lengths, text, 1, 9) != 1 ||
                 (int)AX_PUBLISH.invokeExact(none) != 1 ||
                 (int)AX_POLL.invokeExact(none, facts, output, 65537) != 0)
                 throw new IllegalStateException("AX invalid-owner contract");

@@ -62,7 +62,11 @@ docking, zero-window draft retention and exact saving were checked; see
 [usability evidence](../evidence/2026-10-31-workbench-visible-decisions.md).
 Native Dialog/label/Checkbox and custom-part transport now has native and
 rendered checks plus a fresh-package modal AX observation. JVM FFM and a Native
-probe reach the same v2 ABI. Actual VoiceOver permission is pending; the broader
+probe reach the same v3 ABI, including bounded batches of increment, decrement,
+dismiss and named custom actions. Native and owner tests cover exact part/name
+dispatch, stable action IDs and rejection after disablement or retirement. See
+[action evidence](../evidence/2026-11-01-native-semantic-actions.md).
+Actual VoiceOver permission is pending; the broader
 acceptance outcomes and remaining semantic relationships stay open.
 Packaged recovery checks now preserve exact files across external-change
 conflicts, copy/reload and partial import. Import review validity, local errors,

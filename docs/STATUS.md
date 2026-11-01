@@ -120,7 +120,7 @@ Sirin is a pre-release prototype. Nothing is published.
 - **Scala Native desktop.** The kernel and tests run under Scala Native, but there is no
   qualified Scala Native application provider. Native delivery depends on the
   open GC safepoint stall (P0.6). The delivery order is to be decided before
-  Alpha6 (VISION §1.1). A separate Native executable reaches the same seven
+  Alpha6 (VISION §1.1). A separate Native executable reaches the same eight
   accessibility ABI functions as JVM FFM, and a separate text/focus probe reaches
   four existing functions in the exact packaged library. These are binding
   checks, not a provider.
@@ -136,6 +136,11 @@ Sirin is a pre-release prototype. Nothing is published.
   background document controls from the modal AX tree. Native actions for text,
   buttons and custom parts are checked. Actual VoiceOver remains unqualified.
   [Transport evidence](evidence/2026-10-31-native-semantic-tree.md).
+  Increment, decrement, dismiss and named custom actions now cross the shared
+  bridge in bounded batches and dispatch to their declared part. Native checks
+  cover stable action IDs, copied names, disabled/retired targets and foreign-thread
+  queueing. Relationships, collection positions and semantic-part focus remain
+  open. [Action evidence](evidence/2026-11-01-native-semantic-actions.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames
   without a full-frame CPU readback. Explicit captures read pixels back; the
   reference/fallback path still reads back and uploads. This is not a zero-copy

@@ -107,11 +107,168 @@ static void semantic_tree(void) {
  puts("Semantic tree: dialog hierarchy, labels, checkbox state/actions, refusals and atomic validation passed");
 }
 
+// Test convenience: append one declaration by sending a complete replacement batch.
+static int sirin_ax_action(void *raw, int64_t id, int kind, const char *name) {
+ SirinAccessKit *s = (__bridge SirinAccessKit*)raw;
+ NSArray *previous = @[];
+ for(NSDictionary *field in s.pending)
+  if([field[@"id"] longLongValue] == id)previous = field[@"actions"] ?: @[];
+ int32_t kinds[33];
+ int32_t lengths[33];
+ char names[33 * 257];
+ int count = 0;
+ int bytes = 0;
+ for(NSDictionary *entry in previous) {
+  kinds[count] = [entry[@"kind"] intValue];
+  const char *text = [entry[@"name"] UTF8String];
+  lengths[count] = (int32_t)strlen(text);
+  memcpy(names + bytes, text, (size_t)lengths[count]);
+  bytes += lengths[count++];
+ }
+ kinds[count] = kind;
+ lengths[count] = (int32_t)strnlen(name, 257);
+ memcpy(names + bytes, name, (size_t)lengths[count]);
+ bytes += lengths[count++];
+ return sirin_ax_actions(raw, id, kinds, lengths, names, count, bytes);
+}
+
+static void *foreign_custom(void *raw) {
+ accesskit_action_request request = {0};
+ request.target_node = 12ULL << 16;
+ request.action = ACCESSKIT_ACTION_CUSTOM_ACTION;
+ request.data.has_value = true;
+ request.data.value.tag = ACCESSKIT_ACTION_DATA_CUSTOM_ACTION;
+ request.data.value.custom_action = 2;
+ action(&request, raw);
+ return NULL;
+}
+
+static void additional_actions(void) {
+ SirinAccessKit *s = [SirinAccessKit new];
+ s.alive = YES;
+ s.fields = @[];
+ s.pending = [NSMutableArray new];
+ s.actions = [NSMutableArray new];
+ s.wakeType = SDL_RegisterEvents(1);
+ s.scale = 1;
+ void *raw = (__bridge void*)s;
+ double bounds[] = {0, 0, 80, 40};
+ int64_t facts[5];
+ char text[65537];
+ assert(sirin_ax_begin(raw, 100) == 0);
+ assert(sirin_ax_node(raw, 12, 0, 16, "Part", "", "", 0, -1, bounds) == 0);
+ s.fields = [s.pending copy];
+ assert(sirin_ax_action(raw, 12, 5, "") == 0);
+ assert(sirin_ax_action(raw, 12, 6, "") == 0);
+ assert(sirin_ax_action(raw, 12, 7, "") == 0);
+ char copied[] = "Renommer é";
+ assert(sirin_ax_action(raw, 12, 8, copied) == 0);
+ copied[0] = 'X';
+ assert(sirin_ax_action(raw, 12, 8, "Dismiss") == 0);
+ assert(sirin_ax_action(raw, 12, 8, "Dismiss") == 2);
+ assert(sirin_ax_action(raw, 12, 5, "unexpected") == 2);
+ assert(sirin_ax_action(raw, 12, 8, "") == 2);
+ assert(sirin_ax_action(raw, 12, 9, "Unknown") == 2);
+ assert(sirin_ax_action(raw, 99, 8, "Missing") == 2);
+ char large[258];
+ memset(large, 'a', sizeof(large));
+ large[257] = 0;
+ assert(sirin_ax_action(raw, 12, 8, large) == 2);
+ NSArray *prior = s.pending;
+ NSDictionary *priorField = prior[0];
+ int32_t badKinds[] = {5, 8};
+ int32_t badLengths[] = {0, 1};
+ const char invalid[] = {(char)0xff};
+ assert(sirin_ax_actions(raw, 12, badKinds, badLengths, invalid, 2, 1) == 2);
+ assert([s.pending[0] isEqual:priorField]);
+ assert(sirin_ax_actions(raw, 12, badKinds, badLengths, "x", 2, 0) == 2);
+ assert(sirin_ax_actions(raw, 12, badKinds, badLengths, "xy", 2, 2) == 2);
+ assert([s.pending[0] isEqual:priorField]);
+ accesskit_action_request request = {0};
+ request.target_node = 12ULL << 16;
+ request.action = ACCESSKIT_ACTION_INCREMENT;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == -2);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 0);
+ s.fields = [s.pending copy];
+ struct accesskit_tree_update *update = tree(raw);
+ char *debug = accesskit_tree_update_debug(update);
+ assert(strstr(debug, "Increment") && strstr(debug, "Decrement") && strstr(debug, "CustomAction"));
+ assert(strstr(debug, "Renommer é") && strstr(debug, "Dismiss"));
+ puts(debug);
+ accesskit_string_free(debug);
+ accesskit_tree_update_free(update);
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1);
+ assert(facts[0] == 100 && facts[1] == 12 && facts[2] == 5 && !text[0]);
+ request.action = ACCESSKIT_ACTION_DECREMENT;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1 && facts[2] == 6);
+ request.action = ACCESSKIT_ACTION_CUSTOM_ACTION;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == -2);
+ request.data.has_value = true;
+ request.data.value.tag = ACCESSKIT_ACTION_DATA_CUSTOM_ACTION;
+ request.data.value.custom_action = 99;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == -2);
+ request.data.value.custom_action = 1;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1 && facts[2] == 7 && !text[0]);
+ request.data.value.custom_action = 3;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1 && facts[2] == 8 && !strcmp(text, "Dismiss"));
+ pthread_t worker;
+ assert(pthread_create(&worker, NULL, foreign_custom, raw) == 0);
+ assert(pthread_join(worker, NULL) == 0);
+ assert(sirin_ax_begin(raw, 101) == 0);
+ assert(sirin_ax_node(raw, 12, 0, 16, "Part", "", "", 0, -1, bounds) == 0);
+ assert(sirin_ax_action(raw, 12, 8, "Different") == 0);
+ assert(sirin_ax_action(raw, 12, 8, "Renommer é") == 0);
+ s.fields = [s.pending copy];
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1);
+ assert(facts[0] == 100 && facts[1] == 12 && facts[2] == 8 && facts[3] == 0 && facts[4] == 0);
+ assert(!strcmp(text, "Renommer é"));
+ request.data.value.custom_action = 1;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == -2);
+ request.data.value.custom_action = 3;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == -2);
+ request.data.value.custom_action = 2;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1 && facts[0] == 101);
+ assert(!strcmp(text, "Renommer é"));
+ request.data.value.custom_action = 4;
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 1 && !strcmp(text, "Different"));
+ assert(sirin_ax_link(raw, 12, 0, 4) == 0);
+ s.fields = [s.pending copy];
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 0);
+ s.fields = @[];
+ action(&request, raw);
+ assert(sirin_ax_poll(raw, facts, text, sizeof(text)) == 0);
+ for(int index = 2; index < 32; index++) {
+  char name[32];
+  snprintf(name, sizeof(name), "Action %d", index);
+  assert(sirin_ax_action(raw, 12, 8, name) == 0);
+ }
+ assert(sirin_ax_action(raw, 12, 8, "Overflow") == 2);
+ assert(sirin_ax_begin(raw, 102) == 0);
+ assert(sirin_ax_node(raw, 12, 0, 16, "Part", "", "", 0, -1, bounds) == 0);
+ s.customActionSerial = INT32_MAX;
+ assert(sirin_ax_action(raw, 12, 8, "Exhausted") == 2);
+ assert(sirin_ax_action(raw, 12, 5, "") == 0);
+ puts("Additional actions: declaration, exact names, foreign-thread queue, revision, retirement and bounds passed");
+}
+
 int main(void) {
  @autoreleasepool {
  repeated_window_class_setup();
  assert(SDL_Init(SDL_INIT_EVENTS));
  semantic_tree();
+ additional_actions();
  SirinAccessKit *s=[SirinAccessKit new];s.alive=YES;s.fields=@[];s.pending=[NSMutableArray new];s.actions=[NSMutableArray new];s.wakeType=SDL_RegisterEvents(1);s.scale=2;
  void *raw=(__bridge void*)s;double bounds[]={10,20,160,30};
  // a + emoji + combining cluster: UTF-16 ends 1/3/5, UTF-8 sizes 1/4/3.

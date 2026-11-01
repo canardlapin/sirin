@@ -18,6 +18,7 @@
 @property(nonatomic) int64_t revision;
 @property(nonatomic) BOOL alive;
 @property(nonatomic) int refused;
+@property(nonatomic) int32_t customActionSerial;
 @property(nonatomic) double scale;
 @property(nonatomic,weak) NSWindow *window;
 @end
@@ -58,6 +59,27 @@ static int flags_for(NSDictionary *f) {
  return 1 | ([f[@"kind"] intValue] == 2 ? 2 : 0) |
    ([f[@"enabled"] boolValue] ? 0 : 4) | ([f[@"focused"] boolValue] ? 8 : 0);
 }
+static BOOL has_action(NSDictionary *field, int kind) {
+ for(NSDictionary *entry in field[@"actions"])
+  if([entry[@"kind"] intValue] == kind)return YES;
+ return NO;
+}
+static void extra_actions(struct accesskit_node *node, NSDictionary *field) {
+ NSArray *actions = field[@"actions"];
+ for(NSUInteger index = 0; index < actions.count; index++) {
+  NSDictionary *entry = actions[index];
+  int kind = [entry[@"kind"] intValue];
+  if(kind == 5)accesskit_node_add_action(node, ACCESSKIT_ACTION_INCREMENT);
+  else if(kind == 6)accesskit_node_add_action(node, ACCESSKIT_ACTION_DECREMENT);
+  else {
+   struct accesskit_custom_action *custom = accesskit_custom_action_new([entry[@"customId"] intValue]);
+   NSString *name = kind == 7 ? @"Dismiss" : entry[@"name"];
+   accesskit_custom_action_set_description(custom, name.UTF8String);
+   accesskit_node_push_custom_action(node, custom);
+   accesskit_node_add_action(node, ACCESSKIT_ACTION_CUSTOM_ACTION);
+  }
+ }
+}
 static struct accesskit_tree_update *tree(void *raw) {
  @autoreleasepool {
  SirinAccessKit *s=(__bridge SirinAccessKit*)raw;NSArray *fields;double scale;
@@ -88,6 +110,7 @@ static struct accesskit_tree_update *tree(void *raw) {
   if(flags & 4)accesskit_node_set_disabled(node);
   if(flags & 1)accesskit_node_add_action(node,ACCESSKIT_ACTION_FOCUS);
   if(flags & 2)accesskit_node_add_action(node,ACCESSKIT_ACTION_CLICK);
+  extra_actions(node, f);
   if(flags & 16)accesskit_node_set_modal(node);
   if(flags & 32)accesskit_node_set_invalid(node,ACCESSKIT_INVALID_TRUE);
   if(flags & 64)accesskit_node_set_busy(node);
@@ -134,6 +157,26 @@ static void action(const struct accesskit_action_request *request,void *raw) {
    switch(request->action) {
     case ACCESSKIT_ACTION_FOCUS:if(flags_for(f) & 1)kind=1;break;
     case ACCESSKIT_ACTION_CLICK:if(flags_for(f) & 2)kind=4;break;
+    case ACCESSKIT_ACTION_INCREMENT:
+     if(has_action(f, 5))kind = 5;
+     break;
+    case ACCESSKIT_ACTION_DECREMENT:
+     if(has_action(f, 6))kind = 6;
+     break;
+    case ACCESSKIT_ACTION_CUSTOM_ACTION:
+     if(request->data.has_value && request->data.value.tag == ACCESSKIT_ACTION_DATA_CUSTOM_ACTION) {
+      int32_t identifier = request->data.value.custom_action;
+      for(NSDictionary *entry in f[@"actions"]) {
+       if(identifier <= 0 || [entry[@"customId"] intValue] != identifier)continue;
+       int declared = [entry[@"kind"] intValue];
+       if(declared == 7 || declared == 8) {
+        kind = declared;
+       value = entry[@"name"];
+       }
+       break;
+      }
+     }
+     break;
     case ACCESSKIT_ACTION_SET_VALUE:
      if([f[@"kind"] intValue]<2 && request->data.has_value && request->data.value.tag==ACCESSKIT_ACTION_DATA_VALUE) {
       value=[NSString stringWithUTF8String:request->data.value.value];kind=value ? 3:0;
@@ -237,6 +280,61 @@ int sirin_ax_field(void *raw,int64_t identifier,int kind,const char *label,const
 }
 static BOOL valid_id(int64_t id) { return id > 0 && (uint64_t)id <= UINT64_MAX >> 16; }
 static BOOL valid_flags(int flags) { return flags >= 0 && flags <= 2047 && (flags & 1536) != 1536; }
+int sirin_ax_actions(void *raw, int64_t id, const int32_t *kinds, const int32_t *lengths,
+    const char *names, int count, int bytes) {
+ SirinAccessKit *s = (__bridge SirinAccessKit*)raw;
+ if(!s || !NSThread.isMainThread || !valid_id(id))return 1;
+ if(count < 0 || count > 32 || bytes < 0 || bytes > 8192 ||
+    (count && (!kinds || !lengths)) || (bytes && !names))return 2;
+ @synchronized(s) {
+  for(NSUInteger index = 0; index < s.pending.count; index++) {
+   NSDictionary *field = s.pending[index];
+   if([field[@"id"] longLongValue] != id)continue;
+   NSMutableArray *entries = [NSMutableArray new];
+   int offset = 0;
+   for(int item = 0; item < count; item++) {
+    int kind = kinds[item];
+    int length = lengths[item];
+    if(kind < 5 || kind > 8 || length < 0 || length > 256 || length > bytes - offset ||
+       (kind == 8 ? length == 0 : length != 0))return 2;
+    if(length && memchr(names + offset, 0, (size_t)length))return 2;
+    NSString *copied = length ? [[NSString alloc] initWithBytes:names + offset
+      length:(NSUInteger)length encoding:NSUTF8StringEncoding] : @"";
+    if(!copied)return 2;
+    offset += length;
+    for(NSDictionary *entry in entries)
+     if([entry[@"kind"] intValue] == kind && [entry[@"name"] isEqual:copied])return 2;
+    [entries addObject:[@{@"kind":@(kind), @"name":copied} mutableCopy]];
+   }
+   if(offset != bytes)return 2;
+   // Assign IDs only after validating the entire copied batch.
+   for(NSMutableDictionary *entry in entries) {
+    int kind = [entry[@"kind"] intValue];
+    int32_t customId = 0;
+    if(kind == 7 || kind == 8) {
+     NSMutableArray *candidates = [s.fields mutableCopy];
+     [candidates addObject:field];
+     for(NSDictionary *candidate in candidates) {
+      if([candidate[@"id"] longLongValue] != id)continue;
+      for(NSDictionary *prior in candidate[@"actions"])
+       if([prior[@"kind"] isEqual:entry[@"kind"]] && [prior[@"name"] isEqual:entry[@"name"]])
+        customId = [prior[@"customId"] intValue];
+     }
+     if(!customId) {
+      if(s.customActionSerial == INT32_MAX)return 2;
+      customId = ++s.customActionSerial;
+     }
+    }
+    entry[@"customId"] = @(customId);
+   }
+   NSMutableDictionary *next = [field mutableCopy];
+   next[@"actions"] = [entries copy];
+   s.pending[index] = next;
+   return 0;
+  }
+ }
+ return 2;
+}
 int sirin_ax_node(void *raw, int64_t id, int64_t parent, int kind,
     const char *label, const char *value, const char *help, int flags, int checked, const double *bounds) {
  SirinAccessKit *s = (__bridge SirinAccessKit*)raw;
