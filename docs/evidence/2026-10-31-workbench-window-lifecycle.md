@@ -91,6 +91,10 @@ stopping and reporting a code/document disagreement, so no lifecycle policy
 change was made. The AccessKit repair is verified; complete zero-window and
 dirty-workspace acceptance remains open.
 
+Successor: the [native close repair](2026-10-31-workbench-native-close.md)
+selects SDL's close policy explicitly and verifies clean close, retained drafts,
+zero-window Quit consent, and explicit exit in the packaged application.
+
 ## Limits and remaining work
 
 - The initial background launch displayed a black window. Subsequent activation

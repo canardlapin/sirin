@@ -105,6 +105,15 @@ static DesktopApp *app_create(int explicit_owner,char *error) {
   }
   DesktopApp *app=calloc(1,sizeof(*app));
   if(!app){snprintf(error,512,"application allocation failed");return NULL;}
+  // A native close request must not also become Quit for an application that
+  // owns workspace state independently of its windows. Legacy standalone
+  // windows retain their close-to-quit policy. Choose on every initialization
+  // so a prior context or environment hint cannot change this lifetime law.
+  if(!SDL_SetHintWithPriority(SDL_HINT_QUIT_ON_LAST_WINDOW_CLOSE, explicit_owner ? "0" : "1", SDL_HINT_OVERRIDE)) {
+    snprintf(error,512,"SDL window close policy could not be installed");
+    free(app);
+    return NULL;
+  }
   if(!SDL_Init(SDL_INIT_VIDEO)){snprintf(error,512,"SDL initialization failed: %s",SDL_GetError());SDL_Quit();free(app);return NULL;}
   app->wake_type=SDL_RegisterEvents(1);
   if(!app->wake_type){snprintf(error,512,"SDL wake registration failed");SDL_Quit();free(app);return NULL;}

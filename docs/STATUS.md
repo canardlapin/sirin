@@ -70,8 +70,11 @@ Sirin is a pre-release prototype. Nothing is published.
   A real-window check created, edited, saved and reopened exact test content.
   Reopening after closing the last window exposed an AccessKit class-setup
   crash, now repaired and checked in a native regression and a packaged window.
-  The native last-window close button still quits the process, contrary to the
-  application lifetime design; work stopped to report that disagreement.
+  The native last-window close policy is also repaired: real-window checks
+  retained unsaved drafts across zero windows, restored Quit consent from that
+  state, and exited only after explicit Quit. Decision controls still require
+  scrolling into view and the editor pane is cramped.
+  [Close-policy evidence](evidence/2026-10-31-workbench-native-close.md).
   Foreground Finder launch renders; background presentation and visual usability
   remain under investigation.
   [Window evidence](evidence/2026-10-31-workbench-window-lifecycle.md).

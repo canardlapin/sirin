@@ -10,7 +10,7 @@ result. The goal stays open until the required application evidence exists.
 | Outcome | Evidence needed | Current position |
 |---|---|---|
 | Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch round trip checked in a real window; broader workflow acceptance remains open |
-| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | AccessKit reopen crash repaired and checked in the package; last-window close-button exit violates the design and is reported |
+| Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | AccessKit and native close policy repaired; real zero-window draft retention and Quit consent checked; broader failure workflows remain open |
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
 | Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Native publication currently handles buttons and text fields only |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
@@ -53,9 +53,11 @@ result. The goal stays open until the required application evidence exists.
 Popup prerequisite repairs landed on main at `1a3ca02`. The first real-window
 checks verified an exact persistence round trip and exposed repeated AccessKit
 class setup on window reopening. The native regression and packaged Command-W/Command-0 reopening pass with a
-process-lifetime guard. A separate close-button exit violates the documented
-application lifetime. Work stopped under AGENTS to report
-`bd-01M6AGHZWYQXQ9H63EPW16C77E`; application acceptance remains incomplete.
+process-lifetime guard. The separately reported native close-button exit was
+repaired on continuation by selecting SDL's application-owned close policy.
+Real-window checks now retain drafts across zero windows and restore dirty-Quit
+consent. Decisions below the viewport and the cramped editor are the next
+application-usability repairs; full acceptance remains incomplete.
 
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was
