@@ -17,6 +17,16 @@ enum MountedSnapshot:
       renderStatus: WindowRenderStatus = WindowRenderStatus.empty
   )
   case Outlet(reference: Long, child: MountedSnapshot)
+
+  /** An open popup, mounted where it is declared; hosts present it in the window's overlay layer. */
+  case Popup(
+      instance: Long,
+      anchor: Long,
+      initialFocus: Option[Long],
+      restoreTo: Option[Long],
+      description: sirin.Popup.Description,
+      child: MountedSnapshot
+  )
   case Reparented(key: GlobalKey, instance: Long, child: MountedSnapshot)
   case VirtualRows(
       instance: Long,
@@ -57,6 +67,8 @@ object MountedSnapshot:
           i == j && t == u && m == n && r == s && equality.same(x, y)
         case (Outlet(i, x), Outlet(j, y)) =>
           i == j && equality.same(x, y)
+        case (Popup(i, a, f, t, d, x), Popup(j, b, g, u, e, y)) =>
+          i == j && a == b && f == g && t == u && (d eq e) && equality.same(x, y)
         case (Reparented(k, i, x), Reparented(l, j, y)) =>
           k == l && i == j && equality.same(x, y)
         case (VirtualRows(i, r, f, t, l, e, a, x, p), VirtualRows(j, s, g, u, m, h, b, y, q)) =>
@@ -241,6 +253,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
     styles(view).flatMap {
       case Decoration.Visible(signal) =>
         Vector(signal)
+      case Decoration.Semantic(signal) =>
+        Vector(signal)
       case shortcut: Decoration.Shortcut =>
         shortcut.shortcutBinding.toVector.flatMap(b => Vector(b.enabled, b.running))
       case _ =>
@@ -260,6 +274,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
         MenuBindings.dependencies(p.menu)
       case p: View.Live =>
         Vector(p.content)
+      case p: sirin.Popup.Description =>
+        Vector(p.open)
       case p: Component.Placement[?] =>
         Vector(p.props)
       case p: ForEach.Description[?, ?] =>
@@ -413,6 +429,8 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
               new WindowSlot(parent, p)
             case p: View.Live =>
               new LiveSlot(parent, p, reader => requested(reader))
+            case p: sirin.Popup.Description =>
+              new PopupSlot(parent, p, reader => requested(reader))
             case p: DockOutlet.Description =>
               new OutletSlot(parent, p)
             case p: RetainedPlacement =>
@@ -452,7 +470,7 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
       else
         next match
           case _: Element.Description[?, ?, ?, ?, ?] | _: Layout.Description[?] | _: sirin.Window.Description |
-              _: View.Live =>
+              _: View.Live | _: sirin.Popup.Description =>
             false
           case _: Component.Placement[?] | _: ForEach.Description[?, ?] | _: Switch.Plain[?] | _: Switch.Keyed[?, ?] |
               _: DockOutlet.Description | _: RetainedPlacement | _: VirtualRows.Description[?, ?] =>
@@ -958,6 +976,95 @@ final class MountedView private[engine] (val runtime: HeadlessRuntime)(
           if recovered then
             change(failure)(failure = _)(None)
           child.sync(view.asInstanceOf[View], read) || recovered
+
+  /** Content mounted under the originator only while `open` is true; closing disposes it. */
+  private final class PopupSlot(
+      parent: runtime.OwnedScope,
+      initial: sirin.Popup.Description,
+      requested: Signal.Reader => View
+  ) extends Slot:
+    val scope = parent.child("popup")
+    private var description = initial
+    private var shown = false
+    private var refs = (0L, Option.empty[Long], Option.empty[Long])
+    private var failure = Option.empty[Throwable]
+    private def fresh(): Holder =
+      new Holder(
+        scope,
+        0,
+        Some { reader =>
+          plain(requested(reader)) match
+            case latest: sirin.Popup.Description =>
+              latest.content
+            case _ =>
+              throw KernelError.DisposedScope
+        }
+      )
+    private var child = fresh()
+    private def close()(using UiTxn): Unit =
+      child.retire()
+      change(child)(child = _)(fresh())
+      change(shown)(shown = _)(false)
+    def accepts(view: View): Boolean = view.isInstanceOf[sirin.Popup.Description]
+    def refresh(view: View): Boolean =
+      if description.eq(view) then
+        false
+      else {
+        change(description)(description = _)(view.asInstanceOf[sirin.Popup.Description])
+        true
+      }
+    def dependencies: Vector[Signal[?]] =
+      if shown then
+        Vector(description.open) ++ child.dependencies
+      else
+        Vector(description.open)
+    def snapshot: MountedSnapshot =
+      failure.fold(
+        if shown then
+          MountedSnapshot.Popup(scope.id, refs._1, refs._2, refs._3, description, child.snapshot)
+        else
+          MountedSnapshot.Empty
+      )(MountedSnapshot.Unavailable(_))
+    def step(read: Signal[?] => Option[Value[Any]])(using UiTxn): Boolean =
+      read(description.open) match
+        case None =>
+          true
+        case Some(Value.Failed(error)) =>
+          if failure.exists(_ eq error) then
+            false
+          else
+            close()
+            change(failure)(failure = _)(Some(error))
+            true
+        case Some(Value.Ok(value)) =>
+          var changed = failure.nonEmpty
+          if changed then
+            change(failure)(failure = _)(None)
+          if value == true then
+            val ids = (
+              runtime.docking.reference(description.anchor).id,
+              description.initialFocus.map(runtime.docking.reference(_).id),
+              description.restoreFocus match
+                case FocusRestore.To(target) =>
+                  Some(runtime.docking.reference(target).id)
+                case _ =>
+                  None
+            )
+            if refs != ids then {
+              change(refs)(refs = _)(ids)
+              changed = true
+            }
+            if !shown then {
+              change(shown)(shown = _)(true)
+              changed = true
+            }
+            if child.sync(description.content, read) then
+              changed = true
+          else if shown then {
+            close()
+            changed = true
+          }
+          changed
 
   private final class OutletSlot(parent: runtime.OwnedScope, initial: DockOutlet.Description) extends Slot:
     val scope = parent.child("outlet")

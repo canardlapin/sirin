@@ -583,7 +583,10 @@ multi-measurement is distinguished from accidental repeated cost.
 Focus requests are staged intents resolved after Settled. Rollback discards
 them; unattached targets are dropped with a development diagnostic. Popup
 restoration tries the eligible originator, nearest eligible ownership ancestor,
-then window default. Disabled-but-focusable nodes can qualify. A NodeRef has
+then window default. *(2026-10-31: restoration tries the requested target, then
+the popup's anchor, then leaves the window without focus, and only when focus
+was inside the closed popup; see
+`docs/design/decisions/2026-10-31-overlay-popup.md`, D12.)* Disabled-but-focusable nodes can qualify. A NodeRef has
 at most one attachment; duplicate attachment is diagnosed. Semantic targets
 may name a part of that node; focused parts and focus-ring state are public.
 Dismissal carries a reason and may be vetoed; the simple default closes.
@@ -1214,7 +1217,9 @@ this 418 px wide?"
 **Interaction.** Focus, hover, pointer capture, activation, tab navigation,
 and window activation are modeled separately. Dismissal, placement, focus
 restoration, and modality of overlays are shared machinery, not something
-each widget reimplements.
+each widget reimplements. *(2026-10-31: popups are mounted under their
+originator and presented in a host window overlay layer; see
+`docs/design/decisions/2026-10-31-overlay-popup.md`.)*
 
 **Accessibility** is part of every interactive component's contract: role,
 name, value, state, actions, relationships, and keyboard behavior.

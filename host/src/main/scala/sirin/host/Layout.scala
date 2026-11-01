@@ -20,36 +20,51 @@ final case class Box(x: Double, y: Double, width: Double, height: Double):
 /** What was presented of a reporting layout; the owner writes it back before presenting (`Layout.reporting`). */
 final case class ViewportRequest(instance: Long, viewport: Viewport)
 final case class Placed(node: Node, bounds: Box, clip: Box, children: Vector[Placed], text: Option[TextLayout])
+
+/** An open popup as presented in the window's overlay layer. */
+final case class PresentedLayer(frame: PopupFrame, placed: Placed)
+
 final case class LayoutResult(
     root: Placed,
     viewports: Vector[ViewportRequest],
-    text: PreparedText
+    text: PreparedText,
+    layers: Vector[PresentedLayer] = Vector.empty
 ):
   def elements: Vector[Placed] =
     def visit(p: Placed): Vector[Placed] =
       Option.when(p.node.content.isInstanceOf[Content.Custom])(p).toVector ++ p.children.flatMap(visit)
     visit(root)
 
-  /** Same clipped geometry as paint; native semantic transport consumes these parts. */
-  def semanticParts: Vector[(Long, SemanticNode)] = elements.flatMap { p =>
-    p.node.content match
-      case Content.Custom(frame) =>
-        frame
-          .semantics(Size(p.bounds.width.lp, p.bounds.height.lp), text)
-          .map { node =>
-            val b = node.bounds
-            val clipped = Box(
-              p.bounds.x + b.origin.x.toDouble,
-              p.bounds.y + b.origin.y.toDouble,
-              b.size.width.toDouble,
-              b.size.height.toDouble
-            ).intersect(p.clip)
-            frame.instance ->
-              node.copy(bounds = Rect(Point(clipped.x.lp, clipped.y.lp), Size(clipped.width.lp, clipped.height.lp)))
-          }
-      case _ =>
-        Vector.empty
-  }
+  /** Same clipped geometry as paint, in document order; native semantic transport consumes these parts. A container
+    * node from `.semantics` has a negative instance, which no element has, and no actions.
+    */
+  def semanticParts: Vector[(Long, SemanticNode)] =
+    def rect(b: Box): Rect = Rect(Point(b.x.lp, b.y.lp), Size(b.width.lp, b.height.lp))
+    def visit(p: Placed): Vector[(Long, SemanticNode)] =
+      val own =
+        p.node.content match
+          case Content.Custom(frame) =>
+            frame
+              .semantics(Size(p.bounds.width.lp, p.bounds.height.lp), text)
+              .map { node =>
+                val b = node.bounds
+                val clipped = Box(
+                  p.bounds.x + b.origin.x.toDouble,
+                  p.bounds.y + b.origin.y.toDouble,
+                  b.size.width.toDouble,
+                  b.size.height.toDouble
+                ).intersect(p.clip)
+                frame.instance -> node.copy(bounds = rect(clipped))
+              }
+          case Content.Styled(Hint.Semantic(semantics), _) =>
+            Vector(
+              LayoutResult.containerInstance(p.node.id) ->
+                SemanticNode(PartId(0), semantics, rect(p.bounds.intersect(p.clip)), Set.empty)
+            )
+          case _ =>
+            Vector.empty
+      own ++ p.children.flatMap(visit)
+    visit(root)
   /** `textFocus` paints the focused text control as focused in a base drawing that carries no other focus, so its
     * caret and selection stay with the text they belong to.
     */
@@ -107,6 +122,11 @@ final case class LayoutResult(
             case _ =>
               ()
         }
+        // The overlay layer gives each popup a raised surface beneath its content (D16).
+        if layers.exists(_.placed eq p) then
+          val b = Rect(Point(p.bounds.x.lp, p.bounds.y.lp), Size(p.bounds.width.lp, p.bounds.height.lp))
+          canvas.fill(b, theme.color(ColorRole.SurfaceRaised), 6.lp)
+          canvas.stroke(b, theme.color(ColorRole.Muted), 1.lp, 6.lp)
         LayoutResult.group(canvas, p)(p.children.foreach(paint))
       canvas.fill(Rect(Point.origin, Size(root.bounds.width.lp, root.bounds.height.lp)), theme.color(ColorRole.Surface))
       paint(root)
@@ -148,6 +168,9 @@ final case class LayoutResult(
     }
 
 object LayoutResult:
+  /** The instance of a `.semantics` container node: negative, so it never equals an element instance. */
+  def containerInstance(id: NodeId): Long = -(1L + (id.hashCode.toLong & 0x7fffffffL))
+
   /** Children of a presented opacity node paint as one isolated group. */
   private def group(canvas: Canvas, p: Placed)(children: => Unit): Unit =
     p.node.content match
@@ -351,6 +374,8 @@ object Layout:
             Measured(node, size.width.toDouble, size.height.toDouble, placed.values.toVector, None)
           case Content.Empty =>
             leaf(0, 0)
+          case Content.Layered(_, _) =>
+            throw new IllegalArgumentException("popup layers belong to the window root")
           case Content.Space(size) =>
             leaf(size, size)
           case Content.Reference(_, child) =>
@@ -374,7 +399,7 @@ object Layout:
                 require(value.isFinite && value >= 0, "invalid height")
                 val c = measure(child, w, bounded(value, h), fillWidth, true)
                 Measured(node, c.width, bounded(value, h), Vector((c, 0, 0)), None)
-              case Hint.Grow | Hint.Offset(_, _) | Hint.Opacity(_) =>
+              case Hint.Grow | Hint.Offset(_, _) | Hint.Opacity(_) | Hint.Semantic(_) =>
                 val c = measure(child, w, h, fillWidth, fillHeight)
                 Measured(node, c.width, c.height, Vector((c, 0, 0)), None)
           case Content.Stack(horizontal, gap, alignment, children) =>
@@ -532,7 +557,13 @@ object Layout:
               None
             )
       measured.copy(width = math.max(minWidth, measured.width), height = math.max(minHeight, measured.height))
-    val measured = measure(root, width, height, true, true).copy(width = width, height = height)
+    val (base, popups) =
+      root.content match
+        case Content.Layered(content, layers) =>
+          (content, layers)
+        case _ =>
+          (root, Vector.empty)
+    val measured = measure(base, width, height, true, true).copy(width = width, height = height)
     val requests = Vector.newBuilder[ViewportRequest]
     def place(m: Measured, laidX: Double, laidY: Double, ancestorClip: Box): Placed =
       // A presented offset moves the subtree after layout, so paint, hit testing and semantics all follow it.
@@ -580,9 +611,98 @@ object Layout:
             clip
       val children = m.children.map((child, dx, dy) => place(child, x + dx, y + dy, inner))
       Placed(m.node, bounds, clip, children, m.text)
-    val result = place(measured, 0, 0, Box(0, 0, width, height))
+    val window = Box(0, 0, width, height)
+    val placedBase = place(measured, 0, 0, window)
+    // Each popup is placed against its anchor in what is already placed, so a nested popup can anchor in its parent.
+    var shown = Vector(placedBase)
+    val layers = Vector.newBuilder[PresentedLayer]
+    popups.foreach { (frame, content) =>
+      PopupPlacement.anchor(shown, frame.anchor).foreach { anchor =>
+        val room = PopupPlacement.room(content, width)
+        val m = measure(content, room, math.max(0, height - 2 * PopupPlacement.margin), false, false)
+        val (x, y) = PopupPlacement.position(frame.placement, anchor, m.width, m.height, width, height)
+        val placed = place(m, x, y, window)
+        layers += PresentedLayer(frame, placed)
+        shown :+= placed
+      }
+    }
+    val presented = layers.result()
+    val result =
+      if popups.isEmpty then
+        placedBase
+      else
+        Placed(root, window, window, placedBase +: presented.map(_.placed), None)
     LayoutResult(
       result,
       requests.result(),
-      PreparedText.fromResolved(prepared.toVector, documents = documents.toVector)
+      PreparedText.fromResolved(prepared.toVector, documents = documents.toVector),
+      presented
     )
+
+/** Where an open popup goes relative to its anchor (`docs/design/decisions/2026-10-31-overlay-popup.md`, D3). */
+private[host] object PopupPlacement:
+  val gap = 4.0
+  val margin = 8.0
+  val defaultWidth = 400.0
+
+  /** The width a popup's content may take: the window's, inside its margins, and at most 400 unless the content
+    * declares a width of its own (D17).
+    */
+  def room(content: Node, width: Double): Double =
+    def explicit(node: Node): Boolean =
+      node.content match
+        case Content.Styled(Hint.Width(_), _) =>
+          true
+        case Content.Styled(_, child) =>
+          explicit(child)
+        case Content.Reference(_, child) =>
+          explicit(child)
+        case _ =>
+          false
+    val inside = math.max(0, width - 2 * margin)
+    if explicit(content) then
+      inside
+    else
+      math.min(inside, defaultWidth)
+
+  /** The placed bounds of the node a ref is attached to, if any of it is visible. */
+  def anchor(trees: Vector[Placed], reference: Long): Option[Box] =
+    def find(p: Placed): Option[Box] =
+      p.node.content match
+        case Content.Reference(ref, _) if ref == reference =>
+          Option.when(p.clip.width > 0 && p.clip.height > 0)(p.bounds)
+        case _ =>
+          p.children.iterator.map(find).collectFirst { case Some(found) =>
+            found
+          }
+    trees.iterator.map(find).collectFirst { case Some(found) =>
+      found
+    }
+
+  /** Outside the requested edge, flipped to the opposite edge when only that fits, then clamped into the window. */
+  def position(placement: Placement, a: Box, w: Double, h: Double, width: Double, height: Double): (Double, Double) =
+    val below = (a.x, a.y + a.height + gap)
+    val above = (a.x, a.y - gap - h)
+    val end = (a.x + a.width + gap, a.y)
+    val start = (a.x - gap - w, a.y)
+    def fits(at: (Double, Double)): Boolean = at._1 >= 0 && at._2 >= 0 && at._1 + w <= width && at._2 + h <= height
+    def prefer(first: (Double, Double), second: (Double, Double)): (Double, Double) =
+      if !fits(first) && fits(second) then
+        second
+      else
+        first
+    val (x, y) =
+      placement match
+        case Placement.Below =>
+          prefer(below, above)
+        case Placement.Above =>
+          prefer(above, below)
+        case Placement.End =>
+          prefer(end, start)
+        case Placement.Start =>
+          prefer(start, end)
+        case Placement.Over =>
+          (a.x, a.y)
+    def clamp(at: Double, size: Double, limit: Double): Double =
+      math.max(math.min(margin, math.max(0, limit - size)), math.min(at, limit - size - margin))
+    (clamp(x, w, width), clamp(y, h, height))

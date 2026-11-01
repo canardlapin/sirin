@@ -249,7 +249,7 @@ object Scroll:
 
 /** Layers drawn over `base`, each sized to it. */
 object Overlay:
-  def apply(base: View, layers: View*): View = ???
+  def apply(base: View, layers: View*): View = OverlayLayout.view(base +: layers.toVector)
 
 enum Placement:
   case Below,
@@ -279,6 +279,18 @@ final case class Dismissal(onEscape: Boolean = true, onOutsidePress: Boolean = t
   * restoration, and modality are shared machinery. Dismissal writes `false` to `open`.
   */
 object Popup:
+  private[sirin] final case class Description(
+      open: Cell[Boolean],
+      anchor: NodeRef,
+      placement: Placement,
+      initialFocus: Option[NodeRef],
+      restoreFocus: FocusRestore,
+      dismissal: Dismissal,
+      modal: Boolean,
+      onDismiss: DismissReason => UiTxn ?=> DismissDecision,
+      content: View
+  ) extends View
+
   def apply(
       open: Cell[Boolean],
       anchor: NodeRef,
@@ -288,7 +300,8 @@ object Popup:
       dismissal: Dismissal = Dismissal(),
       modal: Boolean = false,
       onDismiss: DismissReason => UiTxn ?=> DismissDecision = (_: DismissReason) => DismissDecision.Allow
-  )(content: View): View = ???
+  )(content: View): View =
+    Description(open, anchor, placement, initialFocus, restoreFocus, dismissal, modal, onDismiss, content)
 
 /** Row builder runs once per mounted key, receiving live Inputs. */
 object ForEach:

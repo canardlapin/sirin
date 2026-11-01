@@ -31,8 +31,7 @@ private[sirin] object TextFieldElement:
     Key.ArrowDown,
     Key.Home,
     Key.End,
-    Key.Enter,
-    Key.Escape
+    Key.Enter
   )
   private val commandChords: Set[Chord] =
     for
@@ -476,9 +475,8 @@ private[sirin] object TextFieldElement:
             true
           else
             apply(editing.replace("\n", boundaries))
-        case Key.Escape =>
-          true
         case _ =>
+          // Escape outside a composition is not the field's: it bubbles to local shortcuts and popups.
           false
 
     override def pointer(event: PointerEvent, services: TextEditingServices)(using UiTxn): PointerResponse =

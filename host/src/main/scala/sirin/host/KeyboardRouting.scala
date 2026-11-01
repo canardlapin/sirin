@@ -14,8 +14,9 @@ object KeyboardRouting:
 
   /** Matching disabled bindings consume the key and dispatch the shared refusal. */
   def local(captured: CapturedTree, focused: Option[NodeId], chord: Chord): Option[Activation] =
-    def path(node: Node, target: NodeId): Option[Vector[NodeId]] =
-      if node.id == target then
+    def path(node: Node, target: NodeId): Option[Vector[NodeId]] = route(node, _.id == target)
+    def route(node: Node, found: Node => Boolean): Option[Vector[NodeId]] =
+      if found(node) then
         Some(Vector(node.id))
       else
         val children =
@@ -32,11 +33,37 @@ object KeyboardRouting:
               Vector.empty
         children
           .iterator
-          .map(path(_, target))
-          .collectFirst { case Some(found) =>
-            node.id +: found
+          .map(route(_, found))
+          .collectFirst { case Some(steps) =>
+            node.id +: steps
           }
-    val ancestry = focused.flatMap(path(captured.tree, _)).getOrElse(Vector(captured.tree.id))
+    // A popup belongs to its originator: focus inside it bubbles through its content, then its anchor's ancestry.
+    def within(id: NodeId): Option[Vector[NodeId]] =
+      captured.tree.content match
+        case Content.Layered(base, popups) =>
+          path(base, id).orElse(
+            popups
+              .iterator
+              .map { (frame, content) =>
+                path(content, id).map { inside =>
+                  val anchor = route(
+                    base,
+                    _.content match
+                      case Content.Reference(ref, _) =>
+                        ref == frame.anchor
+                      case _ =>
+                        false
+                  )
+                  anchor.getOrElse(Vector.empty) ++ inside
+                }
+              }
+              .collectFirst { case Some(steps) =>
+                steps
+              }
+          )
+        case _ =>
+          path(captured.tree, id)
+    val ancestry = focused.flatMap(within).getOrElse(Vector(captured.tree.id))
     captured
       .keys
       .zipWithIndex

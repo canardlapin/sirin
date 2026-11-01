@@ -25,7 +25,9 @@ final case class Target(
     directRefs: Vector[Long],
     ancestorRefs: Vector[Long],
     ancestors: Vector[NodeId],
-    element: Option[sirin.engine.ElementFrame] = None
+    element: Option[sirin.engine.ElementFrame] = None,
+    /** The open popup this target is presented in, if any. */
+    layer: Option[Long] = None
 ):
   private def custom: Option[sirin.engine.ElementFrame] = element.orElse(
     kind match
@@ -55,14 +57,36 @@ final case class Target(
       .map(frame => (frame.revisions(2), frame.revisions(3)))
     id == other.id && bounds == other.bounds && clip == other.clip && enabled == other.enabled &&
     focusable == other.focusable && directRefs == other.directRefs && ancestorRefs == other.ancestorRefs &&
-    ancestors == other.ancestors && identity(this) == identity(other) && phases(this) == phases(other)
+    ancestors == other.ancestors && identity(this) == identity(other) && phases(this) == phases(other) &&
+    layer == other.layer
 
-final case class InteractionSnapshot(epoch: Long, targets: Vector[Target]):
+/** An open popup in the presented overlay layer, lowest first. */
+final case class PopupLayer(instance: Long, bounds: Box, modal: Boolean)
+
+final case class InteractionSnapshot(epoch: Long, targets: Vector[Target], popups: Vector[PopupLayer] = Vector.empty):
   require(targets.size <= 10000 && targets.map(_.id).distinct.size == targets.size, "interaction identity/budget")
   def target(id: NodeId): Option[Target] = targets.find(_.id == id)
+
+  /** The layers that take input: all of them, unless a modal popup blocks everything beneath it. */
+  def active: Vector[Option[Long]] =
+    val modal = popups.lastIndexWhere(_.modal)
+    if modal < 0 then
+      None +: popups.map(p => Some(p.instance))
+    else
+      popups.drop(modal).map(p => Some(p.instance))
+  def topmost: Option[PopupLayer] = popups.lastOption
+
+  /** Whether a target at this point takes input: its layer is active and no popup above that layer covers the point.
+    * A popup is opaque to input across its whole surface, padding included.
+    */
+  def receives(target: Target, x: Double, y: Double): Boolean =
+    val index = target.layer.fold(-1)(id => popups.indexWhere(_.instance == id))
+    val cover = popups.lastIndexWhere(_.bounds.contains(x, y))
+    active.contains(target.layer) && index >= cover && target.hit(x, y)
 object InteractionSnapshot:
   def apply(epoch: Long, layout: LayoutResult): InteractionSnapshot =
     val targets = Vector.newBuilder[Target]
+    var layer = Option.empty[Long]
     def visit(p: Placed, direct: Vector[Long], ancestors: Vector[Long], parents: Vector[NodeId]): Unit =
       if p.clip.width > 0 && p.clip.height > 0 then
         p.node.content match
@@ -83,15 +107,35 @@ object InteractionSnapshot:
                 direct,
                 ancestors,
                 parents,
-                Some(frame)
+                Some(frame),
+                layer
               )
           case Content.Button(instance, _, enabled, _, _) =>
             targets +=
-              Target(p.node.id, TargetKind.Button(instance), p.bounds, p.clip, enabled, direct, ancestors, parents)
+              Target(
+                p.node.id,
+                TargetKind.Button(instance),
+                p.bounds,
+                p.clip,
+                enabled,
+                direct,
+                ancestors,
+                parents,
+                None,
+                layer
+              )
           case _ =>
             p.children.foreach(visit(_, Vector.empty, ancestors ++ direct, parents :+ p.node.id))
-    visit(layout.root, Vector.empty, Vector.empty, Vector.empty)
-    InteractionSnapshot(epoch, targets.result())
+    if layout.layers.isEmpty then
+      visit(layout.root, Vector.empty, Vector.empty, Vector.empty)
+    else
+      visit(layout.root.children.head, Vector.empty, Vector.empty, Vector.empty)
+      layout.layers.foreach { presented =>
+        layer = Some(presented.frame.instance)
+        visit(presented.placed, Vector.empty, Vector.empty, Vector.empty)
+      }
+    val popups = layout.layers.map(l => PopupLayer(l.frame.instance, l.placed.bounds, l.frame.modal))
+    InteractionSnapshot(epoch, targets.result(), popups)
 enum PressOrigin:
   case Pointer,
     Space
@@ -148,7 +192,8 @@ final class Interaction:
         case _ =>
           None
     )
-  private def hit(x: Double, y: Double): Option[Target] = snapshot.targets.reverseIterator.find(_.hit(x, y))
+  private def hit(x: Double, y: Double): Option[Target] =
+    snapshot.targets.reverseIterator.find(snapshot.receives(_, x, y))
   def handle(input: HostInput): InputDecision =
     val before = state
     var activate = Option.empty[Long]
@@ -156,7 +201,13 @@ final class Interaction:
       case HostInput.Deactivate =>
         state = state.copy(pressed = None)
       case HostInput.KeyDown(Key.Tab, mods, _) if mods.isEmpty || mods == Mods.Shift =>
-        val all = snapshot.targets.filter(_.focusable)
+        // Focus inside a popup stays inside it; a modal popup also holds focus that starts outside it.
+        val scope =
+          focused.map(_.layer).filter(_.nonEmpty).getOrElse(snapshot.active.headOption.flatten)
+        val active = snapshot.active.toSet
+        val all = snapshot
+          .targets
+          .filter(t => t.focusable && scope.fold(active(t.layer))(inside => t.layer.contains(inside)))
         if all.nonEmpty then
           val index = all.indexWhere(t => state.focused.contains(t.id))
           val backwards = mods.has(Mods.Shift)

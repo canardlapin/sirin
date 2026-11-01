@@ -19,6 +19,12 @@ enum Hint:
   /** Isolated group opacity, paint only. */
   case Opacity(alpha: Double)
 
+  /** A container accessibility node with this view's bounds (`.semantics`). */
+  case Semantic(semantics: Semantics)
+
+/** Worker-side facts about an open popup in a window's overlay layer. */
+final case class PopupFrame(instance: Long, anchor: Long, placement: Placement, modal: Boolean)
+
 enum Content:
   case Empty
   case Custom(frame: ElementFrame)
@@ -28,14 +34,27 @@ enum Content:
   case Space(size: Double)
   case Stack(horizontal: Boolean, gap: Double, alignment: Alignment, children: Vector[Node])
   case Styled(hint: Hint, child: Node)
+
+  /** A window's base content with its open popups above it, lowest first. */
+  case Layered(base: Node, popups: Vector[(PopupFrame, Node)])
 final case class Node(id: NodeId, content: Content)
 
 final case class Activation(enabled: Boolean, run: UiTxn => Unit)
+/** Owner-side popup facts: its description carries `open` and `onDismiss`, which never reach a worker. */
+final case class CapturedPopup(
+    instance: Long,
+    anchor: Long,
+    initialFocus: Option[Long],
+    restoreTo: Option[Long],
+    description: sirin.Popup.Description
+)
+
 final case class CapturedTree(
     tree: Node,
     bindings: Map[Long, Activation],
     keys: Vector[KeyBinding] = Vector.empty,
-    elements: Map[Long, ElementBinding] = Map.empty
+    elements: Map[Long, ElementBinding] = Map.empty,
+    popups: Vector[CapturedPopup] = Vector.empty
 )
 
 /** One budget spans every window and its structure, rather than resetting per peer. */
@@ -65,6 +84,8 @@ object CommittedTree:
     val bindings = scala.collection.mutable.Map.empty[Long, Activation]
     val keys = scala.collection.mutable.ArrayBuffer.empty[KeyBinding]
     val elements = scala.collection.mutable.Map.empty[Long, ElementBinding]
+    // A popup takes its place before any popup nested in it, so it stacks below them.
+    val popups = scala.collection.mutable.ArrayBuffer.empty[Option[(CapturedPopup, Node)]]
     def value[A](signal: Signal[A]): A =
       reader(signal) match
         case Value.Ok(v) =>
@@ -151,6 +172,8 @@ object CommittedTree:
                       val alpha = presentation.current
                       require(!alpha.isNaN, "invalid presented opacity")
                       Option.when(alpha < 1)(Hint.Opacity(math.max(0, alpha)))
+                    case Decoration.Semantic(semantics) =>
+                      Some(Hint.Semantic(value(semantics)))
                     case Decoration.Visible(_) | _: Decoration.KeyHandler | _: Decoration.Shortcut =>
                       None
                     case other =>
@@ -199,7 +222,24 @@ object CommittedTree:
               case _ =>
                 Vector.empty
           Node(layout, Content.CustomLayout(frame.presented, children))
+        case MountedSnapshot.Popup(instance, anchor, initialFocus, restoreTo, description, child) =>
+          // The popup is lifted into the window's overlay layer and takes no space where it is declared.
+          val slot = popups.size
+          popups += None
+          val content = loop(child, NodeId(Vector("popup", instance)), depth + 1)
+          popups(slot) = Some(CapturedPopup(instance, anchor, initialFocus, restoreTo, description) -> content)
+          Node(id, Content.Empty)
         case MountedSnapshot.Unavailable(error) =>
           throw error
-    val tree = loop(snapshot, NodeId(Vector("root")), initialDepth)
-    CapturedTree(tree, bindings.toMap, keys.toVector, elements.toMap)
+    val base = loop(snapshot, NodeId(Vector("root")), initialDepth)
+    val open = popups.flatten.toVector
+    val tree =
+      if open.isEmpty then
+        base
+      else
+        val layers = open.map { (popup, content) =>
+          val d = popup.description
+          PopupFrame(popup.instance, popup.anchor, d.placement, d.modal) -> content
+        }
+        Node(NodeId(Vector("layers")), Content.Layered(base, layers))
+    CapturedTree(tree, bindings.toMap, keys.toVector, elements.toMap, open.map(_._1))

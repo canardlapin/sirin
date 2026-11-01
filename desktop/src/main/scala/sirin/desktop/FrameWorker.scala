@@ -46,6 +46,8 @@ object DevelopmentTheme extends Theme:
     role match
       case ColorRole.Surface =>
         Color.rgba(20, 25, 35)
+      case ColorRole.SurfaceRaised =>
+        Color.rgba(32, 39, 53)
       case ColorRole.OnSurface =>
         Color.rgba(230, 233, 239)
       case ColorRole.Muted =>

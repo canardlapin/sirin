@@ -137,6 +137,7 @@ final class EditorController(
     shown = Some((revision, layout))
     interaction.install(InteractionSnapshot(revision, layout))
     elements.install(layout)
+    followPopups()
     // A control that dropped its composition by itself, e.g. after external replacement, ends the platform's.
     if composingElement.exists(id => textElement.exists((target, _, request) => target == id && !request.composing))
     then
@@ -233,6 +234,106 @@ final class EditorController(
       ()
     }
 
+  /** An open popup as presented, with the focus it opened over (`docs/design/decisions/2026-10-31-overlay-popup.md`). */
+  private final case class OpenPopup(popup: CapturedPopup, previous: Option[NodeId], keyboard: Boolean)
+  private var popups = Vector.empty[OpenPopup]
+  private def openPopup(instance: Long): Option[CapturedPopup] = captured.popups.find(_.instance == instance)
+
+  /** Popups that stopped being presented restore focus (D12); newly presented ones take it (D11). */
+  private def followPopups(): Unit =
+    val presented = interaction.presented.popups.map(_.instance)
+    val (kept, closed) = popups.partition(open => presented.contains(open.popup.instance))
+    popups = kept
+    closed.reverse.foreach(restore)
+    presented
+      .filterNot(id => popups.exists(_.popup.instance == id))
+      .flatMap(openPopup)
+      .foreach { popup =>
+        popups :+= OpenPopup(popup, interaction.state.focused, interaction.state.keyboard)
+        val initial = popup.initialFocus.exists(focusReference)
+        if !initial then
+          interaction
+            .presented
+            .targets
+            .find(t => t.focusable && t.layer.contains(popup.instance))
+            .foreach(t => focusTarget(t.id, true))
+      }
+
+  private def restore(open: OpenPopup): Unit =
+    // A user who moved focus elsewhere keeps it; only focus that was inside the popup, now gone, is restored.
+    if interaction.state.focused.isEmpty then
+      open.popup.description.restoreFocus match
+        case FocusRestore.Nowhere =>
+          ()
+        case mode =>
+          val requested =
+            mode match
+              case FocusRestore.Previous =>
+                open.previous.exists(focusTarget(_, open.keyboard))
+              case _ =>
+                open.popup.restoreTo.exists(focusReference)
+          if !requested then
+            focusReference(open.popup.anchor)
+            ()
+
+  /** Runs `onDismiss` and, if it allows, closes the popup, in one transaction (D8). */
+  private def dismiss(popup: CapturedPopup, reason: DismissReason): Unit =
+    runtime.transact {
+      val description = popup.description
+      if description.onDismiss(reason) == DismissDecision.Allow then
+        description.open.set(false)
+    } match
+      case CommitResult.Committed(_) =>
+        ()
+      case _ =>
+        reject("This popup could not be dismissed.")
+
+  /** A primary press outside the topmost popup never reaches what is beneath it, unless the popup is non-modal and
+    * does not dismiss on outside presses (D6).
+    */
+  private def outsidePress(x: Double, y: Double): Boolean =
+    interaction.presented.topmost.filterNot(_.bounds.contains(x, y)) match
+      case None =>
+        false
+      case Some(layer) =>
+        openPopup(layer.instance) match
+          case Some(popup) if popup.description.dismissal.onOutsidePress =>
+            dismiss(popup, DismissReason.OutsidePress)
+            true
+          case _ =>
+            layer.modal
+
+  private def popupEscape(input: HostInput): Boolean =
+    input match
+      case HostInput.KeyDown(Key.Escape, mods, _) if mods.isEmpty && ready =>
+        interaction.presented.topmost.flatMap(layer => openPopup(layer.instance)) match
+          case Some(popup) if popup.description.dismissal.onEscape =>
+            dismiss(popup, DismissReason.Escape)
+            true
+          case _ =>
+            false
+      case _ =>
+        false
+
+  /** Focus on a presented, focusable target, through the ordinary element focus events. */
+  private def focusTarget(id: NodeId, keyboard: Boolean): Boolean =
+    if !interaction.presented.target(id).exists(_.focusable) then
+      false
+    else
+      val before = interaction.state
+      val previous = focusedElement
+      interaction.state = interaction.state.copy(focused = Some(id), keyboard = keyboard, pressed = None)
+      if !moved(previous) then {
+        interaction.rollbackPublication(before)
+        false
+      } else {
+        retireMovedComposition()
+        runtime.transact {
+          publishFocus()
+        }
+        true
+      }
+
   /** Focus has just moved in `interaction`. The element that lost it receives `Lost`, whose refusal vetoes the move;
     * an element that gains it then receives `Gained`.
     */
@@ -256,8 +357,12 @@ final class EditorController(
       }
     allowed
 
-  /** Called once before menu/local shortcuts; false preserves their normal fallback. */
-  def handleElementKey(input: HostInput): Boolean =
+  /** Called once before menu/local shortcuts; false preserves their normal fallback. Escape that the focused element
+    * leaves unhandled dismisses the topmost popup.
+    */
+  def handleElementKey(input: HostInput): Boolean = elementKey(input) || popupEscape(input)
+
+  private def elementKey(input: HostInput): Boolean =
     input match
       case HostInput.KeyDown(key, _, _) if composingElement.nonEmpty =>
         // The platform IME owns keys beneath a composition; Escape abandons it.
@@ -289,6 +394,15 @@ final class EditorController(
             case Some(_) =>
               reject("This element could not handle deactivation.")
         }
+      if input == HostInput.Deactivate then
+        // Transient popups go when the window does; modal ones stay (D7).
+        interaction
+          .presented
+          .popups
+          .reverse
+          .filterNot(_.modal)
+          .flatMap(layer => openPopup(layer.instance))
+          .foreach(dismiss(_, DismissReason.WindowDeactivated))
       if !routeElementKey || !handleElementKey(input) then
         dispatch(input, mods, clicks)
       if input == HostInput.Deactivate then
@@ -335,6 +449,11 @@ final class EditorController(
         true
       }
   private def dispatch(input: HostInput, mods: Mods, clicks: Int): Unit =
+    input match
+      case HostInput.Down(x, y, true) if ready && outsidePress(x, y) =>
+        return
+      case _ =>
+        ()
     val oldElement = focusedElement
     if ready && elements.accepts(input) then
       val before = interaction.state

@@ -98,7 +98,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
     .presented
     .targets
     .reverseIterator
-    .find(_.hit(x, y))
+    .find(interaction.presented.receives(_, x, y))
     .flatMap(
       _.kind match
         case TargetKind.Custom(frame) =>
@@ -196,7 +196,7 @@ final class ElementInput(runtime: HeadlessRuntime, interaction: Interaction):
       .presented
       .targets
       .reverseIterator
-      .filter(_.hit(x, y))
+      .filter(interaction.presented.receives(_, x, y))
       .flatMap(_.element.map(_.instance))
       .filter(id => shown.contains(id) && bindings.contains(id))
       .toVector
