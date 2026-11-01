@@ -8,6 +8,8 @@
 #include "event_queue.h"
 #include "menus.h"
 #include "accessibility.h"
+#include "text_input_owner.h"
+#include "text_input.h"
 
 static _Atomic int live_requests;
 static int fault_stage;
@@ -86,6 +88,7 @@ typedef struct DesktopApp {
   Desktop *windows[SIRIN_MAX_WINDOWS]; size_t queued_text;
   uint64_t stale_events, refused_events;
   void *menus;
+  SirinTextInputOwner text_input;
 } DesktopApp;
 struct Desktop {
   SDL_Window *window; SDL_MetalView metal;
@@ -186,7 +189,10 @@ static void destroy(Desktop *d) {
   if (d->surface) wgpuSurfaceRelease(d->surface);
   if (d->instance) wgpuInstanceRelease(d->instance);
   if (d->metal) SDL_Metal_DestroyView(d->metal);
-  if (d->window) SDL_DestroyWindow(d->window);
+  if (d->window) {
+    sirin_text_input_stop(&d->app->text_input, d->window);
+    SDL_DestroyWindow(d->window);
+  }
   DesktopApp *app=d->app;
   sirin_fact_clear(&d->events,&app->queued_text);
   for(int i=0;i<SIRIN_MAX_WINDOWS;i++)if(app->windows[i]==d)app->windows[i]=NULL;
@@ -568,14 +574,26 @@ int sirin_desktop_gpu_batch(void **raw,int count,unsigned char *out) {
 #include "gpu_frames.c"
 
 const char *sirin_desktop_text(void *raw){Desktop *d=raw;return owner(d) ? d->text:NULL;}
-int sirin_desktop_text_input(void *raw,int mode,const double *area){
- Desktop *d=raw;if(!owner(d))return 1;
- if(mode==0)return SDL_StopTextInput(d->window) ? 0:1;
- if(mode==2)return SDL_ClearComposition(d->window) ? 0:1;
- if(!area || !isfinite(area[0]) || !isfinite(area[1]) || !isfinite(area[2]) || !isfinite(area[3]))return 1;
- SDL_Rect rect={(int)floor(area[0]),(int)floor(area[1]),(int)fmax(1,ceil(area[2])),(int)fmax(1,ceil(area[3]))};
- if(!SDL_SetTextInputArea(d->window,&rect,0))return 1;
- return SDL_TextInputActive(d->window) || SDL_StartTextInput(d->window) ? 0:1;
+int sirin_desktop_text_input(void *raw, int mode, const double *area) {
+  Desktop *d = raw;
+  if (!owner(d)) return 1;
+  SirinTextInputOwner *input = &d->app->text_input;
+  if (mode == 0) return sirin_text_input_stop(input, d->window) ? 0 : 1;
+  if (mode == 2) {
+    // A late composition retirement from another window cannot clear the current editor.
+    if (input->window != d->window) return 0;
+    return SDL_ClearComposition(d->window) ? 0 : 1;
+  }
+  if (mode != 1 || !area || !isfinite(area[0]) || !isfinite(area[1]) ||
+      !isfinite(area[2]) || !isfinite(area[3])) return 1;
+  // A stale background presentation cannot take the process-wide Cocoa text client.
+  if (SDL_GetKeyboardFocus() != d->window) return 0;
+  SDL_Rect rect = {
+    (int)floor(area[0]), (int)floor(area[1]),
+    (int)fmax(1, ceil(area[2])), (int)fmax(1, ceil(area[3]))
+  };
+  if (!SDL_SetTextInputArea(d->window, &rect, 0)) return 1;
+  return sirin_text_input_start(input, d->window) ? 0 : 1;
 }
 int sirin_desktop_clipboard(void *raw,int write,char *text,int capacity){
  Desktop *d=raw;if(!owner(d) || !text || capacity<1 || capacity>65537)return 1;

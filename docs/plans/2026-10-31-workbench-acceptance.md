@@ -68,10 +68,14 @@ Packaged recovery checks now preserve exact files across external-change
 conflicts, copy/reload and partial import. Import review validity, local errors,
 readable receipts and stable navigation were repaired through public APIs.
 The attempted live cancellation completed too quickly to interrupt and remains
-unqualified. Keyboard input stopped having a visible effect after switching
-back from Import to main in a controlled fresh run; long sidebar titles also
-exposed row overflow. Both have open Mote issues and prevent full usability
-acceptance. See [recovery evidence](../evidence/2026-10-31-workbench-recovery.md).
+unqualified. Keyboard input loss after switching back from Import to main was
+traced to native text-client ownership and repaired in the shared shim; both
+hidden-window and packaged keyboard handoffs now pass. A Native executable also
+checks the existing text/focus ABI in the exact packaged library. Closing Import
+still leaves main inactive until clicked, and long sidebar titles overflow rows.
+Those open issues and broader acceptance gates prevent full usability acceptance.
+See [recovery evidence](../evidence/2026-10-31-workbench-recovery.md) and
+[window-input evidence](../evidence/2026-11-01-workbench-window-input.md).
 
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was

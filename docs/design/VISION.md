@@ -882,6 +882,11 @@ a separate pointer-only shim integration; they never enter these Scala endpoints
 - **One shim for both hosts.** The Scala Native externs and the JVM FFM
   bindings call the same C shim and header. Neither binding layer adds a
   native entry point that the other cannot reach without a recorded reason.
+  *2026-11-01:* The macOS native application owns the shared Cocoa text-input
+  client. Handoffs stop its prior owner before starting the next; late stops or
+  composition clears from another window cannot affect the current owner.
+  This is platform-client ownership, not a change to Sirin focus semantics.
+  See `docs/design/decisions/2026-11-01-native-text-input-owner.md`.
 - **Bulk transfer.** Arrays cross the boundary with one bulk copy (`memcpy`,
   `MemorySegment.copy` or equivalent) or a recorded borrow. Per-element copy
   loops are allowed only off hot paths, with a comment saying why.

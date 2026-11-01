@@ -82,10 +82,13 @@ Sirin is a pre-release prototype. Nothing is published.
   files and drafts. Import errors appear in their own window; source edits or a
   new review revoke an older Start permission. Source and navigation controls
   remain visible while receipts scroll. A live cancellation attempt completed
-  before interruption, so that acceptance check remains open. Fresh-window
-  typing works, but typing stopped having a visible effect after returning from
-  Import to the main window; that transition remains under investigation. Long
-  titles can also overflow the fixed sidebar row height.
+  before interruption, so that acceptance check remains open. Text input now
+  survives returning from Import to the main window: the shared native shim
+  stops the prior Cocoa text client before starting the next. Hidden-window and
+  fresh-package keyboard handoffs, save and Quit checks pass. Closing Import
+  still leaves the remaining window inactive until clicked. Long titles can
+  also overflow the fixed sidebar row height.
+  [Window-input evidence](evidence/2026-11-01-workbench-window-input.md).
   [Recovery evidence](evidence/2026-10-31-workbench-recovery.md).
   [Close-policy evidence](evidence/2026-10-31-workbench-native-close.md).
   Foreground Finder launch renders; background presentation and visual usability
@@ -98,7 +101,9 @@ Sirin is a pre-release prototype. Nothing is published.
   qualified Scala Native application provider. Native delivery depends on the
   open GC safepoint stall (P0.6). The delivery order is to be decided before
   Alpha6 (VISION §1.1). A separate Native executable reaches the same seven
-  accessibility ABI functions as JVM FFM; that is a binding check, not a provider.
+  accessibility ABI functions as JVM FFM, and a separate text/focus probe reaches
+  four existing functions in the exact packaged library. These are binding
+  checks, not a provider.
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
   physical pointer drag and trackpad behavior remain unqualified. Packaged
   workbench modal decisions have been exercised with synthetic pointer and
