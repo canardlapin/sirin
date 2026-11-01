@@ -201,7 +201,7 @@ final class RenderSession(
     val payload = request.payload
     val key =
       // A focused text control keeps its key through `textFocus`; other focus lives only in the overlay.
-      payload.copy(focus = None, keyboardFocus = false, pressed = None)
+      payload.copy(focus = None, keyboardFocus = false, pressed = None, focusPart = None)
     var layoutNanos = 0L
     var drawingNanos = 0L
     val (layout, target, charges, baseProfile) =
@@ -327,7 +327,7 @@ final class RenderSession(
     val payload = request.payload
     val baseKey =
       // A focused text control keeps its key through `textFocus`; other focus lives only in the overlay.
-      payload.copy(focus = None, keyboardFocus = false, pressed = None)
+      payload.copy(focus = None, keyboardFocus = false, pressed = None, focusPart = None)
     val before = batch.get.stats
     var prepared = 0
     val (layout, drawing) =

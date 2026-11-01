@@ -78,7 +78,7 @@ class DiagramSeamSuite extends munit.FunSuite:
           assert(output.gpuFrame.nonEmpty)
           assertEquals(output.readbackBytes, 0L)
         controller.install(serial, output.layout)
-        runtime.takeFocusRequests().foreach(controller.focusReference)
+        runtime.takeFocusRequests().foreach(controller.focusRequest)
         lastLayout = Some(output.layout)
         tileCount = output.tiles
         if capture then pixels = Some(output.gpuFrame.fold(output.pixels)(_.readback()))

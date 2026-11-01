@@ -78,6 +78,12 @@ class CachedRendererSuite extends munit.FunSuite:
         val expected=gpu.render(PixelProgram.compile(prepared)).pixelsCopy
         val actual=frame.pixels.pixelsCopy
         assert(actual.indices.forall(i => math.abs((actual(i)&255)-(expected(i)&255))<=1))
+        val shaped = session.shaped
+        val partOnly = session.render(FrameRequest(2, payload.copy(focusPart = Some(sirin.PartId(2)))),
+          () => false).asInstanceOf[RenderedFrame]
+        assert(partOnly.layout eq frame.layout, "native part-focus publication reuses accepted base geometry")
+        assertEquals(partOnly.pixels.pixelsCopy.toVector, actual.toVector)
+        assertEquals(session.shaped, shaped)
     finally {session.close();gpu.close()}
     assertEquals(OffscreenGpu.liveOwners,0)
   }

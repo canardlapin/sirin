@@ -27,7 +27,8 @@ final case class Target(
     ancestors: Vector[NodeId],
     element: Option[sirin.engine.ElementFrame] = None,
     /** The open popup this target is presented in, if any. */
-    layer: Option[Long] = None
+    layer: Option[Long] = None,
+    semanticParts: Vector[PartId] = Vector.empty
 ):
   private def custom: Option[sirin.engine.ElementFrame] = element.orElse(
     kind match
@@ -58,7 +59,7 @@ final case class Target(
     id == other.id && bounds == other.bounds && clip == other.clip && enabled == other.enabled &&
     focusable == other.focusable && directRefs == other.directRefs && ancestorRefs == other.ancestorRefs &&
     ancestors == other.ancestors && identity(this) == identity(other) && phases(this) == phases(other) &&
-    layer == other.layer
+    layer == other.layer && semanticParts == other.semanticParts
 
 /** An open popup in the presented overlay layer, lowest first. */
 final case class PopupLayer(instance: Long, bounds: Box, modal: Boolean)
@@ -111,7 +112,13 @@ object InteractionSnapshot:
                 ancestors,
                 parents,
                 Some(frame),
-                layer
+                layer,
+                frame.semantics(Size(p.bounds.width.lp, p.bounds.height.lp), layout.text).filter { part =>
+                  val b = part.bounds
+                  val area = Box(p.bounds.x + b.origin.x.toDouble, p.bounds.y + b.origin.y.toDouble,
+                    b.size.width.toDouble, b.size.height.toDouble).intersect(p.clip)
+                  area.width > 0 && area.height > 0
+                }.map(_.part).toVector
               )
           case Content.Button(instance, _, enabled, _, _) =>
             targets +=
@@ -146,7 +153,8 @@ final case class Press(target: NodeId, epoch: Long, origin: PressOrigin)
 final case class FocusState(
     focused: Option[NodeId] = None,
     keyboard: Boolean = false,
-    pressed: Option[Press] = None
+    pressed: Option[Press] = None,
+    part: Option[PartId] = None
 )
 final case class InputDecision(activate: Option[Long] = None, changed: Boolean = false)
 
@@ -168,7 +176,8 @@ final class Interaction:
     snapshot = next
     state = state.copy(
       focused = state.focused.filter(id => next.target(id).nonEmpty),
-      pressed = pressed
+      pressed = pressed,
+      part = state.part.filter(part => state.focused.flatMap(next.target).exists(_.semanticParts.contains(part)))
     )
   def focused: Option[Target] = state.focused.flatMap(snapshot.target)
   def inputFocus: Option[Target] = focused.filter(snapshot.accepts)
@@ -181,17 +190,20 @@ final class Interaction:
     matches && snapshot.accepts(target)
   }
   /** A ref on a view that cannot take focus itself, such as a layout, focuses the first focusable view inside it. */
-  def focusRef(reference: Long): Boolean =
-    snapshot
-      .targets
-      .find(t => t.focusable && snapshot.accepts(t) && t.directRefs.contains(reference))
-      .orElse(snapshot.targets.find(t =>
-        t.focusable && snapshot.accepts(t) && t.ancestorRefs.contains(reference)
-      )) match
+  def focusRef(reference: Long, part: Option[PartId] = None): Boolean =
+    val candidates = snapshot.targets.filter(t => t.focusable && snapshot.accepts(t))
+    val target = part match
+      case Some(id) =>
+        val matching = candidates.filter(t => t.directRefs.contains(reference) && t.semanticParts.count(_ == id) == 1)
+        Option.when(matching.size == 1)(matching.head)
+      case None => candidates
+        .find(_.directRefs.contains(reference))
+        .orElse(candidates.find(_.ancestorRefs.contains(reference)))
+    target match
       case None =>
         false
       case Some(target) =>
-        state = state.copy(focused = Some(target.id), keyboard = true, pressed = None)
+        state = state.copy(focused = Some(target.id), keyboard = true, pressed = None, part = part)
         true
   def focusReferences: (Set[Long], Set[Long], Boolean) =
     focused.fold((Set.empty[Long], Set.empty[Long], state.keyboard))(t =>
@@ -246,7 +258,7 @@ final class Interaction:
               all(((n % all.size) + all.size) % all.size)
             }
             .find(_.enabled)
-          next.foreach(t => state = state.copy(focused = Some(t.id), keyboard = true, pressed = None))
+          next.foreach(t => state = state.copy(focused = Some(t.id), keyboard = true, pressed = None, part = None))
       case HostInput.KeyDown(Key.Enter, mods, false) if mods.isEmpty =>
         state = state.copy(keyboard = true)
         activate = activation(inputFocus)
@@ -267,6 +279,7 @@ final class Interaction:
         val target = hit(x, y)
         state = state.copy(
           focused = target.filter(_.focusable).map(_.id),
+          part = None,
           keyboard = false,
           pressed = target.filter(_.enabled).map(t => Press(t.id, snapshot.epoch, PressOrigin.Pointer))
         )

@@ -4,6 +4,7 @@ import sirin.*
 import scala.collection.mutable
 
 final case class RefAttachment(reference: Long, node: Long, outlet: Boolean)
+final case class FocusRequest(reference: Long, part: Option[PartId] = None)
 private[engine] final class RuntimeNodeRef(val runtime: HeadlessRuntime)(val owner: runtime.OwnedScope, val id: Long) extends NodeRef:
   val content: Cell[MountedSnapshot] = owner.cell[MountedSnapshot](MountedSnapshot.Empty)(using MountedSnapshot.equality)
   var registered = true
@@ -11,13 +12,15 @@ private[engine] final class RuntimeNodeRef(val runtime: HeadlessRuntime)(val own
   val focused=owner.cell(false)
   val containing=owner.cell(false)
   val ring=owner.cell(false)
+  val partFocus = owner.cell(Option.empty[PartId])
   private def checked[A](body: => A): A = { if !registered then throw KernelError.DisposedScope;runtime.ensureScope(owner);body }
   def focus()(using txn: UiTxn): Unit = runtime.capability(txn)(checked(runtime.docking.requestFocus(this)))
   def hasFocus: Signal[Boolean] = checked(Inputs.from(focused))
   def containsFocus: Signal[Boolean] = checked(Inputs.from(containing))
   def part(id: PartId): SemanticTarget = checked(SemanticTarget(this, Some(id)))
-  def focusedPart: Signal[Option[PartId]] = checked(Signal.const(None))
-  def focusPart(id: PartId)(using txn: UiTxn): Unit = runtime.capability(txn)(checked(throw KernelError.Deferred("semantic part focus")))
+  def focusedPart: Signal[Option[PartId]] = checked(Inputs.from(partFocus))
+  def focusPart(id: PartId)(using txn: UiTxn): Unit =
+    runtime.capability(txn)(checked(runtime.docking.requestFocus(this, Some(id))))
   def focusRing: Signal[Boolean] = checked(Inputs.from(ring))
 
 private[engine] final class RuntimePanel(val runtime: HeadlessRuntime)(val owner: runtime.OwnedScope,
@@ -35,21 +38,29 @@ private[engine] final class DockingRuntime(val runtime: HeadlessRuntime):
   private val claims = mutable.ArrayBuffer.empty[Attachment]
   private val requests = mutable.ArrayBuffer.empty[Request]
   private var published = Vector.empty[RefAttachment]
-  private var focusRequests=Vector.empty[Long]
-  def requestFocus(ref: RuntimeNodeRef): Unit =
-    val before=focusRequests;runtime.recordUndo(() => focusRequests=before)
-    require(focusRequests.size<256,"focus intent capacity")
-    focusRequests :+= ref.id
-  def takeFocusRequests(): Vector[Long] =
-    val attached=published.map(_.reference).toSet
-    val result=focusRequests.filter(id => attached(id) && refs.exists(r => r.alive && r.id==id))
-    focusRequests.filterNot(result.toSet).foreach(id => runtime.note(new IllegalStateException(s"unattached focus intent: $id")))
-    focusRequests=Vector.empty;result
-  def publishFocus(references: Set[Long],ancestors: Set[Long],keyboard: Boolean)(using UiTxn): Unit =
-    val attached=published.map(_.reference).toSet
+  private var focusRequests = Vector.empty[FocusRequest]
+  def requestFocus(ref: RuntimeNodeRef, part: Option[PartId] = None): Unit =
+    val before = focusRequests
+    runtime.recordUndo(() => focusRequests = before)
+    require(focusRequests.size < 256, "focus intent capacity")
+    focusRequests :+= FocusRequest(ref.id, part)
+  def takeFocusRequests(): Vector[FocusRequest] =
+    val attached = published.map(_.reference).toSet
+    val result = focusRequests.filter(request =>
+      attached(request.reference) && refs.exists(r => r.alive && r.id == request.reference))
+    focusRequests.filterNot(result.toSet).foreach(request =>
+      runtime.note(new IllegalStateException(s"unattached focus intent: $request")))
+    focusRequests = Vector.empty
+    result
+  def publishFocus(references: Set[Long], ancestors: Set[Long], keyboard: Boolean,
+      part: Option[PartId] = None)(using UiTxn): Unit =
+    val attached = published.map(_.reference).toSet
     refs.filter(_.alive).foreach { r =>
-      val focused=references(r.id) && attached(r.id)
-      r.focused.set(focused);r.containing.set((focused || ancestors(r.id)) && attached(r.id));r.ring.set(focused && keyboard)
+      val focused = references(r.id) && attached(r.id)
+      r.focused.set(focused)
+      r.containing.set((focused || ancestors(r.id)) && attached(r.id))
+      r.ring.set(focused && keyboard)
+      r.partFocus.set(if focused then part else None)
     }
   def dependencies: Vector[Signal[?]] = panels.filter(_.alive).map(_.content.snapshot).toVector
   def attachments: Vector[RefAttachment] = published
@@ -129,8 +140,12 @@ private[engine] final class DockingRuntime(val runtime: HeadlessRuntime):
           } then { ref.content.set(next); changed = true }
     }
     refs.filter(_.alive).filterNot(grouped.contains).foreach { ref =>
-      if ref.focused.get || ref.containing.get || ref.ring.get then
-        ref.focused.set(false);ref.containing.set(false);ref.ring.set(false);changed=true
+      if ref.focused.get || ref.containing.get || ref.ring.get || ref.partFocus.get.nonEmpty then
+        ref.focused.set(false)
+        ref.containing.set(false)
+        ref.ring.set(false)
+        ref.partFocus.set(None)
+        changed = true
     }
     changed
   def commit(): Unit =

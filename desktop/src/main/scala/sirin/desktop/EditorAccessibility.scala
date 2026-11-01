@@ -11,7 +11,7 @@ final class EditorAccessibility:
   def publish(window: NativeWindow, controller: EditorController, frame: RenderedFrame, active: Boolean = true): Unit =
     val layout = frame.layout
     val nodes = tree.capture(layout, controller.interaction.state.focused.filter(_ => active),
-      controller.semanticReferences)
+      controller.semanticReferences, controller.interaction.state.part)
     window.beginAccessibility(frame.request.generation)
     nodes.foreach { node =>
       val semantic = node.part.semantics
@@ -50,7 +50,7 @@ final class EditorAccessibility:
       node.instance.exists { instance =>
         if !node.enabled then false
         else action.kind() match
-          case 1 if node.focusable => controller.accessibilityFocus(instance, revision)
+          case 1 if node.focusable => controller.accessibilityFocus(instance, node.part.part, revision)
           case 4 if node.part.actions(SemanticAction.Activate) =>
             controller.accessibilityActivate(instance, node.part.part, revision)
           case 2 | 3 if node.part.text.exists(_.editable) =>

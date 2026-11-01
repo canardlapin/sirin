@@ -589,6 +589,13 @@ was inside the closed popup; see
 `docs/design/decisions/2026-10-31-overlay-popup.md`, D12.)* Disabled-but-focusable nodes can qualify. A NodeRef has
 at most one attachment; duplicate attachment is diagnosed. Semantic targets
 may name a part of that node; focused parts and focus-ring state are public.
+An explicit part-focus intent resolves only on a directly referenced focusable
+custom element against its accepted, exposed semantic parts. It does not select
+or activate the part. The optional part is published with the reference's focus
+signals; ancestor references do not inherit child part IDs. Tab stays at element
+granularity. Removal clears the part while retaining a surviving element's focus,
+and popup restoration retains the previous part if still exposed. See
+`decisions/2026-11-01-semantic-part-focus.md` for the target and fallback rules.
 Dismissal carries a reason and may be vetoed; the simple default closes.
 
 Key precedence is IME composition, focused editing/text keys, local shortcut

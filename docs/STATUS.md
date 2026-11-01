@@ -172,7 +172,16 @@ Sirin is a pre-release prototype. Nothing is published.
   changed Title, triggered validation and restored the original value; discard
   on Quit preserved the saved document bytes.
   [Cocoa client evidence](evidence/2026-11-01-cocoa-accessibility-client.md).
-  Semantic-part focus and actual VoiceOver remain open.
+  Exact semantic-part focus is now implemented through public `NodeRef` intents
+  and native owner dispatch. Shared and desktop checks cover rollback, part
+  retirement, modality, focus-loss veto and popup restoration. A hidden Cocoa
+  client focuses a non-first graphic part by its exact identity. Actual VoiceOver
+  remains unqualified.
+  [Part-focus evidence](evidence/2026-11-01-semantic-part-focus.md).
+  A fresh window check reproduced a separate input defect: typing immediately
+  after Escape closes a modal popup can lose the beginning of the text. Typing
+  after observing the restored field succeeds. Its timing and transport cause
+  are still under investigation; input acceptance remains open.
   [Relationship evidence](evidence/2026-11-01-native-semantic-relationships.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames
   without a full-frame CPU readback. Explicit captures read pixels back; the

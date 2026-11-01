@@ -1584,12 +1584,13 @@ final class HeadlessRuntime(
       scheduler.hasCompletions || nextDeadline.exists(_ <= now)
 
   /** Backend resolves transactional intents after settle against its complete interaction tree. */
-  def takeFocusRequests(): Vector[Long] = {
+  def takeFocusRequests(): Vector[FocusRequest] = {
     control()
     docking.takeFocusRequests()
   }
-  def publishFocus(references: Set[Long], ancestors: Set[Long], keyboard: Boolean)(using txn: UiTxn): Unit =
-    capability(txn)(docking.publishFocus(references, ancestors, keyboard))
+  def publishFocus(references: Set[Long], ancestors: Set[Long], keyboard: Boolean,
+      part: Option[PartId] = None)(using txn: UiTxn): Unit =
+    capability(txn)(docking.publishFocus(references, ancestors, keyboard, part))
   def attachments: Vector[RefAttachment] = {
     control()
     docking.attachments

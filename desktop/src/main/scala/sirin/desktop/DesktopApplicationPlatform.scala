@@ -32,6 +32,9 @@ final class DesktopApplicationPlatform extends ApplicationPlatform:
             native.close()
 
 object DesktopApplicationPlatform:
+  /** Retain each duplicate's last occurrence, so the final requested target still wins. */
+  private[desktop] def pendingFocus(requests: Vector[FocusRequest]): Vector[FocusRequest] =
+    requests.reverse.distinct.reverse
   /** The sooner of two event-loop waits, where -1 means none. */
   private[desktop] def earliest(a: Int, b: Int): Int =
     if a < 0 then
@@ -93,7 +96,7 @@ private[desktop] final class DesktopApplicationSession(
   private var subscription = Option.empty[Subscription]
   private var quitting = false
   private val commands = new OwnerCommandBoundary
-  private var focusRequests = Vector.empty[Long]
+  private var focusRequests = Vector.empty[FocusRequest]
   private var event = new NativeApplication.Event(false, false, false, 0)
   var applicationWakes = 0L
   var turns = 0L
@@ -269,7 +272,8 @@ private[desktop] final class DesktopApplicationSession(
       commands.drain(active.values.exists(_.hasPendingInput))(() => requestQuit(), () => menuActions())
       sync()
       val attached = runtime.attachments.map(_.reference).toSet
-      focusRequests = (focusRequests ++ runtime.takeFocusRequests()).distinct.filter(attached)
+      focusRequests = DesktopApplicationPlatform.pendingFocus(focusRequests ++ runtime.takeFocusRequests())
+        .filter(r => attached(r.reference))
       require(focusRequests.size <= 256, "application focus-intent capacity")
       val settled = active.values.forall(_.controller.ready)
       focusRequests = focusRequests.filter { reference =>
@@ -546,8 +550,8 @@ private[desktop] final class ApplicationPeer(
     updateInputClient()
     repaint = true
 
-  def focus(reference: Long): Boolean =
-    if controller.ready && controller.focusReference(reference) then
+  def focus(request: FocusRequest): Boolean =
+    if controller.ready && controller.focusRequest(request) then
       activate()
       true
     else
@@ -581,7 +585,8 @@ private[desktop] final class ApplicationPeer(
       focusActive && state.keyboard,
       state.pressed.map(_.target),
       viewports,
-      controller.textFocus.filter(_ => focusActive)
+      controller.textFocus.filter(_ => focusActive),
+      state.part.filter(_ => focusActive)
     )
     renderRecovery
       .request(payload)

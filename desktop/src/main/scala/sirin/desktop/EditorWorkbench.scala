@@ -50,7 +50,7 @@ object EditorWorkbench:
     var latest=Option.empty[FrameRequest]
     var activeRenderer=java.lang.foreign.MemorySegment.NULL
     var lastEditor=Option.empty[Long];var lastIntent=0
-    var focusRequests=Vector.empty[Long]
+    var focusRequests = Vector.empty[FocusRequest]
     var scenario=0;var presentations=0;var recoveries=0;var consecutiveLosses=0
     var running=true;var repaint=true;var facts=window.waitEvent(0)
     val scripted=args.contains("scenario")
@@ -130,10 +130,14 @@ object EditorWorkbench:
           trace(s"ax kind=${action.kind()} revision=${action.revision()} shown=${controller.presentedRevision} readyAfter=${controller.ready} accepted=$accepted")
           lastEditor=controller.focusedElement.orElse(lastEditor);tree=refresh();action=window.pollAccessibility()
         focusRequests++=runtime.takeFocusRequests()
-        if controller.ready then {focusRequests.foreach(controller.focusReference);focusRequests=Vector.empty}
+        if controller.ready then
+          focusRequests.foreach(controller.focusRequest)
+          focusRequests = Vector.empty
         if facts.width()>0 && facts.height()>0 then
           val state=controller.interaction.state
-          val payload=FramePayload(controller.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),state.focused,state.keyboard,state.pressed.map(_.target),textFocus=controller.textFocus)
+          val payload = FramePayload(controller.tree, facts.logicalWidth(), facts.logicalHeight(),
+            facts.width(), facts.height(), state.focused, state.keyboard, state.pressed.map(_.target),
+            textFocus = controller.textFocus, focusPart = state.part)
           coordinator.request(payload).foreach { req => latest=Some(req);trace(s"request generation=${req.generation}");renderer.get.submit(req) }
           renderer.get.poll().foreach {
             case (_,Right(frame: RenderedFrame)) if coordinator.accepts(frame.request) => trace(s"received generation=${frame.request.generation}");current.foreach(_.close());current=Some(frame);repaint=true

@@ -136,7 +136,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       )
       val requests = r.takeFocusRequests()
       assert(requests.nonEmpty)
-      assert(requests.exists(inputs.current.focusReference))
+      assert(requests.exists(inputs.current.focusRequest))
     try
       present()
       def textFields: Vector[Long] = inputs
@@ -185,7 +185,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       assert(!inputs.accepts(HostInput.KeyDown(Key.Enter, Mods.none), 99, 100, false))
       assert(inputs.accepts(HostInput.KeyDown(Key.Tab, Mods.none), 101, 100, false))
       assert(textFields.isEmpty, "recovery content presents no text field")
-      assert(retryFocus.exists(inputs.current.focusReference))
+      assert(retryFocus.exists(inputs.current.focusRequest))
       val other = capture(r, mounted).windows(1)
       val healthy = renderer.render(
         FrameRequest(100, FramePayload(other.content.tree, 320, 180, 320, 180)),
@@ -196,7 +196,7 @@ class WindowRenderRecoverySuite extends munit.FunSuite:
       inputs.current.handle(HostInput.KeyDown(Key.Enter, Mods.none))
       assertEquals(value(r, problem), None)
       present()
-      assert(retryFocus.exists(inputs.current.focusReference))
+      assert(retryFocus.exists(inputs.current.focusRequest))
       inputs.current.handle(HostInput.KeyDown(Key.Enter, Mods.none))
       assertEquals(current.renderStatus.current, None)
       present()

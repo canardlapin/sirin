@@ -12,7 +12,7 @@ result. The goal stays open until the required application evidence exists.
 | Persistent workflow | Fresh package: create, search, select, validate, edit, save while continuing edits, reopen exact content, retain drafts across filtering/reordering/pane moves | Exact create/edit/save/relaunch and queued-save/newer-draft behavior checked in real windows, the latter with controlled storage latency; broader acceptance remains open |
 | Failure and lifecycle behavior | Import review/cancel receipts, external-change conflict, save-copy/reload, dirty close/quit, zero-window reopen, no stale publication after retirement | Real conflict/no-overwrite, save-copy, reload consent, partial-import receipts, zero-window draft retention and Quit consent checked; live cancellation checked in a real window with controlled storage latency |
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
-| Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Roles, actions, relationships and collection positions have native transport checks; fresh-package modal AX tree verified; semantic-part focus and actual VoiceOver are open |
+| Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Roles, actions, relationships, collection positions and exact part focus have transport/owner checks; fresh-package modal AX tree verified; actual VoiceOver is open |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
 | Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; default and larger windows, visible decisions, resize draft retention and exact saving checked; smooth live resize and remaining appearance/display checks stay open |
 | Public authoring | A separate public consumer implements one real feature using the documented API, builds/packages from a clean checkout, and completes its workflow | ReviewPad persists notes and review status through public APIs; clean framework/SDK and independent consumer builds pass; real-window approval and workflow acceptance remain pending |
@@ -77,8 +77,17 @@ correctly and accepted focus follows the adapter's active-view state. These chec
 do not substitute for window activation or VoiceOver; the generic tool-click
 observation is still unqualified. See
 [Cocoa client evidence](../evidence/2026-11-01-cocoa-accessibility-client.md).
-Actual VoiceOver permission is pending; the broader acceptance outcomes and
-semantic-part focus stay open.
+Exact semantic-part focus now flows through public intents, accepted geometry,
+reference signals and native owner dispatch. Tests cover rollback, clipping,
+modality, removal, veto and exact popup restoration; a hidden Cocoa client
+confirms non-first graphic-part focus. Part-only changes republish native focus
+without invalidating the base drawing cache. See
+[part-focus evidence](../evidence/2026-11-01-semantic-part-focus.md).
+Actual VoiceOver permission is pending; the broader acceptance outcomes stay open.
+The final part-focus package exposed a further coherent-input defect: immediate
+typing after Escape dismisses the dirty-quit popup can lose its prefix, while
+typing after observing restored focus succeeds. Preserve the negative window
+evidence and diagnose the native/owner handoff before accepting that workflow.
 The independent ReviewPad consumer now builds and packages from a committed
 external copy against a clean binary SDK. Four storage regressions pass,
 including a reproduced and repaired malformed-text load failure. Its separate

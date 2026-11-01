@@ -95,7 +95,7 @@ object DesktopWorkbench:
       }
       def publishFocus()(using UiTxn): Unit =
         val (direct,ancestors,keyboard)=interaction.focusReferences
-        runtime.publishFocus(direct,ancestors,keyboard)
+        runtime.publishFocus(direct, ancestors, keyboard, interaction.state.part)
       val viewports=scala.collection.mutable.Map.empty[Long,Viewport]
       val elements=new ElementInput(runtime,interaction)
       var bindings=capture();elements.update(bindings.elements)
@@ -174,13 +174,14 @@ object DesktopWorkbench:
         bindings=capture();elements.update(bindings.elements)
         if presentedPayload.exists(p => p.tree==bindings.tree && p.logicalWidth==facts.logicalWidth() && p.logicalHeight==facts.logicalHeight()) then
           runtime.takeFocusRequests().foreach { ref =>
-            if interaction.focusRef(ref) then ok(runtime.transact {publishFocus()})
+            if interaction.focusRef(ref.reference, ref.part) then ok(runtime.transact { publishFocus() })
             else println(s"focusIntentDropped reference=$ref reason=not-focusable-in-presented-tree")
           }
         var recapture=false
         if running && facts.width()>0 && facts.height()>0 && facts.logicalWidth()>0 && facts.logicalHeight()>0 then
           val payload=FramePayload(bindings.tree,facts.logicalWidth(),facts.logicalHeight(),facts.width(),facts.height(),
-            interaction.state.focused,interaction.state.keyboard,interaction.state.pressed.map(_.target),viewports.toMap)
+            interaction.state.focused, interaction.state.keyboard, interaction.state.pressed.map(_.target),
+            viewports.toMap, focusPart = interaction.state.part)
           coordinator.request(payload).foreach { request => latestRequest=Some(request);renderer.get.submit(request) }
           renderer.get.poll().foreach {
             case (generation,Left(_: sirin.graphics.GraphicsDeviceLost)) if coordinator.acceptsGeneration(generation) => recoverRenderer()

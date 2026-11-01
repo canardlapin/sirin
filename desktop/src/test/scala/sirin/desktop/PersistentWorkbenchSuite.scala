@@ -290,7 +290,7 @@ class PersistentWorkbenchSuite extends munit.FunSuite:
         assert(inside(part("Open workbench", Role.Button)._2.bounds))
         runtime.takeFocusRequests()
         ok(runtime.transact(model.showImport.dispatch(())))
-        assert(runtime.takeFocusRequests().exists(controller.focusReference), "Import can focus the existing window")
+        assert(runtime.takeFocusRequests().exists(controller.focusRequest), "Import can focus the existing window")
         assert(controller.interaction.state.focused.contains(NodeId(Vector("element", importField._1))))
         assert(replayChecked)
         assertEquals(NativeApplication.liveApplications(), 0)

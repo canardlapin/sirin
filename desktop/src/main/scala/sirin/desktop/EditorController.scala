@@ -21,17 +21,10 @@ final class EditorController(
   private var shown = Option.empty[(Long, LayoutResult)]
   private var refusals = 0
   private var composingElement = Option.empty[Long]
+  private var nativeActive = true
   var notice = Option.empty[String]
   def rejected: Int = refusals
-  def focusedElement: Option[Long] = interaction
-    .focused
-    .flatMap(
-      _.kind match
-        case TargetKind.Custom(frame) =>
-          Some(frame.instance)
-        case _ =>
-          None
-    )
+  def focusedElement: Option[Long] = interaction.focused.flatMap(_.element.map(_.instance))
   def tree: Node = captured.tree
   def semanticReferences: Vector[(NodeRef, Long)] = runtime.referenceIdentities
 
@@ -135,10 +128,13 @@ final class EditorController(
       composingElement = None
       clearComposition()
   def install(revision: Long, layout: LayoutResult): Unit =
+    val previous = interaction.state
     shown = Some((revision, layout))
     interaction.install(InteractionSnapshot(revision, layout))
     elements.install(layout)
     followPopups()
+    if previous.part != interaction.state.part && nativeActive then
+      runtime.transact { publishFocus() }
     retireMovedComposition()
     // A control that dropped its composition by itself, e.g. after external replacement, ends the platform's.
     if composingElement.exists(id => textElement.exists((target, _, request) => target == id && !request.composing))
@@ -215,8 +211,9 @@ final class EditorController(
         false
   private def publishFocus()(using UiTxn): Unit =
     val (direct, ancestors, keyboard) = interaction.focusReferences
-    runtime.publishFocus(direct, ancestors, keyboard)
+    runtime.publishFocus(direct, ancestors, keyboard, interaction.state.part)
   def nativeFocus(active: Boolean): Unit =
+    nativeActive = active
     runtime.transact {
       if active then
         publishFocus()
@@ -237,7 +234,8 @@ final class EditorController(
     }
 
   /** An open popup as presented, with the focus it opened over (`docs/design/decisions/2026-10-31-overlay-popup.md`). */
-  private final case class OpenPopup(popup: CapturedPopup, previous: Option[NodeId], keyboard: Boolean)
+  private final case class OpenPopup(
+      popup: CapturedPopup, previous: Option[NodeId], keyboard: Boolean, part: Option[PartId])
   private var popups = Vector.empty[OpenPopup]
   private def openPopup(instance: Long): Option[CapturedPopup] = captured.popups.find(_.instance == instance)
 
@@ -251,7 +249,7 @@ final class EditorController(
       .filterNot(id => popups.exists(_.popup.instance == id))
       .flatMap(openPopup)
       .foreach { popup =>
-        popups :+= OpenPopup(popup, interaction.state.focused, interaction.state.keyboard)
+        popups :+= OpenPopup(popup, interaction.state.focused, interaction.state.keyboard, interaction.state.part)
         val initial = popup.initialFocus.exists(focusReference)
         if !initial then
           interaction
@@ -271,7 +269,11 @@ final class EditorController(
           val requested =
             mode match
               case FocusRestore.Previous =>
-                open.previous.exists(focusTarget(_, open.keyboard))
+                open.previous.exists { id =>
+                  val part = open.part.filter(part =>
+                    interaction.presented.target(id).exists(_.semanticParts.contains(part)))
+                  focusTarget(id, open.keyboard, part)
+                }
               case _ =>
                 open.popup.restoreTo.exists(focusReference)
           if !requested then
@@ -318,13 +320,14 @@ final class EditorController(
         false
 
   /** Focus on a presented, focusable target, through the ordinary element focus events. */
-  private def focusTarget(id: NodeId, keyboard: Boolean): Boolean =
-    if !interaction.presented.target(id).exists(t => t.focusable && interaction.presented.accepts(t)) then
+  private def focusTarget(id: NodeId, keyboard: Boolean, part: Option[PartId] = None): Boolean =
+    if !interaction.presented.target(id).exists(t => t.focusable && interaction.presented.accepts(t) &&
+        part.forall(id => t.semanticParts.count(_ == id) == 1)) then
       false
     else
       val before = interaction.state
       val previous = focusedElement
-      interaction.state = interaction.state.copy(focused = Some(id), keyboard = keyboard, pressed = None)
+      interaction.state = interaction.state.copy(focused = Some(id), keyboard = keyboard, pressed = None, part = part)
       if !moved(previous) then {
         interaction.rollbackPublication(before)
         false
@@ -416,9 +419,12 @@ final class EditorController(
       case _: NativeWindow.ClipboardUnavailable =>
         reject("Clipboard is unavailable.")
   def focusReference(reference: Long): Boolean =
+    focusRequest(FocusRequest(reference))
+
+  def focusRequest(request: FocusRequest): Boolean =
     val before = interaction.state
     val previous = focusedElement
-    if !interaction.focusRef(reference) then
+    if !interaction.focusRef(request.reference, request.part) then
       false
     else if !moved(previous) then {
       interaction.rollbackPublication(before)
@@ -439,7 +445,7 @@ final class EditorController(
       val previous = focusedElement
       interaction.state = interaction
         .state
-        .copy(focused = Some(NodeId(Vector("element", id))), keyboard = true, pressed = None)
+        .copy(focused = Some(NodeId(Vector("element", id))), keyboard = true, pressed = None, part = None)
       if !moved(previous) then {
         interaction.rollbackPublication(before)
         false
@@ -578,6 +584,11 @@ final class EditorController(
     }
   def accessibilityFocus(instance: Long, revision: Long): Boolean =
     ready && revision == presentedRevision && focusElement(instance)
+
+  def accessibilityFocus(instance: Long, part: PartId, revision: Long): Boolean =
+    ready && revision == presentedRevision && elements.shownElement(instance) &&
+      !captured.bindings.get(instance).exists(!_.enabled) &&
+      focusTarget(NodeId(Vector("element", instance)), true, Some(part))
 
   def accessibilityActivate(instance: Long, part: PartId, revision: Long): Boolean =
     accessibilityAction(instance, part, SemanticAction.Activate, revision)

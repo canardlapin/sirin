@@ -4,6 +4,56 @@ import sirin.*
 import sirin.engine.*
 
 class InteractionSuite extends munit.FunSuite:
+  test("changing only the focused part requests a new accepted presentation") {
+    val coordinator = new FrameCoordinator
+    val node = Node(NodeId(Vector("parts")), Content.Empty)
+    val payload = FramePayload(node, 100, 100, 100, 100, focus = Some(node.id), focusPart = Some(PartId(1)))
+    val first = coordinator.request(payload).get
+    assertEquals(coordinator.request(payload), None)
+    val next = coordinator.request(payload.copy(focusPart = Some(PartId(2)))).get
+    assert(!coordinator.accepts(first))
+    assert(coordinator.accepts(next))
+    assertEquals(next.payload.tree, first.payload.tree)
+  }
+
+  test("part focus is exact, stays separate from Tab traversal, and clears when the part retires") {
+    val interaction = new Interaction
+    val first = target(1).copy(semanticParts = Vector(PartId(4), PartId(8)))
+    val second = target(2, x = 30).copy(semanticParts = Vector(PartId(4)))
+    interaction.install(InteractionSnapshot(1, Vector(first, second)))
+    assert(interaction.focusRef(1, Some(PartId(8))))
+    assertEquals(interaction.state.part, Some(PartId(8)))
+    assert(!interaction.focusRef(1, Some(PartId(99))))
+    assert(!interaction.focusRef(90, Some(PartId(8))), "an ancestor does not own child parts")
+    assertEquals(interaction.state.part, Some(PartId(8)))
+    interaction.install(InteractionSnapshot(2, Vector(first.copy(enabled = false), second)))
+    assertEquals(interaction.state.part, Some(PartId(8)), "disablement retains logical focus")
+    interaction.handle(HostInput.KeyDown(Key.Tab, Mods.none))
+    assertEquals(interaction.state.focused, Some(second.id))
+    assertEquals(interaction.state.part, None)
+    assert(interaction.focusRef(1, Some(PartId(8))))
+    interaction.install(InteractionSnapshot(3, Vector(first.copy(semanticParts = Vector(PartId(4))), second)))
+    assertEquals(interaction.state.focused, Some(first.id))
+    assertEquals(interaction.state.part, None)
+    assert(interaction.focusRef(1, Some(PartId(4))))
+    interaction.handle(HostInput.Down(5, 5))
+    assertEquals(interaction.state.part, None)
+  }
+
+  test("part requests cannot cross a modal boundary or choose an ambiguous target") {
+    val interaction = new Interaction
+    val base = target(1).copy(semanticParts = Vector(PartId(1)))
+    val popup = target(2).copy(layer = Some(9), semanticParts = Vector(PartId(2)))
+    interaction.install(InteractionSnapshot(1, Vector(base, popup), Vector(PopupLayer(9, Box(0, 0, 30, 30), true))))
+    assert(!interaction.focusRef(1, Some(PartId(1))))
+    assert(interaction.focusRef(2, Some(PartId(2))))
+    val ambiguous = base.copy(id = NodeId(Vector(3)))
+    interaction.install(InteractionSnapshot(2, Vector(base, ambiguous)))
+    assert(!interaction.focusRef(1, Some(PartId(1))))
+    assertEquals(interaction.state.focused, None)
+    assertEquals(interaction.state.part, None)
+  }
+
   private def target(id: Int,enabled: Boolean=true,x: Double=0): Target =
     Target(NodeId(Vector(id)),TargetKind.Button(id),Box(x,0,20,20),Box(x,0,20,20),enabled,Vector(id.toLong),Vector(90),Vector.empty)
   private def setup(): Interaction =

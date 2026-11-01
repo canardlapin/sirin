@@ -3,7 +3,9 @@ package sirin.host
 final case class FramePayload(tree: Node, logicalWidth: Double, logicalHeight: Double,
     pixelWidth: Int, pixelHeight: Int, focus: Option[NodeId]=None,keyboardFocus: Boolean=false,pressed: Option[NodeId]=None,viewports: Map[Long,sirin.Viewport]=Map.empty,
     /** The focused text control, which a cached base drawing must paint as focused. */
-    textFocus: Option[NodeId]=None)
+    textFocus: Option[NodeId] = None,
+    /** Advances native focus publication even when the element's drawing does not change. */
+    focusPart: Option[sirin.PartId] = None)
 final case class FrameRequest(generation: Long, payload: FramePayload)
 
 /** Owner-only generation gate. Immutable worker results never advance it. */

@@ -14,7 +14,9 @@ trait NodeRef:
   def hasFocus: Signal[Boolean]
   def containsFocus: Signal[Boolean]
   def part(id: PartId): SemanticTarget
+  /** The explicitly focused part of this directly referenced custom element, or None for element-level focus. */
   def focusedPart: Signal[Option[PartId]]
+  /** Stages exact part focus, resolved against presented semantics after publishing. No selection or activation. */
   def focusPart(id: PartId)(using UiTxn): Unit
   def focusRing: Signal[Boolean]
 

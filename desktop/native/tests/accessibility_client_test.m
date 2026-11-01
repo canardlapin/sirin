@@ -131,6 +131,29 @@ int main(void) {
     }
     puts("Cocoa client: explicit help wins, Label values resolve, removed help clears and disabled actions ignored");
 
+    assert(sirin_ax_begin(raw, 106) == 0);
+    assert(sirin_ax_node(raw, 8, 0, 15, "Diagram", "", "", 0, -1, fieldBounds) == 0);
+    assert(sirin_ax_node(raw, 6, 8, 16, "First part", "", "", 1 | 8, -1, fieldBounds) == 0);
+    assert(sirin_ax_node(raw, 7, 8, 16, "Second part", "", "", 1, -1, buttonBounds) == 0);
+    assert(sirin_ax_publish(raw) == 0);
+    id<NSAccessibility> first = find_title(root, @"First part", 0);
+    id<NSAccessibility> second = find_title(root, @"Second part", 0);
+    assert(first && second);
+    view_focus(owner, true);
+    assert(first.accessibilityFocused && !second.accessibilityFocused);
+    assert([second isAccessibilitySelectorAllowed:@selector(setAccessibilityFocused:)]);
+    second.accessibilityFocused = YES;
+    expect_action(raw, 106, 7, 1);
+    assert(first.accessibilityFocused && !second.accessibilityFocused);
+    assert(sirin_ax_link(raw, 6, 8, 1) == 0);
+    assert(sirin_ax_link(raw, 7, 8, 1 | 8) == 0);
+    assert(sirin_ax_publish(raw) == 0);
+    // Publication refreshes actual key-window state; this test window remains hidden.
+    view_focus(owner, true);
+    assert(!first.accessibilityFocused && second.accessibilityFocused);
+    expect_empty(raw);
+    puts("Cocoa client: non-first graphic-part focus queues its exact identity and waits for owner publication");
+
     sirin_ax_close(raw);
     title.accessibilityFocused = YES;
     assert(![checkbox accessibilityPerformPress]);

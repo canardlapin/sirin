@@ -12,7 +12,8 @@ private[desktop] final class NativeSemanticTree:
   def capture(
       layout: LayoutResult,
       focused: Option[NodeId],
-      references: Vector[(NodeRef, Long)] = Vector.empty
+      references: Vector[(NodeRef, Long)] = Vector.empty,
+      focusedPart: Option[PartId] = None
   ): Vector[NativeSemanticNode] =
     var nextIds = Map.empty[(NodeId, PartId), Long]
     var byReference = Map.empty[Long, Vector[NativeSemanticNode]]
@@ -47,16 +48,19 @@ private[desktop] final class NativeSemanticTree:
           case _ =>
             (Vector.empty, None, false, true)
         var childParent = parent
-        parts.zipWithIndex.foreach { (part, index) =>
+        var firstExposed = true
+        parts.foreach { part =>
           val b = part.bounds
           val area = Box(p.bounds.x + b.origin.x.toDouble, p.bounds.y + b.origin.y.toDouble,
             b.size.width.toDouble, b.size.height.toDouble).intersect(p.clip)
           if area.width > 0 && area.height > 0 then
             val identifier = id(p.node.id -> part.part)
-            val focus = focusable && index == 0
+            val focus = focusable
             val node = NativeSemanticNode(identifier, parent, part.copy(bounds = rect(area)),
               instance, Point(p.bounds.x.lp, p.bounds.y.lp), focus,
-              focus && focused.contains(p.node.id), enabled, modal && part.semantics.role == Role.Dialog)
+              focus && focused.contains(p.node.id) && focusedPart.fold(firstExposed)(_ == part.part),
+              enabled, modal && part.semantics.role == Role.Dialog)
+            firstExposed = false
             result += node
             attached.foreach { reference =>
               byReference += reference -> (byReference.getOrElse(reference, Vector.empty) :+ node)
