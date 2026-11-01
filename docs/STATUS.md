@@ -124,6 +124,10 @@ Sirin is a pre-release prototype. Nothing is published.
   accessibility ABI functions as JVM FFM, and a separate text/focus probe reaches
   four existing functions in the exact packaged library. These are binding
   checks, not a provider.
+  On November 1, all six samples of the unchanged idle preflight failed, so
+  the original 600-second latency gate remains unrun. A source review also
+  identified the full trampoline lifetime as an unverified part of the private
+  saved-mask remedy. See [Native continuation evidence](evidence/2026-11-01-native-continuation.md).
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
   physical pointer drag and trackpad behavior remain unqualified. Packaged
   workbench modal decisions have been exercised with synthetic pointer and

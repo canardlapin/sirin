@@ -96,6 +96,13 @@ Broader acceptance gates still prevent full usability acceptance. See
 See [recovery evidence](../evidence/2026-10-31-workbench-recovery.md) and
 [window-input evidence](../evidence/2026-11-01-workbench-window-input.md).
 
+The November 1 Native continuation verified the frozen October 29 evidence and
+ran one unchanged idle preflight. All six samples failed the idle requirement,
+so the original long event gate remains unrun. The saved-mask source review
+requires checking ownership across the entire redirected trampoline lifetime;
+zero nested signal handlers alone does not establish it. Runtime defaults remain
+unchanged. See [Native continuation evidence](../evidence/2026-11-01-native-continuation.md).
+
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was
 retired after landing.
