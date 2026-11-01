@@ -118,6 +118,13 @@ Sirin is a pre-release prototype. Nothing is published.
 
 ## What is partial
 
+- **Independent public consumer.** A local development SDK can be exported from
+  the macOS/JDK25 package with a file/link manifest. The standalone ReviewPad
+  starter builds outside the framework from that SDK and implements persistent
+  title, notes and review status using public APIs. Its copied candidate builds,
+  passes storage regressions and packages; clean-checkout and real-window
+  acceptance are still being completed. [Starter](../examples/starter/README.md).
+
 - **Scala Native desktop.** The kernel and tests run under Scala Native, but there is no
   qualified Scala Native application provider. Native delivery depends on the
   open GC safepoint stall (P0.6). The delivery order is to be decided before
@@ -171,7 +178,7 @@ Sirin is a pre-release prototype. Nothing is published.
 
 ## What is missing
 
-- The inspector, a starter project, and the matched ScalaFX comparison.
+- The inspector and the matched ScalaFX comparison.
   The diagram still needs real pointer and accessibility acceptance.
 - Windows and Linux desktop hosts. Those platforms are CI-only.
 

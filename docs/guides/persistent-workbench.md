@@ -107,6 +107,10 @@ data without catching cooperative interruption.
 For an independent authoring review, add a real import format or document feature
 through those interfaces, run the whole workflow and compare the change against
 the matched ScalaFX application. That review has not yet been performed.
+The [ReviewPad starter](../../examples/starter/README.md) provides a separate
+public-API consumer build using a local binary SDK, with its own persistent
+review-status feature. Its acceptance is recorded separately from an independent
+review of this workbench and the matched comparison.
 
 ## Qualification boundary
 
@@ -115,8 +119,10 @@ keyboard/controller/menu save and file reopen, native compilation and packaging.
 Offscreen images are development snapshots, not owner visual approval. Native
 menus, true IME candidate interaction, VoiceOver, pointer/drag, full keyboard/focus
 and popup/modality behavior still need native client evidence. The current GPU
-frame cap is 1,048,576 physical pixels; larger surfaces need bounded streaming,
-not an enlarged cap. Emoji coverage, viewport adaptation and scrolling/focus polish remain toolkit
+application viewport is bounded at 4096 by 3200 physical pixels under the
+separate application cache profile in VISION. The original probe budgets remain
+unchanged; see [viewport evidence](../evidence/2026-11-01-application-viewport.md).
+Emoji coverage, smooth live resize and remaining scrolling/focus polish remain toolkit
 work. Field input/refusal feedback has controller and offscreen checks; actual
 IME and assistive-client delivery still need native evidence. The long GC/event
 qualification, graphics editor, inspector, clean-checkout/independent review,

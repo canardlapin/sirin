@@ -26,9 +26,12 @@ strategy. Native libraries supply the lower-level services:
 ## Smallest example
 
 For a standalone vector recording example, see [`graphics/README.md`](graphics/README.md).
-It needs no UI runtime or GPU. The provisional UI API and authoring corpus are
-described in [`docs/design/VISION.md`](docs/design/VISION.md) §4; they do not yet
-provide a complete windowed UI.
+It needs no UI runtime or GPU. For a windowed application, see the
+[persistent workbench guide](docs/guides/persistent-workbench.md). The
+[standalone ReviewPad starter](examples/starter/README.md) builds outside this
+repository from a local development SDK. The public API and authoring corpus
+are described in [`docs/design/VISION.md`](docs/design/VISION.md) §4. Complete
+application and platform acceptance remain open.
 
 ## Build and verify
 
@@ -64,6 +67,8 @@ native/fetch-macos.sh   # wgpu-native v29.0.1.1 and SDL3 3.4.18, checked by SHA-
 
 ## Known gaps
 
-Almost everything is still to be built; see the roadmap. In particular,
-the windowed renderer, complete text/layout system and widgets remain unfinished, and Windows
-behavior is unverified.
+See [current status](docs/STATUS.md) for the implemented macOS/JVM host and
+remaining gates. Real input/client qualification, the inspector, independent
+workflow acceptance and matched ScalaFX comparison remain incomplete. A
+qualified Scala Native application provider and Windows/Linux desktop hosts
+are still missing.
