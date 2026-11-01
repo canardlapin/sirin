@@ -68,7 +68,7 @@ signing, and a Native executable passed ABI v4 against its exact dylib, confirme
 by the loader log. `acceptance-package.json` records application, framework,
 native-library and launcher hashes.
 
-## Remaining verification
+## Malformed-text regression and final consumer
 
 A subsequent negative test exposed an input validation gap: Java properties
 can decode ASCII `\uD800` into an unpaired surrogate even when the file bytes
@@ -78,8 +78,42 @@ note or encoding a save. The regression covers escaped high/low surrogates and
 NUL, failed-open write refusal and exact file preservation. Invalid edits cover
 both fields; valid supplementary Unicode still round-trips. The copied candidate
 passes all four tests after the fix. Original failure and repaired run are kept
-as `escaped-text-before.log` and `escaped-text-after.log`. A fresh copy/package
-from this committed repair is still required.
+as `escaped-text-before.log` and `escaped-text-after.log`.
+
+A fresh external copy at `consumer-final` contains the eight tracked files from
+`0f33b3877086c39402cc8004192371f95922ed04`. With the unchanged clean SDK, its
+`sbt clean test packageApp 'show Compile/fullClasspath'` exited 0 with all four
+tests passing. The source hashes still match the commit; imports and classpath
+retain the public binary boundary. Portable closure/font/library-loading checks
+passed. The default package is preserved in `consumer-final-default-package`.
+The isolated image at the previously specified acceptance path was replaced by
+this repaired consumer, and its prior image is retained as `acceptance-d2c749d.app`.
+Deep/strict signing passes. The Sirin JAR, native library and configured arguments
+are byte-identical to the already checked isolated image, so the exact-library
+Native ABI result remains applicable. The new application JAR is
+`5fb1013f001106b1ac33c3ac3544abe64871e6d945f19d20c7f3b2a7dc186b99`.
+ReviewPad has not been launched and its test note is still absent.
+
+## Approved workbench window check
+
+The approved SirinWorkbench image was launched again. It opened the isolated
+Acceptance Alpha document with its exact saved text. Emptying Title showed the
+required-title error both visibly and as native field Help, with Save disabled.
+After restoring Title and making an unsaved body edit, Command-Q opened the
+dirty-quit dialog. Escape retained the exact draft. Reopening the dialog and
+choosing Discard and quit exited the app, verified by the running-app inventory.
+The saved document retains SHA-256
+`1e717858dda45fc34d230f0c58294cd96d9a286e0ed0a8776bdd51fa86a37d28`.
+This check uses native accessibility edits and keyboard input; it does not claim
+VoiceOver, IME or physical trackpad acceptance.
+
+## Receipts and remaining verification
+
+Raw logs, source hashes, package checks and the window observation record are in
+`/private/tmp/sirin-public-starter-20261101`. The 34-file receipt manifest has
+SHA-256 `90ce8dbcadb63a0049fa32f1b4b21d9d79222f541a5f13adb4609809dc1cfd0f`.
+The shared checkout's tracked-diff hash matches the preserved baseline; source
+work remains confined to the owned branch and external validation copies.
 
 Real-window approval and workflow acceptance are pending. The new app has a
 distinct identity and test-file location. The computer-use confirmation policy

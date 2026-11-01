@@ -121,8 +121,9 @@ Sirin is a pre-release prototype. Nothing is published.
 - **Independent public consumer.** A local development SDK can be exported from
   the macOS/JDK25 package with a file/link manifest. The standalone ReviewPad
   starter builds outside the framework from that SDK and implements persistent
-  title, notes and review status using public APIs. Its copied candidate builds,
-  passes storage regressions and packages. A fresh framework checkout passed
+  title, notes and review status using public APIs. Its final copied consumer
+  passes four storage regressions and packages, including refusal of malformed
+  escaped Unicode before loading or saving. A fresh framework checkout passed
   both shared suites and produced a clean SDK; the copied consumer rebuilt from
   it with no framework source/build directories on its compile classpath.
   The isolated app is signed and its exact native library passes the Native ABI

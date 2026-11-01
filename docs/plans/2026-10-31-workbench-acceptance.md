@@ -79,6 +79,13 @@ observation is still unqualified. See
 [Cocoa client evidence](../evidence/2026-11-01-cocoa-accessibility-client.md).
 Actual VoiceOver permission is pending; the broader acceptance outcomes and
 semantic-part focus stay open.
+The independent ReviewPad consumer now builds and packages from a committed
+external copy against a clean binary SDK. Four storage regressions pass,
+including a reproduced and repaired malformed-text load failure. Its separate
+window launch approval remains pending. A further approved SirinWorkbench window
+check passed title validation, dirty-quit Escape draft retention and discard
+without changing saved bytes. See
+[public consumer evidence](../evidence/2026-11-01-public-starter.md).
 Packaged recovery checks now preserve exact files across external-change
 conflicts, copy/reload and partial import. Import review validity, local errors,
 readable receipts and stable navigation were repaired through public APIs.
