@@ -39,7 +39,7 @@ object GpuFrame:
   def liveTiles: Int=Calls.int("sirin_desktop_gpu_tiles")
   def outputBytes: Long=Calls.long("sirin_desktop_gpu_output_bytes")
   def apply(tiles: Vector[(Int,Int,GpuTile)],width: Int,height: Int): GpuFrame = Zone.acquire { implicit zone =>
-    require(tiles.nonEmpty && tiles.size<=256,"GPU frame tile count")
+    require(tiles.nonEmpty && tiles.size <= 2048, "GPU frame tile count")
     val pointers=alloc[Ptr[Byte]](tiles.size);val xy=alloc[Int](tiles.size*2)
     tiles.zipWithIndex.foreach { case ((x,y,t),i) =>
       require(t.handle!=null,"GPU tile closed")

@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <math.h>
 #include "event_queue.h"
+#include "viewport_budget.h"
 #include "menus.h"
 #include "accessibility.h"
 #include "text_input_owner.h"
@@ -199,14 +200,24 @@ static void destroy(Desktop *d) {
   app->count--;live_windows--;free(d);
   if(!app->explicit_owner && !app->count)app_destroy(app);
 }
-// Development framebuffer policy: <=1280x800 physical pixels, including DPI changes.
+// Physical ceilings follow the host profile, including display-scale changes.
 static void constrain_window(Desktop *d) {
-  int w=0,h=0,pw=0,ph=0;SDL_GetWindowSize(d->window,&w,&h);SDL_GetWindowSizeInPixels(d->window,&pw,&ph);
-  if(w>0&&h>0&&pw>0&&ph>0){
-    int mw=(int)(1280.0*w/pw),mh=(int)(800.0*h/ph);
-    int oldw=0,oldh=0;SDL_GetWindowMaximumSize(d->window,&oldw,&oldh);
-    if(mw!=oldw||mh!=oldh)SDL_SetWindowMaximumSize(d->window,mw,mh);
-    if(w>mw||h>mh)SDL_SetWindowSize(d->window,w>mw?mw:w,h>mh?mh:h);
+  int w = 0;
+  int h = 0;
+  int pw = 0;
+  int ph = 0;
+  SDL_GetWindowSize(d->window, &w, &h);
+  SDL_GetWindowSizeInPixels(d->window, &pw, &ph);
+  if (w > 0 && h > 0 && pw > 0 && ph > 0) {
+    int max_width = d->app->explicit_owner ? SIRIN_APP_WIDTH : 1280;
+    int max_height = d->app->explicit_owner ? SIRIN_APP_HEIGHT : 800;
+    int mw = (int)((double)max_width * w / pw);
+    int mh = (int)((double)max_height * h / ph);
+    int oldw = 0;
+    int oldh = 0;
+    SDL_GetWindowMaximumSize(d->window, &oldw, &oldh);
+    if (mw != oldw || mh != oldh) SDL_SetWindowMaximumSize(d->window, mw, mh);
+    if (w > mw || h > mh) SDL_SetWindowSize(d->window, w > mw ? mw : w, h > mh ? mh : h);
   }
 }
 int sirin_desktop_open(const char *title, int width, int height, void **out, char *error) {

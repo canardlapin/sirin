@@ -1365,7 +1365,9 @@ transport locks under a read-only guard; failures are counted. Closing the runti
 clears wake registrations before retiring work; a callback already in flight
 may complete, so a backend also serializes wake delivery with its resource close. It schedules no
 application handler or frame itself. The development window constrains its
-framebuffer to 1280x800 physical pixels across scale transitions. Reference GPU
+framebuffer to 1280x800 physical pixels across scale transitions. `Application.run`
+uses the separate 4096x3200 physical-pixel viewport profile recorded in
+`decisions/2026-11-01-application-viewport.md`; constraints follow DPI changes. Reference GPU
 rendering is tiled with conservative glyph/command culling; per-tile programs
 retain the graphics track's work and memory budgets. This is a bounded integration
 adapter, with independent tiled/full-image equivalence checks, not a budget bypass
@@ -1461,15 +1463,21 @@ geometry and asset caches; this does not promise zero work for arbitrary edits,
 pan or zoom. Target, scale and device changes invalidate affected variants.
 
 Temporary tile programs retain the existing batch limits (640x360, 16 programs,
-192MiB payload); completed variants obey 256 entries and 1,048,576 pixels.
+192MiB payload); default completed variants obey 256 entries and 1,048,576 pixels.
+The application profile allows 2048 active tiles, 4096 adaptive visits, 2048
+partition records and 2304 cached entries. Its cached pixels are bounded by the
+current viewport plus 1,048,576 spare pixels, within the 4096x3200 viewport ceiling.
 Native atomic references independently protect exported immutable textures from
-cache eviction. All exported output textures, including stale/displayed frames,
-share a 16MiB cap. At most three complete frame packets may exist per owning
-batch device/generation, with a process-wide ceiling of 48 (the existing
-16-window host capacity times three). Retiring generations count toward that
-ceiling; packet admission and release are atomic. This replaces the earlier
-single-window candidate's process-wide three-packet cap, without changing texture
-memory or pixel limits (2026-11-01; `decisions/2026-11-01-window-frame-inventory.md`). Packets validate
+cache eviction. Exported output textures, including stale/displayed frames, have
+a 161,480,704-byte per-device/generation cap and a 322,961,408-byte process cap.
+These cover three maximum viewport footprints plus spare variants per device,
+for two devices; they do not preallocate memory or guarantee every window at
+maximum size. They supersede the former 16MiB output cap (2026-11-01;
+`decisions/2026-11-01-application-viewport.md`). At most three complete frame
+packets may exist per owning batch device/generation, with a process-wide ceiling
+of 48 (the existing 16-window host capacity times three). Retiring generations
+count toward that ceiling; admission and release are atomic. The packet policy
+is recorded in `decisions/2026-11-01-window-frame-inventory.md`. Packets validate
 one device and exact non-overlapping full-target coverage. Replacement, obsolete
 results, unpolled mailboxes, feedback and close explicitly retire their references;
 close does not depend on a future frame. GPU resource mutation stays on the

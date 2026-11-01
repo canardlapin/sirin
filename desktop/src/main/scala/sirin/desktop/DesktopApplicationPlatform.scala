@@ -383,7 +383,8 @@ private[desktop] final class ApplicationPeer(
             root.resolve("graphics/src/test/resources/fonts"),
             root.resolve(s"desktop/target/application-frames/$instance"),
             batch = Some(BatchGpu.shared(activeRenderer)),
-            editorSystemFonts = true
+            editorSystemFonts = true,
+            viewportProfile = sirin.graphics.desktop.GpuTileCache.Profile.Application
           )
         )
       )

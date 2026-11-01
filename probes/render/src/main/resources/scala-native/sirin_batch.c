@@ -27,6 +27,7 @@ typedef struct {
   _Atomic int refs,done;
   // Exported frame packets are independently bounded for each device/generation.
   _Atomic int frame_packets;
+  _Atomic long long output_bytes;
   int status;
   BatchHealth *health;
   WGPUInstance instance;WGPUAdapter adapter;WGPUDevice device;WGPUQueue queue;
@@ -177,6 +178,7 @@ int bgpu_open(const char*shader,int vertices,int meshes,int masks,int images,voi
   Bgpu*s=calloc(1,sizeof(*s));if(!s)return 1;
   atomic_init(&s->refs,1);
   atomic_init(&s->frame_packets,0);
+  atomic_init(&s->output_bytes, 0);
   atomic_fetch_add(&batch_live,1);
   s->mesh_capacity=vertices;s->mesh_limit=meshes;s->mask_limit=masks;s->image_limit=images;
   s->instance=wgpuCreateInstance(NULL);if(!s->instance)goto fail;

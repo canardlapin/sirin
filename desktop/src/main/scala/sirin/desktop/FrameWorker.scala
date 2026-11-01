@@ -65,7 +65,9 @@ final class RenderSession(
     captureRoot: Path,
     tileEdge: Int = 128,
     batch: Option[sirin.render.BatchGpu] = None,
-    editorSystemFonts: Boolean = false
+    editorSystemFonts: Boolean = false,
+    viewportProfile: sirin.graphics.desktop.GpuTileCache.Profile =
+      sirin.graphics.desktop.GpuTileCache.Profile.Development
 ) extends RenderBackend:
   require(tileEdge >= 32 && tileEdge <= 192, "tile edge budget")
   private val elementMeasurements = new ElementMeasureCache
@@ -111,7 +113,7 @@ final class RenderSession(
     )
   private lazy val composite = new sirin.graphics.desktop.TileCache(gpu, raster, tileEdge, 32, 24L * 1024 * 1024)
   private var previousBase = Option.empty[(FramePayload, LayoutResult, sirin.graphics.RenderTarget)]
-  private lazy val gpuTiles = new sirin.graphics.desktop.GpuTileCache(batch.get, tileEdge)
+  private lazy val gpuTiles = new sirin.graphics.desktop.GpuTileCache(batch.get, tileEdge, viewportProfile)
   private val preparation = new sirin.graphics.PreparationCache
   private var gpuBase = Option.empty[(FramePayload, LayoutResult, sirin.graphics.PreparedDrawing)]
   private var gpuDrawing = Option.empty[(FramePayload, LayoutResult, sirin.graphics.PreparedDrawing)]

@@ -235,3 +235,61 @@ class GpuFrameSuite extends munit.FunSuite:
     assertEquals(GpuFrame.outputBytes, 0L)
     assertEquals(BatchGpu.liveOwners, 0)
   }
+
+  test("application viewport retains large frames through replacement and resize") {
+    val gpu = BatchGpu.open()
+    val cache = new GpuTileCache(gpu, profile = GpuTileCache.Profile.Application)
+    val frames = scala.collection.mutable.ArrayBuffer.empty[GpuFrame]
+    def prepared(width: Int, height: Int, color: Color) =
+      val drawing = Drawing.record { canvas =>
+        canvas.fill(Path.rectangle(Rect(0, 0, width / 2, height / 2)), Paint.Solid(color))
+      }
+      DrawingPreparation.prepare(drawing, gpu.target(width, height, 2)).toOption.get
+    try
+      frames += cache.render(prepared(2560, 1600, Color(1, 0, 0)), () => false)
+      assertEquals(cache.tileCount, 260)
+      frames += cache.render(prepared(2560, 1600, Color(0, 1, 0)), () => false)
+      frames += cache.render(prepared(3200, 1800, Color(0, 0, 1)), () => false)
+      assert(GpuFrame.outputBytes > 16777216L, "retained frames exceed the old process output cap")
+      assert(cache.cachedPixels <= 3200L * 1800 + 1048576)
+      assert(cache.cachedEntries <= 2304)
+      val before = (cache.cachedPixels, cache.cachedEntries)
+      intercept[IllegalArgumentException] {
+        cache.render(prepared(16, 3201, Color(1, 0, 0)), () => false)
+      }
+      assertEquals((cache.cachedPixels, cache.cachedEntries), before, "refusal preserves the valid cache")
+      cache.close()
+      for (frame, expected) <- frames.zip(Vector(Color(1, 0, 0), Color(0, 1, 0), Color(0, 0, 1))) do
+        val pixels = frame.presentationReadback()
+        for x <- Vector(0, 127, 128, frame.width - 1); y <- Vector(0, 127, 128, frame.height - 1) do
+          assertEquals(pixels.pixel(x, y), expected, s"retained presentation at $x,$y")
+      frames.remove(0).close()
+      val maximum = cache.render(prepared(4096, 3200, Color(1, 1, 0)), () => false)
+      frames += maximum
+      assertEquals(cache.tileCount, 800)
+      assertEquals(cache.cachedPixels, 4096L * 3200)
+      val boundaryPixels = maximum.presentationReadback()
+      assertEquals(boundaryPixels.pixel(0, 0), Color(1, 1, 0))
+      assertEquals(boundaryPixels.pixel(4095, 3199), Color(1, 1, 0))
+    finally
+      frames.foreach(_.close())
+      cache.close()
+      gpu.close()
+    assertEquals(GpuFrame.liveFrames, 0)
+    assertEquals(GpuFrame.liveTiles, 0)
+    assertEquals(GpuFrame.outputBytes, 0L)
+    assertEquals(BatchGpu.liveOwners, 0)
+  }
+
+  test("development viewport keeps its original bounded profile") {
+    val gpu = BatchGpu.open()
+    val cache = new GpuTileCache(gpu)
+    try
+      val drawing = DrawingPreparation.prepare(Drawing.empty, gpu.target(2560, 1600, 2)).toOption.get
+      intercept[IllegalArgumentException](cache.render(drawing, () => false))
+      assertEquals(cache.cachedEntries, 0)
+      assertEquals(GpuFrame.liveTiles, 0)
+    finally
+      cache.close()
+      gpu.close()
+  }

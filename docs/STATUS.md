@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for workbench renderer inventory checks. This page says, in plain
+Last updated 2026-11-01, for workbench application viewport checks. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -68,6 +68,11 @@ Sirin is a pre-release prototype. Nothing is published.
   focus and keyboard routing, editable text fields (undo, clipboard, marked-text
   composition), AccessKit accessibility, and a persistent document workbench with
   save, reopen, import and cancellation. Packaged `.app` builds exist.
+  Application windows now support up to 4096 by 3200 physical pixels under
+  explicit cache and texture budgets. Packaged zoom, shrink/grow with unsaved
+  edits, two enlarged windows, save and exact relaunch were checked. A transient
+  stretched frame was observed during zoom; smooth live resize remains open.
+  [Viewport policy and evidence](evidence/2026-11-01-application-viewport.md).
   A real-window check created, edited, saved and reopened exact test content.
   Reopening after closing the last window exposed an AccessKit class-setup
   crash, now repaired and checked in a native regression and a packaged window.

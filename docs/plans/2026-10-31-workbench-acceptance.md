@@ -14,7 +14,7 @@ result. The goal stays open until the required application evidence exists.
 | Coherent input | Popup dismissal/restoration/nesting, keyboard traversal, trackpad scroll, pointer drag, resize, multiple windows and recovery | Two popup regressions repaired on main with expanded shared and desktop checks; physical input acceptance remains open |
 | Native accessibility | Checkbox role/checked state, dialog containers and usable custom semantics through the pointer-only bridge; native action round trips; actual VoiceOver reading/navigation | Dialog/label/checkbox/custom-part transport and shared ABI checks pass; fresh-package modal AX tree verified; actual VoiceOver and remaining semantic relationships are open |
 | Text input | Actual IME composition/commit/cancel, focus transitions, editing and clipboard in the packaged workbench | Controller checks exist; actual IME sessions remain unqualified |
-| Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; default-size editor and visible decisions checked; large-window acceptance remains open |
+| Visual usability | Review legible text, spacing, focus/error/loading states, light/dark appearance, display scale, reduced motion and usable large-window behavior | Foreground Finder launch renders; default and larger windows, visible decisions, resize draft retention and exact saving checked; smooth live resize and remaining appearance/display checks stay open |
 | Public authoring | A separate public consumer implements one real feature using the documented API, builds/packages from a clean checkout, and completes its workflow | Independent review and starter workflow remain incomplete |
 | Matched comparison | One explicit equivalent workflow in Sirin and ScalaFX, with source, behavior and measured presentation path stated | Not yet performed |
 
@@ -82,6 +82,11 @@ per device/generation under a bounded process total, without increasing texture
 memory. A failing two-device regression, concurrent native accounting, the Native
 batch path and the exact packaged handoff sequence verify the repair. See
 [renderer inventory evidence](../evidence/2026-11-01-window-frame-inventory.md).
+Application viewport limits now allow 4096 by 3200 physical pixels with bounded
+cache and native output accounting. Real packaged zoom, shrink/grow with unsaved
+text, two enlarged windows, editing, saving and exact relaunch passed. A transient
+stretched frame during zoom is recorded, so smooth live resize remains open.
+See [larger-window evidence](../evidence/2026-11-01-application-viewport.md).
 Broader acceptance gates still prevent full usability acceptance. See
 [window and title evidence](../evidence/2026-11-01-workbench-window-rows.md).
 See [recovery evidence](../evidence/2026-10-31-workbench-recovery.md) and

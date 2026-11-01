@@ -4,7 +4,10 @@ typedef struct {
   int w,h;
 } DesktopTile;
 typedef struct {
-  Bgpu *owner; int w,h,count; DesktopTile *tiles[256]; int x[256],y[256];
+  Bgpu *owner;
+  int w, h, count;
+  DesktopTile *tiles[SIRIN_APP_TILES];
+  int x[SIRIN_APP_TILES], y[SIRIN_APP_TILES];
 } DesktopFrame;
 static _Atomic int gpu_tiles,gpu_frames;
 static _Atomic long long gpu_output_bytes;
@@ -49,30 +52,50 @@ int sirin_desktop_batch_start(void *raw,const char *shader,void **out,char *erro
   atomic_store(&s->health->notify,desktop_lost_wake);
   atomic_fetch_add(&s->refs,1);*out=s;return 0;
 }
-static void tile_release(DesktopTile*t){
-  if(atomic_fetch_sub(&t->refs,1)!=1)return;
-  wgpuTextureViewRelease(t->view);wgpuTextureRelease(t->texture);
-  atomic_fetch_sub(&gpu_output_bytes,(long long)t->w*t->h*4);
-  atomic_fetch_sub(&gpu_tiles,1);desktop_batch_release(t->owner);free(t);
+static void tile_release(DesktopTile *tile) {
+  if (atomic_fetch_sub(&tile->refs, 1) != 1) return;
+  wgpuTextureViewRelease(tile->view);
+  wgpuTextureRelease(tile->texture);
+  sirin_output_release(&gpu_output_bytes, &tile->owner->output_bytes, (long long)tile->w * tile->h * 4);
+  atomic_fetch_sub(&gpu_tiles, 1);
+  desktop_batch_release(tile->owner);
+  free(tile);
 }
-void sirin_desktop_tile_close(void*raw){tile_release(raw);}
-int sirin_desktop_tile_export(void*raw,void**out){
-  BgpuProgram*p=raw;*out=NULL;
-  long long bytes=(long long)p->w*p->h*4;
-  // Outputs, including frames surviving cache retirement, stay within 16MiB.
-  DesktopTile*t=calloc(1,sizeof(*t));if(!t)return 1;
-  atomic_init(&t->refs,1);t->owner=p->owner;t->w=p->w;t->h=p->h;
-  t->texture=p->output;wgpuTextureAddRef(t->texture);
-  t->view=wgpuTextureCreateView(t->texture,NULL);
-  if(!t->view){wgpuTextureRelease(t->texture);free(t);return 5;}
-  long long reserved=atomic_fetch_add(&gpu_output_bytes,bytes);
-  if(reserved+bytes>16777216){atomic_fetch_sub(&gpu_output_bytes,bytes);wgpuTextureViewRelease(t->view);wgpuTextureRelease(t->texture);free(t);return 6;}
-  atomic_fetch_add(&t->owner->refs,1);atomic_fetch_add(&gpu_tiles,1);
-  *out=t;return 0;
+void sirin_desktop_tile_close(void *raw) {
+  tile_release(raw);
+}
+int sirin_desktop_tile_export(void *raw, void **out) {
+  BgpuProgram *program = raw;
+  *out = NULL;
+  long long bytes = (long long)program->w * program->h * 4;
+  if (!sirin_output_reserve(&gpu_output_bytes, &program->owner->output_bytes, bytes)) return 6;
+  DesktopTile *tile = calloc(1, sizeof(*tile));
+  if (!tile) {
+    sirin_output_release(&gpu_output_bytes, &program->owner->output_bytes, bytes);
+    return 1;
+  }
+  atomic_init(&tile->refs, 1);
+  tile->owner = program->owner;
+  tile->w = program->w;
+  tile->h = program->h;
+  tile->texture = program->output;
+  wgpuTextureAddRef(tile->texture);
+  tile->view = wgpuTextureCreateView(tile->texture, NULL);
+  if (!tile->view) {
+    wgpuTextureRelease(tile->texture);
+    free(tile);
+    sirin_output_release(&gpu_output_bytes, &program->owner->output_bytes, bytes);
+    return 5;
+  }
+  atomic_fetch_add(&tile->owner->refs, 1);
+  atomic_fetch_add(&gpu_tiles, 1);
+  *out = tile;
+  return 0;
 }
 int sirin_desktop_frame_open(void **raw, const int *xy, int count, int w, int h, void **out) {
   *out = NULL;
-  if (count < 1 || count > 256 || w < 1 || h < 1 || w > 1280 || h > 800) return 4;
+  if (count < 1 || count > SIRIN_APP_TILES || w < 1 || h < 1 ||
+      w > SIRIN_APP_WIDTH || h > SIRIN_APP_HEIGHT) return 4;
   DesktopTile **tiles = (DesktopTile **)raw;
   Bgpu *owner = tiles[0]->owner;
   long long pixels = 0;

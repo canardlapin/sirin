@@ -4,7 +4,11 @@ import sirin.graphics.*
 import sirin.render.{BatchGpu,BatchRetained,GpuFrame,GpuTile}
 
 /** Completed immutable tile variants. Temporary programs never escape the worker. */
-final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
+final class GpuTileCache(
+    gpu: BatchGpu,
+    edge: Int = 128,
+    profile: GpuTileCache.Profile = GpuTileCache.Profile.Development
+) extends AutoCloseable:
   private class Entry(val position: (Int,Int),val signature: Vector[Any],val width: Int,val height: Int,
       var tile: Option[GpuTile],var program: Option[BatchRetained])
   private case class Split(signature: Vector[Any], vertical: Boolean)
@@ -29,6 +33,12 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
   def tileCount: Int =
     check()
     current.size
+  def cachedPixels: Long =
+    check()
+    pixels
+  def cachedEntries: Int =
+    check()
+    entries.size
   def stats: String=s"entries=${entries.size} pixels=$pixels hits=$hits misses=$misses"
   def close(): Unit =
     check()
@@ -38,8 +48,14 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
     current = Vector.empty
   def frame(width: Int,height: Int): GpuFrame={check();GpuFrame(current,width,height)}
   def render(drawing: PreparedDrawing,cancelled: () => Boolean,control: PreparationControl=new PreparationControl): GpuFrame =
-    check();current=Vector.empty;lastCompiled=0;lastPrepared=0
-    require(drawing.target.width.toLong*drawing.target.height<=1048576,"GPU frame pixel budget")
+    check()
+    val viewportPixels = drawing.target.width.toLong * drawing.target.height
+    require(drawing.target.width <= profile.width && drawing.target.height <= profile.height,
+      "GPU frame viewport budget")
+    val pixelBudget = profile.pixelBudget(viewportPixels)
+    current = Vector.empty
+    lastCompiled = 0
+    lastPrepared = 0
     if !target.contains(drawing.target) then {close();target=Some(drawing.target)}
     entries.filter(_.tile.isEmpty).toVector.foreach(remove)
     val active=scala.collection.mutable.HashSet.empty[Entry]
@@ -53,14 +69,14 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
       }
       pending.clear()
     val w=drawing.target.width;val h=drawing.target.height
-    require(((w+edge-1)/edge)*((h+edge-1)/edge)<=256,"GPU frame tile count")
+    require(((w+edge-1)/edge)*((h+edge-1)/edge)<=profile.tiles,"GPU frame tile count")
     var leaves = 0
     var visits = 0
     def renderTile(rect: Rect): Unit =
       if cancelled() then throw new InterruptedException("obsolete GPU frame")
       control.checkpoint()
       visits += 1
-      require(visits <= 512, "GPU adaptive tile work budget")
+      require(visits <= profile.tiles * 2, "GPU adaptive tile work budget")
       val prepared = TiledRenderer.withoutEmptyMasks(TiledRenderer.tile(drawing, rect), gpu.hasGlyphInk)
       lastPrepared += 1
       val signature = key(prepared)
@@ -83,7 +99,7 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
           entries.remove(e)
           entries.add(e)
           leaves += 1
-          require(leaves <= 256, "GPU frame tile count")
+          require(leaves <= profile.tiles, "GPU frame tile count")
           active += e
           output += e
         case None => splits.get(region).filter(_.signature == signature) match
@@ -93,7 +109,7 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
             lastCompiled += 1
             if !gpu.fits(program) && math.max(rect.width, rect.height) > 32 then
               // Retain only bounded immutable partition metadata, never a native resource.
-              while splits.size >= 256 do splits.remove(splits.head._1)
+              while splits.size >= profile.tiles do splits.remove(splits.head._1)
               val split = Split(signature, rect.width >= rect.height && rect.width > 32)
               splits(region) = split
               divide(split.vertical)
@@ -101,11 +117,11 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
               splits.remove(region)
               require(gpu.fits(program), "GPU tile resource budget at minimum tile size")
               leaves += 1
-              require(leaves <= 256, "GPU frame tile count")
+              require(leaves <= profile.tiles, "GPU frame tile count")
               misses += 1
               val size = prepared.target.width.toLong * prepared.target.height
               if pending.size >= 4 || (pending.nonEmpty && !gpu.canRetain(program)) then flush()
-              while entries.size >= 256 || pixels + size > 1048576 do
+              while entries.size >= profile.entries || pixels + size > pixelBudget do
                 val victim = entries.find(e => !active(e))
                   .getOrElse(throw new IllegalStateException("active GPU frame budget"))
                 remove(victim)
@@ -132,6 +148,14 @@ final class GpuTileCache(gpu: BatchGpu,edge: Int=128) extends AutoCloseable:
         throw error
 
 object GpuTileCache:
+  enum Profile(val width: Int, val height: Int, val tiles: Int, val entries: Int):
+    case Development extends Profile(1280, 800, 256, 256)
+    case Application extends Profile(4096, 3200, 2048, 2304)
+
+    def pixelBudget(viewportPixels: Long): Long = this match
+      case Development => 1048576L
+      case Application => viewportPixels + 1048576L
+
   /** Both inputs have already passed shared preparation and use the same target. */
   def compose(base: PreparedDrawing,overlay: PreparedDrawing): PreparedDrawing =
     require(base.target==overlay.target,"prepared composition target mismatch")
