@@ -22,8 +22,8 @@ changed and why.
 > commands become layout, interaction, accessibility, and GPU rendering
 > through explicit stages that can be inspected.
 
-Sirin is a desktop UI engine and standard toolkit for Scala, with Native-first
-delivery and an intended JVM desktop shipping target. Scala owns the interface
+Sirin is a desktop UI engine and standard toolkit for Scala, with a JVM-first
+initial alpha and an experimental Scala Native delivery target. Scala owns the interface
 semantics: state propagation, component identity and lifetime,
 layout, input routing, text editing behavior, the accessibility model, scene
 construction, and rendering strategy. Native libraries supply the lower-level
@@ -72,17 +72,19 @@ application developer building and maintaining realistic interfaces.
 
 One shared programming model should serve JVM and Scala Native applications.
 The JVM target lets applications retain their Java/Scala library ecosystem and
-development tools. Native-first describes delivery order; JVM desktop shipping
-requires its own host qualification.
+development tools. The initial alpha targets macOS/JVM; JVM desktop shipping
+requires its own host qualification. Native delivery retains its separate gates.
 
-**Current position (2026-10-30).** Everything runnable today, including windows,
+**Current position (2026-11-02).** Everything runnable today, including windows,
 text editing, accessibility and the workbench, runs on the JDK 25 FFM
 development host. That host is the current development and acceptance path.
-Native delivery remains the intended order, but it depends on resolving the
-Native GC safepoint stall (P0.6). Before Alpha6 acceptance, the owner decides
-the delivery order explicitly, with the P0.6 evidence in hand. Until then,
-documents must not imply that Native windowed applications work. See
-[the 2026-10-30 review](decisions/2026-10-30-design-review.md), D3.
+Under the owner's authorization to execute the qualification/delivery course,
+the initial alpha is JVM first. Scala Native remains experimental: its runtime
+qualification and application provider are unfinished. The original Native
+event/50 ms gate remains required for Native delivery and is not a JVM alpha
+acceptance gate. Documents must not imply that Native windowed applications work.
+See [the delivery decision](decisions/2026-11-02-initial-alpha-delivery.md), which
+supersedes the contingent order in the 2026-10-30 review, D3.
 
 The required advantage has two parts:
 
@@ -1361,11 +1363,12 @@ sirin-tooling   inspector, traces, packaging helpers
 ```
 
 `sirin-core`, `sirin-engine`, `sirin-widgets`, and `sirin-testkit` are
-cross-built for the JVM and Native. Current JVM execution is headless; desktop
-hosting ships Native-first, with an intended JVM shipping target (§1.1).
-`sirin-desktop` isolates the host adapters. JVM windowing, rendering, text,
-accessibility, resource retirement and packaging require separate implementation
-and behavioral qualification; cross-building the engine does not establish them.
+cross-built for the JVM and Native. The macOS/JDK25 desktop provider is the
+current development and initial-alpha delivery path (§1.1). Native application
+delivery remains experimental. `sirin-desktop` isolates the host adapters.
+JVM windowing, rendering, text, accessibility, resource retirement and packaging
+require their own behavioral qualification; cross-building the engine does not
+establish them, and implemented development support alone does not qualify shipping.
 The engine must not depend on the widgets.
 
 There are three API surfaces with separate stability levels:

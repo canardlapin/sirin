@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for production-window acceptance. This page says, in plain
+Last updated 2026-11-02, for Native qualification and delivery order. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -144,8 +144,10 @@ Sirin is a pre-release prototype. Nothing is published.
 
 - **Scala Native desktop.** The kernel and tests run under Scala Native, but there is no
   qualified Scala Native application provider. Native delivery depends on the
-  open GC safepoint stall (P0.6). The delivery order is to be decided before
-  Alpha6 (VISION §1.1). A separate Native executable reaches the same nine
+  open GC safepoint stall (P0.6). The November 2 owner-authorized delivery course
+  selects a macOS/JVM initial alpha, with Native experimental and its original
+  qualification gates retained. [Decision](design/decisions/2026-11-02-initial-alpha-delivery.md).
+  A separate Native executable reaches the same nine
   accessibility ABI functions as JVM FFM, and a separate text/focus probe reaches
   four existing functions in the exact packaged library. These are binding
   checks, not a provider.
@@ -156,6 +158,12 @@ Sirin is a pre-release prototype. Nothing is published.
   and a four-allocator follow-up complete without observed ownership errors or
   loss of an unrelated blocked signal. These bounded, instrumented checks do not
   adopt the remedy or qualify Native delivery.
+  A fresh November 2 conditional four-allocator check completes 120 seconds,
+  retains valid survivors and reports flat sampled heap capacity. A frozen
+  runner now preserves three planned independent event trials, but its first
+  real six-sample preflight fails readiness and launches no ten-minute workload.
+  A self-contained trap-defect review report is prepared; publication/review
+  remains pending. [Qualification evidence](evidence/2026-11-02-native-qualification.md).
   [Activation evidence](evidence/2026-11-01-native-activation.md),
   [idle-host evidence](evidence/2026-11-01-native-continuation.md).
   Appearance verification also recorded a Native test-runner startup timeout

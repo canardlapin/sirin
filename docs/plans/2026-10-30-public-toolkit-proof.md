@@ -15,10 +15,11 @@ concentrate implementation on one complete public path at a time.
    coherent interaction and visual quality. Bring independent feature authoring
    and a small matched ScalaFX comparison forward; keep their acceptance separate
    from automated kernel and rendering tests.
-5. Give Native GC a bounded causal investigation with an explicit delivery-order
-   decision before Alpha6. JVM development/validation continues meanwhile. The
-   proposed fallback is a JVM-first alpha if Native remains blocked; this tranche
-   neither fixes P0.6 nor claims a qualified Native application host.
+5. Give Native GC a bounded causal investigation and retain its original gates.
+   The November 2 owner-authorized delivery course selects a JVM-first initial
+   alpha, with Native experimental. This changes no runtime pin and claims no
+   qualified Native application host. See
+   [the decision](../design/decisions/2026-11-02-initial-alpha-delivery.md).
 
 ## First proof
 

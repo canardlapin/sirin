@@ -7,6 +7,15 @@ isolated in `/Users/bbuchsbaum/code/scala/sirin-alpha`; preserve the dirty origi
 checkout and prior frozen receipts. The existing Native/input qualifications
 remain open and do not prevent independent application work.
 
+**Delivery scope, November 2:** the owner-authorized qualification/delivery course
+selects macOS/JVM for the initial alpha. The six application obligations remain;
+Native's original GC/event gate qualifies the Native target separately and does
+not block JVM alpha acceptance. Native remains experimental until that gate,
+runtime adoption review and the application provider qualify. This explicit scope
+update supersedes the original combined delivery ordering below; historical
+checkpoint results remain unchanged. See
+[the decision](../design/decisions/2026-11-02-initial-alpha-delivery.md).
+
 ## Required deliverables and acceptance
 
 | Item | Required end state | Authoritative acceptance evidence |

@@ -45,9 +45,10 @@ test and offscreen results are prerequisites, not comparison acceptance.
   The original idle-host 600-second event/50 ms qualification remains required.
   See [activation evidence](../evidence/2026-11-01-native-activation.md).
 - State the application-provider gap explicitly. Shared Native test passes
-  do not establish Native desktop delivery. Obtain the explicit delivery-order
-  decision required by VISION before Alpha6; do not silently substitute JVM
-  delivery for the Native target.
+  do not establish Native desktop delivery. The November 2 owner-authorized
+  delivery course selects a JVM-first initial alpha, with Native experimental.
+  Native keeps its original runtime/provider gates. See
+  [the explicit decision](../design/decisions/2026-11-02-initial-alpha-delivery.md).
 
 ## Order of work
 

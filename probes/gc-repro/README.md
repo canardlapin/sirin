@@ -138,3 +138,42 @@ These conservative thresholds are a **preflight**, not a new P0.6 acceptance
 criterion. The ten-minute probe must still pass its original assertions, and
 a preflight does not prove absence of contention later in the run. Preserve
 host-load observations and arrange a quiet window; do not stop unrelated jobs.
+
+## Frozen conditional-candidate qualification
+
+The preserved event binary from the October 29 pinned build can be qualified
+without rebuilding or changing the application runtime defaults:
+
+```sh
+python3 probes/gc-repro/qualify.py \
+  --binary /absolute/path/to/threads-pinned-conditional \
+  --out /absolute/path/to/new-qualification
+```
+
+The runner accepts only binary SHA-256
+`87d7a7a94d48f21646053915415e31702517cf984a78b5b4f8c79287d2c2e5d9`
+on macOS ARM64. Its SDL dependency must resolve through the preserved binary's
+existing rpath; copying the executable alone to another machine is insufficient.
+The runtime build receipt identifies upstream `fa4a9e6`, release-fast Immix,
+and conditional yieldpoints selected at link time. This is a historical event
+probe, not the current application provider or an application-runtime adoption.
+
+Reserve about 35 quiet minutes after builds finish. Each of three serial trials
+requires a fresh unchanged six-sample idle preflight, followed immediately by
+`soak 600 4 1000`, a 128M heap cap, 15-second GC synchronization timeout and
+620-second external timeout. The original probe's strict 50 ms assertions remain
+authoritative; rounded display values do not replace them. All three trials
+must pass. The runner stops at the first unavailable host, measurement error or
+failed gate, retaining every attempted result. It never retries for a green run.
+
+The output freezes the runner/helper hashes and protocol before execution.
+Inherited GC/DYLD overrides are cleared for child processes. Exit zero alone
+does not qualify: the runner also verifies exact workload parameters, completed
+duration, original assertions, event delivery, allocation progress, heap capacity
+and unchanged binary identity. This wrapper adds receipt checks; it does not
+edit the original event probe or introduce a new latency threshold.
+
+Run the receipt/orchestration negative controls with
+`python3 -m unittest discover -s probes/gc-repro -p test_qualify.py`.
+Those tests deliberately simulate receipts and child processes; their passes
+are test-tool verification and never native latency evidence.
