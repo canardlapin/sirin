@@ -1,6 +1,6 @@
 # Sirin status
 
-Last updated 2026-11-01, for system appearance support. This page says, in plain
+Last updated 2026-11-01, for production-window acceptance. This page says, in plain
 language, what works today. Update it whenever what works changes (VISION §11).
 Detailed claims and their evidence are in `docs/plans/` and `docs/evidence/`.
 
@@ -60,8 +60,11 @@ Sirin is a pre-release prototype. Nothing is published.
   Rendering checks preserve drafts and focus across palette changes, reject
   obsolete frames, retain unchanged text shaping and compare cached output with
   a fresh render. A native query matches SDL's current preference and rejects
-  invalid owners. Actual system switching, display-scale review and owner visual
-  acceptance remain open. [Evidence](evidence/2026-11-01-system-colors.md).
+  invalid owners. A production window now passes real Light/Dark/Light switching
+  with draft and focus retention, validation and exact save/relaunch. The original
+  system setting was restored. Display-scale review and owner visual acceptance
+  remain open. [Implementation evidence](evidence/2026-11-01-system-colors.md),
+  [window evidence](evidence/2026-11-01-production-window-acceptance.md).
 - **Public diagram client.** Application code outside the `sirin` package uses
   Element, named Layout, commands and the graphics adapter for curved connections,
   gradient nodes, prepared labels, selection tools, drag/cancel, pan/zoom and bounded
@@ -208,9 +211,12 @@ Sirin is a pre-release prototype. Nothing is published.
   the loss to disabled native text transport before restored focus is presented.
   A repair prepares transport early and queues delivery until presentation;
   controller regressions and two real-window trials with a diagnostic 200 ms
-  render delay pass without losing text. An uninstrumented production-window
-  repeat remains pending, so input acceptance stays open.
+  render delay pass without losing text. Three uninstrumented production-window
+  trials now retain all characters, including the original Title `Probe ` plus
+  immediate `abcdefghi` sequence. The specific missing-prefix defect is verified;
+  physical input, IME and broader input acceptance remain open.
   [Text-handoff evidence](evidence/2026-11-01-popup-text-handoff.md).
+  [Production-window evidence](evidence/2026-11-01-production-window-acceptance.md).
   [Relationship evidence](evidence/2026-11-01-native-semantic-relationships.md).
 - **Rendering.** The shared-device batch path presents retained GPU frames
   without a full-frame CPU readback. Explicit captures read pixels back; the

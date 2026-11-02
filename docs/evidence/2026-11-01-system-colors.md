@@ -110,3 +110,12 @@ The shared checkout's tracked diff remains unchanged at SHA-256
 `1bfa8a28e367ba1c946dcaf2e7febba495c95b8c52127c2379ac590320dfa588`.
 This continuation does not merge or push the owned branch, close visual
 acceptance, or adopt a Native runtime remedy.
+
+## Subsequent approved window acceptance
+
+The same signed package was subsequently launched with owner approval. Actual
+Light/Dark/Light switching preserves the draft and editor focus. Validation,
+popup dismissal with immediate typing, exact saving and relaunch pass. The
+original Light preference was restored. The previous artifact manifest remains
+frozen; new captures and document receipts are separate. See
+[production-window evidence](2026-11-01-production-window-acceptance.md).

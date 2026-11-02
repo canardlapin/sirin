@@ -112,8 +112,9 @@ the failure to native text input remaining disabled before restored focus is
 presented. The repair prepares native transport for the surviving restore field
 and queues delivery until accepted presentation. Controller regressions pass;
 two repaired diagnostic-window trials with a 200 ms render delay now retain
-all immediately typed characters. Production-window verification remains pending.
-The defect stays open. See
+all immediately typed characters. Three production-window trials also retain
+every character, including the original title-field sequence. The specific
+missing-prefix defect is verified; broader input acceptance remains open. See
 [text-handoff evidence](../evidence/2026-11-01-popup-text-handoff.md).
 The independent ReviewPad consumer now builds and packages from a committed
 external copy against a clean binary SDK. Four storage regressions pass,
@@ -166,8 +167,18 @@ Palette changes retain drafts, text shaping and ordinary measurement caches;
 declared theme-dependent measurements invalidate. Both renderer paths check
 cached output against a fresh render and keep focus/press feedback visible on
 accent-filled controls. Native query ownership checks pass without creating a
-window. This does not qualify actual system switching or owner visual acceptance.
-See [appearance evidence](../evidence/2026-11-01-system-colors.md).
+window. A production package now passes actual Light/Dark/Light switching,
+draft/focus retention, validation, exact save/relaunch and immediate popup typing.
+The original system appearance was restored. Owner visual acceptance remains open.
+See [appearance evidence](../evidence/2026-11-01-system-colors.md) and
+[production-window evidence](../evidence/2026-11-01-production-window-acceptance.md).
+
+The subsequently approved older ReviewPad package exposed an unexpected exit,
+prolonged black startup and slowly advancing input observations. Its cause remains
+unresolved. The inspector opened a tool window with black captured content, and
+Computer Use timed out launching ScalaFX. These attempts do not establish consumer,
+inspector or comparison acceptance. Current-SDK consumer and inspector candidates
+are prepared separately; the original packages and negative evidence are preserved.
 
 Use the authoritative Mote store in the original checkout. The current worktree
 is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was

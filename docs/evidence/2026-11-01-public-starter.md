@@ -122,3 +122,15 @@ covered SirinWorkbench. No launch or editing/save/reopen result is claimed here.
 The inspector, independent workbench review, matched ScalaFX workflow and Native
 delivery gates remain open. The starter's storage is JVM-specific; shared Native
 tests and an ABI probe do not establish a Native starter/provider.
+
+## Subsequent launch and SDK refresh
+
+The owner subsequently approved the isolated ReviewPad launch. Its controls
+appeared, but the first batched input attempt reported an unexpected exit.
+Relaunch showed prolonged black content and slowly advancing title input.
+No save/reopen acceptance is claimed and the cause remains unresolved. The
+original package and negative observations are preserved. A new external copy
+of the unchanged consumer builds against the current verified `1a9baa3` SDK,
+passes all four storage tests and packages with an isolated path and distinct
+identity. It has not been launched. See the
+[window observations and refresh receipts](2026-11-01-production-window-acceptance.md).

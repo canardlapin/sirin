@@ -108,3 +108,14 @@ was denied access to its boot lock; the successful retry used the existing cache
 with approved access. Both logs are retained. No implementation changed in this
 window-check continuation. The six-file artifact manifest has SHA-256
 `d5182c600206cd3c974213484edf5eb95a94e9dc287288e2afd997bacd49d9cd`.
+
+## Production-window follow-up, November 1
+
+The approved uninstrumented package at `1a9baa3` now passes three immediate
+Escape-to-typing trials: body input in Light and Dark, and the original
+Title `Probe ` followed by `abcdefghi`. Every character survives; the latter
+produces `Probe abcdefghi` in both field and window title. Exact saving/relaunch
+also passes. The required suites pass 476 JVM and 476 Native tests unchanged.
+This verifies the specific production missing-prefix defect without extending
+the claim to IME, VoiceOver, physical input or arbitrary timing. See
+[the package receipts and window evidence](2026-11-01-production-window-acceptance.md).
