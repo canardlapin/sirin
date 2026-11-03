@@ -186,3 +186,11 @@ is `/private/tmp/sirin-workbench-20261031`. The first popup-repair worktree was
 retired after landing.
 Tranche issue: `bd-01M6AF7EAPRRC63YH4TQ3MF1SR`. Original alpha obligations
 remain tracked separately; this plan does not close any of them by inference.
+
+
+## November 2 integration priority
+
+The owner review prioritizes durable product integration, the unresolved Linux
+reconciliation exception and actual human acceptance. Further macOS Native
+latency experiments are parked after `8b00b89`, preserving all failures and
+Native delivery gates. See the [integration plan](2026-11-02-alpha-integration.md).

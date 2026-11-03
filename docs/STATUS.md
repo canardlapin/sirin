@@ -285,3 +285,17 @@ still supplies a running app; the editor tree retains the approved launch candid
 Their disposition remains in the [stocktake](plans/2026-10-30-worktree-stocktake.md).
 The three WIP archive branches remain on origin. The diagram archive was reference
 material; the new client was written against the accepted public seam.
+
+
+## November 2 priority correction
+
+The next work is durable product integration, Linux reconciliation failure
+attribution and the remaining human JVM alpha acceptance sessions. Additional
+macOS Native latency work is parked after the completed fixed comparison on
+`native-qualification-20261102` at `8b00b89`. Three attempts fail and one passes;
+no Native fix or qualification is claimed. Native runtime/provider gates remain
+open and do not block the selected JVM delivery path. Alpha1–6 remain open.
+See the [integration plan](plans/2026-11-02-alpha-integration.md).
+
+Raw evidence and toolchains now have a verified durable local archive; see the
+[product handoff](evidence/2026-11-02-durable-product-handoff.md).
