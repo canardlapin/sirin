@@ -708,6 +708,8 @@ qualifies a headless driver, not a rendered frame or full Stage 1 exit.
   allocating thread. The list is explicit and reviewed:
   - `SDL_WaitEvent` and `SDL_WaitEventTimeout`, which the idle loop depends
     on,
+  - the thread probe's `sirin_push_user`, which calls `SDL_PushEvent` (event-queue
+    locking and platform wakeup); event watches remain C-only,
   - `wgpuInstanceWaitAny`, and `wgpuDevicePoll` with `wait=true`,
   - `wgpuSurfaceGetCurrentTexture`, since under FIFO the vsync wait can
     happen at acquire,

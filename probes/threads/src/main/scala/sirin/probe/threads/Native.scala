@@ -68,7 +68,10 @@ object TShim:
 
   // SDL glue, watchdog, re-entry, cost (sirin_threads_shim.c)
   def sirin_threads_sdl_constants(out: Ptr[CUnsignedLongLong]): CSize = extern
-  def sirin_push_user(eventType: CUnsignedInt, code: CInt, a: CUnsignedLongLong, b: CUnsignedLongLong): CInt = extern
+  // SDL takes an event-queue mutex and may post through Cocoa; no Scala callbacks.
+  @blocking def sirin_push_user(
+      eventType: CUnsignedInt, code: CInt, a: CUnsignedLongLong, b: CUnsignedLongLong
+  ): CInt = extern
   def sirin_push_failure_count(): CUnsignedLongLong = extern
   def sirin_decode_user(event: Ptr[Byte], out: Ptr[CUnsignedLongLong]): CUnsignedInt = extern
   def sirin_event_watch_install(): CInt = extern
