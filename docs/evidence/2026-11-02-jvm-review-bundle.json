@@ -1,0 +1,43 @@
+{
+  "artifact_root": "/Users/bbuchsbaum/code/scala/sirin-artifacts/jvm-acceptance-20261102",
+  "source_commit": "6a13aea9e666beaadef7b2d8f3c9841de8774914",
+  "manifest_sha256": "e5f8f6010d4ecb6ca07033d4dde4b6201ac8c624c6f6fc3544d94f2ca7053a1d",
+  "files": {
+    "receipts/apps.json": {
+      "bytes": 410486,
+      "sha256": "6eb0464d14916783ec9aa9972a349d7e752e7a68ded791bdbc530733a4c99a96"
+    },
+    "receipts/validation.json": {
+      "bytes": 1317,
+      "sha256": "e7e692fa6ec1745dd3e6be0bf6b1e248d067d295a4c9887e7231747a10bf4f3b"
+    },
+    "receipts/fixtures-before.json": {
+      "bytes": 940,
+      "sha256": "886616a60070d523f3338f6ef8cd02f5124369c66f54d72833b5e6a67fc67ca5"
+    },
+    "linux/review.json": {
+      "bytes": 1664,
+      "sha256": "ec57fe5bf5b0cf8c6a9a29b62902c1138080f2ae2c7315bb8f279056585859a4"
+    },
+    "linux/current-linux-job.log": {
+      "bytes": 154045,
+      "sha256": "a07936026d6f01028098eebbf2a123857b9a0a16e299feb84920a421cc6f341c"
+    },
+    "linux/original-full-job.log": {
+      "bytes": 208069,
+      "sha256": "f0aec55a65fd63cccdd0eb51ebeec522a2eabb57b9053cfdfe97aef30efcd791"
+    },
+    "protocol.json": {
+      "bytes": 2976,
+      "sha256": "969551054774812df410f997fb13f917005a071f5245b8eaf7e8c09944d96759"
+    },
+    "build/regression.log": {
+      "bytes": 42710,
+      "sha256": "f1cda0435d833fa3a9bfb9d097e30a30f2e611e75c111be16c512a3452e07db7"
+    },
+    "build/starter.log": {
+      "bytes": 1321,
+      "sha256": "45423e23cc1ebe341d501643222ab8a225608e90d6350b89c7c9b1c40298fc3c"
+    }
+  }
+}

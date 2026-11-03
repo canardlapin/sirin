@@ -177,6 +177,10 @@ Sirin is a pre-release prototype. Nothing is published.
   failed transaction. A negative control exposes the old diagnostic blind spot;
   this is not a fix for the original exception.
   [Linux replay evidence](evidence/2026-11-01-linux-reconciliation.md).
+  Published `6a13aea` also passes both guarded reconciliation suites on real
+  Linux CI, using the same reported runner image version as the historical
+  failure. Source and execution conditions differ, so attribution remains open.
+  [Bounded review](evidence/2026-11-02-jvm-review-bundle.md).
 - **Native platform qualification.** Real input-method sessions, VoiceOver,
   physical pointer drag and trackpad behavior remain unqualified. Packaged
   workbench modal decisions have been exercised with synthetic pointer and
@@ -299,3 +303,11 @@ See the [integration plan](plans/2026-11-02-alpha-integration.md).
 
 Raw evidence and toolchains now have a verified durable local archive; see the
 [product handoff](evidence/2026-11-02-durable-product-handoff.md).
+
+Four fresh JVM review packages now live in durable local storage with separate
+synthetic documents: workbench, ScalaFX baseline, independent ReviewPad and the
+inspector-enabled workbench. Signatures, source parity and preparation receipts
+pass. The owner requested preparation for later review; these fresh apps have
+not been launched in this tranche. Visible workflows and physical/owner checks
+remain pending. See the [review guide](guides/jvm-acceptance.md) and
+[preparation evidence](evidence/2026-11-02-jvm-review-bundle.md).

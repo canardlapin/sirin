@@ -47,3 +47,18 @@ The supported SDL push `@blocking` correction is carried forward separately in
 `f757b35`, with its VISION entry, to avoid restoring the old boundary mismatch.
 It adopts no runtime policy. Durable artifact relocation and validation receipts
 are recorded in [handoff evidence](../evidence/2026-11-02-durable-product-handoff.md).
+
+## Review-preparation checkpoint
+
+Published `6a13aea` passes all nine CI jobs. Its Linux job passes both guarded
+reconciliation suites on JVM and Native, on the same reported image version as
+the original failure. The historical exception remains unattributed; no engine
+change is justified by these passing runs. Keep its P0 issue open and preserve
+the first underlying stack/seed/program if it recurs.
+
+The next human review has four freshly prepared packages and isolated fixtures
+in durable storage. The owner chose preparation for later review. Do not close
+acceptance issues from signatures, headless tests or prior package observations.
+Follow the [review guide](../guides/jvm-acceptance.md); current scope and artifact
+hashes are in [preparation evidence](../evidence/2026-11-02-jvm-review-bundle.md).
+Separate Native-provider work can continue without extending this JVM tranche.
